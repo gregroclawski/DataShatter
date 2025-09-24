@@ -25,7 +25,7 @@ const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 250; // Leave space for bottom tabs
 const NINJA_SIZE = 40;
 const ENEMY_SIZE = 35;
 
-type ActiveOverlay = 'stats' | 'abilities' | 'pets' | 'skills' | 'store' | 'raids' | null;
+type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'raids' | null;
 
 export default function NinjaIdleGame() {
   const { gameState, ninja, updateNinja } = useGame();
