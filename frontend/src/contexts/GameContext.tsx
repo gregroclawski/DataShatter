@@ -211,10 +211,18 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateNinja = (updates: Partial<NinjaStats>) => {
-    setGameState(prev => ({
-      ...prev,
-      ninja: { ...prev.ninja, ...updates }
-    }));
+    setGameState(prev => {
+      const updatedNinja = { ...prev.ninja, ...updates };
+      
+      // Check for level up with new system
+      const levelUpUpdates = handleLevelUp(updatedNinja);
+      const finalNinja = { ...updatedNinja, ...levelUpUpdates };
+      
+      return {
+        ...prev,
+        ninja: finalNinja
+      };
+    });
   };
 
   const addShuriken = (shuriken: Shuriken) => {
