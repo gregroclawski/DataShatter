@@ -175,6 +175,10 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
   // Spawn a test enemy
   const spawnTestEnemy = (state: CombatState) => {
+    // Random position within game area (avoid edges for better visibility)
+    const x = Math.random() * 300 + 50; // 50-350px from left
+    const y = Math.random() * 200 + 100; // 100-300px from top
+    
     const enemy: CombatEnemy = {
       id: `enemy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       name: 'Test Orc',
@@ -189,7 +193,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         critDamage: 120,
         cooldownReduction: 0,
       },
-      position: { x: 300, y: 200 },
+      position: { x, y },
       lastDamaged: 0,
     };
     
