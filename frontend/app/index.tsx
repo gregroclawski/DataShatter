@@ -105,13 +105,13 @@ export default function NinjaIdleGame() {
     }
   }, [totalKills, lastProcessedKill]);
 
-  // Enhanced AI movement system - move toward enemies when not attacking
+  // Enhanced AI movement system with proper speed and tracking
   useEffect(() => {
     const moveNinja = () => {
       const now = Date.now();
       const deltaTime = now - lastMovementTime;
       
-      if (deltaTime >= 200) { // Update every 200ms for slower, more deliberate movement
+      if (deltaTime >= 16) { // 60 FPS for smooth movement
         setNinjaPosition(prevPos => {
           // Check if we have enemies to target and ninja is not attacking
           if (!combatState.enemies || combatState.enemies.length === 0 || isAttacking) {
@@ -156,11 +156,15 @@ export default function NinjaIdleGame() {
           const normalizedDirX = dirX / distance;
           const normalizedDirY = dirY / distance;
           
-          const speed = 0.15; // Much slower, more deliberate movement (pixels per ms)
-          const moveDistance = speed * deltaTime;
+          // Proper speed in pixels per second (converted to pixels per frame)
+          const MOVEMENT_SPEED = 50; // 50 pixels per second
+          const speedPerFrame = (MOVEMENT_SPEED / 1000) * deltaTime;
           
-          let newX = prevPos.x + normalizedDirX * moveDistance;
-          let newY = prevPos.y + normalizedDirY * moveDistance;
+          // Don't overshoot the target
+          const actualDistance = Math.min(speedPerFrame, distance);
+          
+          let newX = prevPos.x + normalizedDirX * actualDistance;
+          let newY = prevPos.y + normalizedDirY * actualDistance;
           
           // Keep ninja within bounds
           const maxX = SCREEN_WIDTH - NINJA_SIZE;
@@ -169,7 +173,11 @@ export default function NinjaIdleGame() {
           newX = Math.max(0, Math.min(newX, maxX));
           newY = Math.max(0, Math.min(newY, maxY));
           
-          console.log(`🏃 Ninja moving toward enemy at distance ${closestDistance.toFixed(0)}, new pos: (${newX.toFixed(0)}, ${newY.toFixed(0)})`);
+          // Only log significant movements to avoid spam
+          const moveDistance = Math.sqrt(Math.pow(newX - prevPos.x, 2) + Math.pow(newY - prevPos.y, 2));
+          if (moveDistance > 1) {
+            console.log(`🏃 Ninja moving toward enemy (speed: ${speedPerFrame.toFixed(1)}px/frame, distance: ${closestDistance.toFixed(0)})`);
+          }
           
           // Update combat context with ninja position for accurate projectile origin
           updateNinjaPosition({ x: newX, y: newY });
@@ -181,7 +189,7 @@ export default function NinjaIdleGame() {
       }
     };
 
-    const movementInterval = setInterval(moveNinja, 50); // ~20 FPS for movement updates
+    const movementInterval = setInterval(moveNinja, 16); // 60 FPS for smooth movement
     return () => clearInterval(movementInterval);
   }, [lastMovementTime, combatState.enemies, isAttacking]);
 
