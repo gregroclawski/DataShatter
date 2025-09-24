@@ -13,8 +13,8 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <GameProvider>
         <ZoneProvider>
-          <EquipmentProvider>
-            <MaterialsProvider>
+          <MaterialsProvider>
+            <EquipmentProvider>
               <CombatProvider>
             <StatusBar style="light" backgroundColor="#0f172a" />
           <Stack
