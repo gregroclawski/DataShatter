@@ -33,6 +33,37 @@ const ENEMY_SIZE = 35;
 
 type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'bosses' | 'zones' | 'equipment' | null;
 
+// Boss rendering helper functions
+const getBossIcon = (element?: string): any => {
+  switch (element?.toLowerCase()) {
+    case 'fire': return 'flame';
+    case 'ice': return 'snow';
+    case 'shadow': return 'moon';
+    case 'earth': return 'earth';
+    default: return 'skull';
+  }
+};
+
+const getBossColor = (element?: string): string => {
+  switch (element?.toLowerCase()) {
+    case 'fire': return '#dc2626';
+    case 'ice': return '#2563eb';
+    case 'shadow': return '#6b7280';
+    case 'earth': return '#65a30d';
+    default: return '#ef4444';
+  }
+};
+
+const getBossHealthColor = (element?: string): string => {
+  switch (element?.toLowerCase()) {
+    case 'fire': return '#f97316';
+    case 'ice': return '#3b82f6';
+    case 'shadow': return '#8b5cf6';
+    case 'earth': return '#84cc16';
+    default: return '#10b981';
+  }
+};
+
 export default function NinjaIdleGame() {
   const { gameState, updateNinja } = useGame();
   const { combatState, startCombat, stopCombat, triggerLevelUpExplosion, projectiles, updateNinjaPosition } = useCombat();
