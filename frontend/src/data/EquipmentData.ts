@@ -250,5 +250,5 @@ export const getUpgradeCost = (equipment: Equipment): number => {
 };
 
 export const canUpgradeEquipment = (equipment: Equipment): boolean => {
-  return equipment.level < 10; // Max level 10
+  return equipment.level < 25; // Max level 25 (increased from 10)
 };
