@@ -150,12 +150,12 @@ export default function NinjaIdleGame() {
       {/* Battle Arena */}
       <View style={styles.gameArea}>
         {/* Ninja Character */}
-        <Animated.View
+        <View
           style={[
             styles.ninja,
             {
-              left: ninjaAnimatedPosition.x,
-              top: ninjaAnimatedPosition.y,
+              left: SCREEN_WIDTH / 2 - NINJA_SIZE / 2,
+              top: GAME_AREA_HEIGHT / 2 - NINJA_SIZE / 2,
             },
             isLevelingUp && styles.ninjaLevelingUp,
           ]}
@@ -166,7 +166,7 @@ export default function NinjaIdleGame() {
               <Ionicons name="flash" size={60} color="#fbbf24" />
             </View>
           )}
-        </Animated.View>
+        </View>
 
         {/* Enemies */}
         {combatState.enemies.map(enemy => (
