@@ -44,17 +44,41 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose }) =>
     return `${hours}h ${minutes}m`;
   };
 
-  // Handle boss fight
+  // Handle boss fight - launch dedicated battle screen
   const handleFightBoss = async (bossType: BossType, tier: number) => {
     if (!canFightBoss(bossType, tier)) {
       Alert.alert('Cannot Fight', 'Requirements not met or no tickets remaining');
       return;
     }
 
+    const boss = availableBosses.find(b => b.id === bossType);
+    const bossTier = boss?.tiers.find(t => t.tier === tier);
+    
+    if (!boss || !bossTier) {
+      Alert.alert('Error', 'Boss or tier not found');
+      return;
+    }
+
+    // Set up the boss battle screen
+    setCurrentBossBattle({ boss, tier: bossTier });
+    setBattleScreenVisible(true);
+  };
+
+  // Handle battle completion from the dedicated screen
+  const handleBattleComplete = async (victory: boolean) => {
+    setBattleScreenVisible(false);
+    setCurrentBossBattle(null);
+    
+    if (!currentBossBattle) return;
+    
+    const { boss, tier } = currentBossBattle;
+    
+    // Consume ticket regardless of outcome
     setIsFighting(true);
     
     try {
-      const result = await fightBoss(bossType, tier);
+      // Simulate the battle result for rewards (since the visual battle was just for show)
+      const result = await fightBoss(boss.id, tier.tier);
       
       let alertMessage = result.message;
       if (result.victory) {
