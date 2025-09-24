@@ -272,6 +272,17 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       if (savedData) {
         const parsedData = JSON.parse(savedData);
         lastSaveTimeRef.current = parsedData.lastSaveTime || Date.now(); // Update ref
+        
+        // Fix corrupted experienceToNext values (should be 100 for level 1)
+        if (parsedData.ninja && parsedData.ninja.level === 1 && parsedData.ninja.experienceToNext > 1000) {
+          console.log(`🔧 Fixing corrupted XP: experienceToNext was ${parsedData.ninja.experienceToNext}, setting to 100`);
+          parsedData.ninja.experienceToNext = 100;
+          // Also ensure experience is reasonable for level 1
+          if (parsedData.ninja.experience > 100) {
+            parsedData.ninja.experience = Math.min(99, parsedData.ninja.experience);
+          }
+        }
+        
         setGameState(parsedData);
       }
     } catch (error) {
