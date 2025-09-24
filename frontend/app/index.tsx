@@ -72,7 +72,7 @@ export default function NinjaIdleGame() {
   const spawnTimerRef = useRef<NodeJS.Timeout>();
 
   // Level-up explosion attack
-  const triggerLevelUpExplosion = () => {
+  const triggerLevelUpExplosion = useCallback(() => {
     if (localGameState.enemies.length === 0) return;
     
     console.log('💥 LEVEL UP EXPLOSION! Killing all', localGameState.enemies.length, 'enemies');
@@ -94,28 +94,33 @@ export default function NinjaIdleGame() {
       killCount: prev.killCount + prev.enemies.length,
     }));
     
-    // Award rewards for all killed enemies
+    // Award rewards for all killed enemies (use setTimeout to avoid render loop)
     if (totalGoldReward > 0 || totalExpReward > 0) {
-      updateNinja({
-        gold: ninja.gold + totalGoldReward,
-        experience: ninja.experience + totalExpReward,
-      });
+      setTimeout(() => {
+        updateNinja({
+          gold: ninja.gold + totalGoldReward,
+          experience: ninja.experience + totalExpReward,
+        });
+      }, 0);
     }
     
     // Reset explosion state after animation
     setTimeout(() => {
       setIsLevelingUp(false);
     }, 1000);
-  };
+  }, [localGameState.enemies, ninja.gold, ninja.experience, updateNinja]);
 
   // Watch for level changes to trigger explosion
   useEffect(() => {
     if (ninja.level > previousLevel) {
       console.log('🚀 Level up detected!', previousLevel, '->', ninja.level);
-      triggerLevelUpExplosion();
+      // Use setTimeout to avoid calling updateNinja during render
+      setTimeout(() => {
+        triggerLevelUpExplosion();
+      }, 0);
       setPreviousLevel(ninja.level);
     }
-  }, [ninja.level, previousLevel]);
+  }, [ninja.level, previousLevel, triggerLevelUpExplosion]);
 
   // Enemy stats based on stage
   const getEnemyStats = (type: Enemy['type'], stage: number) => {
