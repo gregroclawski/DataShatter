@@ -93,6 +93,47 @@ export default function NinjaIdleGame() {
     }
   }, [totalKills, lastProcessedKill]);
 
+  // Auto-movement system
+  useEffect(() => {
+    const moveNinja = () => {
+      const now = Date.now();
+      const deltaTime = now - lastMovementTime;
+      
+      if (deltaTime >= 100) { // Update every 100ms
+        setNinjaPosition(prevPos => {
+          const speed = 0.5; // pixels per ms
+          const moveDistance = speed * deltaTime;
+          
+          let newX = prevPos.x + movementDirection.x * moveDistance;
+          let newY = prevPos.y + movementDirection.y * moveDistance;
+          let newDirection = { ...movementDirection };
+          
+          // Bounce off walls
+          const maxX = SCREEN_WIDTH - NINJA_SIZE;
+          const maxY = GAME_AREA_HEIGHT - NINJA_SIZE;
+          
+          if (newX <= 0 || newX >= maxX) {
+            newDirection.x = -newDirection.x;
+            newX = Math.max(0, Math.min(newX, maxX));
+          }
+          
+          if (newY <= 0 || newY >= maxY) {
+            newDirection.y = -newDirection.y;
+            newY = Math.max(0, Math.min(newY, maxY));
+          }
+          
+          setMovementDirection(newDirection);
+          return { x: newX, y: newY };
+        });
+        
+        setLastMovementTime(now);
+      }
+    };
+
+    const movementInterval = setInterval(moveNinja, 16); // ~60 FPS
+    return () => clearInterval(movementInterval);
+  }, [lastMovementTime, movementDirection]);
+
   // Find closest enemy for projectile targeting
   const findClosestEnemy = useCallback(() => {
     if (!combatState.enemies || combatState.enemies.length === 0) return null;
