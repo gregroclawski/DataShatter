@@ -173,9 +173,16 @@ export default function GameScreen() {
     const attackRange = 60;
     const ninjaAttack = ninja.attack + (gameState.shurikens.find(s => s.equipped)?.attack || 0);
     
+    // Use animated position for collision detection
+    const currentNinjaX = ninjaAnimatedPosition.x._value + NINJA_SIZE / 2;
+    const currentNinjaY = ninjaAnimatedPosition.y._value + NINJA_SIZE / 2;
+    
     setLocalGameState(prev => {
       const updatedEnemies = prev.enemies.map(enemy => {
-        const distance = getDistance(prev.ninjaPosition, { x: enemy.x + ENEMY_SIZE / 2, y: enemy.y + ENEMY_SIZE / 2 });
+        const distance = getDistance(
+          { x: currentNinjaX, y: currentNinjaY }, 
+          { x: enemy.x + ENEMY_SIZE / 2, y: enemy.y + ENEMY_SIZE / 2 }
+        );
         
         if (distance <= attackRange) {
           const damage = Math.max(1, ninjaAttack - Math.floor(Math.random() * 5));
