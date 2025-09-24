@@ -201,11 +201,11 @@ export default function NinjaIdleGame() {
       {/* Quick Action Bar */}
       <View style={styles.quickActions}>
         <TouchableOpacity
-          style={[styles.quickActionBtn, localGameState.isAutoFighting && styles.activeButton]}
-          onPress={toggleAutoFight}
+          style={[styles.quickActionBtn, combatState.isInCombat && styles.activeButton]}
+          onPress={() => combatState.isInCombat ? stopCombat() : startCombat()}
         >
           <Ionicons 
-            name={localGameState.isAutoFighting ? "pause" : "play"} 
+            name={combatState.isInCombat ? "pause" : "play"} 
             size={20} 
             color="#ffffff" 
           />
@@ -226,8 +226,8 @@ export default function NinjaIdleGame() {
         </TouchableOpacity>
 
         <View style={styles.enemyCounter}>
-          <Text style={styles.enemyCounterText}>{localGameState.enemies.length}/10</Text>
-          <Text style={styles.killsText}>{localGameState.killCount} kills</Text>
+          <Text style={styles.enemyCounterText}>{combatState.enemies.length}/10</Text>
+          <Text style={styles.killsText}>Tick {combatState.currentTick}</Text>
         </View>
       </View>
 
