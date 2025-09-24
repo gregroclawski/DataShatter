@@ -423,9 +423,15 @@ export default function NinjaIdleGame() {
               left: ninjaAnimatedPosition.x,
               top: ninjaAnimatedPosition.y,
             },
+            isLevelingUp && styles.ninjaLevelingUp,
           ]}
         >
           <Ionicons name="person" size={30} color="#8b5cf6" />
+          {isLevelingUp && (
+            <View style={styles.explosionEffect}>
+              <Ionicons name="flash" size={60} color="#fbbf24" />
+            </View>
+          )}
         </Animated.View>
 
         {/* Enemies */}
