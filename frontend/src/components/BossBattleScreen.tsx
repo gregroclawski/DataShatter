@@ -22,13 +22,20 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
   onComplete,
   onEscape
 }) => {
-  const { gameState } = useGame();
+  const { gameState, updateNinja } = useGame();
   const { combatState, spawnBoss, clearAllEnemies } = useCombat();
-  const [battlePhase, setBattlePhase] = useState<'countdown' | 'combat' | 'victory' | 'defeat'>('countdown');
+  const [battlePhase, setBattlePhase] = useState<'countdown' | 'combat' | 'respawning' | 'victory' | 'defeat'>('countdown');
   const [countdown, setCountdown] = useState(10);
   const [bossSpawned, setBossSpawned] = useState(false);
+  const [playerLives, setPlayerLives] = useState(3);
+  const [respawnTimer, setRespawnTimer] = useState(5);
+  const [bossAttacks, setBossAttacks] = useState<BossAttack[]>([]);
+  const [showResultPopup, setShowResultPopup] = useState(false);
+  const [battleResult, setBattleResult] = useState<'victory' | 'defeat'>('victory');
+  
   const countdownAnim = useRef(new Animated.Value(1)).current;
   const screenAnim = useRef(new Animated.Value(0)).current;
+  const respawnAnim = useRef(new Animated.Value(1)).current;
 
   const SCREEN_WIDTH = Dimensions.get('window').width;
   const SCREEN_HEIGHT = Dimensions.get('window').height;
