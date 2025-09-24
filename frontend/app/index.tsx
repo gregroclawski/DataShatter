@@ -200,52 +200,37 @@ export default function NinjaIdleGame() {
           {console.log(`🔍 Combat state has ${combatState.enemies?.length || 0} enemies`) || null}
           {combatState.enemies && combatState.enemies.length > 0 ? (
             combatState.enemies.map((enemy, index) => {
-            {console.log(`👹 Rendering enemy ${index + 1}: pos(${enemy.position.x}, ${enemy.position.y}) health:${enemy.health}`) || null}
-            return (
-            <View
-              key={enemy.id}
-              style={[
-                styles.enemy,
-                {
-                  left: enemy.position.x,
-                  top: enemy.position.y,
-                },
-              ]}
-            >
-              <Ionicons name="skull" size={24} color="#ef4444" />
-              
-              {/* Enemy Health Bar */}
-              <View style={styles.enemyHealthBarContainer}>
-                <View style={styles.enemyHealthBarBackground}>
-                  <View 
-                    style={[
-                      styles.enemyHealthBar, 
-                      { width: `${(enemy.health / enemy.maxHealth) * 100}%` }
-                    ]} 
-                  />
+              console.log(`👹 Rendering enemy ${index + 1}: pos(${enemy.position.x}, ${enemy.position.y}) health:${enemy.health}`);
+              return (
+                <View
+                  key={enemy.id}
+                  style={[
+                    styles.enemy,
+                    {
+                      left: enemy.position.x,
+                      top: enemy.position.y,
+                    },
+                  ]}
+                >
+                  <Ionicons name="skull" size={24} color="#ef4444" />
+                  
+                  {/* Enemy Health Bar */}
+                  <View style={styles.enemyHealthBarContainer}>
+                    <View style={styles.enemyHealthBarBackground}>
+                      <View 
+                        style={[
+                          styles.enemyHealthBar, 
+                          { width: `${(enemy.health / enemy.maxHealth) * 100}%` }
+                        ]} 
+                      />
+                    </View>
+                  </View>
                 </View>
-              </View>
-            </View>
-            );
-          })
+              );
+            })
           ) : (
             <Text style={{color: 'red', position: 'absolute', top: 50, left: 50}}>No enemies in array</Text>
           )}
-              <Ionicons name="skull" size={24} color="#ef4444" />
-              
-              {/* Enemy Health Bar */}
-              <View style={styles.enemyHealthBarContainer}>
-                <View style={styles.enemyHealthBarBackground}>
-                  <View 
-                    style={[
-                      styles.enemyHealthBar, 
-                      { width: `${(enemy.health / enemy.maxHealth) * 100}%` }
-                    ]} 
-                  />
-                </View>
-              </View>
-            </View>
-          ))}
         </View>
       </View>
 
