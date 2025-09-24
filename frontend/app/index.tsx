@@ -233,7 +233,7 @@ export default function NinjaIdleGame() {
     { id: 'pets', name: 'Pets', icon: 'heart' },
     { id: 'skills', name: 'Skills', icon: 'barbell' },
     { id: 'store', name: 'Store', icon: 'storefront' },
-    { id: 'raids', name: 'Raids', icon: 'nuclear' },
+    { id: 'zones', name: 'Zones', icon: 'map' },
   ];
 
   // Show loading if ninja data isn't available
