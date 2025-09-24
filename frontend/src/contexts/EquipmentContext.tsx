@@ -56,6 +56,8 @@ export const useEquipment = () => {
 };
 
 export const EquipmentProvider = ({ children }: { children: ReactNode }) => {
+  const { updateNinja } = useGame();
+  const { hasMaterials, removeMaterial } = useMaterials();
   // Initialize empty equipment state
   const [inventory, setInventory] = useState<EquipmentInventory>({
     equipped: {
