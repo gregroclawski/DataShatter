@@ -233,7 +233,7 @@ export default function NinjaIdleGame() {
   };
 
   // Combat system
-  const attackNearbyEnemies = () => {
+  const attackNearbyEnemies = useCallback(() => {
     const attackRange = 60;
     const ninjaAttack = ninja.attack + (gameState.shurikens.find(s => s.equipped)?.attack || 0);
     const currentNinjaX = ninjaAnimatedPosition.x._value + NINJA_SIZE / 2;
@@ -289,7 +289,7 @@ export default function NinjaIdleGame() {
         killCount: prev.killCount + killedCount,
       };
     });
-  };
+  }, [ninja.attack, ninja.gold, ninja.experience, gameState.shurikens, ninjaAnimatedPosition, updateNinja]);
 
   // Enemy AI
   const updateEnemyAI = () => {
