@@ -462,6 +462,11 @@ export default function NinjaIdleGame() {
         onClose={() => setActiveOverlay(null)} 
       />
 
+      <EquipmentOverlay 
+        visible={activeOverlay === 'equipment'} 
+        onClose={() => setActiveOverlay(null)} 
+      />
+
       {/* Ability Deck Overlay */}
       <AbilityDeckOverlay
         visible={showAbilityDeck}
