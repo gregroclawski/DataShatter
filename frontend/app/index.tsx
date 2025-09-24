@@ -91,10 +91,39 @@ export default function NinjaIdleGame() {
     }
   }, [totalKills, lastProcessedKill]);
 
-  // Create projectile when ability is cast
-  const createProjectile = useCallback((targetEnemy: any) => {
+  // Find closest enemy for projectile targeting
+  const findClosestEnemy = useCallback(() => {
+    if (!combatState.enemies || combatState.enemies.length === 0) return null;
+    
     const ninjaX = SCREEN_WIDTH / 2;
     const ninjaY = GAME_AREA_HEIGHT / 2;
+    
+    let closestEnemy = combatState.enemies[0];
+    let closestDistance = Infinity;
+    
+    combatState.enemies.forEach(enemy => {
+      const distance = Math.sqrt(
+        Math.pow(enemy.position.x - ninjaX, 2) + 
+        Math.pow(enemy.position.y - ninjaY, 2)
+      );
+      
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestEnemy = enemy;
+      }
+    });
+    
+    return closestEnemy;
+  }, [combatState.enemies]);
+
+  // Create projectile targeting closest enemy
+  const createProjectile = useCallback(() => {
+    const targetEnemy = findClosestEnemy();
+    if (!targetEnemy) return;
+    
+    const ninjaX = SCREEN_WIDTH / 2;
+    const ninjaY = GAME_AREA_HEIGHT / 2;
+    const ENEMY_SIZE = 35; // Define enemy size here
     
     const projectile = {
       id: `proj_${Date.now()}_${Math.random()}`,
@@ -106,7 +135,7 @@ export default function NinjaIdleGame() {
       duration: 500, // 500ms travel time
     };
     
-    console.log(`🔥 Creating projectile to enemy at (${targetEnemy.position.x}, ${targetEnemy.position.y})`);
+    console.log(`🔥 Creating projectile to closest enemy at (${targetEnemy.position.x}, ${targetEnemy.position.y}) distance: ${Math.sqrt(Math.pow(targetEnemy.position.x - ninjaX, 2) + Math.pow(targetEnemy.position.y - ninjaY, 2)).toFixed(0)}`);
     
     setProjectiles(prev => [...prev, projectile]);
     
@@ -114,7 +143,7 @@ export default function NinjaIdleGame() {
     setTimeout(() => {
       setProjectiles(prev => prev.filter(p => p.id !== projectile.id));
     }, 500);
-  }, []);
+  }, [findClosestEnemy]);
 
   // Listen for combat logs and count kills
   useEffect(() => {
