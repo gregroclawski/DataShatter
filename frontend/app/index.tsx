@@ -23,27 +23,6 @@ import AbilityDeckOverlay from '../src/components/AbilityDeckOverlay';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 250; // Leave space for bottom tabs
 const NINJA_SIZE = 40;
-const ENEMY_SIZE = 35;
-
-interface Enemy {
-  id: string;
-  x: number;
-  y: number;
-  health: number;
-  maxHealth: number;
-  type: 'goblin' | 'orc' | 'skeleton' | 'boss';
-  damage: number;
-  reward: { gold: number; exp: number };
-  speed: number;
-}
-
-interface GameState {
-  ninjaPosition: { x: number; y: number };
-  enemies: Enemy[];
-  isAutoFighting: boolean;
-  currentStage: number;
-  killCount: number;
-}
 
 type ActiveOverlay = 'stats' | 'abilities' | 'pets' | 'skills' | 'store' | 'raids' | null;
 
