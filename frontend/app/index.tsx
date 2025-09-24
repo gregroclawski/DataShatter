@@ -32,9 +32,18 @@ export default function NinjaIdleGame() {
   
   const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
   const [isLevelingUp, setIsLevelingUp] = useState(false);
-  const [previousLevel, setPreviousLevel] = useState(ninja.level);
+  const [previousLevel, setPreviousLevel] = useState(ninja?.level || 1);
 
   const insets = useSafeAreaInsets();
+
+  // Don't render if ninja data isn't loaded yet
+  if (!ninja) {
+    return (
+      <SafeAreaView style={[styles.container, styles.loadingContainer]}>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </SafeAreaView>
+    );
+  }
 
   // Level-up explosion attack
   const triggerLevelUpExplosion = useCallback(() => {
