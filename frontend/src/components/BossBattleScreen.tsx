@@ -390,15 +390,10 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
         ))}
       </View>
 
-      {/* Combat Arena - the actual combat UI will render here via the main game's combat system */}
+      {/* Combat Arena - Allow main game combat to show through */}
       <View style={styles.combatArena}>
-        <Text style={styles.arenaLabel}>⚔️ BOSS BATTLE IN PROGRESS ⚔️</Text>
-        <Text style={styles.arenaSubtext}>Use your abilities to defeat the boss!</Text>
-        {playerLives < 3 && (
-          <Text style={styles.livesWarning}>
-            ⚠️ Lives remaining: {playerLives}
-          </Text>
-        )}
+        {/* This will allow the main game's combat area to render here */}
+        <View style={styles.combatPassthrough} pointerEvents="none" />
       </View>
     </View>
   );
