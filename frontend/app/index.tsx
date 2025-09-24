@@ -554,6 +554,17 @@ export default function NinjaIdleGame() {
         visible={showAbilityDeck}
         onClose={() => setShowAbilityDeck(false)}
       />
+
+      {/* Boss Battle Screen - Renders at root level */}
+      {isBossBattleActive && currentBossBattle && (
+        <BossBattleScreen
+          visible={true}
+          boss={currentBossBattle.boss}
+          tier={currentBossBattle.tier}
+          onComplete={endBossBattle}
+          onEscape={escapeBossBattle}
+        />
+      )}
     </SafeAreaView>
   );
 }
