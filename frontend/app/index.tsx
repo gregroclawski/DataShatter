@@ -493,15 +493,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ffffff',
   },
-  enemyHealthBar: {
-    position: 'absolute',
-    bottom: -8,
-    left: 0,
-    right: 0,
-    height: 3,
-    backgroundColor: '#374151',
-    borderRadius: 2,
-  },
+  // Removed duplicate enemyHealthBar - using the new one below
   enemyHealthFill: {
     height: '100%',
     backgroundColor: '#ef4444',
