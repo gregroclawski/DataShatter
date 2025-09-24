@@ -17,7 +17,7 @@ import NinjaStatsOverlay from '../src/components/NinjaStatsOverlay';
 import PetsOverlay from '../src/components/PetsOverlay';
 import SkillsOverlay from '../src/components/SkillsOverlay';
 import StoreOverlay from '../src/components/StoreOverlay';
-import EnemiesZonesOverlay from '../src/components/EnemiesZonesOverlay';
+import { EnemiesZonesOverlay } from '../src/components/EnemiesZonesOverlay';
 import CombatUI from '../src/components/CombatUI';
 import AbilityDeckOverlay from '../src/components/AbilityDeckOverlay';
 
