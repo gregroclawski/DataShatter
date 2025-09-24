@@ -240,6 +240,21 @@ frontend:
         - working: true
           agent: "main"
           comment: "Fixed duplicate code structure causing compilation errors. Removed duplicate function declarations and return statements (lines 257-476). Game interface now renders properly with Level display, XP bar, combat status, ninja character, enemies, and navigation tabs."
+  
+  - task: "Overlay Z-Index Dock-Style Navigation Fix"
+    implemented: false
+    working: false
+    file: "/app/frontend/app/index.tsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User reported overlays covering bottom navigation tabs, preventing dock-style behavior where users can tap the same tab again to close the overlay"
+        - working: false
+          agent: "main"
+          comment: "Identified z-index issue: EquipmentOverlay (z-index: 500), EnemiesZonesOverlay (Modal with high z-index), bottom navigation tabs (z-index: 0). Need to fix z-index hierarchy so tabs can be tapped while overlays are open."
 
 metadata:
   created_by: "testing_agent"
