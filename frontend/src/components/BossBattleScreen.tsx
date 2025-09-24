@@ -698,13 +698,20 @@ const styles = StyleSheet.create({
   // Combat styles
   combatContainer: {
     flex: 1,
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    pointerEvents: 'box-none',
   },
   battleHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    pointerEvents: 'auto',
   },
   battleTitle: {
     fontSize: 24,
