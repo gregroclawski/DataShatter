@@ -13,7 +13,7 @@ interface BossOverlayProps {
   onStartBattle: (boss: Boss, tier: BossTier) => void;
 }
 
-export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose }) => {
+export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose, onStartBattle }) => {
   const { 
     getAvailableBosses,
     getBossProgress,
