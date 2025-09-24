@@ -164,27 +164,111 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
     // Spawn the boss using combat context
     spawnBoss(bossEnemy);
     
+    // Start boss attack patterns
+    startBossAttackPattern();
+    
     console.log(`🐉 Boss spawned: ${tier.name} (${tier.stats.hp} HP, ${tier.stats.attack} ATK)`);
   };
 
-  const handleBossDefeat = () => {
-    setBattlePhase('victory');
+  const handleBossDefeated = () => {
+    setBattleResult('victory');
+    setShowResultPopup(true);
+    clearAllEnemies();
     console.log('🏆 Boss defeated!');
-    
-    // Delay before completing battle
-    setTimeout(() => {
-      onComplete(true);
-    }, 2000);
   };
 
-  const handlePlayerDefeat = () => {
-    setBattlePhase('defeat');
-    console.log('💀 Player defeated by boss!');
+  const handlePlayerDeath = () => {
+    setPlayerLives(prev => {
+      const newLives = prev - 1;
+      if (newLives <= 0) {
+        // Game over - player lost all lives
+        setBattleResult('defeat');
+        setShowResultPopup(true);
+        clearAllEnemies();
+        console.log('💀 Player defeated by boss - all lives lost!');
+        return 0;
+      } else {
+        // Player still has lives - start respawn timer
+        setBattlePhase('respawning');
+        setRespawnTimer(5);
+        startRespawnCountdown();
+        console.log(`💀 Player died! ${newLives} lives remaining`);
+        return newLives;
+      }
+    });
+  };
+
+  const startRespawnCountdown = () => {
+    const timer = setInterval(() => {
+      setRespawnTimer(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          respawnPlayer();
+          return 0;
+        }
+        
+        // Respawn animation
+        Animated.sequence([
+          Animated.timing(respawnAnim, {
+            toValue: 1.5,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+          Animated.timing(respawnAnim, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+        ]).start();
+        
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const respawnPlayer = () => {
+    // Restore player health and return to combat
+    updateNinja(prev => ({
+      health: prev.maxHealth || 100
+    }));
+    setBattlePhase('combat');
+    setRespawnTimer(5);
+  };
+
+  const startBossAttackPattern = () => {
+    // Create periodic boss attacks with element-specific visuals
+    const attackInterval = setInterval(() => {
+      if (battlePhase === 'combat' && bossSpawned && !showResultPopup) {
+        triggerBossAttack();
+      } else {
+        clearInterval(attackInterval);
+      }
+    }, 3000); // Boss attacks every 3 seconds
+  };
+
+  const triggerBossAttack = () => {
+    const attackId = Date.now().toString();
+    const abilities = tier.stats.abilities;
+    const randomAbility = abilities[Math.floor(Math.random() * abilities.length)];
     
-    // Delay before completing battle  
+    const newAttack: BossAttack = {
+      id: attackId,
+      type: randomAbility,
+      element: boss.element.toLowerCase(),
+      position: {
+        x: Math.random() * SCREEN_WIDTH,
+        y: Math.random() * (GAME_AREA_HEIGHT * 0.6) + (GAME_AREA_HEIGHT * 0.2)
+      },
+      startTime: Date.now(),
+      duration: 2000 // Attack animation lasts 2 seconds
+    };
+
+    setBossAttacks(prev => [...prev, newAttack]);
+
+    // Remove attack after duration
     setTimeout(() => {
-      onComplete(false);
-    }, 2000);
+      setBossAttacks(prev => prev.filter(attack => attack.id !== attackId));
+    }, newAttack.duration);
   };
 
   const handleEscape = () => {
