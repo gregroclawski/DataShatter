@@ -69,20 +69,20 @@ export default function NinjaIdleGame() {
     }
   }, [ninja?.level, previousLevel, triggerLevelUpExplosion]);
 
-  // Simple XP system - set to correct values directly
+  // Award XP for kills (let level-up system handle resets)
   useEffect(() => {
-    // Set XP based on total kills (50 XP per kill)
-    const expectedXP = totalKills * 50;
-    const expectedGold = 100 + (totalKills * 10); // Starting gold 100 + 10 per kill
-    
-    if (ninja.experience !== expectedXP || ninja.gold !== expectedGold) {
-      console.log(`📊 Correcting XP: Setting to ${expectedXP} XP, ${expectedGold} gold (${totalKills} kills)`);
-      updateNinja({
-        experience: expectedXP,
-        gold: expectedGold,
-      });
+    if (totalKills > 0) {
+      const xpPerKill = 50;
+      const goldPerKill = 10;
+      
+      console.log(`📊 Awarding XP for kill ${totalKills}: +${xpPerKill} XP, +${goldPerKill} gold`);
+      
+      updateNinja((prev) => ({
+        experience: prev.experience + xpPerKill,
+        gold: prev.gold + goldPerKill,
+      }));
     }
-  }, [totalKills, ninja.experience, ninja.gold, updateNinja]);
+  }, [totalKills]);
 
   // Create projectile when ability is cast
   const createProjectile = useCallback((targetEnemy: any) => {
