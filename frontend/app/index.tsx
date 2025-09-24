@@ -52,20 +52,13 @@ interface GameState {
 type ActiveOverlay = 'stats' | 'shurikens' | 'pets' | 'skills' | 'store' | 'raids' | null;
 
 export default function NinjaIdleGame() {
-  const { gameState, updateNinja } = useGame();
-  const { ninja } = gameState;
+  const { gameState, ninja, updateNinja } = useGame();
+  const { combatState, startCombat, stopCombat } = useCombat();
   
-  const [localGameState, setLocalGameState] = useState<GameState>({
-    ninjaPosition: { x: SCREEN_WIDTH / 2, y: GAME_AREA_HEIGHT / 2 },
-    enemies: [],
-    isAutoFighting: true,
-    currentStage: 1,
-    killCount: 0,
-  });
-
   const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
   const [isLevelingUp, setIsLevelingUp] = useState(false);
   const [previousLevel, setPreviousLevel] = useState(ninja.level);
+  const [showAbilityDeck, setShowAbilityDeck] = useState(false);
 
   const ninjaAnimatedPosition = useRef(new Animated.ValueXY({
     x: SCREEN_WIDTH / 2 - NINJA_SIZE / 2,
