@@ -107,11 +107,11 @@ export default function GameScreen() {
 
   // Auto-spawn enemies to maintain target count
   const autoSpawnEnemies = () => {
-    const targetEnemyCount = 20;
+    const targetEnemyCount = 10; // Reduced from 20 to 10
     const currentCount = localGameState.enemies.length;
     
     if (currentCount < targetEnemyCount) {
-      const enemiesToSpawn = Math.min(5, targetEnemyCount - currentCount); // Spawn up to 5 at once
+      const enemiesToSpawn = Math.min(3, targetEnemyCount - currentCount); // Spawn up to 3 at once
       for (let i = 0; i < enemiesToSpawn; i++) {
         setTimeout(() => spawnEnemy(), i * 100); // Stagger spawning slightly
       }
