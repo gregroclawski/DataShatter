@@ -706,6 +706,17 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   // Combat styles
+  topUIBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    padding: 16,
+    paddingTop: 50, // Account for status bar
+    zIndex: 10,
+    pointerEvents: 'auto',
+  },
   combatContainer: {
     flex: 1,
     paddingHorizontal: 16,
@@ -716,12 +727,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    pointerEvents: 'auto',
+    marginBottom: 12,
   },
   battleTitle: {
     fontSize: 24,
