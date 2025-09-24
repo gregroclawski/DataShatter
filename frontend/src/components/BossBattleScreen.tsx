@@ -501,36 +501,41 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
   }
 
   return (
-    <Animated.View 
-      style={[
-        styles.container,
-        {
-          opacity: screenAnim,
-          transform: [
-            {
-              scale: screenAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0.9, 1],
-              })
-            }
-          ]
-        }
-      ]}
-    >
-      {/* Boss Battle Background */}
-      <View style={[styles.background, { backgroundColor: getBossThemeColor(boss.element) }]}>
-        <Text style={styles.backgroundPattern}>{getBossPattern(boss.element)}</Text>
-      </View>
+    <>
+      <Animated.View 
+        style={[
+          styles.container,
+          {
+            opacity: screenAnim,
+            transform: [
+              {
+                scale: screenAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.9, 1],
+                })
+              }
+            ]
+          }
+        ]}
+      >
+        {/* Boss Battle Background */}
+        <View style={[styles.background, { backgroundColor: getBossThemeColor(boss.element) }]}>
+          <Text style={styles.backgroundPattern}>{getBossPattern(boss.element)}</Text>
+        </View>
 
-      {/* Battle UI */}
-      {battlePhase === 'countdown' && renderCountdown()}
-      {battlePhase === 'combat' && renderCombat()}
-      {(battlePhase === 'victory' || battlePhase === 'defeat') && renderResult()}
-    </Animated.View>
+        {/* Battle UI */}
+        {battlePhase === 'countdown' && renderCountdown()}
+        {battlePhase === 'combat' && renderCombat()}
+        {battlePhase === 'respawning' && renderRespawning()}
+      </Animated.View>
+      
+      {/* Result Popup */}
+      {renderResultPopup()}
+    </>
   );
 };
 
-// Helper functions for boss theming
+// Helper functions for boss theming and attacks
 const getBossThemeColor = (element: string): string => {
   switch (element.toLowerCase()) {
     case 'fire': return '#dc2626';
@@ -548,6 +553,44 @@ const getBossPattern = (element: string): string => {
     case 'shadow': return '🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑';
     case 'earth': return '⛰️⛰️⛰️⛰️⛰️⛰️⛰️⛰️⛰️⛰️';
     default: return '⚔️⚔️⚔️⚔️⚔️⚔️⚔️⚔️⚔️⚔️';
+  }
+};
+
+const getAttackColor = (element: string): string => {
+  switch (element.toLowerCase()) {
+    case 'fire': return 'rgba(239, 68, 68, 0.8)';
+    case 'ice': return 'rgba(59, 130, 246, 0.8)';
+    case 'shadow': return 'rgba(55, 65, 81, 0.8)';
+    case 'earth': return 'rgba(101, 163, 13, 0.8)';
+    default: return 'rgba(107, 114, 128, 0.8)';
+  }
+};
+
+const getAttackEmoji = (attackType: string, element: string): string => {
+  const elementEmoji = {
+    fire: '🔥',
+    ice: '❄️',
+    shadow: '🌑',
+    earth: '🪨'
+  };
+  
+  const base = elementEmoji[element.toLowerCase() as keyof typeof elementEmoji] || '💥';
+  
+  switch (attackType.toLowerCase()) {
+    case 'fire breath':
+    case 'flame strike':
+      return '🔥💨';
+    case 'ice shard':
+    case 'freeze':
+      return '❄️🧊';
+    case 'shadow strike':
+    case 'stealth':
+      return '🌑⚡';
+    case 'rock throw':
+    case 'earthquake':
+      return '🪨💥';
+    default:
+      return `${base}⚡`;
   }
 };
 
