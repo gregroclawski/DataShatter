@@ -227,7 +227,10 @@ export default function NinjaIdleGame() {
               </View>
             </View>
             );
-          })}
+          })
+          ) : (
+            <Text style={{color: 'red', position: 'absolute', top: 50, left: 50}}>No enemies in array</Text>
+          )}
               <Ionicons name="skull" size={24} color="#ef4444" />
               
               {/* Enemy Health Bar */}
