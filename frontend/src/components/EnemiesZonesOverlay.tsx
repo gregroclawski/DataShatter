@@ -207,11 +207,12 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 80, // Stop 80px from bottom to leave space for tabs
+    bottom: 0, // Fill the container
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 500, // Lower z-index so tabs can appear on top
+    paddingBottom: 80, // Push content up to leave space for tabs
     pointerEvents: 'none', // Allow clicks to pass through the overlay background
   },
   container: {
