@@ -150,6 +150,15 @@ export const BossProvider = ({ children }: { children: ReactNode }) => {
       };
     }
 
+    // Check if ninja data is available (additional safety check)
+    if (!ninja) {
+      return {
+        victory: false,
+        rewards: { gold: 0, experience: 0, materials: {} as Record<UpgradeMaterial, number> },
+        message: 'Player data not available!'
+      };
+    }
+
     // Consume ticket
     setDailyBossState(prev => ({
       ...prev,
@@ -161,7 +170,7 @@ export const BossProvider = ({ children }: { children: ReactNode }) => {
     
     // Simplified battle simulation - victory based on player level vs boss requirements
     // In a full implementation, this would be a complex combat calculation
-    const playerPower = ninja.level * 100 + ninja.attack + ninja.defense;
+    const playerPower = ninja.level * 100 + (ninja.attack || 0) + (ninja.defense || 0);
     const bossPower = bossTier.stats.hp + bossTier.stats.attack + bossTier.stats.defense;
     const victoryChance = Math.min(0.9, Math.max(0.1, playerPower / (bossPower + playerPower)));
     const victory = Math.random() < victoryChance;
