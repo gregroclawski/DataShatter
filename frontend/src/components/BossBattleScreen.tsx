@@ -323,55 +323,58 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
   );
 
   const renderCombat = () => (
-    <View style={[styles.combatContainer, { pointerEvents: 'box-none' }]}>
-      <View style={styles.battleHeader}>
-        <Text style={styles.battleTitle}>⚔️ {tier.name}</Text>
-        <TouchableOpacity onPress={handleEscape} style={styles.escapeButton}>
-          <Ionicons name="exit-outline" size={20} color="#ef4444" />
-          <Text style={styles.escapeText}>Escape</Text>
-        </TouchableOpacity>
-      </View>
+    <>
+      {/* Top UI Bar */}
+      <View style={styles.topUIBar}>
+        <View style={styles.battleHeader}>
+          <Text style={styles.battleTitle}>⚔️ {tier.name}</Text>
+          <TouchableOpacity onPress={handleEscape} style={styles.escapeButton}>
+            <Ionicons name="exit-outline" size={20} color="#ef4444" />
+            <Text style={styles.escapeText}>Escape</Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* Player Lives Display */}
-      <View style={styles.livesContainer}>
-        <Text style={styles.livesLabel}>Lives:</Text>
-        {[1, 2, 3].map(life => (
-          <Ionicons 
-            key={life}
-            name={life <= playerLives ? "heart" : "heart-outline"}
-            size={24}
-            color={life <= playerLives ? "#ef4444" : "#6b7280"}
-          />
-        ))}
-      </View>
-
-      {/* Boss Health Bar */}
-      {combatState.enemies.length > 0 && (
-        <View style={styles.bossHealthContainer}>
-          {combatState.enemies.filter(enemy => enemy.isBoss).map(bossEnemy => (
-            <View key={bossEnemy.id} style={styles.bossHealthBar}>
-              <Text style={styles.bossHealthLabel}>{bossEnemy.name}</Text>
-              <View style={styles.healthBarContainer}>
-                <View 
-                  style={[
-                    styles.healthBarFill, 
-                    { 
-                      width: `${(bossEnemy.health / bossEnemy.maxHealth) * 100}%`,
-                      backgroundColor: bossEnemy.health > bossEnemy.maxHealth * 0.5 ? '#10b981' :
-                                     bossEnemy.health > bossEnemy.maxHealth * 0.2 ? '#f59e0b' : '#ef4444'
-                    }
-                  ]} 
-                />
-              </View>
-              <Text style={styles.bossHealthText}>
-                {bossEnemy.health.toLocaleString()}/{bossEnemy.maxHealth.toLocaleString()}
-              </Text>
-            </View>
+        {/* Player Lives Display */}
+        <View style={styles.livesContainer}>
+          <Text style={styles.livesLabel}>Lives:</Text>
+          {[1, 2, 3].map(life => (
+            <Ionicons 
+              key={life}
+              name={life <= playerLives ? "heart" : "heart-outline"}
+              size={24}
+              color={life <= playerLives ? "#ef4444" : "#6b7280"}
+            />
           ))}
         </View>
-      )}
 
-      {/* Boss Attacks Overlay */}
+        {/* Boss Health Bar */}
+        {combatState.enemies.length > 0 && (
+          <View style={styles.bossHealthContainer}>
+            {combatState.enemies.filter(enemy => enemy.isBoss).map(bossEnemy => (
+              <View key={bossEnemy.id} style={styles.bossHealthBar}>
+                <Text style={styles.bossHealthLabel}>{bossEnemy.name}</Text>
+                <View style={styles.healthBarContainer}>
+                  <View 
+                    style={[
+                      styles.healthBarFill, 
+                      { 
+                        width: `${(bossEnemy.health / bossEnemy.maxHealth) * 100}%`,
+                        backgroundColor: bossEnemy.health > bossEnemy.maxHealth * 0.5 ? '#10b981' :
+                                       bossEnemy.health > bossEnemy.maxHealth * 0.2 ? '#f59e0b' : '#ef4444'
+                      }
+                    ]} 
+                  />
+                </View>
+                <Text style={styles.bossHealthText}>
+                  {bossEnemy.health.toLocaleString()}/{bossEnemy.maxHealth.toLocaleString()}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+      </View>
+
+      {/* Boss Attacks Overlay - positioned absolutely to not interfere with combat */}
       <View style={styles.attacksContainer}>
         {bossAttacks.map(attack => (
           <Animated.View
@@ -380,7 +383,7 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
               styles.bossAttack,
               {
                 left: attack.position.x,
-                top: attack.position.y,
+                top: attack.position.y + 150, // Offset to account for top UI
                 backgroundColor: getAttackColor(attack.element),
               }
             ]}
@@ -389,7 +392,7 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
           </Animated.View>
         ))}
       </View>
-    </View>
+    </>
   );
 
   const renderRespawning = () => (
