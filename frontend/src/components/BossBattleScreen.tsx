@@ -389,12 +389,6 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
           </Animated.View>
         ))}
       </View>
-
-      {/* Combat Arena - Allow main game combat to show through */}
-      <View style={styles.combatArena}>
-        {/* This will allow the main game's combat area to render here */}
-        <View style={styles.combatPassthrough} pointerEvents="none" />
-      </View>
     </View>
   );
 
