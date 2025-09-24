@@ -52,10 +52,20 @@ export default function NinjaIdleGame() {
 
   const insets = useSafeAreaInsets();
 
-  // Level-up explosion attack - delegate to combat context
+  // Level-up explosion attack - delegate to combat context with cooldown
   const handleLevelUpExplosion = useCallback(() => {
+    const now = Date.now();
+    const EXPLOSION_COOLDOWN = 5000; // 5 seconds cooldown
+    
+    // Check if explosion is on cooldown
+    if (now - lastExplosionTime < EXPLOSION_COOLDOWN) {
+      console.log('💥 LEVEL UP EXPLOSION on cooldown, skipping...');
+      return;
+    }
+    
     console.log('💥 LEVEL UP EXPLOSION!');
     setIsLevelingUp(true);
+    setLastExplosionTime(now);
     
     // Delegate to combat context where we know the context works
     triggerLevelUpExplosion();
@@ -63,7 +73,7 @@ export default function NinjaIdleGame() {
     setTimeout(() => {
       setIsLevelingUp(false);
     }, 1000);
-  }, [triggerLevelUpExplosion]);
+  }, [triggerLevelUpExplosion, lastExplosionTime]);
 
   // Watch for level changes to trigger explosion
   useEffect(() => {
