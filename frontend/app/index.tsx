@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useGame } from '../src/contexts/GameContext';
+import { useCombat } from '../src/contexts/CombatContext';
 
 // Import components for overlays
 import NinjaStatsOverlay from '../src/components/NinjaStatsOverlay';
@@ -20,6 +21,8 @@ import ShurikensOverlay from '../src/components/ShurikensOverlay';
 import PetsOverlay from '../src/components/PetsOverlay';
 import SkillsOverlay from '../src/components/SkillsOverlay';
 import StoreOverlay from '../src/components/StoreOverlay';
+import CombatUI from '../src/components/CombatUI';
+import AbilityDeckOverlay from '../src/components/AbilityDeckOverlay';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 250; // Leave space for bottom tabs
