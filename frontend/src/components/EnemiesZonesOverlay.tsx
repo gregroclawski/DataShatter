@@ -162,40 +162,38 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
 
   return (
     visible ? (
-      <View style={styles.overlay}>
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.title}>
-              {selectedZone ? 'Zone Details' : 'Enemies & Zones'}
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>
+            {selectedZone ? 'Zone Details' : 'Enemies & Zones'}
+          </Text>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Ionicons name="close" size={24} color="#e5e7eb" />
+          </TouchableOpacity>
+        </View>
+        
+        {currentZone && (
+          <View style={styles.currentZoneInfo}>
+            <Text style={styles.currentZoneText}>
+              Currently in: {currentZone.name} - Level {currentZoneLevel?.level}
             </Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color="#e5e7eb" />
-            </TouchableOpacity>
+            <View style={styles.currentProgress}>
+              {getZoneProgress(currentZone.id) && (
+                <Text style={styles.progressText}>
+                  {getZoneProgress(currentZone.id)!.killsInLevel}/1000 kills
+                </Text>
+              )}
+            </View>
           </View>
-          
-          {currentZone && (
-            <View style={styles.currentZoneInfo}>
-              <Text style={styles.currentZoneText}>
-                Currently in: {currentZone.name} - Level {currentZoneLevel?.level}
-              </Text>
-              <View style={styles.currentProgress}>
-                {getZoneProgress(currentZone.id) && (
-                  <Text style={styles.progressText}>
-                    {getZoneProgress(currentZone.id)!.killsInLevel}/1000 kills
-                  </Text>
-                )}
-              </View>
+        )}
+        
+        <ScrollView style={styles.content}>
+          {selectedZone ? renderZoneDetails(selectedZone) : (
+            <View style={styles.zonesList}>
+              {availableZones.slice(0, 10).map(renderZoneCard)} {/* Show first 10 zones for now */}
             </View>
           )}
-          
-          <ScrollView style={styles.content}>
-            {selectedZone ? renderZoneDetails(selectedZone) : (
-              <View style={styles.zonesList}>
-                {availableZones.slice(0, 10).map(renderZoneCard)} {/* Show first 10 zones for now */}
-              </View>
-            )}
-          </ScrollView>
-        </View>
+        </ScrollView>
       </View>
     ) : null
   );
