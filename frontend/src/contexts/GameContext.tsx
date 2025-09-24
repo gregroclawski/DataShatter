@@ -172,6 +172,7 @@ export const useGame = () => {
 
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [gameState, setGameState] = useState<GameState>(defaultGameState);
+  const lastSaveTimeRef = useRef<number>(Date.now());
 
   useEffect(() => {
     loadGame();
