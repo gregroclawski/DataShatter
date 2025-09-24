@@ -31,6 +31,9 @@ export default function NinjaIdleGame() {
   const { gameState, updateNinja } = useGame();
   const { combatState, startCombat, stopCombat, clearAllEnemies } = useCombat();
   
+  // Debug: Check if clearAllEnemies function exists
+  console.log('🔧 clearAllEnemies function available:', typeof clearAllEnemies);
+  
   const ninja = gameState?.ninja;
   
   const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
