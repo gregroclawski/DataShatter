@@ -7,6 +7,7 @@ import { CombatProvider } from '../src/contexts/CombatContext';
 import { ZoneProvider } from '../src/contexts/ZoneContext';
 import { EquipmentProvider } from '../src/contexts/EquipmentContext';
 import { MaterialsProvider } from '../src/contexts/MaterialsContext';
+import { BossProvider } from '../src/contexts/BossContext';
 
 export default function RootLayout() {
   return (
