@@ -243,19 +243,27 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0, // Fill the container
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'flex-end',
+    bottom: 0,
     zIndex: 500, // Lower z-index so tabs can appear on top
-    paddingBottom: 80, // Push content up to leave space for tabs
-    pointerEvents: 'none', // Allow clicks to pass through the overlay background
+    justifyContent: 'flex-end',
+    pointerEvents: 'none', // Allow clicks to pass through the overlay
+  },
+  overlayBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 80, // Stop at 80px from bottom, leaving space for tabs
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    pointerEvents: 'none', // Allow clicks to pass through
   },
   container: {
     backgroundColor: '#1f2937',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
-    maxHeight: '90%', // Use available height
+    marginBottom: 80, // Leave space for bottom tabs
+    maxHeight: '85%', // Limit height
     pointerEvents: 'auto', // Allow clicks on the overlay content
   },
   header: {
