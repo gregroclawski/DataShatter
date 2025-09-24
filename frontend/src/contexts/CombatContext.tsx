@@ -43,6 +43,8 @@ export const useCombat = (): CombatContextType => {
 };
 
 export const CombatProvider = ({ children }: { children: ReactNode }) => {
+  const { gameState, updateNinja } = useGame();
+  
   const [combatState, setCombatState] = useState<CombatState>({
     isInCombat: false,
     currentTick: 0,
@@ -59,6 +61,21 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       cooldownReduction: 0,
     },
   });
+
+  // Function to handle enemy kills and reward XP
+  const handleEnemyKill = (enemy: CombatEnemy) => {
+    // Calculate XP reward based on enemy max health
+    const baseXP = Math.floor(enemy.maxHealth * 0.5); // 0.5 XP per HP
+    const goldReward = Math.floor(enemy.maxHealth * 0.1); // 0.1 gold per HP
+    
+    console.log(`🎯 Enemy killed! Rewarding ${baseXP} XP and ${goldReward} gold`);
+    
+    // Update ninja with rewards
+    updateNinja({
+      experience: gameState.ninja.experience + baseXP,
+      gold: gameState.ninja.gold + goldReward,
+    });
+  };
 
   // Combat tick handler
   const handleCombatTick = () => {
