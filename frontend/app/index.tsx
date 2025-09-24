@@ -239,13 +239,13 @@ export default function NinjaIdleGame() {
 
         {/* Battle Arena */}
         <View style={styles.battleArena}>
-          {/* Ninja Character - Fixed position for new system */}
+          {/* Ninja Character - Auto-movement system */}
           <View
             style={[
               styles.ninja,
               {
-                left: SCREEN_WIDTH / 2 - NINJA_SIZE / 2,
-                top: GAME_AREA_HEIGHT / 2 - NINJA_SIZE / 2,
+                left: ninjaPosition.x,
+                top: ninjaPosition.y,
               },
               isLevelingUp && styles.ninjaLevelingUp,
             ]}
