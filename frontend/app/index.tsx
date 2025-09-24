@@ -30,7 +30,10 @@ export default function NinjaIdleGame() {
   const { gameState, updateNinja } = useGame();
   const { combatState, startCombat, stopCombat } = useCombat();
   
-  const ninja = gameState.ninja; // Extract ninja from gameState
+  console.log('🐛 Debug - gameState:', gameState);
+  console.log('🐛 Debug - gameState.ninja:', gameState?.ninja);
+  
+  const ninja = gameState?.ninja; // Extract ninja from gameState with null safety
   
   const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
   const [isLevelingUp, setIsLevelingUp] = useState(false);
@@ -47,6 +50,7 @@ export default function NinjaIdleGame() {
 
   // Don't render if ninja data isn't loaded yet
   if (!ninja) {
+    console.log('🐛 Debug - Ninja is undefined, showing loading screen');
     return (
       <SafeAreaView style={[styles.container, styles.loadingContainer]}>
         <Text style={styles.loadingText}>Loading...</Text>
