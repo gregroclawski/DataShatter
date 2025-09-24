@@ -64,6 +64,8 @@ export default function NinjaIdleGame() {
   useEffect(() => {
     const currentEnemyCount = combatState.enemies.length;
     
+    console.log(`🔍 Enemy Count Check: Previous: ${previousEnemyCount}, Current: ${currentEnemyCount}`);
+    
     // If enemy count decreased, award XP for killed enemies
     if (previousEnemyCount > currentEnemyCount) {
       const enemiesKilled = previousEnemyCount - currentEnemyCount;
