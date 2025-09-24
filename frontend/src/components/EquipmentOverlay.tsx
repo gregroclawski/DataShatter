@@ -240,17 +240,21 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
 
 const styles = StyleSheet.create({
   overlay: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 80, // Stop 80px from bottom to leave space for tabs
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'flex-end',
-    paddingBottom: 80, // Leave space for bottom tabs
   },
   container: {
     backgroundColor: '#1f2937',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
-    maxHeight: '85%', // Use maxHeight instead of fixed height
+    maxHeight: '90%', // Use available height
+    marginBottom: 20,
   },
   header: {
     flexDirection: 'row',
