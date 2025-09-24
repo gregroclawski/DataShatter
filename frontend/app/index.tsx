@@ -27,35 +27,47 @@ const ENEMY_SIZE = 35;
 type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'raids' | null;
 
 export default function NinjaIdleGame() {
-  console.log('🔴 Component is running!');
+  console.log('🔴 Component started!');
   
-  const { gameState, updateNinja } = useGame();
-  const { combatState, startCombat, stopCombat } = useCombat();
-  
-  console.log('🐛 Debug - gameState:', gameState);
-  console.log('🐛 Debug - gameState.ninja:', gameState?.ninja);
-  
-  const ninja = gameState?.ninja; // Extract ninja from gameState with null safety
-  
-  const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
-  const [isLevelingUp, setIsLevelingUp] = useState(false);
-  const [previousLevel, setPreviousLevel] = useState(1); // Default to 1
+  try {
+    console.log('🔴 About to call useGame...');
+    const { gameState, updateNinja } = useGame();
+    console.log('🔴 useGame successful, gameState:', gameState);
+    
+    console.log('🔴 About to call useCombat...');
+    const { combatState, startCombat, stopCombat } = useCombat();
+    console.log('🔴 useCombat successful');
+    
+    const ninja = gameState?.ninja;
+    console.log('🔴 Ninja extracted:', ninja);
+    
+    const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
+    const [isLevelingUp, setIsLevelingUp] = useState(false);
+    const [previousLevel, setPreviousLevel] = useState(1);
 
-  const insets = useSafeAreaInsets();
+    const insets = useSafeAreaInsets();
 
-  // Update previousLevel when ninja data loads
-  useEffect(() => {
-    if (ninja?.level && ninja.level !== previousLevel) {
-      setPreviousLevel(ninja.level);
+    if (!ninja) {
+      console.log('🔴 Showing loading screen');
+      return (
+        <SafeAreaView style={[styles.container, styles.loadingContainer]}>
+          <Text style={styles.loadingText}>Loading Game Data...</Text>
+        </SafeAreaView>
+      );
     }
-  }, [ninja?.level]);
-
-  // Don't render if ninja data isn't loaded yet
-  if (!ninja) {
-    console.log('🐛 Debug - Ninja is undefined, showing loading screen');
+    
+    console.log('🔴 Ninja loaded, rendering main game');
     return (
       <SafeAreaView style={[styles.container, styles.loadingContainer]}>
-        <Text style={styles.loadingText}>Loading...</Text>
+        <Text style={styles.loadingText}>Ninja Loaded! Level {ninja.level}</Text>
+      </SafeAreaView>
+    );
+    
+  } catch (error) {
+    console.error('🔴 Component error:', error);
+    return (
+      <SafeAreaView style={[styles.container, styles.loadingContainer]}>
+        <Text style={styles.loadingText}>Error: {String(error)}</Text>
       </SafeAreaView>
     );
   }
