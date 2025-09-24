@@ -10,8 +10,8 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <GameProvider>
-        <CombatProvider>
-          <ZoneProvider>
+        <ZoneProvider>
+          <CombatProvider>
             <StatusBar style="light" backgroundColor="#0f172a" />
           <Stack
           screenOptions={{
