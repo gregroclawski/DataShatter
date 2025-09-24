@@ -402,22 +402,6 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     console.log('💥 LEVEL UP EXPLOSION TRIGGERED IN COMBAT CONTEXT!');
     
     setCombatState(prev => {
-      // Record all enemy kills for zone progression before clearing them
-      prev.enemies.forEach(enemy => {
-        const zoneEnemy = {
-          id: enemy.id,
-          typeId: 'test_orc', // Default type for test enemies
-          name: enemy.name,
-          icon: '🧌', // Default icon for test enemies
-          hp: 0, // Dead enemy
-          maxHP: enemy.maxHealth,
-          attack: enemy.stats.attack,
-          xp: 10, // XP reward
-          position: enemy.position
-        };
-        recordEnemyKill(zoneEnemy);
-      });
-      
       // Calculate rewards for all current enemies
       const enemyCount = prev.enemies.length;
       const explosionXP = enemyCount * 10; // Fixed: Changed from 25 to 10 XP per enemy for consistency
