@@ -224,6 +224,22 @@ export default function NinjaIdleGame() {
                 </View>
               </View>
             </View>
+            );
+          })}
+              <Ionicons name="skull" size={24} color="#ef4444" />
+              
+              {/* Enemy Health Bar */}
+              <View style={styles.enemyHealthBarContainer}>
+                <View style={styles.enemyHealthBarBackground}>
+                  <View 
+                    style={[
+                      styles.enemyHealthBar, 
+                      { width: `${(enemy.health / enemy.maxHealth) * 100}%` }
+                    ]} 
+                  />
+                </View>
+              </View>
+            </View>
           ))}
         </View>
       </View>
