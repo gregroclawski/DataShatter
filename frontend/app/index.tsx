@@ -211,7 +211,7 @@ export default function NinjaIdleGame() {
   };
 
   // Auto-move to enemies
-  const autoMoveToEnemy = () => {
+  const autoMoveToEnemy = useCallback(() => {
     if (!localGameState.isAutoFighting || localGameState.enemies.length === 0) return;
 
     const currentNinjaX = ninjaAnimatedPosition.x._value + NINJA_SIZE / 2;
@@ -230,7 +230,7 @@ export default function NinjaIdleGame() {
     if (distance > 50) {
       moveNinja(targetX, targetY);
     }
-  };
+  }, [localGameState.isAutoFighting, localGameState.enemies, ninjaAnimatedPosition]);
 
   // Combat system
   const attackNearbyEnemies = useCallback(() => {
