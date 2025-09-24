@@ -93,36 +93,72 @@ export default function NinjaIdleGame() {
     }
   }, [totalKills, lastProcessedKill]);
 
-  // Auto-movement system
+  // Enhanced AI movement system - move toward enemies when not attacking
   useEffect(() => {
     const moveNinja = () => {
       const now = Date.now();
       const deltaTime = now - lastMovementTime;
       
-      if (deltaTime >= 100) { // Update every 100ms
+      if (deltaTime >= 200) { // Update every 200ms for slower, more deliberate movement
         setNinjaPosition(prevPos => {
-          const speed = 0.5; // pixels per ms
+          // Check if we have enemies to target
+          if (!combatState.enemies || combatState.enemies.length === 0) {
+            return prevPos; // Don't move if no enemies
+          }
+          
+          // Find closest enemy
+          let closestEnemy = null;
+          let closestDistance = Infinity;
+          
+          combatState.enemies.forEach(enemy => {
+            const distance = Math.sqrt(
+              Math.pow(enemy.position.x - (prevPos.x + NINJA_SIZE / 2), 2) + 
+              Math.pow(enemy.position.y - (prevPos.y + NINJA_SIZE / 2), 2)
+            );
+            
+            if (distance < closestDistance) {
+              closestDistance = distance;
+              closestEnemy = enemy;
+            }
+          });
+          
+          if (!closestEnemy) return prevPos;
+          
+          // Check if we're in attack range (stop moving when close enough)
+          const ATTACK_RANGE = 80; // Stop when within attack range
+          if (closestDistance <= ATTACK_RANGE) {
+            return prevPos; // Stop moving when in attack range
+          }
+          
+          // Calculate direction toward closest enemy
+          const targetX = closestEnemy.position.x + ENEMY_SIZE / 2 - NINJA_SIZE / 2;
+          const targetY = closestEnemy.position.y + ENEMY_SIZE / 2 - NINJA_SIZE / 2;
+          
+          const dirX = targetX - prevPos.x;
+          const dirY = targetY - prevPos.y;
+          const distance = Math.sqrt(dirX * dirX + dirY * dirY);
+          
+          if (distance === 0) return prevPos;
+          
+          // Normalize direction and apply speed
+          const normalizedDirX = dirX / distance;
+          const normalizedDirY = dirY / distance;
+          
+          const speed = 0.15; // Much slower, more deliberate movement (pixels per ms)
           const moveDistance = speed * deltaTime;
           
-          let newX = prevPos.x + movementDirection.x * moveDistance;
-          let newY = prevPos.y + movementDirection.y * moveDistance;
-          let newDirection = { ...movementDirection };
+          let newX = prevPos.x + normalizedDirX * moveDistance;
+          let newY = prevPos.y + normalizedDirY * moveDistance;
           
-          // Bounce off walls
+          // Keep ninja within bounds
           const maxX = SCREEN_WIDTH - NINJA_SIZE;
           const maxY = GAME_AREA_HEIGHT - NINJA_SIZE;
           
-          if (newX <= 0 || newX >= maxX) {
-            newDirection.x = -newDirection.x;
-            newX = Math.max(0, Math.min(newX, maxX));
-          }
+          newX = Math.max(0, Math.min(newX, maxX));
+          newY = Math.max(0, Math.min(newY, maxY));
           
-          if (newY <= 0 || newY >= maxY) {
-            newDirection.y = -newDirection.y;
-            newY = Math.max(0, Math.min(newY, maxY));
-          }
+          console.log(`🏃 Ninja moving toward enemy at distance ${closestDistance.toFixed(0)}, new pos: (${newX.toFixed(0)}, ${newY.toFixed(0)})`);
           
-          setMovementDirection(newDirection);
           return { x: newX, y: newY };
         });
         
@@ -130,9 +166,9 @@ export default function NinjaIdleGame() {
       }
     };
 
-    const movementInterval = setInterval(moveNinja, 16); // ~60 FPS
+    const movementInterval = setInterval(moveNinja, 50); // ~20 FPS for movement updates
     return () => clearInterval(movementInterval);
-  }, [lastMovementTime, movementDirection]);
+  }, [lastMovementTime, combatState.enemies]);
 
   // Listen for combat logs and count kills
 
