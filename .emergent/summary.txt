@@ -1,0 +1,96 @@
+<analysis>
+The AI engineer's trajectory shows an iterative development process for an Expo mobile idle RPG. Initial phases focused on core combat, XP, enemy spawning, and a 50-zone progression system. A major focus was resolving a complex UI/UX bug where overlays covered bottom navigation tabs, blocking interaction. This required multiple attempts involving , , , and finally a unified non-Modal approach. Subsequently, the engineer implemented an XP rate change, default shuriken equipment on the ability bar (including Shadow Clone), and developed a comprehensive equipment system (25 levels, material-based upgrades) and a boss battle system (4 bosses, 5 tiers, daily tickets, drops), including necessary context providers and UI components. The current immediate task is integrating a dedicated boss battle screen with countdown and zone transitions.
+</analysis>
+
+<product_requirements>
+The application is an idle RPG, Idle Ninja Online style, featuring an auto-fighting character against auto-spawning enemies in a battle arena. Key progression includes XP per kill (scaling up to level 15000), 3 stat points per level, and a level-up explosion clearing on-screen enemies. The UI/UX emphasizes a battle arena as the main screen, with bottom tabs for features like Stats, Abilities, Pets, Skills, Store, Raids, and Equipment, opening as overlay modals. A new tick-based combat engine underpins the game. Recent expansions require 50 zones, each with 5 levels and 1000 enemy defeats to unlock the next, featuring progressively difficult enemies and exponential scaling. The implemented features include a working 50-zone system, 25-level gear progression with material-based upgrades, and a Boss Battle System with 4 bosses across 5 tiers, daily tickets, and specific equipment/material drops. Upcoming features include Companions and Idle/Offline Progression. The current work is focused on enhancing boss battles.
+</product_requirements>
+
+<key_technical_concepts>
+-   **Expo & Expo Router**: Mobile app framework with file-based routing.
+-   **React Native**: Core UI components and styling.
+-   **Zustand**: State management (GameContext, CombatContext, ZoneContext, EquipmentContext, MaterialsContext, BossContext).
+-   **React Hooks**: , ,  for state/lifecycle.
+-   **UI Layering**: , ,  for overlay management.
+</key_technical_concepts>
+
+<code_architecture>
+The application uses an Expo frontend, FastAPI backend, and MongoDB database.
+
+**Directory Structure:**
+
+
+-   : The main game screen and entry point.
+    -   **Importance**: Renders the game world, handles active overlays, and displays bottom navigation.
+    -   **Changes**: Refactored overlay rendering (from  to  with  style), updated  array to include 'bosses', removed debug text, configured  and  for  and .
+-   : Wraps all routes, providing global contexts.
+    -   **Importance**: Manages the application's global state providers.
+    -   **Changes**: Reordered provider hierarchy:  ->  ->  ->  ->  ->  ->  -> . This ensures correct context availability for dependent providers.
+-   : Manages global game state.
+    -   **Importance**: Holds core player data (level, XP) and game-wide functions.
+    -   **Changes**: Updated adventure  to 20. Its  property was corrected to be accessed as  rather than a direct  property from .
+-   : Provides combat engine and state.
+    -   **Importance**: Manages enemy spawning, combat logic, XP distribution, and ability management.
+    -   **Changes**: Updated  and  to 20. Re-integrated  and  for correct zone progression. Added , , ,  functions for new boss battle mechanics.
+-   : Manages zone progression.
+    -   **Importance**: Tracks current zone, kill count, and unlocking next zone.
+-   : Manages player equipment.
+    -   **Importance**: Handles equipped gear, inventory, and the upgrade system.
+    -   **Changes**: Enhanced to support 25 upgrade levels. Integrated with  for upgrade costs via , and updated  logic.
+-    (CREATED): Manages upgrade materials.
+    -   **Importance**: Provides context for handling upgrade material inventory.
+-    (CREATED): Manages boss battles.
+    -   **Importance**: Handles boss fight logic, tickets, progression, and rewards.
+    -   **Changes**: Implemented ,  functions. Crucially, fixed access to player data from  by changing  to  and adding null/type checks.
+-   : UI for Enemies & Zones.
+    -   **Importance**: Displays zone progression and manages zones.
+    -   **Changes**: Modified extensively to work with the unified non-Modal overlay system (, , ).
+-   : UI for Equipment.
+    -   **Importance**: Displays equipped gear and inventory.
+    -   **Changes**: Similarly modified for the unified non-Modal overlay system. Updated to display material-based upgrade options.
+-    (CREATED): UI for Boss Battles.
+    -   **Importance**: Displays available bosses and initiates battles.
+    -   **Changes**: Integrated . Fixed issues with  access and added loading states to prevent premature rendering and resolve stuck on loading issues.
+-    (CREATED): Dedicated screen for boss fights.
+    -   **Importance**: Will display a countdown and the boss combat interface.
+-   : Defines zone data.
+    -   **Importance**: Stores information about different zones and their enemies.
+    -   **Changes**: Updated  for 'forest_goblin' to 20.
+-   : Defines equipment data.
+    -   **Importance**: Stores information about gear types, stats, rarities, and upgrade logic.
+    -   **Changes**: Added  interface and  function to support the new upgrade system.
+-    (CREATED): Defines boss data.
+    -   **Importance**: Stores details about each boss, tiers, and associated rewards.
+-   : Core tick-based combat logic.
+    -   **Importance**: Manages combat mechanics and enemy attributes.
+    -   **Changes**: Added  and  properties to the  interface to support boss-specific combat.
+-   : Defines ability types.
+    -   **Importance**: Stores definitions for all abilities.
+    -   **Changes**: Added , ,  abilities.  was updated to equip these and  by default.
+-   : Displays adventure content.
+    -   **Importance**: Manages adventure-related UI and logic.
+    -   **Changes**: Updated an adventure  to 20.
+</code_architecture>
+
+<pending_tasks>
+-   **Backend Persistence**: Implement backend persistence for all new systems (Zones, Equipment, Bosses, Companions).
+-   **Boss Battle UI/Logic**: Complete the integration of the  to launch battles, implement the 10-second countdown, enhanced boss attacks, and zone transitions.
+-   **Companions**: Implement battle and support pets with leveling and abilities.
+-   **Idle/Offline Progression**: Simulate combat mathematically while offline for accumulated rewards.
+</pending_tasks>
+
+<current_work>
+Immediately before this summary request, the AI engineer was implementing a dedicated **Boss Battle Screen** and integrating it into the existing Boss Battle System. The user requested that clicking Fight Boss should lead to a unique map or zone with a visible 10-second countdown before the boss spawns. This boss should be stronger and use more powerful attacks. After the boss is killed, the player should be returned to their previously active zone.
+
+The AI engineer has:
+1.  **Created**  to serve as the dedicated UI for boss fights.
+2.  **Modified**  by adding , , , and  functions, and made them available through the .
+3.  **Updated**  to include  and  properties in the  interface, preparing the combat engine for boss-specific logic.
+4.  **Updated**  to conditionally render the  when a boss battle is active.
+
+The last message indicates that the AI is in the process of finalizing the integration of the  to properly launch battles and manage zone transitions, meaning the countdown and full transition logic are still being actively developed.
+</current_work>
+
+<optional_next_step>
+Finish integrating the  to include the 10-second countdown before boss spawn and handle zone transitions.
+</optional_next_step>
