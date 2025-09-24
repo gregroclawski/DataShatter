@@ -305,10 +305,71 @@ export const calculateTotalStats = (equippedGear: Record<EquipmentSlot, Equipmen
   return totalStats;
 };
 
-export const getUpgradeCost = (equipment: Equipment): number => {
+export const getUpgradeCost = (equipment: Equipment): { gold: number; materials: Record<UpgradeMaterial, number> } => {
+  const level = equipment.level;
+  const rarity = equipment.rarity;
+  
+  // Base gold cost scaling
   const baseCost = 100;
-  const rarityMultiplier = Object.values(EquipmentRarity).indexOf(equipment.rarity) + 1;
-  return baseCost * rarityMultiplier * Math.pow(2, equipment.level);
+  const rarityMultiplier = Object.values(EquipmentRarity).indexOf(rarity) + 1;
+  const goldCost = baseCost * rarityMultiplier * Math.pow(1.8, level);
+
+  // Material requirements based on level tiers
+  const materials: Record<UpgradeMaterial, number> = {
+    [UpgradeMaterial.FIRE_ESSENCE]: 0,
+    [UpgradeMaterial.ICE_CRYSTAL]: 0,
+    [UpgradeMaterial.SHADOW_ORB]: 0,
+    [UpgradeMaterial.EARTH_FRAGMENT]: 0,
+    [UpgradeMaterial.MYSTIC_DUST]: 0,
+  };
+
+  // Always require mystic dust
+  materials[UpgradeMaterial.MYSTIC_DUST] = Math.max(1, Math.floor(level / 3) + 1);
+
+  // Higher level requirements (levels 10-25)
+  if (level >= 10) {
+    // Determine material based on equipment source
+    const sourceMaterial = getSourceMaterial(equipment);
+    if (sourceMaterial) {
+      materials[sourceMaterial] = Math.floor((level - 10) / 2) + 1;
+    }
+  }
+
+  // Epic level requirements (levels 20-25)
+  if (level >= 20) {
+    materials[UpgradeMaterial.MYSTIC_DUST] += Math.floor((level - 20) / 2) + 2;
+    // Add second material requirement for top-tier upgrades
+    const secondaryMaterial = getSecondaryMaterial(equipment);
+    if (secondaryMaterial) {
+      materials[secondaryMaterial] = Math.floor((level - 20) / 3) + 1;
+    }
+  }
+
+  return {
+    gold: Math.floor(goldCost),
+    materials
+  };
+};
+
+// Helper function to get source material for equipment
+const getSourceMaterial = (equipment: Equipment): UpgradeMaterial | null => {
+  if (equipment.sourceName?.includes('Fire Dragon')) return UpgradeMaterial.FIRE_ESSENCE;
+  if (equipment.sourceName?.includes('Ice Queen')) return UpgradeMaterial.ICE_CRYSTAL;
+  if (equipment.sourceName?.includes('Shadow Lord')) return UpgradeMaterial.SHADOW_ORB;
+  if (equipment.sourceName?.includes('Earth Titan')) return UpgradeMaterial.EARTH_FRAGMENT;
+  return null;
+};
+
+// Helper function to get secondary material for high-level upgrades
+const getSecondaryMaterial = (equipment: Equipment): UpgradeMaterial | null => {
+  // Cross-boss materials for highest tier upgrades
+  switch (equipment.sourceName) {
+    case 'Fire Dragon': return UpgradeMaterial.ICE_CRYSTAL; // Fire needs ice balance
+    case 'Ice Queen': return UpgradeMaterial.FIRE_ESSENCE; // Ice needs fire balance
+    case 'Shadow Lord': return UpgradeMaterial.EARTH_FRAGMENT; // Shadow needs earth grounding
+    case 'Earth Titan': return UpgradeMaterial.SHADOW_ORB; // Earth needs shadow flexibility
+    default: return null;
+  }
 };
 
 export const canUpgradeEquipment = (equipment: Equipment): boolean => {
