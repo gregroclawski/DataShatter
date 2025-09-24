@@ -198,8 +198,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const growthRate = 1.05;
     const expRequired = Math.floor(baseExp * Math.pow(growthRate, level - 1));
     
-    console.log(`📊 calculateExpForLevel(${level}) = ${expRequired}`);
-    
     // Cap at reasonable maximum
     return Math.min(expRequired, 1000000);
   };
@@ -211,18 +209,11 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     let currentExp = ninja.experience;
     let currentExpToNext = ninja.experienceToNext;
     
-    console.log(`🔍 Level-up check: Level ${currentLevel}, Exp: ${currentExp}/${currentExpToNext}`);
-    
     // Check for multiple level ups
     while (currentExp >= currentExpToNext && currentLevel < 15000) {
-      console.log(`🚀 LEVELING UP! ${currentLevel} -> ${currentLevel + 1}`);
-      console.log(`🚀 Exp before: ${currentExp}, ExpToNext was: ${currentExpToNext}`);
-      
       currentLevel += 1;
       currentExp -= currentExpToNext;
-      currentExpToNext = calculateExpForLevel(currentLevel + 1); // Fix: Calculate exp for NEXT level
-      
-      console.log(`🚀 After level up: Level ${currentLevel}, Remaining exp: ${currentExp}, New ExpToNext: ${currentExpToNext}`);
+      currentExpToNext = calculateExpForLevel(currentLevel + 1); // Calculate exp for NEXT level
       
       // Add stat bonuses for each level
       updates = {
@@ -239,14 +230,11 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
 
     if (updates.level) {
-      console.log(`✅ Final level-up result: Level ${updates.level}, Skill Points: ${updates.skillPoints}`);
       // Heal to full when leveling up
       updates.health = updates.maxHealth;
       updates.energy = updates.maxEnergy;
       updates.experience = currentExp;
       updates.experienceToNext = currentExpToNext;
-    } else {
-      console.log(`❌ No level up occurred. Current: ${currentExp}/${currentExpToNext}`);
     }
 
     return updates;
