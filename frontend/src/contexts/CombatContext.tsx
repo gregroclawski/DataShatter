@@ -111,6 +111,12 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         }
       }
 
+      // Handle dead enemies and reward XP
+      const deadEnemies = newState.enemies.filter(enemy => enemy.health <= 0);
+      deadEnemies.forEach(enemy => {
+        handleEnemyKill(enemy);
+      });
+      
       // Remove dead enemies
       newState.enemies = newState.enemies.filter(enemy => enemy.health > 0);
 
