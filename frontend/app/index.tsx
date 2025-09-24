@@ -264,7 +264,7 @@ export default function NinjaIdleGame() {
         <View style={styles.overlayContainer}>
           <View style={styles.overlayContent}>
             {activeOverlay === 'stats' && <NinjaStatsOverlay onClose={() => setActiveOverlay(null)} />}
-            {activeOverlay === 'shurikens' && <ShurikensOverlay onClose={() => setActiveOverlay(null)} />}
+            {activeOverlay === 'abilities' && <AbilityDeckOverlay onClose={() => setActiveOverlay(null)} />}
             {activeOverlay === 'pets' && <PetsOverlay onClose={() => setActiveOverlay(null)} />}
             {activeOverlay === 'skills' && <SkillsOverlay onClose={() => setActiveOverlay(null)} />}
             {activeOverlay === 'store' && <StoreOverlay onClose={() => setActiveOverlay(null)} />}
