@@ -60,6 +60,35 @@ export default function NinjaIdleGame() {
     }
   }, [ninja?.level, previousLevel, triggerLevelUpExplosion]);
 
+  // Track enemy count and award XP when enemies die
+  useEffect(() => {
+    const currentEnemyCount = combatState.enemies.length;
+    
+    // If enemy count decreased, award XP for killed enemies
+    if (previousEnemyCount > currentEnemyCount) {
+      const enemiesKilled = previousEnemyCount - currentEnemyCount;
+      const baseXPPerEnemy = 50; // 50 XP per enemy
+      const goldPerEnemy = 10; // 10 gold per enemy
+      
+      const totalXP = enemiesKilled * baseXPPerEnemy;
+      const totalGold = enemiesKilled * goldPerEnemy;
+      
+      console.log(`🎯 ${enemiesKilled} enemies killed! Rewarding ${totalXP} XP and ${totalGold} gold`);
+      
+      updateNinja((prev) => {
+        const newXP = prev.experience + totalXP;
+        const newGold = prev.gold + totalGold;
+        console.log(`📊 XP Update: ${prev.experience} + ${totalXP} = ${newXP} (${newXP}/${prev.experienceToNext})`);
+        return {
+          experience: newXP,
+          gold: newGold,
+        };
+      });
+    }
+    
+    setPreviousEnemyCount(currentEnemyCount);
+  }, [combatState.enemies.length, previousEnemyCount, updateNinja]);
+
   // Start combat when component mounts
   useEffect(() => {
     startCombat();
