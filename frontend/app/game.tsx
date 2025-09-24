@@ -45,7 +45,7 @@ export default function GameScreen() {
   const [localGameState, setLocalGameState] = useState<GameState>({
     ninjaPosition: { x: SCREEN_WIDTH / 2, y: GAME_AREA_HEIGHT / 2 },
     enemies: [],
-    isAutoFighting: false,
+    isAutoFighting: true, // Start auto-fighting by default
     currentStage: 1,
     killCount: 0,
   });
