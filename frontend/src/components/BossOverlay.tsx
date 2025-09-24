@@ -264,20 +264,6 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose, onSt
           )}
         </ScrollView>
       </View>
-
-      {/* Boss Battle Screen */}
-      {currentBossBattle && (
-        <BossBattleScreen
-          visible={battleScreenVisible}
-          boss={currentBossBattle.boss}
-          tier={currentBossBattle.tier}
-          onComplete={handleBattleComplete}
-          onEscape={() => {
-            setBattleScreenVisible(false);
-            setCurrentBossBattle(null);
-          }}
-        />
-      )}
     </>
   );
 };
