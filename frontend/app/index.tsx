@@ -29,10 +29,7 @@ type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'raids' | null;
 
 export default function NinjaIdleGame() {
   const { gameState, updateNinja } = useGame();
-  const { combatState, startCombat, stopCombat, clearAllEnemies } = useCombat();
-  
-  // Debug: Check if clearAllEnemies function exists
-  console.log('🔧 clearAllEnemies function available:', typeof clearAllEnemies);
+  const { combatState, startCombat, stopCombat, triggerLevelUpExplosion } = useCombat();
   
   const ninja = gameState?.ninja;
   
