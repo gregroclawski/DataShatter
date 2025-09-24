@@ -49,7 +49,7 @@ interface GameState {
   killCount: number;
 }
 
-type ActiveOverlay = 'stats' | 'shurikens' | 'pets' | 'skills' | 'store' | 'raids' | null;
+type ActiveOverlay = 'stats' | 'abilities' | 'pets' | 'skills' | 'store' | 'raids' | null;
 
 export default function NinjaIdleGame() {
   const { gameState, ninja, updateNinja } = useGame();
