@@ -27,6 +27,8 @@ const ENEMY_SIZE = 35;
 type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'raids' | null;
 
 export default function NinjaIdleGame() {
+  console.log('🔴 Component is running!');
+  
   const { gameState, updateNinja } = useGame();
   const { combatState, startCombat, stopCombat } = useCombat();
   
