@@ -14,7 +14,8 @@ export default function RootLayout() {
       <GameProvider>
         <ZoneProvider>
           <EquipmentProvider>
-            <CombatProvider>
+            <MaterialsProvider>
+              <CombatProvider>
             <StatusBar style="light" backgroundColor="#0f172a" />
           <Stack
           screenOptions={{
