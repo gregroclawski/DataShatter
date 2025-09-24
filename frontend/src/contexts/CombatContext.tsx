@@ -43,10 +43,6 @@ export const useCombat = (): CombatContextType => {
 };
 
 export const CombatProvider = ({ children }: { children: ReactNode }) => {
-  const gameContext = useGame();
-  const { updateNinja } = gameContext;
-  
-  console.log('🔧 CombatProvider: useGame hook result:', !!gameContext, !!updateNinja);
   
   const [combatState, setCombatState] = useState<CombatState>({
     isInCombat: false,
