@@ -99,6 +99,7 @@ export default function NinjaIdleGame() {
 
   // Start combat when component mounts
   useEffect(() => {
+    console.log('🎮 Main component calling startCombat...');
     startCombat();
     return () => stopCombat();
   }, []);
