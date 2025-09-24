@@ -81,8 +81,9 @@ export default function RootLayout() {
             }} 
           />
         </Stack>
-          </CombatProvider>
-        </EquipmentProvider>
+              </CombatProvider>
+            </MaterialsProvider>
+          </EquipmentProvider>
         </ZoneProvider>
       </GameProvider>
     </SafeAreaProvider>
