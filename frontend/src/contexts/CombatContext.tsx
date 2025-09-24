@@ -424,6 +424,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   const triggerLevelUpExplosion = () => {
     console.log('💥 LEVEL UP EXPLOSION TRIGGERED IN COMBAT CONTEXT!');
     
+    const explosionTime = Date.now();
+    setLastExplosionTime(explosionTime);
+    
     setCombatState(prev => {
       // Calculate rewards for all current enemies
       const enemyCount = prev.enemies.length;
