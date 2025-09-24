@@ -159,35 +159,6 @@ export default function NinjaIdleGame() {
     };
   }, []);
 
-  // Create projectiles when abilities are cast (separate effect)
-  useEffect(() => {
-    const originalConsoleLog = console.log;
-    console.log = (...args) => {
-      originalConsoleLog(...args);
-      
-      const message = args.join(' ');
-      
-      // Check for ability cast messages to create projectiles
-      if ((message.includes('Fire Shuriken cast!') || message.includes('Basic Shuriken cast!')) && combatState.enemies.length > 0) {
-        console.log('🔥 Detected ability cast, creating projectile to closest enemy...');
-        createProjectile();
-      }
-    };
-    
-    return () => {
-      console.log = originalConsoleLog;
-    };
-  }, [combatState.enemies.length, createProjectile]); // Only depend on enemy count, not full array
-
-  // Projectile animation loop
-  useEffect(() => {
-    const animationInterval = setInterval(() => {
-      setProjectiles(prev => [...prev]); // Force re-render for smooth animation
-    }, 16); // ~60 FPS
-    
-    return () => clearInterval(animationInterval);
-  }, []);
-
   // Start combat when component mounts
   useEffect(() => {
     console.log('🎮 Main component calling startCombat...');
