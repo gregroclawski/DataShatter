@@ -57,7 +57,16 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
       setBattlePhase('countdown');
       setCountdown(10);
       setBossSpawned(false);
+      setPlayerLives(3);
+      setRespawnTimer(5);
+      setBossAttacks([]);
+      setShowResultPopup(false);
       clearAllEnemies();
+      
+      // Reset player health to full
+      updateNinja(prev => ({
+        health: prev.maxHealth || 100
+      }));
       
       // Screen entrance animation
       Animated.timing(screenAnim, {
@@ -71,26 +80,32 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
       // Reset when not visible
       setBattlePhase('countdown');
       setBossSpawned(false);
+      setPlayerLives(3);
+      setBossAttacks([]);
+      setShowResultPopup(false);
       screenAnim.setValue(0);
     }
   }, [visible]);
 
   // Monitor boss health for victory condition
   useEffect(() => {
-    if (battlePhase === 'combat' && bossSpawned) {
-      const bossEnemy = combatState.enemies.find(enemy => enemy.name.includes(tier.name));
+    if (battlePhase === 'combat' && bossSpawned && !showResultPopup) {
+      const bossEnemy = combatState.enemies.find(enemy => enemy.isBoss);
       if (bossEnemy && bossEnemy.health <= 0) {
-        handleBossDefeat();
+        handleBossDefeated();
       }
     }
-  }, [combatState.enemies, battlePhase, bossSpawned]);
+  }, [combatState.enemies, battlePhase, bossSpawned, showResultPopup]);
 
-  // Monitor player health for defeat condition  
+  // Monitor player health for lives system
   useEffect(() => {
-    if (battlePhase === 'combat' && gameState.ninja.health <= 0) {
-      handlePlayerDefeat();
+    if (battlePhase === 'combat' && playerLives > 0 && !showResultPopup) {
+      const playerHealth = gameState.ninja.health || 0;
+      if (playerHealth <= 0) {
+        handlePlayerDeath();
+      }
     }
-  }, [gameState.ninja.health, battlePhase]);
+  }, [gameState.ninja.health, battlePhase, playerLives, showResultPopup]);
 
   const startCountdown = () => {
     const timer = setInterval(() => {
