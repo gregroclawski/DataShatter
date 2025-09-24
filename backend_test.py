@@ -389,6 +389,72 @@ class NinjaGameAPITester:
             self.log_test("Game Events", False, f"Error: {str(e)}")
         return False
     
+    def test_extreme_level_progression(self):
+        """Test extreme level progression (15000+ XP, high levels)"""
+        try:
+            extreme_player_id = f"extreme_ninja_{uuid.uuid4().hex[:8]}"
+            
+            extreme_data = {
+                "playerId": extreme_player_id,
+                "ninja": {
+                    "level": 999,  # Extreme level
+                    "experience": 999999,  # Extreme XP (way above 15000+)
+                    "experienceToNext": 1000,
+                    "health": 9999,
+                    "maxHealth": 9999,
+                    "energy": 999,
+                    "maxEnergy": 999,
+                    "attack": 999,
+                    "defense": 999,
+                    "speed": 999,
+                    "luck": 999,
+                    "gold": 999999,
+                    "gems": 99999,
+                    "skillPoints": 2997  # 999 * 3 = 2997 skill points
+                },
+                "shurikens": [],
+                "pets": [],
+                "achievements": [],
+                "unlockedFeatures": ["stats", "shurikens", "pets"]
+            }
+            
+            # Test save
+            response = requests.post(
+                f"{self.base_url}/save-game",
+                json=extreme_data,
+                headers={"Content-Type": "application/json"},
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                save_data = response.json()
+                
+                # Test load to verify persistence
+                load_response = requests.get(f"{self.base_url}/load-game/{extreme_player_id}", timeout=10)
+                
+                if load_response.status_code == 200:
+                    load_data = load_response.json()
+                    if (load_data and 
+                        load_data['ninja']['level'] == 999 and
+                        load_data['ninja']['experience'] == 999999 and
+                        load_data['ninja']['skillPoints'] == 2997):
+                        self.log_test("Extreme Level Progression", True, 
+                                     "Successfully handled extreme level values (999 level, 999999 XP, 2997 skill points)")
+                        return True
+                    else:
+                        self.log_test("Extreme Level Progression", False, 
+                                     "Extreme level data not persisted correctly")
+                else:
+                    self.log_test("Extreme Level Progression", False, 
+                                 f"Failed to load extreme level data: {load_response.status_code}")
+            else:
+                self.log_test("Extreme Level Progression", False, 
+                             f"Failed to save extreme level data: {response.status_code}")
+                
+        except Exception as e:
+            self.log_test("Extreme Level Progression", False, f"Error: {str(e)}")
+        return False
+
     def test_malformed_save_data(self):
         """Test error handling with malformed save data"""
         try:
