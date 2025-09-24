@@ -108,8 +108,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       // Remove dead enemies
       newState.enemies = newState.enemies.filter(enemy => enemy.health > 0);
 
-      // Spawn new enemies if none remain (for testing)
-      if (newState.enemies.length === 0) {
+      // Maintain 10 enemies on screen
+      const MAX_ENEMIES = 10;
+      while (newState.enemies.length < MAX_ENEMIES) {
         spawnTestEnemy(newState);
       }
 
