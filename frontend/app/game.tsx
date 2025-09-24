@@ -152,9 +152,13 @@ export default function GameScreen() {
   const autoMoveToEnemy = () => {
     if (!localGameState.isAutoFighting || localGameState.enemies.length === 0) return;
 
+    // Use animated position for movement calculations
+    const currentNinjaX = ninjaAnimatedPosition.x._value + NINJA_SIZE / 2;
+    const currentNinjaY = ninjaAnimatedPosition.y._value + NINJA_SIZE / 2;
+
     const nearestEnemy = localGameState.enemies.reduce((nearest, enemy) => {
-      const distToEnemy = getDistance(localGameState.ninjaPosition, { x: enemy.x + ENEMY_SIZE / 2, y: enemy.y + ENEMY_SIZE / 2 });
-      const distToNearest = getDistance(localGameState.ninjaPosition, { x: nearest.x + ENEMY_SIZE / 2, y: nearest.y + ENEMY_SIZE / 2 });
+      const distToEnemy = getDistance({ x: currentNinjaX, y: currentNinjaY }, { x: enemy.x + ENEMY_SIZE / 2, y: enemy.y + ENEMY_SIZE / 2 });
+      const distToNearest = getDistance({ x: currentNinjaX, y: currentNinjaY }, { x: nearest.x + ENEMY_SIZE / 2, y: nearest.y + ENEMY_SIZE / 2 });
       return distToEnemy < distToNearest ? enemy : nearest;
     });
 
@@ -162,7 +166,7 @@ export default function GameScreen() {
     const targetY = nearestEnemy.y + ENEMY_SIZE / 2;
     
     // Only move if not already very close to target
-    const distance = getDistance(localGameState.ninjaPosition, { x: targetX, y: targetY });
+    const distance = getDistance({ x: currentNinjaX, y: currentNinjaY }, { x: targetX, y: targetY });
     if (distance > 50) { // Only move if farther than attack range
       moveNinja(targetX, targetY);
     }
