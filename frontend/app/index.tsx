@@ -70,20 +70,26 @@ export default function NinjaIdleGame() {
     }
   }, [ninja?.level, previousLevel, triggerLevelUpExplosion]);
 
-  // Award XP for kills (let level-up system handle resets)
+  // Award XP only for NEW kills (incremental, respects level-up resets)
   useEffect(() => {
-    if (totalKills > 0) {
+    if (totalKills > lastProcessedKill) {
+      const newKills = totalKills - lastProcessedKill;
       const xpPerKill = 50;
       const goldPerKill = 10;
       
-      console.log(`📊 Awarding XP for kill ${totalKills}: +${xpPerKill} XP, +${goldPerKill} gold`);
+      const totalXP = newKills * xpPerKill;
+      const totalGold = newKills * goldPerKill;
+      
+      console.log(`📊 Awarding XP for ${newKills} new kills: +${totalXP} XP, +${totalGold} gold`);
       
       updateNinja((prev) => ({
-        experience: prev.experience + xpPerKill,
-        gold: prev.gold + goldPerKill,
+        experience: prev.experience + totalXP,
+        gold: prev.gold + totalGold,
       }));
+      
+      setLastProcessedKill(totalKills);
     }
-  }, [totalKills]);
+  }, [totalKills, lastProcessedKill]);
 
   // Create projectile when ability is cast
   const createProjectile = useCallback((targetEnemy: any) => {
