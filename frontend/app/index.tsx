@@ -351,10 +351,11 @@ export default function NinjaIdleGame() {
     }, 800);
 
     return () => {
+      console.log('🛑 Cleaning up game loop');
       if (gameLoopRef.current) clearInterval(gameLoopRef.current);
       if (spawnTimerRef.current) clearInterval(spawnTimerRef.current);
     };
-  }, [localGameState.isAutoFighting, localGameState.enemies.length, localGameState.ninjaPosition]);
+  }, []); // Remove dependencies to prevent constant recreation
 
   // Initial enemy spawn
   useEffect(() => {
