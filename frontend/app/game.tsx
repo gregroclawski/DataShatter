@@ -125,12 +125,6 @@ export default function GameScreen() {
       ...prev,
       ninjaPosition: { x: newX, y: newY },
     }));
-
-    Animated.timing(ninjaAnimatedPosition, {
-      toValue: { x: newX - NINJA_SIZE / 2, y: newY - NINJA_SIZE / 2 },
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
   };
 
   // Calculate distance between two points
