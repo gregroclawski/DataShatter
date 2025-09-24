@@ -51,16 +51,6 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
   const SCREEN_HEIGHT = Dimensions.get('window').height;
   const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 100; // Leave space for UI
 
-  // Boss attack animation interface
-  interface BossAttack {
-    id: string;
-    type: string;
-    element: string;
-    position: { x: number; y: number };
-    startTime: number;
-    duration: number;
-  }
-
   // Initialize boss battle when visible
   useEffect(() => {
     if (visible) {
