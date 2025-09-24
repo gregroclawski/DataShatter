@@ -207,13 +207,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingBottom: 80, // Leave space for bottom tabs (80px)
   },
   container: {
     width: '95%',
-    height: '90%',
+    height: '85%', // Reduced from 90% to 85% to ensure tab accessibility
     backgroundColor: '#1f2937',
     borderRadius: 12,
     padding: 16,
+    marginBottom: 20, // Extra margin from bottom
   },
   header: {
     flexDirection: 'row',
