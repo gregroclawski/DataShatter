@@ -255,7 +255,10 @@ export default function NinjaIdleGame() {
       const targetY = nearestEnemy.y + ENEMY_SIZE / 2;
       const distance = getDistance({ x: currentNinjaX, y: currentNinjaY }, { x: targetX, y: targetY });
       
+      console.log(`🏃 Ninja at (${Math.round(currentNinjaX)}, ${Math.round(currentNinjaY)}), nearest enemy at (${Math.round(targetX)}, ${Math.round(targetY)}), distance: ${Math.round(distance)}`);
+      
       if (distance > 50) {
+        console.log(`🎯 Moving ninja to enemy at distance ${Math.round(distance)}`);
         moveNinja(targetX, targetY);
       }
       
