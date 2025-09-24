@@ -87,10 +87,15 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     console.log(`🎯 Enemy killed! Rewarding ${baseXP} XP and ${goldReward} gold`);
     
     // Update ninja with rewards using functional update to avoid stale state
-    updateNinja((prev) => ({
-      experience: prev.experience + baseXP,
-      gold: prev.gold + goldReward,
-    }));
+    updateNinja((prev) => {
+      const newXP = prev.experience + baseXP;
+      const newGold = prev.gold + goldReward;
+      console.log(`📊 XP Update: ${prev.experience} + ${baseXP} = ${newXP} (${newXP}/${prev.experienceToNext})`);
+      return {
+        experience: newXP,
+        gold: newGold,
+      };
+    });
   };
 
   // Combat tick handler
