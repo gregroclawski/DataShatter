@@ -137,8 +137,9 @@ export default function NinjaIdleGame() {
           if (!closestEnemy) return prevPos;
           
           // Check if we're in attack range (stop moving when close enough)
-          const ATTACK_RANGE = 80; // Stop when within attack range
+          const ATTACK_RANGE = 40; // Reduced attack range so ninja moves closer to enemies
           if (closestDistance <= ATTACK_RANGE) {
+            console.log(`🎯 Ninja in attack range (${closestDistance.toFixed(0)}px) - stopping movement`);
             return prevPos; // Stop moving when in attack range
           }
           
