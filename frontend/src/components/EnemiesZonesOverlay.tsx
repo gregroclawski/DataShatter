@@ -212,6 +212,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 500, // Lower z-index so tabs can appear on top
+    pointerEvents: 'none', // Allow clicks to pass through the overlay background
   },
   container: {
     width: '95%',
