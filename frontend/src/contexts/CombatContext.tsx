@@ -175,9 +175,14 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
   // Spawn a test enemy
   const spawnTestEnemy = (state: CombatState) => {
-    // Random position within game area (avoid edges for better visibility)
-    const x = Math.random() * 300 + 50; // 50-350px from left
-    const y = Math.random() * 200 + 100; // 100-300px from top
+    // Get screen dimensions for proper positioning
+    const SCREEN_WIDTH = 390; // Mobile width
+    const GAME_AREA_HEIGHT = 844 - 250; // Screen height minus bottom tabs
+    const ENEMY_SIZE = 35;
+    
+    // Random position within game area bounds (like ninja positioning)
+    const x = Math.random() * (SCREEN_WIDTH - ENEMY_SIZE * 2) + ENEMY_SIZE; // Avoid edges
+    const y = Math.random() * (GAME_AREA_HEIGHT - ENEMY_SIZE * 2) + ENEMY_SIZE; // Avoid edges
     
     const enemy: CombatEnemy = {
       id: `enemy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
