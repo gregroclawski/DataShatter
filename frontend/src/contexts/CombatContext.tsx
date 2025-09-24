@@ -225,7 +225,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     if (!ability) return;
 
     // Find target (closest enemy)
-    const target = findClosestEnemy(state.enemies);
+    const target = findClosestEnemyInternal(state.enemies);
     if (!target) return;
 
     // Calculate base damage
