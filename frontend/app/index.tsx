@@ -68,10 +68,10 @@ export default function NinjaIdleGame() {
   useEffect(() => {
     if (ninja && ninja.level > previousLevel) {
       console.log('🚀 Level up detected!', previousLevel, '->', ninja.level);
-      triggerLevelUpExplosion();
+      handleLevelUpExplosion();
       setPreviousLevel(ninja.level);
     }
-  }, [ninja?.level, previousLevel, triggerLevelUpExplosion]);
+  }, [ninja?.level, previousLevel, handleLevelUpExplosion]);
 
   // Award XP only for NEW kills (incremental, respects level-up resets)
   useEffect(() => {
