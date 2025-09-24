@@ -184,17 +184,21 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       newState.enemies = newState.enemies.filter(enemy => enemy.health > 0);
 
       // Maintain 10 enemies on screen with slower respawn to prevent chaos
+      // BUT: Don't spawn new enemies if there's a boss present
       const MAX_ENEMIES = 10;
       const MIN_SPAWN_DELAY = 500; // Minimum 500ms between spawns
       const now = Date.now();
+      const hasBoss = newState.enemies.some(enemy => enemy.isBoss);
       
       // Add respawn cooldown tracking
       if (!newState.lastSpawnTime) {
         newState.lastSpawnTime = now;
       }
       
-      console.log(`🐛 Enemy spawn check: Current=${newState.enemies.length}, Max=${MAX_ENEMIES}`);
-      if (newState.enemies.length < MAX_ENEMIES && (now - newState.lastSpawnTime) >= MIN_SPAWN_DELAY) {
+      console.log(`🐛 Enemy spawn check: Current=${newState.enemies.length}, Max=${MAX_ENEMIES}, HasBoss=${hasBoss}`);
+      
+      // Only spawn normal enemies if no boss is present
+      if (!hasBoss && newState.enemies.length < MAX_ENEMIES && (now - newState.lastSpawnTime) >= MIN_SPAWN_DELAY) {
         console.log(`🐛 Spawning enemy ${newState.enemies.length + 1}/${MAX_ENEMIES}`);
         spawnTestEnemy(newState);
         newState.lastSpawnTime = now;
