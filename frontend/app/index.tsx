@@ -52,7 +52,7 @@ export default function NinjaIdleGame() {
   const insets = useSafeAreaInsets();
 
   // Level-up explosion attack - delegate to combat context
-  const triggerLevelUpExplosion = useCallback(() => {
+  const handleLevelUpExplosion = useCallback(() => {
     console.log('💥 LEVEL UP EXPLOSION!');
     setIsLevelingUp(true);
     
