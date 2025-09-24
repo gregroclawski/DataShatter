@@ -11,6 +11,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons';
 import { useGame } from '../src/contexts/GameContext';
 import { useCombat } from '../src/contexts/CombatContext';
+import { useZone } from '../src/contexts/ZoneContext';
 
 // Import components for overlays
 import NinjaStatsOverlay from '../src/components/NinjaStatsOverlay';
