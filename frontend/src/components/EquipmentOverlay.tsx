@@ -244,10 +244,10 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 80, // Fixed positioning should work better than absolute
+    bottom: 80, // Stop 80px from bottom
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'flex-end',
-    zIndex: 1000, // Ensure it's above other content but below tabs
+    zIndex: 500, // Lower z-index so tabs can be on top
   },
   container: {
     backgroundColor: '#1f2937',
