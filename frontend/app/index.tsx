@@ -172,16 +172,43 @@ export default function NinjaIdleGame() {
 
   // Auto-spawn enemies
   const autoSpawnEnemies = useCallback(() => {
-    const targetEnemyCount = 10;
-    const currentCount = localGameState.enemies.length;
+    const maxEnemies = 10;
     
-    if (currentCount < targetEnemyCount) {
-      const enemiesToSpawn = Math.min(3, targetEnemyCount - currentCount);
-      for (let i = 0; i < enemiesToSpawn; i++) {
-        setTimeout(() => spawnEnemy(), i * 100);
+    setLocalGameState(prev => {
+      const enemiesToSpawn = Math.max(0, maxEnemies - prev.enemies.length);
+      
+      if (enemiesToSpawn > 0) {
+        const newEnemies = [];
+        for (let i = 0; i < enemiesToSpawn; i++) {
+          const enemyTypes = ['goblin', 'orc', 'skeleton'];
+          const randomType = enemyTypes[Math.floor(Math.random() * enemyTypes.length)] as Enemy['type'];
+          const stats = getEnemyStats(randomType, prev.currentStage);
+          
+          const enemy: Enemy = {
+            id: Math.random().toString(36).substr(2, 9),
+            type: randomType,
+            x: Math.random() * (SCREEN_WIDTH - ENEMY_SIZE),
+            y: Math.random() * (GAME_AREA_HEIGHT - ENEMY_SIZE - 150) + 80,
+            health: stats.health,
+            maxHealth: stats.maxHealth,
+            damage: stats.damage,
+            reward: {
+              gold: stats.reward.gold + Math.floor(Math.random() * 5),
+              exp: stats.reward.exp + Math.floor(Math.random() * 5),
+            },
+            speed: stats.speed,
+          };
+          newEnemies.push(enemy);
+        }
+        
+        return {
+          ...prev,
+          enemies: [...prev.enemies, ...newEnemies],
+        };
       }
-    }
-  }, [localGameState.enemies.length]);
+      return prev;
+    });
+  }, []);
 
   // Move ninja with smooth animation
   const moveNinja = (targetX: number, targetY: number) => {
