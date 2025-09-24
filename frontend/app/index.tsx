@@ -281,6 +281,7 @@ export default function NinjaIdleGame() {
   const updateEnemyAI = () => {
     const currentNinjaX = ninjaAnimatedPosition.x._value + NINJA_SIZE / 2;
     const currentNinjaY = ninjaAnimatedPosition.y._value + NINJA_SIZE / 2;
+    let totalDamageToNinja = 0;
 
     setLocalGameState(prev => {
       const updatedEnemies = prev.enemies.map(enemy => {
@@ -301,9 +302,7 @@ export default function NinjaIdleGame() {
         
         if (distance <= 50) {
           const damage = Math.max(1, enemy.damage - ninja.defense);
-          updateNinja({
-            health: Math.max(1, ninja.health - damage),
-          });
+          totalDamageToNinja += damage;
         }
         
         return enemy;
@@ -311,6 +310,13 @@ export default function NinjaIdleGame() {
 
       return { ...prev, enemies: updatedEnemies };
     });
+    
+    // Apply damage to ninja outside of setState
+    if (totalDamageToNinja > 0) {
+      updateNinja({
+        health: Math.max(1, ninja.health - totalDamageToNinja),
+      });
+    }
   };
 
   // Game loop
