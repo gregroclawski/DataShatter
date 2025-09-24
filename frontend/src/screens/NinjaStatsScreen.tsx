@@ -104,18 +104,12 @@ const NinjaStatsScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <LinearGradient
-        colors={['#0f172a', '#1e293b', '#374151']}
-        style={styles.headerGradient}
-      >
+      <View style={styles.headerGradient}>
         {/* Ninja Avatar */}
         <View style={styles.avatarContainer}>
-          <LinearGradient
-            colors={['#8b5cf6', '#a855f7']}
-            style={styles.avatar}
-          >
+          <View style={styles.avatar}>
             <Ionicons name="person" size={60} color="#ffffff" />
-          </LinearGradient>
+          </View>
           <Text style={styles.ninjaName}>Shadow Ninja</Text>
           <Text style={styles.ninjaLevel}>Level {ninja.level}</Text>
         </View>
@@ -126,7 +120,7 @@ const NinjaStatsScreen = () => {
           <ResourceCard icon="diamond" label="Gems" value={ninja.gems} color="#3b82f6" />
           <ResourceCard icon="star" label="Skill Points" value={ninja.skillPoints} color="#8b5cf6" />
         </View>
-      </LinearGradient>
+      </View>
 
       {/* Stats Section */}
       <View style={styles.statsSection}>
@@ -191,10 +185,10 @@ const NinjaStatsScreen = () => {
           }}
           disabled={ninja.energy >= ninja.maxEnergy}
         >
-          <LinearGradient colors={['#3b82f6', '#1d4ed8']} style={styles.buttonGradient}>
+          <View style={styles.buttonGradient}>
             <Ionicons name="battery-charging" size={20} color="#ffffff" />
             <Text style={styles.buttonText}>Rest (+10 Energy)</Text>
-          </LinearGradient>
+          </View>
         </TouchableOpacity>
 
         <TouchableOpacity 
@@ -209,10 +203,10 @@ const NinjaStatsScreen = () => {
           }}
           disabled={ninja.health >= ninja.maxHealth || ninja.gold < 20}
         >
-          <LinearGradient colors={['#ef4444', '#dc2626']} style={styles.buttonGradient}>
+          <View style={styles.buttonGradient}>
             <Ionicons name="medical" size={20} color="#ffffff" />
             <Text style={styles.buttonText}>Heal (20 Gold)</Text>
-          </LinearGradient>
+          </View>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -227,6 +221,7 @@ const styles = StyleSheet.create({
   headerGradient: {
     padding: 20,
     paddingBottom: 30,
+    backgroundColor: '#1e293b',
   },
   avatarContainer: {
     alignItems: 'center',
@@ -239,6 +234,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
+    backgroundColor: '#8b5cf6',
   },
   ninjaName: {
     fontSize: 24,
@@ -263,6 +259,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#4b5563',
+    backgroundColor: '#374151',
   },
   resourceLabel: {
     fontSize: 12,
@@ -357,6 +354,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 16,
     paddingHorizontal: 24,
+    backgroundColor: '#3b82f6',
   },
   buttonText: {
     color: '#ffffff',
