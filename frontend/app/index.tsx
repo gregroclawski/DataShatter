@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
-import { GameProvider, useGame } from '../src/contexts/GameContext';
+import { useGame } from '../src/contexts/GameContext';
 
 function NinjaStatsContent() {
   const { gameState, updateNinja, collectIdleRewards } = useGame();
