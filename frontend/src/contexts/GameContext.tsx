@@ -418,6 +418,59 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     loadGame,
   };
 
+  // Calculate experience required for next level (incremental up to level 15000)
+  const calculateExpForLevel = (level: number): number => {
+    if (level <= 1) return 100;
+    if (level >= 15000) return 1000000; // Max exp requirement at level 15000
+    
+    // Exponential scaling up to level 15000
+    // Base formula: 100 * (1.05^(level-1))
+    const baseExp = 100;
+    const growthRate = 1.05;
+    const expRequired = Math.floor(baseExp * Math.pow(growthRate, level - 1));
+    
+    // Cap at reasonable maximum
+    return Math.min(expRequired, 1000000);
+  };
+
+  // Handle level up logic with proper exp scaling and 3 stat points per level
+  const handleLevelUp = (ninja: NinjaStats): Partial<NinjaStats> => {
+    let updates: Partial<NinjaStats> = {};
+    let currentLevel = ninja.level;
+    let currentExp = ninja.experience;
+    let currentExpToNext = ninja.experienceToNext;
+    
+    // Check for multiple level ups
+    while (currentExp >= currentExpToNext && currentLevel < 15000) {
+      currentLevel += 1;
+      currentExp -= currentExpToNext;
+      currentExpToNext = calculateExpForLevel(currentLevel);
+      
+      // Add stat bonuses for each level
+      updates = {
+        ...updates,
+        level: currentLevel,
+        experience: currentExp,
+        experienceToNext: currentExpToNext,
+        maxHealth: (updates.maxHealth || ninja.maxHealth) + 15, // +15 HP per level
+        maxEnergy: (updates.maxEnergy || ninja.maxEnergy) + 5, // +5 Energy per level
+        skillPoints: (updates.skillPoints || ninja.skillPoints) + 3, // +3 Skill Points per level
+        attack: (updates.attack || ninja.attack) + 2, // +2 Attack per level
+        defense: (updates.defense || ninja.defense) + 1, // +1 Defense per level
+      };
+    }
+
+    if (updates.level) {
+      // Heal to full when leveling up
+      updates.health = updates.maxHealth;
+      updates.energy = updates.maxEnergy;
+      updates.experience = currentExp;
+      updates.experienceToNext = currentExpToNext;
+    }
+
+    return updates;
+  };
+
   return (
     <GameContext.Provider value={value}>
       {children}
