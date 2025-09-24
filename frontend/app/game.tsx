@@ -402,7 +402,7 @@ export default function GameScreen() {
             color="#ffffff" 
           />
           <Text style={styles.controlButtonText}>
-            {localGameState.isAutoFighting ? 'Stop Auto' : 'Auto Fight'}
+            {localGameState.isAutoFighting ? 'Manual' : 'Auto'}
           </Text>
         </TouchableOpacity>
 
@@ -421,16 +421,13 @@ export default function GameScreen() {
           }}
         >
           <Ionicons name="medical" size={24} color="#ffffff" />
-          <Text style={styles.controlButtonText}>Heal (5 gems)</Text>
+          <Text style={styles.controlButtonText}>Heal</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.controlButton}
-          onPress={spawnEnemy}
-        >
-          <Ionicons name="add" size={24} color="#ffffff" />
-          <Text style={styles.controlButtonText}>Spawn Enemy</Text>
-        </TouchableOpacity>
+        <View style={styles.controlButton}>
+          <Ionicons name="people" size={24} color="#ffffff" />
+          <Text style={styles.controlButtonText}>Enemies: {localGameState.enemies.length}/20</Text>
+        </View>
       </View>
     </View>
   );
