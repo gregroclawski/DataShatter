@@ -64,7 +64,6 @@ let enemyCounter = 0; // Global counter for unique enemy IDs
 
 export const CombatProvider = ({ children }: { children: ReactNode }) => {
   const { updateNinja } = useGame();
-  const { recordEnemyKill } = useZone();
   
   const [combatState, setCombatState] = useState<CombatState>({
     isInCombat: false,
