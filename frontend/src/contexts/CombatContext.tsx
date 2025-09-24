@@ -22,8 +22,21 @@ interface CombatEnemy {
   lastDamaged: number;
 }
 
+interface CombatProjectile {
+  id: string;
+  x: number;
+  y: number;
+  targetX: number;
+  targetY: number;
+  targetEnemyId: string;
+  damage: number;
+  startTime: number;
+  duration: number;
+}
+
 interface CombatContextType {
   combatState: CombatState;
+  projectiles: CombatProjectile[];
   startCombat: () => void;
   stopCombat: () => void;
   equipAbility: (abilityId: string, slotIndex: number) => boolean;
@@ -32,6 +45,7 @@ interface CombatContextType {
   upgradeAbility: (abilityId: string) => boolean;
   clearAllEnemies: () => void; // For level-up explosion
   triggerLevelUpExplosion: () => void; // Trigger explosion from combat context
+  findClosestEnemy: () => CombatEnemy | null; // Expose closest enemy finding
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
