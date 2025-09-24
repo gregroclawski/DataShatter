@@ -171,6 +171,9 @@ export default function NinjaIdleGame() {
           
           console.log(`🏃 Ninja moving toward enemy at distance ${closestDistance.toFixed(0)}, new pos: (${newX.toFixed(0)}, ${newY.toFixed(0)})`);
           
+          // Update combat context with ninja position for accurate projectile origin
+          updateNinjaPosition({ x: newX, y: newY });
+          
           return { x: newX, y: newY };
         });
         
