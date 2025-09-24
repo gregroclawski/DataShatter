@@ -178,7 +178,7 @@ export default function NinjaIdleGame() {
 
   // Listen for combat logs and count kills
 
-  // Listen for combat logs and count kills + detect attacks
+  // Listen for combat logs and count kills + detect attacks + record zone progress
   useEffect(() => {
     const originalConsoleLog = console.log;
     console.log = (...args) => {
@@ -191,6 +191,25 @@ export default function NinjaIdleGame() {
         setTotalKills(prev => {
           const newTotal = prev + 1;
           console.log(`🎯 Kill count updated: ${newTotal}`);
+          
+          // Record kill for zone progression
+          if (recordEnemyKill) {
+            const zoneEnemy = {
+              id: `enemy_${Date.now()}`,
+              typeId: 'test_enemy',
+              name: 'Test Enemy',
+              icon: '👹',
+              hp: 0,
+              maxHP: 100,
+              attack: 10,
+              xp: 10,
+              position: { x: 100, y: 100 }
+            };
+            
+            recordEnemyKill(zoneEnemy);
+            console.log(`🗺️ Zone kill recorded!`);
+          }
+          
           return newTotal;
         });
       }
@@ -216,7 +235,7 @@ export default function NinjaIdleGame() {
     return () => {
       console.log = originalConsoleLog;
     };
-  }, []);
+  }, [recordEnemyKill]);
 
   // Start combat when component mounts
   useEffect(() => {
