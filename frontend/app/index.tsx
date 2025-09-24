@@ -37,7 +37,7 @@ export default function NinjaIdleGame() {
   const [isLevelingUp, setIsLevelingUp] = useState(false);
   const [previousLevel, setPreviousLevel] = useState(1);
   const [showAbilityDeck, setShowAbilityDeck] = useState(false);
-  const [previousEnemyCount, setPreviousEnemyCount] = useState(0);
+  const [totalKills, setTotalKills] = useState(0);
 
   const insets = useSafeAreaInsets();
 
