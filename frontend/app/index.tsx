@@ -377,9 +377,7 @@ export default function NinjaIdleGame() {
                 </View>
               );
             })
-          ) : (
-            <Text style={{color: 'red', position: 'absolute', top: 50, left: 50}}>No enemies in array</Text>
-          )}
+          ) : null}
 
           {/* Projectiles from Combat System */}
           {console.log(`🔥 Combat Projectiles array length: ${projectiles.length}`) || null}
