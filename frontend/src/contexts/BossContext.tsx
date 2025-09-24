@@ -64,9 +64,12 @@ export const useBoss = () => {
 };
 
 export const BossProvider = ({ children }: { children: ReactNode }) => {
-  const { updateNinja, ninja } = useGame();
+  const { updateNinja, gameState } = useGame();
   const { addToInventory, generateRandomEquipment } = useEquipment();
   const { addMaterial } = useMaterials();
+
+  // Extract ninja from gameState
+  const ninja = gameState.ninja;
 
   // Initialize daily boss state
   const [dailyBossState, setDailyBossState] = useState<DailyBossState>({
