@@ -249,9 +249,18 @@ export const EquipmentProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Get upgrade cost for equipment
-  const getEquipmentUpgradeCost = (equipmentId: string): number => {
+  const getEquipmentUpgradeCost = (equipmentId: string): { gold: number; materials: Record<UpgradeMaterial, number> } => {
     const equipment = findEquipmentById(equipmentId);
-    return equipment ? getUpgradeCost(equipment) : 0;
+    return equipment ? getUpgradeCost(equipment) : { 
+      gold: 0, 
+      materials: {
+        [UpgradeMaterial.FIRE_ESSENCE]: 0,
+        [UpgradeMaterial.ICE_CRYSTAL]: 0,
+        [UpgradeMaterial.SHADOW_ORB]: 0,
+        [UpgradeMaterial.EARTH_FRAGMENT]: 0,
+        [UpgradeMaterial.MYSTIC_DUST]: 0,
+      }
+    };
   };
 
   // Check if equipment can be upgraded
