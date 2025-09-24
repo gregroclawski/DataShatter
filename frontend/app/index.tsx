@@ -60,6 +60,8 @@ export default function NinjaIdleGame() {
   });
 
   const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
+  const [isLevelingUp, setIsLevelingUp] = useState(false);
+  const [previousLevel, setPreviousLevel] = useState(ninja.level);
 
   const ninjaAnimatedPosition = useRef(new Animated.ValueXY({
     x: SCREEN_WIDTH / 2 - NINJA_SIZE / 2,
