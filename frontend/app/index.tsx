@@ -84,14 +84,40 @@ export default function NinjaIdleGame() {
     }
   }, [totalKills, ninja.experience, ninja.gold, updateNinja]);
 
-  // Listen for combat logs and count kills
+  // Create projectile when ability is cast
+  const createProjectile = useCallback((targetEnemy: any) => {
+    const ninjaX = SCREEN_WIDTH / 2;
+    const ninjaY = GAME_AREA_HEIGHT / 2;
+    
+    const projectile = {
+      id: `proj_${Date.now()}_${Math.random()}`,
+      x: ninjaX,
+      y: ninjaY,
+      targetX: targetEnemy.position.x + ENEMY_SIZE / 2,
+      targetY: targetEnemy.position.y + ENEMY_SIZE / 2,
+      startTime: Date.now(),
+      duration: 500, // 500ms travel time
+    };
+    
+    console.log(`🔥 Creating projectile to enemy at (${targetEnemy.position.x}, ${targetEnemy.position.y})`);
+    
+    setProjectiles(prev => [...prev, projectile]);
+    
+    // Remove projectile after it hits
+    setTimeout(() => {
+      setProjectiles(prev => prev.filter(p => p.id !== projectile.id));
+    }, 500);
+  }, []);
+
+  // Listen for combat logs and count kills + create projectiles
   useEffect(() => {
     const originalConsoleLog = console.log;
     console.log = (...args) => {
       originalConsoleLog(...args);
       
-      // Check for enemy kill messages
       const message = args.join(' ');
+      
+      // Check for enemy kill messages
       if (message.includes('Enemy killed! Max HP:')) {
         setTotalKills(prev => {
           const newTotal = prev + 1;
@@ -99,12 +125,19 @@ export default function NinjaIdleGame() {
           return newTotal;
         });
       }
+      
+      // Check for ability cast messages to create projectiles
+      if (message.includes('Shuriken cast!') && combatState.enemies.length > 0) {
+        // Target random enemy for projectile
+        const randomEnemy = combatState.enemies[Math.floor(Math.random() * combatState.enemies.length)];
+        createProjectile(randomEnemy);
+      }
     };
     
     return () => {
       console.log = originalConsoleLog;
     };
-  }, []);
+  }, [combatState.enemies, createProjectile]);
 
   // Start combat when component mounts
   useEffect(() => {
