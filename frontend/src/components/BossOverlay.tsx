@@ -211,7 +211,7 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose }) =>
     </View>
   );
 
-  return visible ? (
+  return visible && ninja ? (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>
