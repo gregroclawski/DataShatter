@@ -59,6 +59,24 @@ export default function NinjaIdleGame() {
     }
   }, [ninja?.level, previousLevel, triggerLevelUpExplosion]);
 
+  // Set up reward callback for XP and gold
+  useEffect(() => {
+    const rewardCallback = (xp: number, gold: number) => {
+      console.log(`💰 Reward callback triggered: +${xp} XP, +${gold} gold`);
+      updateNinja((prev) => {
+        const newXP = prev.experience + xp;
+        const newGold = prev.gold + gold;
+        console.log(`📊 XP Update: ${prev.experience} + ${xp} = ${newXP} (${newXP}/${prev.experienceToNext})`);
+        return {
+          experience: newXP,
+          gold: newGold,
+        };
+      });
+    };
+    
+    setRewardCallback(rewardCallback);
+  }, [updateNinja, setRewardCallback]);
+
   // Start combat when component mounts
   useEffect(() => {
     startCombat();
