@@ -292,7 +292,7 @@ export default function NinjaIdleGame() {
   }, [ninja.attack, ninja.gold, ninja.experience, gameState.shurikens, ninjaAnimatedPosition, updateNinja]);
 
   // Enemy AI
-  const updateEnemyAI = () => {
+  const updateEnemyAI = useCallback(() => {
     const currentNinjaX = ninjaAnimatedPosition.x._value + NINJA_SIZE / 2;
     const currentNinjaY = ninjaAnimatedPosition.y._value + NINJA_SIZE / 2;
     let totalDamageToNinja = 0;
@@ -331,7 +331,7 @@ export default function NinjaIdleGame() {
         health: Math.max(1, ninja.health - totalDamageToNinja),
       });
     }
-  };
+  }, [ninja.defense, ninja.health, ninjaAnimatedPosition, updateNinja]);
 
   // Game loop
   useEffect(() => {
