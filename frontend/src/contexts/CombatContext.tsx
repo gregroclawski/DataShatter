@@ -72,13 +72,16 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     
     console.log(`🎯 Enemy killed! Rewarding ${baseXP} XP and ${goldReward} gold`);
     
-    // Use callback system to reward XP and gold
-    if (rewardCallback) {
-      console.log(`📊 Calling reward callback: ${baseXP} XP, ${goldReward} gold`);
-      rewardCallback(baseXP, goldReward);
-    } else {
-      console.warn('⚠️  No reward callback set!');
-    }
+    // Directly update ninja with rewards using functional update
+    updateNinja((prev) => {
+      const newXP = prev.experience + baseXP;
+      const newGold = prev.gold + goldReward;
+      console.log(`📊 XP Update: ${prev.experience} + ${baseXP} = ${newXP} (${newXP}/${prev.experienceToNext})`);
+      return {
+        experience: newXP,
+        gold: newGold,
+      };
+    });
   };
 
   // Combat tick handler
