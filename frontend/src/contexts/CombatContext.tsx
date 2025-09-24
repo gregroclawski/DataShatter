@@ -67,6 +67,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
   // Combat tick handler
   const handleCombatTick = () => {
+    console.log('🔄 Combat tick running...');
     setCombatState(prev => {
       const newTick = combatEngine.getCurrentTick();
       const newState = { ...prev, currentTick: newTick };
