@@ -319,6 +319,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     getDeck,
     getAvailableAbilities,
     upgradeAbility,
+    clearAllEnemies,
   };
 
   return (
