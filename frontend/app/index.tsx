@@ -28,50 +28,231 @@ const ENEMY_SIZE = 35;
 type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'raids' | null;
 
 export default function NinjaIdleGame() {
-  console.log('🔴 Component started!');
+  const { gameState, updateNinja } = useGame();
+  const { combatState, startCombat, stopCombat } = useCombat();
   
-  try {
-    console.log('🔴 About to call useGame...');
-    const { gameState, updateNinja } = useGame();
-    console.log('🔴 useGame successful, gameState:', gameState);
-    
-    console.log('🔴 About to call useCombat...');
-    const { combatState, startCombat, stopCombat } = useCombat();
-    console.log('🔴 useCombat successful');
-    
-    const ninja = gameState?.ninja;
-    console.log('🔴 Ninja extracted:', ninja);
-    
-    const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
-    const [isLevelingUp, setIsLevelingUp] = useState(false);
-    const [previousLevel, setPreviousLevel] = useState(1);
+  const ninja = gameState?.ninja;
+  
+  const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
+  const [isLevelingUp, setIsLevelingUp] = useState(false);
+  const [previousLevel, setPreviousLevel] = useState(1);
+  const [showAbilityDeck, setShowAbilityDeck] = useState(false);
 
-    const insets = useSafeAreaInsets();
+  const insets = useSafeAreaInsets();
 
-    if (!ninja) {
-      console.log('🔴 Showing loading screen');
-      return (
-        <SafeAreaView style={[styles.container, styles.loadingContainer]}>
-          <Text style={styles.loadingText}>Loading Game Data...</Text>
-        </SafeAreaView>
-      );
+  // Level-up explosion attack
+  const triggerLevelUpExplosion = useCallback(() => {
+    console.log('💥 LEVEL UP EXPLOSION!');
+    setIsLevelingUp(true);
+    
+    setTimeout(() => {
+      setIsLevelingUp(false);
+    }, 1000);
+  }, []);
+
+  // Watch for level changes to trigger explosion
+  useEffect(() => {
+    if (ninja && ninja.level > previousLevel) {
+      console.log('🚀 Level up detected!', previousLevel, '->', ninja.level);
+      triggerLevelUpExplosion();
+      setPreviousLevel(ninja.level);
     }
-    
-    console.log('🔴 Ninja loaded, rendering main game');
+  }, [ninja?.level, previousLevel, triggerLevelUpExplosion]);
+
+  // Start combat when component mounts
+  useEffect(() => {
+    startCombat();
+    return () => stopCombat();
+  }, []);
+
+  const handleAbilityPress = (slotIndex: number) => {
+    setShowAbilityDeck(true);
+  };
+
+  const bottomTabs = [
+    { id: 'stats', name: 'Stats', icon: 'person' },
+    { id: 'abilities', name: 'Abilities', icon: 'flash' },
+    { id: 'pets', name: 'Pets', icon: 'heart' },
+    { id: 'skills', name: 'Skills', icon: 'barbell' },
+    { id: 'store', name: 'Store', icon: 'storefront' },
+    { id: 'raids', name: 'Raids', icon: 'nuclear' },
+  ];
+
+  // Show loading if ninja data isn't available
+  if (!ninja) {
     return (
       <SafeAreaView style={[styles.container, styles.loadingContainer]}>
-        <Text style={styles.loadingText}>Ninja Loaded! Level {ninja.level}</Text>
-      </SafeAreaView>
-    );
-    
-  } catch (error) {
-    console.error('🔴 Component error:', error);
-    return (
-      <SafeAreaView style={[styles.container, styles.loadingContainer]}>
-        <Text style={styles.loadingText}>Error: {String(error)}</Text>
+        <Text style={styles.loadingText}>Loading Game Data...</Text>
       </SafeAreaView>
     );
   }
+
+  return (
+    <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Top UI Bar */}
+      <View style={styles.topBar}>
+        <View style={styles.playerInfo}>
+          <Text style={styles.levelText}>Level {ninja.level}</Text>
+          <View style={styles.xpContainer}>
+            <View style={styles.xpBarBackground}>
+              <View 
+                style={[
+                  styles.xpBar, 
+                  { width: `${(ninja.experience / ninja.experienceToNext) * 100}%` }
+                ]} 
+              />
+            </View>
+            <Text style={styles.xpText}>{ninja.experience}/{ninja.experienceToNext} XP</Text>
+          </View>
+        </View>
+        
+        <View style={styles.resources}>
+          <View style={styles.resourceItem}>
+            <Ionicons name="heart" size={16} color="#ef4444" />
+            <Text style={styles.resourceText}>{ninja.health}/{ninja.maxHealth}</Text>
+          </View>
+          <View style={styles.resourceItem}>
+            <Ionicons name="logo-bitcoin" size={16} color="#f59e0b" />
+            <Text style={styles.resourceText}>{ninja.gold}</Text>
+          </View>
+          <View style={styles.resourceItem}>
+            <Ionicons name="diamond" size={16} color="#3b82f6" />
+            <Text style={styles.resourceText}>{ninja.gems}</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Game Area */}
+      <View style={styles.gameArea}>
+        {/* Combat Status */}
+        <View style={styles.combatStatus}>
+          <Text style={styles.stageText}>
+            Tick: {combatState.currentTick} | Enemies: {combatState.enemies.length}
+          </Text>
+          <Text style={[styles.combatText, { 
+            color: combatState.isInCombat ? '#10b981' : '#ef4444' 
+          }]}>
+            {combatState.isInCombat ? 'In Combat' : 'Paused'}
+          </Text>
+        </View>
+
+        {/* Battle Arena */}
+        <View style={styles.battleArena}>
+          {/* Ninja Character - Fixed position for new system */}
+          <View
+            style={[
+              styles.ninja,
+              {
+                left: SCREEN_WIDTH / 2 - NINJA_SIZE / 2,
+                top: GAME_AREA_HEIGHT / 2 - NINJA_SIZE / 2,
+              },
+              isLevelingUp && styles.ninjaLevelingUp,
+            ]}
+          >
+            <Ionicons name="person" size={30} color="#8b5cf6" />
+            {isLevelingUp && (
+              <View style={styles.explosionEffect}>
+                <Ionicons name="flash" size={60} color="#fbbf24" />
+              </View>
+            )}
+          </View>
+
+          {/* Enemies from Combat System */}
+          {combatState.enemies.map((enemy) => (
+            <View
+              key={enemy.id}
+              style={[
+                styles.enemy,
+                {
+                  left: enemy.position.x,
+                  top: enemy.position.y,
+                },
+              ]}
+            >
+              <Ionicons name="skull" size={24} color="#ef4444" />
+              
+              {/* Enemy Health Bar */}
+              <View style={styles.enemyHealthBarContainer}>
+                <View style={styles.enemyHealthBarBackground}>
+                  <View 
+                    style={[
+                      styles.enemyHealthBar, 
+                      { width: `${(enemy.health / enemy.maxHealth) * 100}%` }
+                    ]} 
+                  />
+                </View>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* Combat UI - New ability system */}
+      <CombatUI onAbilityPress={handleAbilityPress} />
+
+      {/* Bottom Navigation */}
+      <View style={styles.bottomTabs}>
+        {bottomTabs.map((tab) => (
+          <TouchableOpacity
+            key={tab.id}
+            style={styles.tab}
+            onPress={() => {
+              if (tab.id === 'abilities') {
+                setShowAbilityDeck(true);
+              } else {
+                setActiveOverlay(tab.id as ActiveOverlay);
+              }
+            }}
+          >
+            <Ionicons 
+              name={tab.icon as any} 
+              size={20} 
+              color={activeOverlay === tab.id ? '#8b5cf6' : '#9ca3af'} 
+            />
+            <Text style={[
+              styles.tabText,
+              { color: activeOverlay === tab.id ? '#8b5cf6' : '#9ca3af' }
+            ]}>
+              {tab.name}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Overlays */}
+      {activeOverlay && (
+        <Modal visible={true} animationType="slide" transparent>
+          <View style={styles.overlayContainer}>
+            {activeOverlay === 'stats' && <NinjaStatsOverlay onClose={() => setActiveOverlay(null)} />}
+            {activeOverlay === 'pets' && <PetsOverlay onClose={() => setActiveOverlay(null)} />}
+            {activeOverlay === 'skills' && <SkillsOverlay onClose={() => setActiveOverlay(null)} />}
+            {activeOverlay === 'store' && <StoreOverlay onClose={() => setActiveOverlay(null)} />}
+            {activeOverlay === 'raids' && (
+              <View style={styles.comingSoonOverlay}>
+                <Ionicons name="construct" size={60} color="#8b5cf6" />
+                <Text style={styles.comingSoonTitle}>Coming Soon!</Text>
+                <Text style={styles.comingSoonText}>
+                  Raid battles will be available in the next update.
+                </Text>
+                <TouchableOpacity 
+                  style={styles.closeButton}
+                  onPress={() => setActiveOverlay(null)}
+                >
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        </Modal>
+      )}
+
+      {/* Ability Deck Overlay */}
+      <AbilityDeckOverlay
+        visible={showAbilityDeck}
+        onClose={() => setShowAbilityDeck(false)}
+      />
+    </SafeAreaView>
+  );
 
   // Level-up explosion attack
   const triggerLevelUpExplosion = useCallback(() => {
