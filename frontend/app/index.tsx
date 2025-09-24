@@ -95,6 +95,47 @@ export default function NinjaIdleGame() {
     }
   }, [ninja?.level, previousLevel, handleLevelUpExplosion]);
 
+  // Boss battle handlers
+  const startBossBattle = useCallback((boss: Boss, tier: BossTier) => {
+    console.log('🐉 Starting boss battle:', boss.name, tier.name);
+    
+    // Store the current overlay state to restore later
+    setPreviousOverlay(activeOverlay);
+    
+    // Close all overlays and start boss battle
+    setActiveOverlay(null);
+    setCurrentBossBattle({ boss, tier });
+    setIsBossBattleActive(true);
+  }, [activeOverlay]);
+
+  const endBossBattle = useCallback((victory: boolean) => {
+    console.log('🏆 Boss battle ended:', victory ? 'Victory' : 'Defeat');
+    
+    // End boss battle and restore previous state
+    setIsBossBattleActive(false);
+    setCurrentBossBattle(null);
+    
+    // Restore previous overlay if it was 'bosses'
+    if (previousOverlay === 'bosses') {
+      setActiveOverlay('bosses');
+    }
+    setPreviousOverlay(null);
+  }, [previousOverlay]);
+
+  const escapeBossBattle = useCallback(() => {
+    console.log('🏃 Escaping boss battle');
+    
+    // Same as endBossBattle but for escape
+    setIsBossBattleActive(false);
+    setCurrentBossBattle(null);
+    
+    // Restore previous overlay
+    if (previousOverlay === 'bosses') {
+      setActiveOverlay('bosses');
+    }
+    setPreviousOverlay(null);
+  }, [previousOverlay]);
+
   // XP is now handled directly by CombatContext (10 XP per kill)
   // Removed duplicate XP system to prevent double rewards
 
