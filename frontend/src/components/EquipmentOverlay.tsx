@@ -246,12 +246,11 @@ const styles = StyleSheet.create({
     paddingBottom: 80, // Leave space for bottom tabs
   },
   container: {
-    width: '100%',
-    height: '85%', // Reduced height to ensure bottom tabs are visible
     backgroundColor: '#1f2937',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
+    maxHeight: '85%', // Use maxHeight instead of fixed height
   },
   header: {
     flexDirection: 'row',
