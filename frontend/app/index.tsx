@@ -262,7 +262,6 @@ export default function NinjaIdleGame() {
           totalGoldReward += enemy.reward.gold;
           totalExpReward += enemy.reward.exp;
           killedEnemies++;
-          console.log(`💀 Enemy killed! Gold: +${enemy.reward.gold}, Exp: +${enemy.reward.exp}`);
           return false;
         }
         return true;
@@ -272,9 +271,6 @@ export default function NinjaIdleGame() {
       
       // Update ninja stats immediately within the same state update
       if (totalGoldReward > 0 || totalExpReward > 0) {
-        console.log(`🎯 Updating ninja: Gold: +${totalGoldReward}, Exp: +${totalExpReward}`);
-        console.log(`🎯 Current ninja exp: ${ninja.experience}, new exp will be: ${ninja.experience + totalExpReward}`);
-        
         setTimeout(() => {
           updateNinja({
             gold: ninja.gold + totalGoldReward,
