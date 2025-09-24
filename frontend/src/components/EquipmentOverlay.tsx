@@ -244,19 +244,16 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 80, // Stop 80px from bottom to leave space for tabs
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'flex-end',
-    paddingBottom: 80, // Padding to push content up from bottom tabs
-    pointerEvents: 'none', // Allow clicks to pass through overlay background
   },
   container: {
     backgroundColor: '#1f2937',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
-    maxHeight: '80%', // Ensure container doesn't cover bottom area
-    pointerEvents: 'auto', // Enable clicks on the actual content
+    maxHeight: '90%', // Use available height
   },
   header: {
     flexDirection: 'row',
