@@ -60,56 +60,8 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose, onSt
       return;
     }
 
-    // Set up the boss battle screen
-    setCurrentBossBattle({ boss, tier: bossTier });
-    setBattleScreenVisible(true);
-  };
-
-  // Handle battle completion from the dedicated screen
-  const handleBattleComplete = async (victory: boolean) => {
-    setBattleScreenVisible(false);
-    setCurrentBossBattle(null);
-    
-    if (!currentBossBattle) return;
-    
-    const { boss, tier } = currentBossBattle;
-    
-    // Consume ticket regardless of outcome
-    setIsFighting(true);
-    
-    try {
-      // Simulate the battle result for rewards (since the visual battle was just for show)
-      const result = await fightBoss(boss.id, tier.tier);
-      
-      let alertMessage = result.message;
-      if (result.victory) {
-        alertMessage += `\n\n💰 Gold: +${result.rewards.gold}`;
-        alertMessage += `\n⭐ XP: +${result.rewards.experience}`;
-        
-        if (result.rewards.equipment) {
-          alertMessage += `\n⚔️ Equipment: ${result.rewards.equipment.name}`;
-        }
-        
-        const materialRewards = Object.entries(result.rewards.materials)
-          .filter(([_, quantity]) => quantity > 0)
-          .map(([material, quantity]) => `${quantity}x ${material.replace('_', ' ')}`)
-          .join(', ');
-        
-        if (materialRewards) {
-          alertMessage += `\n🔸 Materials: ${materialRewards}`;
-        }
-      }
-      
-      Alert.alert(
-        result.victory ? '🏆 Victory!' : '💀 Defeat',
-        alertMessage,
-        [{ text: 'OK', onPress: () => setSelectedTier(null) }]
-      );
-    } catch (error) {
-      Alert.alert('Error', 'Boss fight failed');
-    } finally {
-      setIsFighting(false);
-    }
+    // Launch the boss battle at the main game level
+    onStartBattle(boss, bossTier);
   };
 
   // Render boss card
