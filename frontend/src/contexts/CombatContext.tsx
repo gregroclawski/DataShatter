@@ -147,12 +147,21 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       // Remove dead enemies
       newState.enemies = newState.enemies.filter(enemy => enemy.health > 0);
 
-      // Maintain 10 enemies on screen
+      // Maintain 10 enemies on screen with slower respawn to prevent chaos
       const MAX_ENEMIES = 10;
+      const MIN_SPAWN_DELAY = 500; // Minimum 500ms between spawns
+      const now = Date.now();
+      
+      // Add respawn cooldown tracking
+      if (!newState.lastSpawnTime) {
+        newState.lastSpawnTime = now;
+      }
+      
       console.log(`🐛 Enemy spawn check: Current=${newState.enemies.length}, Max=${MAX_ENEMIES}`);
-      while (newState.enemies.length < MAX_ENEMIES) {
+      if (newState.enemies.length < MAX_ENEMIES && (now - newState.lastSpawnTime) >= MIN_SPAWN_DELAY) {
         console.log(`🐛 Spawning enemy ${newState.enemies.length + 1}/${MAX_ENEMIES}`);
         spawnTestEnemy(newState);
+        newState.lastSpawnTime = now;
       }
 
       return newState;
