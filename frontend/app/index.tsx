@@ -491,6 +491,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0f172a',
+    position: 'relative', // Establish stacking context for overlays
   },
   loadingContainer: {
     justifyContent: 'center',
