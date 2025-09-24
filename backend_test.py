@@ -495,6 +495,7 @@ class NinjaGameAPITester:
             self.test_save_game,
             self.test_load_game,
             self.test_load_nonexistent_game,
+            self.test_extreme_level_progression,  # Added extreme level test
             self.test_generate_shuriken,
             self.test_generate_pet,
             self.test_leaderboard,
