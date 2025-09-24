@@ -666,6 +666,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     zIndex: 1000, // High z-index to appear above overlays
     position: 'relative', // Ensure z-index takes effect
+    elevation: 10, // Android-style elevation for React Native Web compatibility
   },
   tabButton: {
     flex: 1,
