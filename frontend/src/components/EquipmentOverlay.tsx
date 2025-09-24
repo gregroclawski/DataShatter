@@ -240,13 +240,14 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
 
 const styles = StyleSheet.create({
   overlay: {
-    position: 'absolute',
+    position: 'fixed',
     top: 0,
     left: 0,
     right: 0,
-    height: 'calc(100% - 80px)', // Use calc to ensure proper height calculation
+    bottom: 80, // Fixed positioning should work better than absolute
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'flex-end',
+    zIndex: 1000, // Ensure it's above other content but below tabs
   },
   container: {
     backgroundColor: '#1f2937',
