@@ -207,6 +207,7 @@ const styles = StyleSheet.create({
     padding: 16,
     maxHeight: '80%',
     minHeight: '50%',
+    pointerEvents: 'auto', // Ensure overlay content can receive clicks
   },
   header: {
     flexDirection: 'row',
