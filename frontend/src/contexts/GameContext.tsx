@@ -463,7 +463,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   const collectIdleRewards = () => {
     const now = Date.now();
-    const timeDiff = now - gameState.lastSaveTime;
+    const timeDiff = now - lastSaveTimeRef.current; // Use ref instead of gameState
     const hoursAway = Math.floor(timeDiff / (1000 * 60 * 60));
     
     if (hoursAway > 0) {
