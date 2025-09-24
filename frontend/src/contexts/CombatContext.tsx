@@ -10,6 +10,7 @@ interface CombatState {
   abilityManager: AbilityManager;
   statusEffects: StatusEffectManager;
   playerStats: CombatStats;
+  lastSpawnTime?: number;
 }
 
 interface CombatEnemy {
