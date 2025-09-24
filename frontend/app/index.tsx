@@ -47,6 +47,11 @@ export default function NinjaIdleGame() {
   const [totalKills, setTotalKills] = useState(0);
   const [lastProcessedKill, setLastProcessedKill] = useState(0);
   
+  // Boss battle state
+  const [isBossBattleActive, setIsBossBattleActive] = useState(false);
+  const [currentBossBattle, setCurrentBossBattle] = useState<{boss: Boss, tier: BossTier} | null>(null);
+  const [previousOverlay, setPreviousOverlay] = useState<ActiveOverlay>(null);
+  
   // Auto-movement system for ninja - start in bottom left corner so ninja has to move
   const [ninjaPosition, setNinjaPosition] = useState({
     x: 50, // Start in bottom left corner
