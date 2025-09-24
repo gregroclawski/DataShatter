@@ -246,10 +246,11 @@ const styles = StyleSheet.create({
     paddingBottom: 80, // Leave space for bottom tabs
   },
   container: {
-    width: '95%',
-    height: '90%', // Can use 90% now since overlay doesn't cover bottom
+    width: '100%',
+    height: '85%', // Reduced height to ensure bottom tabs are visible
     backgroundColor: '#1f2937',
-    borderRadius: 12,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     padding: 16,
   },
   header: {
