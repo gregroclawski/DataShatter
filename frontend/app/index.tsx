@@ -88,7 +88,7 @@ export default function NinjaIdleGame() {
   useEffect(() => {
     if (totalKills > lastProcessedKill) {
       const newKills = totalKills - lastProcessedKill;
-      const xpPerKill = 50;
+      const xpPerKill = 10; // Reduced from 50 to 10
       const goldPerKill = 10;
       
       const totalXP = newKills * xpPerKill;
