@@ -511,56 +511,6 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       enemies: prev.enemies.filter(enemy => enemy.id !== enemyId)
     }));
   };
-
-  // Enhanced enemy spawning function
-  const spawnEnemy = (position?: { x: number; y: number }): CombatEnemy => {
-    const SCREEN_WIDTH = 390;
-    const GAME_AREA_HEIGHT = 844 - 250;
-    const ENEMY_SIZE = 35;
-    
-    // Use provided position or generate random position
-    const x = position?.x ?? Math.random() * (SCREEN_WIDTH - ENEMY_SIZE * 2) + ENEMY_SIZE;
-    const y = position?.y ?? Math.random() * (GAME_AREA_HEIGHT - ENEMY_SIZE * 2) + ENEMY_SIZE;
-    
-    const enemy: CombatEnemy = {
-      id: `enemy_${++enemyCounter}`,
-      name: 'Test Orc',
-      health: 100,
-      maxHealth: 100,
-      stats: {
-        attack: 30,
-        defense: 10,
-        critChance: 5,
-        cooldownReduction: 0
-      },
-      position: { x, y },
-      lastDamaged: 0,
-    };
-    
-    setCombatState(prev => ({
-      ...prev,
-      enemies: [...prev.enemies, enemy]
-    }));
-    
-    return enemy;
-  };
-
-  // Spawn boss enemy function
-  const spawnBoss = (bossEnemy: CombatEnemy) => {
-    console.log(`🐉 Spawning boss: ${bossEnemy.name}`);
-    setCombatState(prev => ({
-      ...prev,
-      enemies: [...prev.enemies, bossEnemy]
-    }));
-  };
-
-  // Clear specific enemy by ID
-  const clearSpecificEnemy = (enemyId: string) => {
-    setCombatState(prev => ({
-      ...prev,
-      enemies: prev.enemies.filter(enemy => enemy.id !== enemyId)
-    }));
-  };
   useEffect(() => {
     combatEngine.start();
     
