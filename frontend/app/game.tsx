@@ -246,16 +246,21 @@ export default function GameScreen() {
   useEffect(() => {
     // Always run the game loop, but auto-fighting controls behavior
     gameLoopRef.current = setInterval(() => {
-      if (localGameState.isAutoFighting) {
-        autoMoveToEnemy();
-      }
       attackNearbyEnemies();
       updateEnemyAI();
       autoSpawnEnemies(); // Always spawn enemies to maintain count
     }, 200); // Faster game loop (200ms instead of 500ms)
 
+    // Separate timer for smoother auto-movement
+    spawnTimerRef.current = setInterval(() => {
+      if (localGameState.isAutoFighting) {
+        autoMoveToEnemy();
+      }
+    }, 800); // Less frequent movement for smoother animation
+
     return () => {
       if (gameLoopRef.current) clearInterval(gameLoopRef.current);
+      if (spawnTimerRef.current) clearInterval(spawnTimerRef.current);
     };
   }, [localGameState.isAutoFighting, localGameState.enemies.length, localGameState.ninjaPosition]);
 
