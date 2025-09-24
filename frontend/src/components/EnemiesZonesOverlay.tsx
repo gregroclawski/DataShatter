@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '95%',
-    height: '90%', // Can use 90% now since overlay doesn't cover bottom
+    height: '90%', // Use available height in the constrained space
     backgroundColor: '#1f2937',
     borderRadius: 12,
     padding: 16,
