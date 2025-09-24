@@ -31,6 +31,7 @@ interface CombatContextType {
   getAvailableAbilities: () => any[];
   upgradeAbility: (abilityId: string) => boolean;
   clearAllEnemies: () => void; // For level-up explosion
+  triggerLevelUpExplosion: () => void; // Trigger explosion from combat context
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
