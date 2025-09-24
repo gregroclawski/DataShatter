@@ -173,7 +173,7 @@ export default function NinjaIdleGame() {
 
   // Listen for combat logs and count kills
 
-  // Listen for combat logs and count kills
+  // Listen for combat logs and count kills + detect attacks
   useEffect(() => {
     const originalConsoleLog = console.log;
     console.log = (...args) => {
@@ -188,6 +188,19 @@ export default function NinjaIdleGame() {
           console.log(`🎯 Kill count updated: ${newTotal}`);
           return newTotal;
         });
+      }
+      
+      // Detect when ninja is attacking (ability cast or projectile creation)
+      if (message.includes('cast!') || message.includes('Creating projectile')) {
+        setIsAttacking(true);
+        setLastAttackTime(Date.now());
+        console.log('⚔️ Ninja is attacking - stopping movement');
+        
+        // Stop attacking after a short duration
+        setTimeout(() => {
+          setIsAttacking(false);
+          console.log('🏃 Attack finished - resuming movement');
+        }, 1000); // Stop moving for 1 second during attack
       }
     };
     
