@@ -41,6 +41,8 @@ export const useCombat = (): CombatContextType => {
   return context;
 };
 
+let enemyCounter = 0; // Global counter for unique enemy IDs
+
 export const CombatProvider = ({ children }: { children: ReactNode }) => {
   
   const [combatState, setCombatState] = useState<CombatState>({
