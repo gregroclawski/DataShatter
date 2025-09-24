@@ -8,8 +8,11 @@ import {
   canUpgradeEquipment,
   generateEquipment,
   EquipmentRarity,
-  EQUIPMENT_TEMPLATES
+  EQUIPMENT_TEMPLATES,
+  UpgradeMaterial
 } from '../data/EquipmentData';
+import { useMaterials } from './MaterialsContext';
+import { useGame } from './GameContext';
 
 interface EquipmentInventory {
   equipped: Record<EquipmentSlot, Equipment | null>;
