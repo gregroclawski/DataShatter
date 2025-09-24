@@ -82,6 +82,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   });
   
   const [projectiles, setProjectiles] = useState<CombatProjectile[]>([]);
+  const [ninjaPosition, setNinjaPosition] = useState<{x: number, y: number}>({ x: 195, y: 297 }); // Default center position
 
   // Function to handle enemy kills - just log for now, main component will handle rewards
   const handleEnemyKill = (enemy: CombatEnemy) => {
