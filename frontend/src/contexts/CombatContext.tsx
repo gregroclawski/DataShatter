@@ -110,7 +110,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
       // Maintain 10 enemies on screen
       const MAX_ENEMIES = 10;
+      console.log(`🐛 Enemy spawn check: Current=${newState.enemies.length}, Max=${MAX_ENEMIES}`);
       while (newState.enemies.length < MAX_ENEMIES) {
+        console.log(`🐛 Spawning enemy ${newState.enemies.length + 1}/${MAX_ENEMIES}`);
         spawnTestEnemy(newState);
       }
 
