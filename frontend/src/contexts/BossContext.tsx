@@ -117,6 +117,11 @@ export const BossProvider = ({ children }: { children: ReactNode }) => {
 
   // Check if player can fight a specific boss tier
   const canFightBoss = (bossType: BossType, tier: number): boolean => {
+    // Check if ninja data is available
+    if (!ninja) {
+      return false; // No ninja data available
+    }
+    
     const bossProgress = dailyBossState.bossProgress[bossType];
     const bossTier = getBossTier(bossType, tier);
     
