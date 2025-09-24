@@ -198,6 +198,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const growthRate = 1.05;
     const expRequired = Math.floor(baseExp * Math.pow(growthRate, level - 1));
     
+    console.log(`📊 calculateExpForLevel(${level}) = ${expRequired}`);
+    
     // Cap at reasonable maximum
     return Math.min(expRequired, 1000000);
   };
