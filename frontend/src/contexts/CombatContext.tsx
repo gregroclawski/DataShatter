@@ -187,7 +187,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     const y = Math.random() * (GAME_AREA_HEIGHT - ENEMY_SIZE * 2) + ENEMY_SIZE; // Avoid edges
     
     const enemy: CombatEnemy = {
-      id: `enemy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `enemy_${++enemyCounter}`,
       name: 'Test Orc',
       health: 100,
       maxHealth: 100,
