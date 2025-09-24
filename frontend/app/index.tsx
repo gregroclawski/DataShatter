@@ -60,36 +60,42 @@ export default function NinjaIdleGame() {
     }
   }, [ninja?.level, previousLevel, triggerLevelUpExplosion]);
 
-  // Track enemy count and award XP when enemies die
+  // Simple XP system - set to correct values directly
   useEffect(() => {
-    const currentEnemyCount = combatState.enemies.length;
+    // Set XP based on total kills (50 XP per kill)
+    const expectedXP = totalKills * 50;
+    const expectedGold = 100 + (totalKills * 10); // Starting gold 100 + 10 per kill
     
-    console.log(`🔍 Enemy Count Check: Previous: ${previousEnemyCount}, Current: ${currentEnemyCount}`);
-    
-    // If enemy count decreased, award XP for killed enemies
-    if (previousEnemyCount > currentEnemyCount) {
-      const enemiesKilled = previousEnemyCount - currentEnemyCount;
-      const baseXPPerEnemy = 50; // 50 XP per enemy
-      const goldPerEnemy = 10; // 10 gold per enemy
-      
-      const totalXP = enemiesKilled * baseXPPerEnemy;
-      const totalGold = enemiesKilled * goldPerEnemy;
-      
-      console.log(`🎯 ${enemiesKilled} enemies killed! Rewarding ${totalXP} XP and ${totalGold} gold`);
-      
-      updateNinja((prev) => {
-        const newXP = prev.experience + totalXP;
-        const newGold = prev.gold + totalGold;
-        console.log(`📊 XP Update: ${prev.experience} + ${totalXP} = ${newXP} (${newXP}/${prev.experienceToNext})`);
-        return {
-          experience: newXP,
-          gold: newGold,
-        };
+    if (ninja.experience !== expectedXP || ninja.gold !== expectedGold) {
+      console.log(`📊 Correcting XP: Setting to ${expectedXP} XP, ${expectedGold} gold (${totalKills} kills)`);
+      updateNinja({
+        experience: expectedXP,
+        gold: expectedGold,
       });
     }
+  }, [totalKills, ninja.experience, ninja.gold, updateNinja]);
+
+  // Listen for combat logs and count kills
+  useEffect(() => {
+    const originalConsoleLog = console.log;
+    console.log = (...args) => {
+      originalConsoleLog(...args);
+      
+      // Check for enemy kill messages
+      const message = args.join(' ');
+      if (message.includes('Enemy killed! Max HP:')) {
+        setTotalKills(prev => {
+          const newTotal = prev + 1;
+          console.log(`🎯 Kill count updated: ${newTotal}`);
+          return newTotal;
+        });
+      }
+    };
     
-    setPreviousEnemyCount(currentEnemyCount);
-  }, [combatState.enemies.length, previousEnemyCount, updateNinja]);
+    return () => {
+      console.log = originalConsoleLog;
+    };
+  }, []);
 
   // Start combat when component mounts
   useEffect(() => {
