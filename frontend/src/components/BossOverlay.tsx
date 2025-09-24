@@ -262,56 +262,72 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose }) =>
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>
-          {selectedBoss ? (selectedTier ? 'Boss Battle' : selectedBoss.name) : 'Boss Battles'}
-        </Text>
-        <TouchableOpacity 
-          onPress={() => {
-            if (selectedTier) {
-              setSelectedTier(null);
-            } else if (selectedBoss) {
-              setSelectedBoss(null);
-            } else {
-              onClose();
-            }
-          }} 
-          style={styles.closeButton}
-        >
-          <Ionicons name={selectedBoss || selectedTier ? "arrow-back" : "close"} size={24} color="#e5e7eb" />
-        </TouchableOpacity>
+    <>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>
+            {selectedBoss ? (selectedTier ? 'Boss Battle' : selectedBoss.name) : 'Boss Battles'}
+          </Text>
+          <TouchableOpacity 
+            onPress={() => {
+              if (selectedTier) {
+                setSelectedTier(null);
+              } else if (selectedBoss) {
+                setSelectedBoss(null);
+              } else {
+                onClose();
+              }
+            }} 
+            style={styles.closeButton}
+          >
+            <Ionicons name={selectedBoss || selectedTier ? "arrow-back" : "close"} size={24} color="#e5e7eb" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Tickets Info */}
+        {!selectedBoss && renderTicketsInfo()}
+
+        <ScrollView style={styles.content}>
+          {!selectedBoss ? (
+            // Boss selection view
+            <View style={styles.bossesContainer}>
+              {availableBosses.map(boss => renderBossCard(boss))}
+            </View>
+          ) : (
+            // Boss details view
+            <View style={styles.bossDetails}>
+              <View style={styles.bossDetailHeader}>
+                <Text style={styles.bossDetailIcon}>{selectedBoss.icon}</Text>
+                <View style={styles.bossDetailInfo}>
+                  <Text style={styles.bossDetailName}>{selectedBoss.name}</Text>
+                  <Text style={styles.bossDetailLocation}>{selectedBoss.location}</Text>
+                  <Text style={styles.bossDetailElement}>{selectedBoss.element} Element</Text>
+                </View>
+              </View>
+              
+              <Text style={styles.bossDetailDescription}>{selectedBoss.description}</Text>
+              
+              <Text style={styles.tiersTitle}>Boss Tiers</Text>
+              {selectedBoss.tiers.map(tier => renderBossTier(selectedBoss, tier))}
+            </View>
+          )}
+        </ScrollView>
       </View>
 
-      {/* Tickets Info */}
-      {!selectedBoss && renderTicketsInfo()}
-
-      <ScrollView style={styles.content}>
-        {!selectedBoss ? (
-          // Boss selection view
-          <View style={styles.bossesContainer}>
-            {availableBosses.map(boss => renderBossCard(boss))}
-          </View>
-        ) : (
-          // Boss details view
-          <View style={styles.bossDetails}>
-            <View style={styles.bossDetailHeader}>
-              <Text style={styles.bossDetailIcon}>{selectedBoss.icon}</Text>
-              <View style={styles.bossDetailInfo}>
-                <Text style={styles.bossDetailName}>{selectedBoss.name}</Text>
-                <Text style={styles.bossDetailLocation}>{selectedBoss.location}</Text>
-                <Text style={styles.bossDetailElement}>{selectedBoss.element} Element</Text>
-              </View>
-            </View>
-            
-            <Text style={styles.bossDetailDescription}>{selectedBoss.description}</Text>
-            
-            <Text style={styles.tiersTitle}>Boss Tiers</Text>
-            {selectedBoss.tiers.map(tier => renderBossTier(selectedBoss, tier))}
-          </View>
-        )}
-      </ScrollView>
-    </View>
+      {/* Boss Battle Screen */}
+      {currentBossBattle && (
+        <BossBattleScreen
+          visible={battleScreenVisible}
+          boss={currentBossBattle.boss}
+          tier={currentBossBattle.tier}
+          onComplete={handleBattleComplete}
+          onEscape={() => {
+            setBattleScreenVisible(false);
+            setCurrentBossBattle(null);
+          }}
+        />
+      )}
+    </>
   );
 };
 
