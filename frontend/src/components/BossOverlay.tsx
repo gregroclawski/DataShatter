@@ -5,7 +5,6 @@ import { useBoss } from '../contexts/BossContext';
 import { useGame } from '../contexts/GameContext';
 import { Boss, BossType, BossTier } from '../data/BossData';
 import { RARITY_CONFIG } from '../data/EquipmentData';
-import { BossBattleScreen } from './BossBattleScreen';
 
 interface BossOverlayProps {
   visible: boolean;
