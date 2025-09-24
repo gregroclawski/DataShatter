@@ -573,6 +573,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     startCombat,
     stopCombat,
     equipAbility,
+    handleEnemyKill,
     getDeck,
     getAvailableAbilities,
     upgradeAbility,
@@ -583,6 +584,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     triggerLevelUpExplosion,
     findClosestEnemy,
     updateNinjaPosition,
+    lastExplosionTime,
   };
 
   return (
