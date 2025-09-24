@@ -347,17 +347,17 @@ export default function GameScreen() {
         onTouchEnd={handleTapMovement}
       >
         {/* Ninja Character */}
-        <View
+        <Animated.View
           style={[
             styles.ninja,
             {
-              left: localGameState.ninjaPosition.x - NINJA_SIZE / 2,
-              top: localGameState.ninjaPosition.y - NINJA_SIZE / 2,
+              left: ninjaAnimatedPosition.x,
+              top: ninjaAnimatedPosition.y,
             },
           ]}
         >
           <Ionicons name="person" size={30} color="#8b5cf6" />
-        </View>
+        </Animated.View>
 
         {/* Enemies */}
         {localGameState.enemies.map(enemy => (
