@@ -200,26 +200,13 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
 };
 
 const styles = StyleSheet.create({
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0, // Fill the container
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 500, // Lower z-index so tabs can appear on top
-    paddingBottom: 80, // Push content up to leave space for tabs
-    pointerEvents: 'none', // Allow clicks to pass through the overlay background
-  },
   container: {
-    width: '95%',
-    height: '90%', // Use available height in the constrained space
     backgroundColor: '#1f2937',
-    borderRadius: 12,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     padding: 16,
-    pointerEvents: 'auto', // Allow clicks on the overlay content
+    maxHeight: '80%',
+    minHeight: '50%',
   },
   header: {
     flexDirection: 'row',
