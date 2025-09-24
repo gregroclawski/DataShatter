@@ -29,6 +29,7 @@ interface CombatContextType {
   getDeck: () => AbilityDeck;
   getAvailableAbilities: () => any[];
   upgradeAbility: (abilityId: string) => boolean;
+  setRewardCallback: (callback: (xp: number, gold: number) => void) => void;
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
