@@ -213,7 +213,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     while (currentExp >= currentExpToNext && currentLevel < 15000) {
       currentLevel += 1;
       currentExp -= currentExpToNext;
-      currentExpToNext = calculateExpForLevel(currentLevel);
+      currentExpToNext = calculateExpForLevel(currentLevel + 1); // Fix: Calculate exp for NEXT level
       
       // Add stat bonuses for each level
       updates = {
