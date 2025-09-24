@@ -169,19 +169,19 @@ export default function NinjaIdleGame() {
         </Animated.View>
 
         {/* Enemies */}
-        {localGameState.enemies.map(enemy => (
+        {combatState.enemies.map(enemy => (
           <View
             key={enemy.id}
             style={[
               styles.enemy,
               {
-                left: enemy.x,
-                top: enemy.y,
-                backgroundColor: getEnemyColor(enemy.type),
+                left: enemy.position.x,
+                top: enemy.position.y,
+                backgroundColor: '#ef4444', // Default red color for now
               },
             ]}
           >
-            <Ionicons name={getEnemyIcon(enemy.type)} size={25} color="#ffffff" />
+            <Ionicons name="bug" size={25} color="#ffffff" />
             
             {/* Enemy Health Bar */}
             <View style={styles.enemyHealthBar}>
