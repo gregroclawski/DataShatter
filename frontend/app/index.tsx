@@ -553,13 +553,14 @@ export default function NinjaIdleGame() {
             {activeOverlay === 'stats' && <NinjaStatsOverlay onClose={() => setActiveOverlay(null)} />}
             {activeOverlay === 'shurikens' && <ShurikensOverlay onClose={() => setActiveOverlay(null)} />}
             {activeOverlay === 'pets' && <PetsOverlay onClose={() => setActiveOverlay(null)} />}
-            {activeOverlay === 'training' && <TrainingOverlay onClose={() => setActiveOverlay(null)} />}
-            {(activeOverlay === 'raids' || activeOverlay === 'adventure') && (
+            {activeOverlay === 'skills' && <SkillsOverlay onClose={() => setActiveOverlay(null)} />}
+            {activeOverlay === 'store' && <StoreOverlay onClose={() => setActiveOverlay(null)} />}
+            {activeOverlay === 'raids' && (
               <View style={styles.comingSoonOverlay}>
                 <Ionicons name="construct" size={60} color="#8b5cf6" />
                 <Text style={styles.comingSoonTitle}>Coming Soon!</Text>
                 <Text style={styles.comingSoonText}>
-                  {activeOverlay === 'raids' ? 'Raid battles' : 'Adventure quests'} will be available in the next update.
+                  Raid battles will be available in the next update.
                 </Text>
                 <TouchableOpacity 
                   style={styles.closeButton}
