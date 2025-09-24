@@ -271,6 +271,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0f172a',
   },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    color: '#f8fafc',
+    fontSize: 18,
+    fontWeight: '600',
+  },
   topStatsBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
