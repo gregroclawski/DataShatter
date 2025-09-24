@@ -108,19 +108,41 @@ export default function NinjaIdleGame() {
     setIsBossBattleActive(true);
   }, [activeOverlay]);
 
-  const endBossBattle = useCallback((victory: boolean) => {
+  const endBossBattle = useCallback(async (victory: boolean) => {
     console.log('🏆 Boss battle ended:', victory ? 'Victory' : 'Defeat');
     
-    // End boss battle and restore previous state
+    if (!currentBossBattle) return;
+    
+    const { boss, tier } = currentBossBattle;
+    
+    // End boss battle UI
     setIsBossBattleActive(false);
     setCurrentBossBattle(null);
     
-    // Restore previous overlay if it was 'bosses'
+    // Restore previous overlay
     if (previousOverlay === 'bosses') {
       setActiveOverlay('bosses');
     }
     setPreviousOverlay(null);
-  }, [previousOverlay]);
+    
+    // Handle battle rewards if victory - import BossContext directly here
+    try {
+      const { useBoss } = await import('../src/contexts/BossContext');
+      // This would need to be handled at the component level since we can't use hooks here
+      // For now, we'll just show the result
+      
+      // Show battle result alert
+      Alert.alert(
+        victory ? '🏆 Victory!' : '💀 Defeat',
+        victory 
+          ? `You defeated ${tier.name}! Check the boss overlay for rewards.`
+          : `${tier.name} was too powerful. Try again when stronger!`,
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      console.error('Error handling boss battle result:', error);
+    }
+  }, [currentBossBattle, previousOverlay]);
 
   const escapeBossBattle = useCallback(() => {
     console.log('🏃 Escaping boss battle');
