@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 80, // Stop 80px from bottom to leave space for tabs
+    height: 'calc(100% - 80px)', // Use calc to ensure proper height calculation
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'flex-end',
   },
