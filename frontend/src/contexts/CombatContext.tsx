@@ -205,6 +205,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
   // Update ninja position for accurate projectile origin
   const updateNinjaPosition = (position: {x: number, y: number}) => {
+    console.log(`🎯 Combat context ninja position updated to: (${position.x.toFixed(0)}, ${position.y.toFixed(0)})`);
     setNinjaPosition(position);
   };
 
