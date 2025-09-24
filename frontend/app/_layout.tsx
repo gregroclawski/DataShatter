@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { GameProvider } from '../src/contexts/GameContext';
 import { CombatProvider } from '../src/contexts/CombatContext';
 import { ZoneProvider } from '../src/contexts/ZoneContext';
+import { EquipmentProvider } from '../src/contexts/EquipmentContext';
 
 export default function RootLayout() {
   return (
