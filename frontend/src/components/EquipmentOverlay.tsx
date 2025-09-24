@@ -170,7 +170,7 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
   );
 
   return (
-    <Modal visible={visible} animationType="slide" transparent={true}>
+    {visible && (
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
