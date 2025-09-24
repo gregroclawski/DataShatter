@@ -1,0 +1,426 @@
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export interface NinjaStats {
+  level: number;
+  experience: number;
+  experienceToNext: number;
+  health: number;
+  maxHealth: number;
+  energy: number;
+  maxEnergy: number;
+  attack: number;
+  defense: number;
+  speed: number;
+  luck: number;
+  gold: number;
+  gems: number;
+  skillPoints: number;
+}
+
+export interface Shuriken {
+  id: string;
+  name: string;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+  attack: number;
+  level: number;
+  equipped: boolean;
+}
+
+export interface Pet {
+  id: string;
+  name: string;
+  type: string;
+  level: number;
+  experience: number;
+  happiness: number;
+  strength: number;
+  active: boolean;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+}
+
+export interface Raid {
+  id: string;
+  name: string;
+  boss: string;
+  difficulty: number;
+  rewards: {
+    gold: number;
+    experience: number;
+    items?: string[];
+  };
+  unlocked: boolean;
+  completed: boolean;
+}
+
+export interface Adventure {
+  id: string;
+  name: string;
+  location: string;
+  duration: number; // in minutes
+  requirements: {
+    level?: number;
+    items?: string[];
+  };
+  rewards: {
+    gold: number;
+    experience: number;
+    items?: string[];
+  };
+  active: boolean;
+  startTime?: number;
+}
+
+export interface GameState {
+  ninja: NinjaStats;
+  shurikens: Shuriken[];
+  pets: Pet[];
+  raids: Raid[];
+  adventures: Adventure[];
+  currentAdventure?: Adventure;
+  lastSaveTime: number;
+  isAlive: boolean;
+  achievements: string[];
+  unlockedFeatures: string[];
+}
+
+interface GameContextType {
+  gameState: GameState;
+  updateNinja: (updates: Partial<NinjaStats>) => void;
+  addShuriken: (shuriken: Shuriken) => void;
+  equipShuriken: (id: string) => void;
+  upgradeShuriken: (id: string) => void;
+  addPet: (pet: Pet) => void;
+  setActivePet: (id: string) => void;
+  feedPet: (id: string) => void;
+  trainPet: (id: string) => void;
+  startRaid: (id: string) => void;
+  startAdventure: (id: string) => void;
+  completeAdventure: () => void;
+  reviveNinja: () => void;
+  trainSkill: (skill: string) => void;
+  collectIdleRewards: () => void;
+  saveGame: () => void;
+  loadGame: () => void;
+}
+
+const defaultGameState: GameState = {
+  ninja: {
+    level: 1,
+    experience: 0,
+    experienceToNext: 100,
+    health: 100,
+    maxHealth: 100,
+    energy: 50,
+    maxEnergy: 50,
+    attack: 10,
+    defense: 5,
+    speed: 8,
+    luck: 3,
+    gold: 100,
+    gems: 10,
+    skillPoints: 0,
+  },
+  shurikens: [
+    {
+      id: '1',
+      name: 'Training Shuriken',
+      rarity: 'common',
+      attack: 5,
+      level: 1,
+      equipped: true,
+    },
+  ],
+  pets: [],
+  raids: [
+    {
+      id: '1',
+      name: 'Forest Guardian',
+      boss: 'Shadow Wolf',
+      difficulty: 1,
+      rewards: { gold: 50, experience: 25 },
+      unlocked: true,
+      completed: false,
+    },
+  ],
+  adventures: [
+    {
+      id: '1',
+      name: 'Herb Gathering',
+      location: 'Mystic Forest',
+      duration: 5,
+      requirements: { level: 1 },
+      rewards: { gold: 20, experience: 10 },
+      active: false,
+    },
+  ],
+  lastSaveTime: Date.now(),
+  isAlive: true,
+  achievements: [],
+  unlockedFeatures: ['stats', 'shurikens'],
+};
+
+const GameContext = createContext<GameContextType | undefined>(undefined);
+
+export const useGame = () => {
+  const context = useContext(GameContext);
+  if (!context) {
+    throw new Error('useGame must be used within a GameProvider');
+  }
+  return context;
+};
+
+export const GameProvider = ({ children }: { children: ReactNode }) => {
+  const [gameState, setGameState] = useState<GameState>(defaultGameState);
+
+  useEffect(() => {
+    loadGame();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      saveGame();
+      collectIdleRewards();
+    }, 30000); // Auto-save every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [gameState]);
+
+  const saveGame = async () => {
+    try {
+      const saveData = {
+        ...gameState,
+        lastSaveTime: Date.now(),
+      };
+      await AsyncStorage.setItem('ninjaGameSave', JSON.stringify(saveData));
+    } catch (error) {
+      console.error('Failed to save game:', error);
+    }
+  };
+
+  const loadGame = async () => {
+    try {
+      const savedData = await AsyncStorage.getItem('ninjaGameSave');
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        setGameState(parsedData);
+      }
+    } catch (error) {
+      console.error('Failed to load game:', error);
+    }
+  };
+
+  const updateNinja = (updates: Partial<NinjaStats>) => {
+    setGameState(prev => ({
+      ...prev,
+      ninja: { ...prev.ninja, ...updates }
+    }));
+  };
+
+  const addShuriken = (shuriken: Shuriken) => {
+    setGameState(prev => ({
+      ...prev,
+      shurikens: [...prev.shurikens, shuriken]
+    }));
+  };
+
+  const equipShuriken = (id: string) => {
+    setGameState(prev => ({
+      ...prev,
+      shurikens: prev.shurikens.map(shuriken => ({
+        ...shuriken,
+        equipped: shuriken.id === id
+      }))
+    }));
+  };
+
+  const upgradeShuriken = (id: string) => {
+    setGameState(prev => ({
+      ...prev,
+      shurikens: prev.shurikens.map(shuriken =>
+        shuriken.id === id
+          ? { 
+              ...shuriken, 
+              level: shuriken.level + 1,
+              attack: shuriken.attack + Math.floor(shuriken.attack * 0.2)
+            }
+          : shuriken
+      ),
+      ninja: {
+        ...prev.ninja,
+        gold: prev.ninja.gold - (50 * prev.shurikens.find(s => s.id === id)?.level || 1)
+      }
+    }));
+  };
+
+  const addPet = (pet: Pet) => {
+    setGameState(prev => ({
+      ...prev,
+      pets: [...prev.pets, pet]
+    }));
+  };
+
+  const setActivePet = (id: string) => {
+    setGameState(prev => ({
+      ...prev,
+      pets: prev.pets.map(pet => ({
+        ...pet,
+        active: pet.id === id
+      }))
+    }));
+  };
+
+  const feedPet = (id: string) => {
+    setGameState(prev => ({
+      ...prev,
+      pets: prev.pets.map(pet =>
+        pet.id === id
+          ? { ...pet, happiness: Math.min(100, pet.happiness + 10) }
+          : pet
+      ),
+      ninja: { ...prev.ninja, gold: prev.ninja.gold - 10 }
+    }));
+  };
+
+  const trainPet = (id: string) => {
+    setGameState(prev => ({
+      ...prev,
+      pets: prev.pets.map(pet =>
+        pet.id === id
+          ? { 
+              ...pet, 
+              experience: pet.experience + 20,
+              level: pet.experience >= pet.level * 100 ? pet.level + 1 : pet.level,
+              strength: pet.experience >= pet.level * 100 ? pet.strength + 5 : pet.strength
+            }
+          : pet
+      ),
+      ninja: { ...prev.ninja, gold: prev.ninja.gold - 25 }
+    }));
+  };
+
+  const startRaid = (id: string) => {
+    const raid = gameState.raids.find(r => r.id === id);
+    if (raid && gameState.ninja.energy >= 10) {
+      const success = Math.random() > 0.3; // 70% success rate
+      if (success) {
+        updateNinja({
+          gold: gameState.ninja.gold + raid.rewards.gold,
+          experience: gameState.ninja.experience + raid.rewards.experience,
+          energy: gameState.ninja.energy - 10
+        });
+        setGameState(prev => ({
+          ...prev,
+          raids: prev.raids.map(r =>
+            r.id === id ? { ...r, completed: true } : r
+          )
+        }));
+      } else {
+        updateNinja({
+          health: Math.max(1, gameState.ninja.health - 20),
+          energy: gameState.ninja.energy - 10
+        });
+      }
+    }
+  };
+
+  const startAdventure = (id: string) => {
+    const adventure = gameState.adventures.find(a => a.id === id);
+    if (adventure && gameState.ninja.energy >= 5) {
+      setGameState(prev => ({
+        ...prev,
+        currentAdventure: { ...adventure, startTime: Date.now(), active: true },
+        ninja: { ...prev.ninja, energy: prev.ninja.energy - 5 }
+      }));
+    }
+  };
+
+  const completeAdventure = () => {
+    if (gameState.currentAdventure) {
+      const rewards = gameState.currentAdventure.rewards;
+      updateNinja({
+        gold: gameState.ninja.gold + rewards.gold,
+        experience: gameState.ninja.experience + rewards.experience
+      });
+      setGameState(prev => ({
+        ...prev,
+        currentAdventure: undefined
+      }));
+    }
+  };
+
+  const reviveNinja = () => {
+    if (gameState.ninja.gems >= 5) {
+      updateNinja({
+        health: gameState.ninja.maxHealth,
+        gems: gameState.ninja.gems - 5
+      });
+      setGameState(prev => ({ ...prev, isAlive: true }));
+    }
+  };
+
+  const trainSkill = (skill: string) => {
+    if (gameState.ninja.skillPoints > 0) {
+      const updates: Partial<NinjaStats> = { skillPoints: gameState.ninja.skillPoints - 1 };
+      
+      switch (skill) {
+        case 'attack':
+          updates.attack = gameState.ninja.attack + 2;
+          break;
+        case 'defense':
+          updates.defense = gameState.ninja.defense + 2;
+          break;
+        case 'speed':
+          updates.speed = gameState.ninja.speed + 1;
+          break;
+        case 'luck':
+          updates.luck = gameState.ninja.luck + 1;
+          break;
+      }
+      
+      updateNinja(updates);
+    }
+  };
+
+  const collectIdleRewards = () => {
+    const now = Date.now();
+    const timeDiff = now - gameState.lastSaveTime;
+    const hoursAway = Math.floor(timeDiff / (1000 * 60 * 60));
+    
+    if (hoursAway > 0) {
+      const goldReward = hoursAway * 10;
+      const expReward = hoursAway * 5;
+      
+      updateNinja({
+        gold: gameState.ninja.gold + goldReward,
+        experience: gameState.ninja.experience + expReward
+      });
+    }
+  };
+
+  const value: GameContextType = {
+    gameState,
+    updateNinja,
+    addShuriken,
+    equipShuriken,
+    upgradeShuriken,
+    addPet,
+    setActivePet,
+    feedPet,
+    trainPet,
+    startRaid,
+    startAdventure,
+    completeAdventure,
+    reviveNinja,
+    trainSkill,
+    collectIdleRewards,
+    saveGame,
+    loadGame,
+  };
+
+  return (
+    <GameContext.Provider value={value}>
+      {children}
+    </GameContext.Provider>
+  );
+};
