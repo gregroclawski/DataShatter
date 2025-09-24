@@ -171,7 +171,7 @@ export default function NinjaIdleGame() {
   };
 
   // Auto-spawn enemies
-  const autoSpawnEnemies = () => {
+  const autoSpawnEnemies = useCallback(() => {
     const targetEnemyCount = 10;
     const currentCount = localGameState.enemies.length;
     
@@ -181,7 +181,7 @@ export default function NinjaIdleGame() {
         setTimeout(() => spawnEnemy(), i * 100);
       }
     }
-  };
+  }, [localGameState.enemies.length]);
 
   // Move ninja with smooth animation
   const moveNinja = (targetX: number, targetY: number) => {
