@@ -133,6 +133,11 @@ export const BossProvider = ({ children }: { children: ReactNode }) => {
       return false; // No tickets remaining
     }
     
+    // Double-check ninja is still available before accessing properties
+    if (!ninja || typeof ninja.level !== 'number') {
+      return false; // Player data not available or invalid
+    }
+    
     if (ninja.level < bossTier.requiredLevel) {
       return false; // Player level too low
     }
