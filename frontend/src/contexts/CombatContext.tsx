@@ -266,6 +266,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     getDeck,
     getAvailableAbilities,
     upgradeAbility,
+    setRewardCallback,
   };
 
   return (
