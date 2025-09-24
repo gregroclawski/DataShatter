@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     bottom: 80, // Stop 80px from bottom
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'flex-end',
-    zIndex: 500, // Lower z-index so tabs can be on top
+    zIndex: 500, // Lower z-index so tabs can appear on top
   },
   container: {
     backgroundColor: '#1f2937',
