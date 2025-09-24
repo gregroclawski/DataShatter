@@ -27,6 +27,9 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose }) =>
   const [selectedTier, setSelectedTier] = useState<BossTier | null>(null);
   const [isFighting, setIsFighting] = useState(false);
 
+  // Add safety check for ninja data availability
+  const { ninja } = useGame();
+
   const availableBosses = getAvailableBosses();
   const ticketsRemaining = getTicketsRemaining();
 
