@@ -94,11 +94,27 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     y: GAME_AREA_HEIGHT - NINJA_SIZE - 50 
   });
 
-  // Function to handle enemy kills - just log for now, main component will handle rewards
+  // Function to handle enemy kills - now integrates with zone progression
   const handleEnemyKill = (enemy: CombatEnemy) => {
     console.log(`🎯 Enemy killed! Max HP: ${enemy.maxHealth}`);
     
-    // Award XP and gold directly using useGame hook
+    // Convert CombatEnemy to CurrentEnemy format for zone progression
+    const zoneEnemy = {
+      id: enemy.id,
+      typeId: 'test_orc', // Default type for test enemies
+      name: enemy.name,
+      icon: '🧌', // Default icon for test enemies
+      hp: 0, // Dead enemy
+      maxHP: enemy.maxHealth,
+      attack: enemy.stats.attack,
+      xp: 10, // XP reward
+      position: enemy.position
+    };
+    
+    // Record the kill for zone progression
+    recordEnemyKill(zoneEnemy);
+    
+    // Award XP and gold directly using useGame hook (keeping existing rewards)
     const xpReward = 10; // Fixed: Changed from 50 to 10 XP per kill
     const goldReward = 10;
     
