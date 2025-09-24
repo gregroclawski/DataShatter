@@ -125,7 +125,7 @@ export default function NinjaIdleGame() {
           <Text style={styles.topStatText}>{ninja.gems}</Text>
         </View>
         <View style={styles.topStat}>
-          <Text style={styles.stageText}>Stage {localGameState.currentStage}</Text>
+          <Text style={styles.stageText}>Stage {combatState.currentTick > 0 ? Math.floor(combatState.currentTick / 100) + 1 : 1}</Text>
         </View>
       </View>
 
