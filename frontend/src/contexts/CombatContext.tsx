@@ -73,7 +73,10 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     
     // Use callback system to reward XP and gold
     if (rewardCallback) {
+      console.log(`📊 Calling reward callback: ${baseXP} XP, ${goldReward} gold`);
       rewardCallback(baseXP, goldReward);
+    } else {
+      console.warn('⚠️  No reward callback set!');
     }
   };
 
