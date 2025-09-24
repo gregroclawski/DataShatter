@@ -455,24 +455,42 @@ export default function NinjaIdleGame() {
         ))}
       </View>
 
-      {/* Overlays */}
-      {activeOverlay && (
-        <Modal visible={true} animationType="slide" transparent>
-          <View style={styles.overlayContainer}>
-            {activeOverlay === 'stats' && <NinjaStatsOverlay onClose={() => setActiveOverlay(null)} />}
-            {activeOverlay === 'pets' && <PetsOverlay onClose={() => setActiveOverlay(null)} />}
-            {activeOverlay === 'skills' && <SkillsOverlay onClose={() => setActiveOverlay(null)} />}
-            {activeOverlay === 'store' && <StoreOverlay onClose={() => setActiveOverlay(null)} />}
-            {activeOverlay === 'zones' && <EnemiesZonesOverlay 
-              visible={true} 
-              onClose={() => setActiveOverlay(null)} 
-            />}
-            {activeOverlay === 'equipment' && <EquipmentOverlay 
-              visible={true} 
-              onClose={() => setActiveOverlay(null)} 
-            />}
-          </View>
-        </Modal>
+      {/* Overlays - positioned absolutely within main container, NO Modal */}
+      {activeOverlay === 'stats' && (
+        <View style={styles.overlayWrapper}>
+          <NinjaStatsOverlay onClose={() => setActiveOverlay(null)} />
+        </View>
+      )}
+      {activeOverlay === 'pets' && (
+        <View style={styles.overlayWrapper}>
+          <PetsOverlay onClose={() => setActiveOverlay(null)} />
+        </View>
+      )}
+      {activeOverlay === 'skills' && (
+        <View style={styles.overlayWrapper}>
+          <SkillsOverlay onClose={() => setActiveOverlay(null)} />
+        </View>
+      )}
+      {activeOverlay === 'store' && (
+        <View style={styles.overlayWrapper}>
+          <StoreOverlay onClose={() => setActiveOverlay(null)} />
+        </View>
+      )}
+      {activeOverlay === 'zones' && (
+        <View style={styles.overlayWrapper}>
+          <EnemiesZonesOverlay 
+            visible={true} 
+            onClose={() => setActiveOverlay(null)} 
+          />
+        </View>
+      )}
+      {activeOverlay === 'equipment' && (
+        <View style={styles.overlayWrapper}>
+          <EquipmentOverlay 
+            visible={true} 
+            onClose={() => setActiveOverlay(null)} 
+          />
+        </View>
       )}
 
       {/* Ability Deck Overlay */}
