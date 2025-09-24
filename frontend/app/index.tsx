@@ -73,7 +73,6 @@ export default function NinjaIdleGame() {
 
   const bottomTabs = [
     { id: 'stats', name: 'Stats', icon: 'person' },
-    { id: 'abilities', name: 'Abilities', icon: 'flash' },
     { id: 'pets', name: 'Pets', icon: 'heart' },
     { id: 'skills', name: 'Skills', icon: 'barbell' },
     { id: 'store', name: 'Store', icon: 'storefront' },
