@@ -219,6 +219,10 @@ export default function NinjaIdleGame() {
         setLastAttackTime(Date.now());
         console.log('⚔️ Ninja is attacking - stopping movement');
         
+        // Update ninja position in combat context RIGHT BEFORE projectile creation
+        updateNinjaPosition({ x: ninjaPosition.x, y: ninjaPosition.y });
+        console.log(`🎯 Updated combat ninja position for attack: (${ninjaPosition.x.toFixed(0)}, ${ninjaPosition.y.toFixed(0)})`);
+        
         // Stop attacking after a short duration
         setTimeout(() => {
           setIsAttacking(false);
