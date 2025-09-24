@@ -335,10 +335,7 @@ export default function NinjaIdleGame() {
 
   // Game loop
   useEffect(() => {
-    console.log('🎮 Game loop starting...');
-    
     gameLoopRef.current = setInterval(() => {
-      console.log('⚔️ Game loop tick - calling attackNearbyEnemies');
       attackNearbyEnemies();
       updateEnemyAI();
       autoSpawnEnemies();
@@ -351,7 +348,6 @@ export default function NinjaIdleGame() {
     }, 800);
 
     return () => {
-      console.log('🛑 Cleaning up game loop');
       if (gameLoopRef.current) clearInterval(gameLoopRef.current);
       if (spawnTimerRef.current) clearInterval(spawnTimerRef.current);
     };
