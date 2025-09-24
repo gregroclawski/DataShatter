@@ -303,23 +303,35 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   const triggerLevelUpExplosion = () => {
     console.log('💥 LEVEL UP EXPLOSION TRIGGERED IN COMBAT CONTEXT!');
     
-    // Award XP for each enemy killed by explosion
-    const enemyCount = combatState.enemies.length;
-    const explosionXP = enemyCount * 25; // 25 XP per enemy
-    const explosionGold = enemyCount * 5; // 5 gold per enemy
-    
-    console.log(`💥 Explosion killing ${enemyCount} enemies, awarding ${explosionXP} XP and ${explosionGold} gold`);
-    
-    // Award XP using updateNinja
-    if (explosionXP > 0) {
-      updateNinja((prev) => ({
-        experience: prev.experience + explosionXP,
-        gold: prev.gold + explosionGold,
+    setCombatState(prev => {
+      // Calculate rewards for all current enemies
+      const enemyCount = prev.enemies.length;
+      const explosionXP = enemyCount * 25; // 25 XP per enemy
+      const explosionGold = enemyCount * 5; // 5 gold per enemy
+      
+      console.log(`💥 Explosion killing ${enemyCount} enemies, awarding ${explosionXP} XP and ${explosionGold} gold`);
+      
+      // Award XP using updateNinja if there are enemies to kill
+      if (explosionXP > 0) {
+        updateNinja((ninja) => ({
+          experience: ninja.experience + explosionXP,
+          gold: ninja.gold + explosionGold,
+        }));
+      }
+      
+      // Actually damage all enemies to 0 health instead of just clearing them
+      // This will trigger the normal kill processing in the next tick
+      const damagedEnemies = prev.enemies.map(enemy => ({
+        ...enemy,
+        health: 0, // Set health to 0 to trigger normal kill processing
+        lastDamaged: combatEngine.getCurrentTick()
       }));
-    }
-    
-    // Clear all enemies
-    clearAllEnemies();
+      
+      return {
+        ...prev,
+        enemies: damagedEnemies
+      };
+    });
   };
 
   // Initialize combat engine
