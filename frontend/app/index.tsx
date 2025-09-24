@@ -376,9 +376,9 @@ export default function NinjaIdleGame() {
     { id: 'stats', name: 'Stats', icon: 'person' },
     { id: 'shurikens', name: 'Weapons', icon: 'flash' },
     { id: 'pets', name: 'Pets', icon: 'heart' },
-    { id: 'training', name: 'Training', icon: 'barbell' },
+    { id: 'skills', name: 'Skills', icon: 'barbell' },
+    { id: 'store', name: 'Store', icon: 'storefront' },
     { id: 'raids', name: 'Raids', icon: 'nuclear' },
-    { id: 'adventure', name: 'Quest', icon: 'map' },
   ];
 
   return (
