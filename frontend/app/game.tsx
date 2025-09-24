@@ -119,15 +119,29 @@ export default function GameScreen() {
     }
   };
 
-  // Move ninja towards target position
+  // Move ninja towards target position with smooth animation
   const moveNinja = (targetX: number, targetY: number) => {
     const newX = Math.max(NINJA_SIZE / 2, Math.min(SCREEN_WIDTH - NINJA_SIZE / 2, targetX));
     const newY = Math.max(NINJA_SIZE / 2, Math.min(GAME_AREA_HEIGHT - NINJA_SIZE / 2, targetY));
     
+    // Update state for collision detection
     setLocalGameState(prev => ({
       ...prev,
       ninjaPosition: { x: newX, y: newY },
     }));
+
+    // Calculate distance for animation duration
+    const currentX = localGameState.ninjaPosition.x - NINJA_SIZE / 2;
+    const currentY = localGameState.ninjaPosition.y - NINJA_SIZE / 2;
+    const distance = Math.sqrt(Math.pow(newX - NINJA_SIZE / 2 - currentX, 2) + Math.pow(newY - NINJA_SIZE / 2 - currentY, 2));
+    const duration = Math.min(1000, Math.max(200, distance * 3)); // Scale duration with distance
+
+    // Smooth animation to new position
+    Animated.timing(ninjaAnimatedPosition, {
+      toValue: { x: newX - NINJA_SIZE / 2, y: newY - NINJA_SIZE / 2 },
+      duration: duration,
+      useNativeDriver: false,
+    }).start();
   };
 
   // Calculate distance between two points
