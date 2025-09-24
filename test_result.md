@@ -116,6 +116,9 @@ backend:
         - working: true
           agent: "testing"
           comment: "GET /api/ endpoint working correctly, returns proper API identification message"
+        - working: true
+          agent: "testing"
+          comment: "Re-tested after level-up system fixes - Health check still working perfectly"
 
   - task: "Save Game Functionality"
     implemented: true
@@ -128,6 +131,9 @@ backend:
         - working: true
           agent: "testing"
           comment: "POST /api/save-game successfully saves complex ninja game data including stats, shurikens, pets, and achievements. Handles both new saves and updates correctly"
+        - working: true
+          agent: "testing"
+          comment: "Re-tested with high-level ninja data (Level 87, 15750 XP, 261 skill points) - Backend successfully handles level-up system progression data including large XP values and accumulated skill points"
 
   - task: "Load Game Functionality"
     implemented: true
@@ -140,6 +146,21 @@ backend:
         - working: true
           agent: "testing"
           comment: "GET /api/load-game/{player_id} correctly loads saved game data and returns null for non-existent players. All data integrity maintained"
+        - working: true
+          agent: "testing"
+          comment: "Re-tested with high-level progression data - Successfully loads and maintains integrity of Level 87 ninja with 15750 XP and 261 skill points. Level-up system data persistence verified"
+
+  - task: "Extreme Level Progression Support"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "NEW TEST: Backend successfully handles extreme level values (Level 999, 999999 XP, 2997 skill points). Save/load operations work correctly with large progression values, confirming robust support for level-up system requirements"
 
   - task: "Shuriken Generation System"
     implemented: true
