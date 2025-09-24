@@ -242,6 +242,7 @@ export default function NinjaIdleGame() {
     setLocalGameState(prev => {
       let totalGoldReward = 0;
       let totalExpReward = 0;
+      let killedEnemies = 0;
       
       const updatedEnemies = prev.enemies.map(enemy => {
         const distance = getDistance(
@@ -260,6 +261,8 @@ export default function NinjaIdleGame() {
         if (enemy.health <= 0) {
           totalGoldReward += enemy.reward.gold;
           totalExpReward += enemy.reward.exp;
+          killedEnemies++;
+          console.log(`💀 Enemy killed! Gold: +${enemy.reward.gold}, Exp: +${enemy.reward.exp}`);
           return false;
         }
         return true;
@@ -269,6 +272,9 @@ export default function NinjaIdleGame() {
       
       // Update ninja stats immediately within the same state update
       if (totalGoldReward > 0 || totalExpReward > 0) {
+        console.log(`🎯 Updating ninja: Gold: +${totalGoldReward}, Exp: +${totalExpReward}`);
+        console.log(`🎯 Current ninja exp: ${ninja.experience}, new exp will be: ${ninja.experience + totalExpReward}`);
+        
         setTimeout(() => {
           updateNinja({
             gold: ninja.gold + totalGoldReward,
