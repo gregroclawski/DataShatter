@@ -974,6 +974,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#ef4444',
     borderRadius: 2,
   },
+  // Boss-specific styles
+  bossHealthBarContainer: {
+    bottom: -15,
+    alignItems: 'center',
+  },
+  bossNameLabel: {
+    fontSize: 10,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 2,
+    textShadowColor: 'rgba(0,0,0,0.8)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
   tab: {
     flex: 1,
     alignItems: 'center',
