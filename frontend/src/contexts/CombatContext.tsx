@@ -344,6 +344,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     getAvailableAbilities,
     upgradeAbility,
     clearAllEnemies,
+    triggerLevelUpExplosion,
   };
 
   return (
