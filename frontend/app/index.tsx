@@ -102,9 +102,9 @@ export default function NinjaIdleGame() {
       
       if (deltaTime >= 200) { // Update every 200ms for slower, more deliberate movement
         setNinjaPosition(prevPos => {
-          // Check if we have enemies to target
-          if (!combatState.enemies || combatState.enemies.length === 0) {
-            return prevPos; // Don't move if no enemies
+          // Check if we have enemies to target and ninja is not attacking
+          if (!combatState.enemies || combatState.enemies.length === 0 || isAttacking) {
+            return prevPos; // Don't move if no enemies or currently attacking
           }
           
           // Find closest enemy
