@@ -456,7 +456,7 @@ export default function GameScreen() {
 
         <View style={styles.controlButton}>
           <Ionicons name="people" size={24} color="#ffffff" />
-          <Text style={styles.controlButtonText}>Enemies: {localGameState.enemies.length}/20</Text>
+          <Text style={styles.controlButtonText}>Enemies: {localGameState.enemies.length}/10</Text>
         </View>
       </View>
     </View>
