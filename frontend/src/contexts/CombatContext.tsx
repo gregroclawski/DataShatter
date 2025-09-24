@@ -299,6 +299,29 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
+  // Trigger level-up explosion that actually damages enemies
+  const triggerLevelUpExplosion = () => {
+    console.log('💥 LEVEL UP EXPLOSION TRIGGERED IN COMBAT CONTEXT!');
+    
+    // Award XP for each enemy killed by explosion
+    const enemyCount = combatState.enemies.length;
+    const explosionXP = enemyCount * 25; // 25 XP per enemy
+    const explosionGold = enemyCount * 5; // 5 gold per enemy
+    
+    console.log(`💥 Explosion killing ${enemyCount} enemies, awarding ${explosionXP} XP and ${explosionGold} gold`);
+    
+    // Award XP using updateNinja
+    if (explosionXP > 0) {
+      updateNinja((prev) => ({
+        experience: prev.experience + explosionXP,
+        gold: prev.gold + explosionGold,
+      }));
+    }
+    
+    // Clear all enemies
+    clearAllEnemies();
+  };
+
   // Initialize combat engine
   useEffect(() => {
     combatEngine.start();
