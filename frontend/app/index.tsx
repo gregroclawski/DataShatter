@@ -61,6 +61,8 @@ export default function NinjaIdleGame() {
 
   // Set up reward callback for XP and gold
   useEffect(() => {
+    console.log('🔧 Setting up reward callback in main component...');
+    
     const rewardCallback = (xp: number, gold: number) => {
       console.log(`💰 Reward callback triggered: +${xp} XP, +${gold} gold`);
       updateNinja((prev) => {
@@ -74,7 +76,9 @@ export default function NinjaIdleGame() {
       });
     };
     
+    console.log('🔧 Calling setRewardCallback...');
     setRewardCallback(rewardCallback);
+    console.log('✅ Reward callback setup complete');
   }, [updateNinja, setRewardCallback]);
 
   // Start combat when component mounts
