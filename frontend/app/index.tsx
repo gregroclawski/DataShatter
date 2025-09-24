@@ -72,7 +72,9 @@ export default function NinjaIdleGame() {
     }
     
     // Actually clear all enemies
+    console.log('💥 Calling clearAllEnemies function...');
     clearAllEnemies();
+    console.log('💥 clearAllEnemies called successfully');
     
     setTimeout(() => {
       setIsLevelingUp(false);
