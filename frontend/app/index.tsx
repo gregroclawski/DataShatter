@@ -174,9 +174,6 @@ export default function NinjaIdleGame() {
           newX = Math.max(0, Math.min(newX, maxX));
           newY = Math.max(0, Math.min(newY, maxY));
           
-          // Always update combat context with ninja position for accurate projectile origin  
-          updateNinjaPosition({ x: newX, y: newY });
-          
           // Only log significant movements to avoid spam
           const moveDistance = Math.sqrt(Math.pow(newX - prevPos.x, 2) + Math.pow(newY - prevPos.y, 2));
           if (moveDistance > 1) {
