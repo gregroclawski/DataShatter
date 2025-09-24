@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useBoss } from '../contexts/BossContext';
+import { useGame } from '../contexts/GameContext';
 import { Boss, BossType, BossTier } from '../data/BossData';
 import { RARITY_CONFIG } from '../data/EquipmentData';
 
