@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -14,10 +14,9 @@ interface Props {
   onClose: () => void;
 }
 
-const TrainingOverlay = ({ onClose }: Props) => {
-  const { gameState, trainSkill, updateNinja } = useGame();
+const SkillsOverlay = ({ onClose }: Props) => {
+  const { gameState, trainSkill } = useGame();
   const { ninja } = gameState;
-  const [training, setTraining] = useState(false);
 
   const skills = [
     {
@@ -54,33 +53,6 @@ const TrainingOverlay = ({ onClose }: Props) => {
     },
   ];
 
-  const trainingActivities = [
-    {
-      name: 'Basic Training',
-      duration: 10, // seconds for demo
-      energyCost: 5,
-      goldCost: 0,
-      rewards: { experience: 15, gold: 5 },
-      description: 'Light training session',
-    },
-    {
-      name: 'Intense Training',
-      duration: 20,
-      energyCost: 10,
-      goldCost: 20,
-      rewards: { experience: 35, gold: 15 },
-      description: 'Demanding workout session',
-    },
-    {
-      name: 'Master Training',
-      duration: 30,
-      energyCost: 20,
-      goldCost: 50,
-      rewards: { experience: 80, gold: 40 },
-      description: 'Elite training program',
-    },
-  ];
-
   const handleSkillUpgrade = (skillKey: string) => {
     if (ninja.skillPoints > 0) {
       trainSkill(skillKey);
@@ -93,38 +65,10 @@ const TrainingOverlay = ({ onClose }: Props) => {
     }
   };
 
-  const handleTraining = (activity: typeof trainingActivities[0]) => {
-    if (ninja.energy < activity.energyCost) {
-      Alert.alert('Insufficient Energy', `You need ${activity.energyCost} energy for this training.`);
-      return;
-    }
-    
-    if (ninja.gold < activity.goldCost) {
-      Alert.alert('Insufficient Gold', `You need ${activity.goldCost} gold for this training.`);
-      return;
-    }
-
-    setTraining(true);
-    
-    setTimeout(() => {
-      updateNinja({
-        experience: ninja.experience + activity.rewards.experience,
-        gold: ninja.gold + activity.rewards.gold - activity.goldCost,
-        energy: ninja.energy - activity.energyCost,
-      });
-      
-      setTraining(false);
-      Alert.alert(
-        'Training Complete!',
-        `You gained ${activity.rewards.experience} XP and ${activity.rewards.gold} gold!`
-      );
-    }, activity.duration * 1000);
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Training Center</Text>
+        <Text style={styles.title}>Skills</Text>
         <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
           <Ionicons name="close" size={24} color="#f8fafc" />
         </TouchableOpacity>
@@ -132,14 +76,12 @@ const TrainingOverlay = ({ onClose }: Props) => {
 
       <ScrollView style={styles.content}>
         {/* Skill Points Info */}
-        {ninja.skillPoints > 0 && (
-          <View style={styles.skillPointsCard}>
-            <Ionicons name="star" size={24} color="#8b5cf6" />
-            <Text style={styles.skillPointsText}>
-              {ninja.skillPoints} Skill Points Available
-            </Text>
-          </View>
-        )}
+        <View style={styles.skillPointsCard}>
+          <Ionicons name="star" size={24} color="#8b5cf6" />
+          <Text style={styles.skillPointsText}>
+            {ninja.skillPoints} Skill Points Available
+          </Text>
+        </View>
 
         {/* Skills Section */}
         <View style={styles.section}>
@@ -178,63 +120,15 @@ const TrainingOverlay = ({ onClose }: Props) => {
           ))}
         </View>
 
-        {/* Training Activities */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Training Activities</Text>
-          <Text style={styles.sectionSubtitle}>Complete training sessions to gain experience and gold</Text>
-          
-          {trainingActivities.map((activity, index) => (
-            <View key={index} style={styles.trainingCard}>
-              <View style={styles.trainingHeader}>
-                <Text style={styles.trainingName}>{activity.name}</Text>
-                <Text style={styles.trainingDescription}>{activity.description}</Text>
-              </View>
-              
-              <View style={styles.trainingStats}>
-                <View style={styles.trainingStat}>
-                  <Ionicons name="time" size={16} color="#9ca3af" />
-                  <Text style={styles.trainingStatText}>{activity.duration}s</Text>
-                </View>
-                <View style={styles.trainingStat}>
-                  <Ionicons name="battery-half" size={16} color="#3b82f6" />
-                  <Text style={styles.trainingStatText}>{activity.energyCost}</Text>
-                </View>
-                <View style={styles.trainingStat}>
-                  <Ionicons name="logo-bitcoin" size={16} color="#f59e0b" />
-                  <Text style={styles.trainingStatText}>{activity.goldCost}</Text>
-                </View>
-              </View>
-              
-              <View style={styles.trainingRewards}>
-                <Text style={styles.rewardsTitle}>Rewards:</Text>
-                <Text style={styles.rewardText}>+{activity.rewards.experience} XP</Text>
-                <Text style={styles.rewardText}>+{activity.rewards.gold} Gold</Text>
-              </View>
-              
-              <TouchableOpacity
-                style={[styles.trainButton, { 
-                  opacity: (ninja.energy >= activity.energyCost && ninja.gold >= activity.goldCost && !training) ? 1 : 0.5 
-                }]}
-                onPress={() => handleTraining(activity)}
-                disabled={ninja.energy < activity.energyCost || ninja.gold < activity.goldCost || training}
-              >
-                <View style={styles.trainButtonContent}>
-                  {training ? (
-                    <>
-                      <Ionicons name="hourglass" size={20} color="#ffffff" />
-                      <Text style={styles.trainButtonText}>Training...</Text>
-                    </>
-                  ) : (
-                    <>
-                      <Ionicons name="fitness" size={20} color="#ffffff" />
-                      <Text style={styles.trainButtonText}>Start Training</Text>
-                    </>
-                  )}
-                </View>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </View>
+        {ninja.skillPoints === 0 && (
+          <View style={styles.noSkillPointsCard}>
+            <Ionicons name="information-circle" size={32} color="#9ca3af" />
+            <Text style={styles.noSkillPointsTitle}>No Skill Points Available</Text>
+            <Text style={styles.noSkillPointsText}>
+              Level up your ninja to earn skill points! You gain 3 skill points per level.
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -352,74 +246,28 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 4,
   },
-  trainingCard: {
+  noSkillPointsCard: {
+    alignItems: 'center',
     backgroundColor: '#374151',
+    margin: 20,
+    padding: 24,
     borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
     borderWidth: 1,
     borderColor: '#4b5563',
   },
-  trainingHeader: {
-    marginBottom: 12,
-  },
-  trainingName: {
+  noSkillPointsTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#f8fafc',
+    marginTop: 12,
+    marginBottom: 8,
   },
-  trainingDescription: {
+  noSkillPointsText: {
     fontSize: 12,
     color: '#9ca3af',
-    marginTop: 2,
-  },
-  trainingStats: {
-    flexDirection: 'row',
-    marginBottom: 12,
-    gap: 16,
-  },
-  trainingStat: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  trainingStatText: {
-    color: '#d1d5db',
-    fontSize: 12,
-    marginLeft: 4,
-  },
-  trainingRewards: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-    gap: 12,
-  },
-  rewardsTitle: {
-    color: '#9ca3af',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  rewardText: {
-    color: '#10b981',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  trainButton: {
-    backgroundColor: '#8b5cf6',
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  trainButtonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-  },
-  trainButtonText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '600',
-    marginLeft: 8,
+    textAlign: 'center',
+    lineHeight: 18,
   },
 });
 
-export default TrainingOverlay;
+export default SkillsOverlay;
