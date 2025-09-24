@@ -475,6 +475,14 @@ export default function NinjaIdleGame() {
           <StoreOverlay onClose={() => setActiveOverlay(null)} />
         </View>
       )}
+      {activeOverlay === 'bosses' && (
+        <View style={styles.overlayWrapper}>
+          <BossOverlay 
+            visible={true} 
+            onClose={() => setActiveOverlay(null)} 
+          />
+        </View>
+      )}
       {activeOverlay === 'zones' && (
         <View style={styles.overlayWrapper}>
           <EnemiesZonesOverlay 
