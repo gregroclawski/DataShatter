@@ -75,6 +75,7 @@ export default function RootLayout() {
             }} 
           />
         </Stack>
+        </CombatProvider>
       </GameProvider>
     </SafeAreaProvider>
   );
