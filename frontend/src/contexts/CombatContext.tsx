@@ -65,6 +65,20 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   // Function to handle enemy kills - just log for now, main component will handle rewards
   const handleEnemyKill = (enemy: CombatEnemy) => {
     console.log(`🎯 Enemy killed! Max HP: ${enemy.maxHealth}`);
+    
+    // Award XP and gold directly
+    const xpReward = 50;
+    const goldReward = 10;
+    
+    console.log(`💰 Directly awarding ${xpReward} XP and ${goldReward} gold for kill`);
+    
+    // Call updateNinja if available (will be passed as prop later)
+    if (window.gameUpdateNinja) {
+      window.gameUpdateNinja((prev) => ({
+        experience: prev.experience + xpReward,
+        gold: prev.gold + goldReward,
+      }));
+    }
   };
 
   // Combat tick handler
