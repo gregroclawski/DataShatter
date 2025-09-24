@@ -97,7 +97,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     console.log(`🎯 Enemy killed! Max HP: ${enemy.maxHealth}`);
     
     // Award XP and gold directly using useGame hook
-    const xpReward = 50;
+    const xpReward = 10; // Fixed: Changed from 50 to 10 XP per kill
     const goldReward = 10;
     
     console.log(`💰 Awarding ${xpReward} XP and ${goldReward} gold for kill`);
