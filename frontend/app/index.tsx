@@ -663,6 +663,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#374151',
     paddingVertical: 8,
+    zIndex: 1000, // High z-index to appear above overlays
+    position: 'relative', // Ensure z-index takes effect
   },
   tabButton: {
     flex: 1,
