@@ -50,7 +50,10 @@ export default function GameScreen() {
     killCount: 0,
   });
 
-  const ninjaAnimatedPosition = useRef(new Animated.ValueXY(localGameState.ninjaPosition)).current;
+  const ninjaAnimatedPosition = useRef(new Animated.ValueXY({
+    x: SCREEN_WIDTH / 2 - NINJA_SIZE / 2,
+    y: GAME_AREA_HEIGHT / 2 - NINJA_SIZE / 2
+  })).current;
   const gameLoopRef = useRef<NodeJS.Timeout>();
   const spawnTimerRef = useRef<NodeJS.Timeout>();
 
