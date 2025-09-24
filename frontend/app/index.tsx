@@ -18,7 +18,8 @@ import { useGame } from '../src/contexts/GameContext';
 import NinjaStatsOverlay from '../src/components/NinjaStatsOverlay';
 import ShurikensOverlay from '../src/components/ShurikensOverlay';
 import PetsOverlay from '../src/components/PetsOverlay';
-import TrainingOverlay from '../src/components/TrainingOverlay';
+import SkillsOverlay from '../src/components/SkillsOverlay';
+import StoreOverlay from '../src/components/StoreOverlay';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 250; // Leave space for bottom tabs
