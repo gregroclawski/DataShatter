@@ -523,11 +523,12 @@ export default function NinjaIdleGame() {
           <StoreOverlay onClose={() => setActiveOverlay(null)} />
         </View>
       )}
-      {activeOverlay === 'bosses' && (
+      {activeOverlay === 'bosses' && !isBossBattleActive && (
         <View style={styles.overlayWrapper}>
           <BossOverlay 
             visible={true} 
-            onClose={() => setActiveOverlay(null)} 
+            onClose={() => setActiveOverlay(null)}
+            onStartBattle={startBossBattle}
           />
         </View>
       )}
