@@ -333,6 +333,7 @@ export default function NinjaIdleGame() {
           )}
 
           {/* Projectiles */}
+          {console.log(`🔥 Projectiles array length: ${projectiles.length}`) || null}
           {projectiles.map((projectile) => {
             const currentTime = Date.now();
             const progress = Math.min((currentTime - projectile.startTime) / projectile.duration, 1);
