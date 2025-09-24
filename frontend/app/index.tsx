@@ -424,7 +424,12 @@ export default function NinjaIdleGame() {
             onPress={() => {
               console.log(`Tapped ${tab.name} tab`);
               if (tab.id === 'abilities') {
-                setShowAbilityDeck(true);
+                // Dock-style behavior for abilities tab too
+                if (showAbilityDeck) {
+                  setShowAbilityDeck(false); // Close if already open
+                } else {
+                  setShowAbilityDeck(true); // Open if closed
+                }
               } else {
                 // Dock-style behavior: tap to open, tap again to close
                 if (activeOverlay === tab.id) {
