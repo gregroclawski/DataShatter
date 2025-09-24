@@ -323,7 +323,7 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
   );
 
   const renderCombat = () => (
-    <View style={styles.combatContainer}>
+    <View style={[styles.combatContainer, { pointerEvents: 'box-none' }]}>
       <View style={styles.battleHeader}>
         <Text style={styles.battleTitle}>⚔️ {tier.name}</Text>
         <TouchableOpacity onPress={handleEscape} style={styles.escapeButton}>
