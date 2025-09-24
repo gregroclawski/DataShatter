@@ -64,11 +64,6 @@ export default function NinjaIdleGame() {
     return () => stopCombat();
   }, []);
 
-  const handleAbilityPress = (slotIndex: number) => {
-    // Open ability deck for management
-    setShowAbilityDeck(true);
-  };
-
   const bottomTabs = [
     { id: 'stats', name: 'Stats', icon: 'person' },
     { id: 'pets', name: 'Pets', icon: 'heart' },
