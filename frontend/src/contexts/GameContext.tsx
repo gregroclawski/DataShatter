@@ -204,6 +204,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   // Handle level up logic with proper exp scaling and 3 stat points per level
   const handleLevelUp = (ninja: NinjaStats): Partial<NinjaStats> => {
+    console.log(`🔍 Level check: ${ninja.experience}/${ninja.experienceToNext} XP at level ${ninja.level}`);
+    
     let updates: Partial<NinjaStats> = {};
     let currentLevel = ninja.level;
     let currentExp = ninja.experience;
