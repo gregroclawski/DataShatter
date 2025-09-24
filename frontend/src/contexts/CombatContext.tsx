@@ -65,24 +65,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     },
   });
 
-  // Function to handle enemy kills and reward XP
+  // Function to handle enemy kills - just log for now, main component will handle rewards
   const handleEnemyKill = (enemy: CombatEnemy) => {
-    // Calculate XP reward based on enemy max health
-    const baseXP = Math.floor(enemy.maxHealth * 0.5); // 0.5 XP per HP
-    const goldReward = Math.floor(enemy.maxHealth * 0.1); // 0.1 gold per HP
-    
-    console.log(`🎯 Enemy killed! Rewarding ${baseXP} XP and ${goldReward} gold`);
-    
-    // Directly update ninja with rewards using functional update
-    updateNinja((prev) => {
-      const newXP = prev.experience + baseXP;
-      const newGold = prev.gold + goldReward;
-      console.log(`📊 XP Update: ${prev.experience} + ${baseXP} = ${newXP} (${newXP}/${prev.experienceToNext})`);
-      return {
-        experience: newXP,
-        gold: newGold,
-      };
-    });
+    console.log(`🎯 Enemy killed! Max HP: ${enemy.maxHealth}`);
   };
 
   // Combat tick handler
