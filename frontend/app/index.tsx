@@ -41,10 +41,10 @@ export default function NinjaIdleGame() {
   const [totalKills, setTotalKills] = useState(0);
   const [lastProcessedKill, setLastProcessedKill] = useState(0);
   
-  // Auto-movement system for ninja
+  // Auto-movement system for ninja - start in bottom left corner so ninja has to move
   const [ninjaPosition, setNinjaPosition] = useState({
-    x: SCREEN_WIDTH / 2 - NINJA_SIZE / 2,
-    y: GAME_AREA_HEIGHT / 2 - NINJA_SIZE / 2
+    x: 50, // Start in bottom left corner
+    y: GAME_AREA_HEIGHT - NINJA_SIZE - 50
   });
   const [lastMovementTime, setLastMovementTime] = useState(Date.now());
   const [isAttacking, setIsAttacking] = useState(false);
