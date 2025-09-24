@@ -589,9 +589,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-    zIndex: 2000, // Above everything else
-    pointerEvents: 'auto',
+    bottom: 70, // Leave space for bottom tabs
+    zIndex: 1500, // Below overlays but above game content
+    pointerEvents: 'box-none', // Allow touches to pass through to combat area
   },
   background: {
     position: 'absolute',
