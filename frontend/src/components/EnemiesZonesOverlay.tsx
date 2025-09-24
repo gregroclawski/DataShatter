@@ -220,6 +220,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1f2937',
     borderRadius: 12,
     padding: 16,
+    pointerEvents: 'auto', // Allow clicks on the overlay content
   },
   header: {
     flexDirection: 'row',
