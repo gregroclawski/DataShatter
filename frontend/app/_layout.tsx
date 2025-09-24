@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { GameProvider } from '../src/contexts/GameContext';
+import { CombatProvider } from '../src/contexts/CombatContext';
 
 export default function RootLayout() {
   return (
