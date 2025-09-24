@@ -170,69 +170,66 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
   );
 
   return visible ? (
-    <View style={styles.overlay}>
-      <View style={styles.overlayBackground} />
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Equipment</Text>
-          <View style={styles.headerButtons}>
-            <TouchableOpacity onPress={handleGenerateTestEquipment} style={styles.testButton}>
-              <Ionicons name="gift" size={20} color="#10b981" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color="#e5e7eb" />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Stats Panel */}
-        {renderStatsPanel()}
-
-        {/* Tab Navigation */}
-        <View style={styles.tabContainer}>
-          <TouchableOpacity
-            style={[styles.tab, selectedTab === 'equipped' && styles.activeTab]}
-            onPress={() => setSelectedTab('equipped')}
-          >
-            <Text style={[styles.tabText, selectedTab === 'equipped' && styles.activeTabText]}>
-              Equipped
-            </Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Equipment</Text>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity onPress={handleGenerateTestEquipment} style={styles.testButton}>
+            <Ionicons name="gift" size={20} color="#10b981" />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, selectedTab === 'inventory' && styles.activeTab]}
-            onPress={() => setSelectedTab('inventory')}
-          >
-            <Text style={[styles.tabText, selectedTab === 'inventory' && styles.activeTabText]}>
-              Inventory ({getInventorySpace().used}/{getInventorySpace().total})
-            </Text>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Ionicons name="close" size={24} color="#e5e7eb" />
           </TouchableOpacity>
         </View>
-
-        {/* Content */}
-        <ScrollView style={styles.content}>
-          {selectedTab === 'equipped' ? (
-            <View style={styles.equippedContent}>
-              <View style={styles.equipmentGrid}>
-                {Object.values(EquipmentSlot).map(slot => renderEquipmentSlot(slot))}
-              </View>
-            </View>
-          ) : (
-            <View style={styles.inventoryContent}>
-              {inventory.inventory.length === 0 ? (
-                <View style={styles.emptyInventory}>
-                  <Ionicons name="cube-outline" size={48} color="#6b7280" />
-                  <Text style={styles.emptyInventoryText}>No equipment in inventory</Text>
-                  <Text style={styles.emptyInventorySubtext}>
-                    Defeat bosses to get equipment drops!
-                  </Text>
-                </View>
-              ) : (
-                inventory.inventory.map(equipment => renderInventoryItem(equipment))
-              )}
-            </View>
-          )}
-        </ScrollView>
       </View>
+
+      {/* Stats Panel */}
+      {renderStatsPanel()}
+
+      {/* Tab Navigation */}
+      <View style={styles.tabContainer}>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'equipped' && styles.activeTab]}
+          onPress={() => setSelectedTab('equipped')}
+        >
+          <Text style={[styles.tabText, selectedTab === 'equipped' && styles.activeTabText]}>
+            Equipped
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, selectedTab === 'inventory' && styles.activeTab]}
+          onPress={() => setSelectedTab('inventory')}
+        >
+          <Text style={[styles.tabText, selectedTab === 'inventory' && styles.activeTabText]}>
+            Inventory ({getInventorySpace().used}/{getInventorySpace().total})
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Content */}
+      <ScrollView style={styles.content}>
+        {selectedTab === 'equipped' ? (
+          <View style={styles.equippedContent}>
+            <View style={styles.equipmentGrid}>
+              {Object.values(EquipmentSlot).map(slot => renderEquipmentSlot(slot))}
+            </View>
+          </View>
+        ) : (
+          <View style={styles.inventoryContent}>
+            {inventory.inventory.length === 0 ? (
+              <View style={styles.emptyInventory}>
+                <Ionicons name="cube-outline" size={48} color="#6b7280" />
+                <Text style={styles.emptyInventoryText}>No equipment in inventory</Text>
+                <Text style={styles.emptyInventorySubtext}>
+                  Defeat bosses to get equipment drops!
+                </Text>
+              </View>
+            ) : (
+              inventory.inventory.map(equipment => renderInventoryItem(equipment))
+            )}
+          </View>
+        )}
+      </ScrollView>
     </View>
   ) : null;
 };
