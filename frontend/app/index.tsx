@@ -255,6 +255,7 @@ export default function NinjaIdleGame() {
     { id: 'pets', name: 'Pets', icon: 'heart' },
     { id: 'skills', name: 'Skills', icon: 'barbell' },
     { id: 'store', name: 'Store', icon: 'storefront' },
+    { id: 'bosses', name: 'Bosses', icon: 'skull' },
     { id: 'zones', name: 'Zones', icon: 'map' },
     { id: 'equipment', name: 'Equipment', icon: 'shield' },
   ];
