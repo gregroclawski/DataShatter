@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCombat } from '../contexts/CombatContext';
 import { useBoss } from '../contexts/BossContext';
