@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the Ninja Master Mobile Game backend API thoroughly with comprehensive testing of all endpoints including save/load functionality, item generation, leaderboard, and error handling."
+user_problem_statement: "Fix missing XP bar visibility and broken level-up system in the Ninja Master idle game. Add explosion attack on level up that kills all enemies on screen while granting appropriate XP. Current issues: XP bar shows 0/100 XP permanently, level stays at 1 despite kills."
 
 backend:
   - task: "Health Check API Endpoint"
