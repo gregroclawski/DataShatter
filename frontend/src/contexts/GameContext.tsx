@@ -150,7 +150,7 @@ const defaultGameState: GameState = {
       location: 'Mystic Forest',
       duration: 5,
       requirements: { level: 1 },
-      rewards: { gold: 20, experience: 10 },
+      rewards: { gold: 20, experience: 20 },
       active: false,
     },
   ],
