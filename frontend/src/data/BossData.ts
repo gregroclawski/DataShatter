@@ -110,9 +110,9 @@ export const BOSS_DATA: Record<BossType, Boss> = {
         name: 'Inferno Wyvern',
         requiredLevel: 20,
         stats: {
-          hp: 5000,
-          attack: 120,
-          defense: 50,
+          hp: 50000, // 10x harder (was 5000)
+          attack: 1200, // 10x harder (was 120)
+          defense: 500, // 10x harder (was 50)
           critChance: 20,
           abilities: ['Fire Breath', 'Wing Strike', 'Magma Pool', 'Meteor Strike']
         },
