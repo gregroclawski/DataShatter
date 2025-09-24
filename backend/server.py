@@ -137,6 +137,7 @@ async def get_leaderboard():
             {"$sort": {"ninja.level": -1, "ninja.experience": -1}},
             {"$limit": 10},
             {"$project": {
+                "_id": 0,  # Exclude MongoDB ObjectId to avoid serialization issues
                 "playerId": 1,
                 "level": "$ninja.level",
                 "experience": "$ninja.experience",
