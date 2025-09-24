@@ -23,6 +23,7 @@ import AbilityDeckOverlay from '../src/components/AbilityDeckOverlay';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 250; // Leave space for bottom tabs
 const NINJA_SIZE = 40;
+const ENEMY_SIZE = 35;
 
 type ActiveOverlay = 'stats' | 'abilities' | 'pets' | 'skills' | 'store' | 'raids' | null;
 
