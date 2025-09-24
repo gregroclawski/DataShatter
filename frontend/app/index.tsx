@@ -289,6 +289,14 @@ export default function NinjaIdleGame() {
           <Text style={styles.stageText}>
             Enemies: {combatState.enemies.length}
           </Text>
+          
+          {/* Current Zone Display */}
+          {currentZone && currentZoneLevel && (
+            <Text style={[styles.combatText, { color: '#8b5cf6', fontSize: 12 }]}>
+              Zone: {currentZone.name} (Lv.{currentZoneLevel.level}) • {getZoneProgress(currentZone.id)?.killsInLevel || 0}/1000 kills
+            </Text>
+          )}
+          
           <Text style={[styles.combatText, { 
             color: combatState.isInCombat ? '#10b981' : '#ef4444' 
           }]}>
