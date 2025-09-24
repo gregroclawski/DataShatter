@@ -83,8 +83,9 @@ export default function GameScreen() {
     const enemyTypes: Enemy['type'][] = ['goblin', 'orc', 'skeleton'];
     const randomType = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
     
-    // Spawn boss every 20 kills
-    const type = localGameState.killCount > 0 && localGameState.killCount % 20 === 0 ? 'boss' : randomType;
+    // Spawn boss every 50 kills
+    const type = localGameState.killCount > 0 && localGameState.killCount % 50 === 0 && 
+                 !localGameState.enemies.some(e => e.type === 'boss') ? 'boss' : randomType;
     
     const stats = getEnemyStats(type, localGameState.currentStage);
     
@@ -100,6 +101,19 @@ export default function GameScreen() {
       ...prev,
       enemies: [...prev.enemies, enemy],
     }));
+  };
+
+  // Auto-spawn enemies to maintain target count
+  const autoSpawnEnemies = () => {
+    const targetEnemyCount = 20;
+    const currentCount = localGameState.enemies.length;
+    
+    if (currentCount < targetEnemyCount) {
+      const enemiesToSpawn = Math.min(5, targetEnemyCount - currentCount); // Spawn up to 5 at once
+      for (let i = 0; i < enemiesToSpawn; i++) {
+        setTimeout(() => spawnEnemy(), i * 100); // Stagger spawning slightly
+      }
+    }
   };
 
   // Move ninja towards target position
