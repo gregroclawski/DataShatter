@@ -79,6 +79,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       cooldownReduction: 0,
     },
   });
+  
+  const [projectiles, setProjectiles] = useState<CombatProjectile[]>([]);
 
   // Function to handle enemy kills - just log for now, main component will handle rewards
   const handleEnemyKill = (enemy: CombatEnemy) => {
