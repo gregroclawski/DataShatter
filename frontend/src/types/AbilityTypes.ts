@@ -280,18 +280,12 @@ export class AbilityManager {
       this.availableAbilities.set(ability.id, { ...ability });
     });
     
-    console.log('🔍 AbilityManager: Available abilities:', Array.from(this.availableAbilities.keys()));
-    
     // Equip default abilities - one of each shuriken type plus shadow clone
-    console.log('🔧 AbilityManager: Equipping default abilities...');
-    const result1 = this.equipAbility('basic_shuriken', 0); // Slot 1: Basic Shuriken
-    const result2 = this.equipAbility('fire_shuriken', 1);  // Slot 2: Fire Shuriken  
-    const result3 = this.equipAbility('ice_shuriken', 2);   // Slot 3: Ice Shuriken
-    const result4 = this.equipAbility('poison_shuriken', 3);// Slot 4: Poison Shuriken
-    const result5 = this.equipAbility('shadow_clone', 4);   // Slot 5: Shadow Clone
-    
-    console.log('🔍 AbilityManager: Equip results:', { result1, result2, result3, result4, result5 });
-    console.log('🔍 AbilityManager: Final deck slots:', this.deck.slots.map(slot => slot?.name || 'empty'));
+    this.equipAbility('basic_shuriken', 0); // Slot 1: Basic Shuriken
+    this.equipAbility('fire_shuriken', 1);  // Slot 2: Fire Shuriken  
+    this.equipAbility('ice_shuriken', 2);   // Slot 3: Ice Shuriken
+    this.equipAbility('poison_shuriken', 3);// Slot 4: Poison Shuriken
+    this.equipAbility('shadow_clone', 4);   // Slot 5: Shadow Clone
   }
 
   // Equip ability to specific slot
