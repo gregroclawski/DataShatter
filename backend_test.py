@@ -144,9 +144,11 @@ class NinjaGameAPITester:
             if response.status_code == 200:
                 data = response.json()
                 if data and "playerId" in data:
-                    # Verify loaded data matches saved data
+                    # Verify loaded data matches saved data (high-level ninja)
                     if (data["playerId"] == self.test_player_id and 
-                        data["ninja"]["level"] == 5 and
+                        data["ninja"]["level"] == 87 and  # Updated for high-level test
+                        data["ninja"]["experience"] == 15750 and  # High XP value
+                        data["ninja"]["skillPoints"] == 261 and  # 3 per level
                         len(data["shurikens"]) == 2 and
                         len(data["pets"]) == 1):
                         self.log_test("Load Game", True, "Game loaded successfully with correct data", data)
