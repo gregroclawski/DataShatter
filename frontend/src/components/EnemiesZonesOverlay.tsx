@@ -161,7 +161,7 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
   };
 
   return (
-    <Modal visible={visible} animationType="slide" transparent={true}>
+    visible ? (
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
@@ -197,7 +197,7 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
           </ScrollView>
         </View>
       </View>
-    </Modal>
+    ) : null
   );
 };
 
