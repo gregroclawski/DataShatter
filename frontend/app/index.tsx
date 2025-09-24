@@ -206,13 +206,9 @@ function NinjaStatsContent() {
 
 export default function NinjaMasterApp() {
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.safeArea}>
-        <GameProvider>
-          <NinjaStatsContent />
-        </GameProvider>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <SafeAreaView style={styles.safeArea}>
+      <NinjaStatsContent />
+    </SafeAreaView>
   );
 }
 
