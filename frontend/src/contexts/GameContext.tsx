@@ -119,7 +119,7 @@ const defaultGameState: GameState = {
     luck: 3,
     gold: 100,
     gems: 10,
-    skillPoints: 0,
+    skillPoints: 3, // Start with 3 skill points
   },
   shurikens: [
     {
