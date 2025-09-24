@@ -170,16 +170,6 @@ export default function NinjaIdleGame() {
     return () => clearInterval(animationInterval);
   }, []);
 
-  // Set up global XP reward function for CombatContext
-  useEffect(() => {
-    (window as any).gameUpdateNinja = updateNinja;
-    console.log('🎮 Set up global XP reward function');
-    
-    return () => {
-      delete (window as any).gameUpdateNinja;
-    };
-  }, [updateNinja]);
-
   // Start combat when component mounts
   useEffect(() => {
     console.log('🎮 Main component calling startCombat...');
