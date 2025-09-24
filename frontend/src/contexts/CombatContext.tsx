@@ -438,6 +438,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     clearAllEnemies,
     triggerLevelUpExplosion,
     findClosestEnemy,
+    updateNinjaPosition,
   };
 
   return (
