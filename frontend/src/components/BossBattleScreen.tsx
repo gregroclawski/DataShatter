@@ -621,6 +621,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     opacity: 0.1,
   },
+  // Countdown styles
   countdownContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -705,6 +706,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
   },
+  // Combat styles
   combatContainer: {
     flex: 1,
     padding: 16,
@@ -735,6 +737,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 4,
   },
+  // Lives display
+  livesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    alignSelf: 'center',
+  },
+  livesLabel: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: 8,
+  },
+  // Boss health
   bossHealthContainer: {
     marginBottom: 20,
   },
@@ -769,6 +790,33 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  // Attack animations
+  attacksContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    pointerEvents: 'none',
+  },
+  bossAttack: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  attackText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  // Combat arena
   combatArena: {
     flex: 1,
     justifyContent: 'center',
@@ -776,6 +824,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.3)',
     borderRadius: 12,
     padding: 20,
+    marginTop: 20,
   },
   arenaLabel: {
     fontSize: 18,
@@ -789,7 +838,119 @@ const styles = StyleSheet.create({
     color: '#e5e7eb',
     textAlign: 'center',
     opacity: 0.8,
+    marginBottom: 8,
   },
+  livesWarning: {
+    fontSize: 16,
+    color: '#ef4444',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  // Respawn screen
+  respawnContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  respawnTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#ef4444',
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 12,
+  },
+  respawnText: {
+    fontSize: 18,
+    color: '#e5e7eb',
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  respawnTimerContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#ef4444',
+  },
+  respawnTimer: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  respawnLabel: {
+    fontSize: 18,
+    color: '#ffffff',
+    textAlign: 'center',
+    fontWeight: '600',
+  },
+  // Result popup styles
+  popupOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  popup: {
+    backgroundColor: '#1f2937',
+    borderRadius: 20,
+    padding: 30,
+    alignItems: 'center',
+    minWidth: 300,
+    maxWidth: '90%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 10,
+  },
+  popupTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textAlign: 'center',
+    marginTop: 16,
+    marginBottom: 16,
+  },
+  popupText: {
+    fontSize: 18,
+    color: '#e5e7eb',
+    textAlign: 'center',
+    marginBottom: 12,
+    lineHeight: 24,
+  },
+  popupSubtext: {
+    fontSize: 16,
+    color: '#9ca3af',
+    textAlign: 'center',
+    marginBottom: 30,
+    lineHeight: 22,
+    fontStyle: 'italic',
+  },
+  popupButton: {
+    backgroundColor: '#3b82f6',
+    paddingHorizontal: 40,
+    paddingVertical: 12,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  popupButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  // Legacy result styles (kept for compatibility)
   resultContainer: {
     flex: 1,
     justifyContent: 'center',
