@@ -11,8 +11,9 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <GameProvider>
         <CombatProvider>
-          <StatusBar style="light" backgroundColor="#0f172a" />
-        <Stack
+          <ZoneProvider>
+            <StatusBar style="light" backgroundColor="#0f172a" />
+          <Stack
           screenOptions={{
             headerStyle: {
               backgroundColor: '#1e293b',
