@@ -136,9 +136,9 @@ export const BOSS_DATA: Record<BossType, Boss> = {
         name: 'Crimson Dragon',
         requiredLevel: 35,
         stats: {
-          hp: 10000,
-          attack: 180,
-          defense: 75,
+          hp: 100000, // 10x harder (was 10000)
+          attack: 1800, // 10x harder (was 180)
+          defense: 750, // 10x harder (was 75)
           critChance: 25,
           abilities: ['Fire Breath', 'Wing Strike', 'Magma Pool', 'Meteor Strike', 'Dragon Rage']
         },
