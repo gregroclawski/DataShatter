@@ -176,7 +176,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   // Spawn a test enemy
   const spawnTestEnemy = (state: CombatState) => {
     const enemy: CombatEnemy = {
-      id: `enemy_${Date.now()}`,
+      id: `enemy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       name: 'Test Orc',
       health: 100,
       maxHealth: 100,
