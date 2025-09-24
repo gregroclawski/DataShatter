@@ -230,25 +230,32 @@ export default function GameScreen() {
 
   // Main game loop
   useEffect(() => {
-    if (localGameState.isAutoFighting) {
-      gameLoopRef.current = setInterval(() => {
+    // Always run the game loop, but auto-fighting controls behavior
+    gameLoopRef.current = setInterval(() => {
+      if (localGameState.isAutoFighting) {
         autoMoveToEnemy();
-        attackNearbyEnemies();
-        updateEnemyAI();
-      }, 500);
-
-      spawnTimerRef.current = setInterval(() => {
-        if (localGameState.enemies.length < 5) {
-          spawnEnemy();
-        }
-      }, 2000);
-    }
+      }
+      attackNearbyEnemies();
+      updateEnemyAI();
+      autoSpawnEnemies(); // Always spawn enemies to maintain count
+    }, 200); // Faster game loop (200ms instead of 500ms)
 
     return () => {
       if (gameLoopRef.current) clearInterval(gameLoopRef.current);
-      if (spawnTimerRef.current) clearInterval(spawnTimerRef.current);
     };
-  }, [localGameState.isAutoFighting, localGameState.enemies.length]);
+  }, [localGameState.isAutoFighting, localGameState.enemies.length, localGameState.ninjaPosition]);
+
+  // Initial enemy spawn on game start
+  useEffect(() => {
+    // Spawn initial batch of enemies when game starts
+    const initialSpawnTimer = setTimeout(() => {
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() => spawnEnemy(), i * 200);
+      }
+    }, 1000);
+
+    return () => clearTimeout(initialSpawnTimer);
+  }, []);
 
   // Level progression
   useEffect(() => {
