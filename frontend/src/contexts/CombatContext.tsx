@@ -89,6 +89,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   });
   
   const [projectiles, setProjectiles] = useState<CombatProjectile[]>([]);
+  const [lastExplosionTime, setLastExplosionTime] = useState<number>(0);
   // Initialize ninja position to match game's starting position (bottom left corner)
   const SCREEN_WIDTH = 390;
   const GAME_AREA_HEIGHT = 844 - 250;
