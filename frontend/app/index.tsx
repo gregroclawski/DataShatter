@@ -270,6 +270,10 @@ export default function NinjaIdleGame() {
     const currentNinjaX = ninjaAnimatedPosition.x._value + NINJA_SIZE / 2;
     const currentNinjaY = ninjaAnimatedPosition.y._value + NINJA_SIZE / 2;
     
+    // Capture current ninja stats to avoid stale closure
+    const currentGold = ninja.gold;
+    const currentExperience = ninja.experience;
+    
     setLocalGameState(prev => {
       let totalGoldReward = 0;
       let totalExpReward = 0;
@@ -304,8 +308,8 @@ export default function NinjaIdleGame() {
       if (totalGoldReward > 0 || totalExpReward > 0) {
         setTimeout(() => {
           updateNinja({
-            gold: prev.ninja.gold + totalGoldReward,
-            experience: prev.ninja.experience + totalExpReward,
+            gold: currentGold + totalGoldReward,
+            experience: currentExperience + totalExpReward,
           });
         }, 0);
       }
