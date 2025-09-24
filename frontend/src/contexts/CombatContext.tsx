@@ -68,19 +68,19 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   const handleEnemyKill = (enemy: CombatEnemy) => {
     console.log(`🎯 Enemy killed! Max HP: ${enemy.maxHealth}`);
     
-    // Award XP and gold directly
+    // Award XP and gold directly using useGame hook
     const xpReward = 50;
     const goldReward = 10;
     
-    console.log(`💰 Directly awarding ${xpReward} XP and ${goldReward} gold for kill`);
+    console.log(`💰 Awarding ${xpReward} XP and ${goldReward} gold for kill`);
     
-    // Call updateNinja if available (will be passed as prop later)
-    if (window.gameUpdateNinja) {
-      window.gameUpdateNinja((prev) => ({
+    updateNinja((prev) => {
+      console.log(`📊 XP before: ${prev.experience}, after: ${prev.experience + xpReward}`);
+      return {
         experience: prev.experience + xpReward,
         gold: prev.gold + goldReward,
-      }));
-    }
+      };
+    });
   };
 
   // Combat tick handler
