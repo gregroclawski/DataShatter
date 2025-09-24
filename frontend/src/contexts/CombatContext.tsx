@@ -505,9 +505,10 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
   // Spawn boss enemy function
   const spawnBoss = (bossEnemy: CombatEnemy) => {
+    console.log(`🐉 Spawning boss: ${bossEnemy.name} - clearing all other enemies first`);
     setCombatState(prev => ({
       ...prev,
-      enemies: [...prev.enemies, bossEnemy]
+      enemies: [bossEnemy] // Replace all enemies with just the boss
     }));
   };
 
