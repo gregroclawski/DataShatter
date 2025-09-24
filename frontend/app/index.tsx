@@ -45,8 +45,9 @@ export default function NinjaIdleGame() {
     x: SCREEN_WIDTH / 2 - NINJA_SIZE / 2,
     y: GAME_AREA_HEIGHT / 2 - NINJA_SIZE / 2
   });
-  const [movementDirection, setMovementDirection] = useState({ x: 1, y: 0.5 });
   const [lastMovementTime, setLastMovementTime] = useState(Date.now());
+  const [isAttacking, setIsAttacking] = useState(false);
+  const [lastAttackTime, setLastAttackTime] = useState(0);
 
   const insets = useSafeAreaInsets();
 
