@@ -139,6 +139,15 @@ export default function NinjaIdleGame() {
     };
   }, [combatState.enemies, createProjectile]);
 
+  // Projectile animation loop
+  useEffect(() => {
+    const animationInterval = setInterval(() => {
+      setProjectiles(prev => [...prev]); // Force re-render for smooth animation
+    }, 16); // ~60 FPS
+    
+    return () => clearInterval(animationInterval);
+  }, []);
+
   // Start combat when component mounts
   useEffect(() => {
     console.log('🎮 Main component calling startCombat...');
