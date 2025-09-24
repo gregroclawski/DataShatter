@@ -80,6 +80,7 @@ export default function RootLayout() {
           />
         </Stack>
           </CombatProvider>
+        </EquipmentProvider>
         </ZoneProvider>
       </GameProvider>
     </SafeAreaProvider>
