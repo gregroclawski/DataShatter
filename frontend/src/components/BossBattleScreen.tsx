@@ -589,9 +589,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 70, // Leave space for bottom tabs
-    zIndex: 1500, // Below overlays but above game content
-    pointerEvents: 'box-none', // Allow touches to pass through to combat area
+    bottom: 0, // Cover entire screen
+    zIndex: 2500, // Higher than overlayWrapper (999) and overlay content
+    pointerEvents: 'auto', // Allow interactions with countdown/battle UI
   },
   background: {
     position: 'absolute',
