@@ -203,7 +203,7 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
 
 const styles = StyleSheet.create({
   overlay: {
-    position: 'absolute',
+    position: 'fixed',
     top: 0,
     left: 0,
     right: 0,
@@ -211,6 +211,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 500, // Lower z-index so tabs can appear on top
   },
   container: {
     width: '95%',
