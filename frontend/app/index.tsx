@@ -127,7 +127,7 @@ export default function NinjaIdleGame() {
       }
       
       // Check for ability cast messages to create projectiles
-      if (message.includes('Shuriken cast!') && combatState.enemies.length > 0) {
+      if ((message.includes('Fire Shuriken cast!') || message.includes('Basic Shuriken cast!')) && combatState.enemies.length > 0) {
         // Target random enemy for projectile
         const randomEnemy = combatState.enemies[Math.floor(Math.random() * combatState.enemies.length)];
         createProjectile(randomEnemy);
