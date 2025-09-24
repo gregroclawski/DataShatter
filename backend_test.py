@@ -54,26 +54,26 @@ class NinjaGameAPITester:
         return False
     
     def test_save_game(self):
-        """Test POST /api/save-game - Save player progress"""
+        """Test POST /api/save-game - Save player progress with high-level data"""
         try:
-            # Create realistic ninja game data
+            # Create high-level ninja game data to test level-up system
             save_data = {
                 "playerId": self.test_player_id,
                 "ninja": {
-                    "level": 5,
-                    "experience": 450,
-                    "experienceToNext": 550,
-                    "health": 120,
-                    "maxHealth": 120,
-                    "energy": 60,
-                    "maxEnergy": 60,
-                    "attack": 25,
-                    "defense": 15,
-                    "speed": 18,
-                    "luck": 8,
-                    "gold": 1250,
-                    "gems": 35,
-                    "skillPoints": 3
+                    "level": 87,  # High level for level-up system testing
+                    "experience": 15750,  # High XP value (15000+)
+                    "experienceToNext": 200,
+                    "health": 450,
+                    "maxHealth": 450,
+                    "energy": 180,
+                    "maxEnergy": 180,
+                    "attack": 95,
+                    "defense": 72,
+                    "speed": 68,
+                    "luck": 45,
+                    "gold": 25000,
+                    "gems": 850,
+                    "skillPoints": 261  # 3 per level (87 * 3 = 261)
                 },
                 "shurikens": [
                     {
