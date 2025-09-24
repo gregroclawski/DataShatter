@@ -27,8 +27,10 @@ const ENEMY_SIZE = 35;
 type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'raids' | null;
 
 export default function NinjaIdleGame() {
-  const { gameState, ninja, updateNinja } = useGame();
+  const { gameState, updateNinja } = useGame();
   const { combatState, startCombat, stopCombat } = useCombat();
+  
+  const ninja = gameState.ninja; // Extract ninja from gameState
   
   const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
   const [isLevelingUp, setIsLevelingUp] = useState(false);
