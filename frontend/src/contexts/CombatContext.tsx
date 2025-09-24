@@ -139,14 +139,43 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  // Find closest enemy to ninja
+  const findClosestEnemy = (enemies: CombatEnemy[]): CombatEnemy | null => {
+    if (enemies.length === 0) return null;
+    
+    // Ninja position (center of screen)
+    const SCREEN_WIDTH = 390;
+    const GAME_AREA_HEIGHT = 844 - 250;
+    const ninjaX = SCREEN_WIDTH / 2;
+    const ninjaY = GAME_AREA_HEIGHT / 2;
+    
+    let closestEnemy = enemies[0];
+    let closestDistance = Infinity;
+    
+    enemies.forEach(enemy => {
+      const distance = Math.sqrt(
+        Math.pow(enemy.position.x - ninjaX, 2) + 
+        Math.pow(enemy.position.y - ninjaY, 2)
+      );
+      
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestEnemy = enemy;
+      }
+    });
+    
+    console.log(`🎯 Targeting closest enemy at distance ${closestDistance.toFixed(0)}`);
+    return closestEnemy;
+  };
+
   // Cast ability and apply effects
   const castAbility = (state: CombatState, slotIndex: number) => {
     const deck = state.abilityManager.getDeck();
     const ability = deck.slots[slotIndex];
     if (!ability) return;
 
-    // Find target (nearest enemy for now)
-    const target = state.enemies[0];
+    // Find target (closest enemy)
+    const target = findClosestEnemy(state.enemies);
     if (!target) return;
 
     // Calculate base damage
