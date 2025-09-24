@@ -176,10 +176,10 @@ export default function NinjaIdleGame() {
           // Only log significant movements to avoid spam
           const moveDistance = Math.sqrt(Math.pow(newX - prevPos.x, 2) + Math.pow(newY - prevPos.y, 2));
           if (moveDistance > 1) {
-            console.log(`🏃 Ninja moving toward enemy (speed: ${speedPerFrame.toFixed(1)}px/frame, distance: ${closestDistance.toFixed(0)})`);
+            console.log(`🏃 Ninja moving toward enemy (speed: ${speedPerFrame.toFixed(1)}px/frame, distance: ${closestDistance.toFixed(0)}, pos: (${newX.toFixed(0)}, ${newY.toFixed(0)}))`);
           }
           
-          // Update combat context with ninja position for accurate projectile origin
+          // Update combat context with ninja position for accurate projectile origin  
           updateNinjaPosition({ x: newX, y: newY });
           
           return { x: newX, y: newY };
