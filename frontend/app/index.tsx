@@ -32,9 +32,16 @@ export default function NinjaIdleGame() {
   
   const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
   const [isLevelingUp, setIsLevelingUp] = useState(false);
-  const [previousLevel, setPreviousLevel] = useState(ninja?.level || 1);
+  const [previousLevel, setPreviousLevel] = useState(1); // Default to 1
 
   const insets = useSafeAreaInsets();
+
+  // Update previousLevel when ninja data loads
+  useEffect(() => {
+    if (ninja?.level && ninja.level !== previousLevel) {
+      setPreviousLevel(ninja.level);
+    }
+  }, [ninja?.level]);
 
   // Don't render if ninja data isn't loaded yet
   if (!ninja) {
