@@ -306,8 +306,6 @@ export default function NinjaIdleGame() {
       
       // Update ninja stats immediately within the same state update
       if (totalGoldReward > 0 || totalExpReward > 0) {
-        console.log(`⚔️ Combat rewards: Gold +${totalGoldReward}, Exp +${totalExpReward}`);
-        
         setTimeout(() => {
           updateNinja((prevNinja) => ({
             gold: prevNinja.gold + totalGoldReward,
