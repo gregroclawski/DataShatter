@@ -273,6 +273,32 @@ export default function NinjaIdleGame() {
           ) : (
             <Text style={{color: 'red', position: 'absolute', top: 50, left: 50}}>No enemies in array</Text>
           )}
+
+          {/* Projectiles */}
+          {projectiles.map((projectile) => {
+            const currentTime = Date.now();
+            const progress = Math.min((currentTime - projectile.startTime) / projectile.duration, 1);
+            
+            // Calculate current position using linear interpolation
+            const currentX = projectile.x + (projectile.targetX - projectile.x) * progress;
+            const currentY = projectile.y + (projectile.targetY - projectile.y) * progress;
+            
+            return (
+              <View
+                key={projectile.id}
+                style={[
+                  styles.projectile,
+                  {
+                    left: currentX - 6, // Center the projectile
+                    top: currentY - 6,
+                    opacity: 1 - progress * 0.2, // Fade slightly as it travels
+                  }
+                ]}
+              >
+                <Ionicons name="diamond" size={12} color="#8b5cf6" />
+              </View>
+            );
+          })}
         </View>
       </View>
 
