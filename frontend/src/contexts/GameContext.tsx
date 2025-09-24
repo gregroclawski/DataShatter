@@ -276,24 +276,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         
       const updatedNinja = { ...prev.ninja, ...actualUpdates };
       
-      // Debug experience updates
-      if (actualUpdates.experience !== undefined) {
-        console.log(`💰 EXP UPDATE: ${prev.ninja.experience} + ${actualUpdates.experience - prev.ninja.experience} = ${actualUpdates.experience}`);
-        console.log(`💰 Current level: ${updatedNinja.level}, ExpToNext: ${updatedNinja.experienceToNext}`);
-        
-        if (actualUpdates.experience >= updatedNinja.experienceToNext) {
-          console.log(`🚨 SHOULD LEVEL UP! Exp: ${actualUpdates.experience} >= ExpToNext: ${updatedNinja.experienceToNext}`);
-        }
-      }
-      
       // Check for level up with new system
       const levelUpUpdates = handleLevelUp(updatedNinja);
       const finalNinja = { ...updatedNinja, ...levelUpUpdates };
-      
-      // Debug level up results
-      if (levelUpUpdates.level && levelUpUpdates.level > prev.ninja.level) {
-        console.log(`🎉 LEVEL UP SUCCESSFUL: ${prev.ninja.level} → ${levelUpUpdates.level}`);
-      }
       
       return {
         ...prev,
