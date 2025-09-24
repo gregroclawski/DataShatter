@@ -212,7 +212,7 @@ export default function NinjaIdleGame() {
                     },
                   ]}
                 >
-                  <Ionicons name="skull" size={24} color="#ef4444" />
+                  <Ionicons name="skull" size={30} color="#ef4444" />
                   
                   {/* Enemy Health Bar */}
                   <View style={styles.enemyHealthBarContainer}>
