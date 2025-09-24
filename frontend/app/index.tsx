@@ -17,7 +17,6 @@ import { useCombat } from '../src/contexts/CombatContext';
 
 // Import components for overlays
 import NinjaStatsOverlay from '../src/components/NinjaStatsOverlay';
-import ShurikensOverlay from '../src/components/ShurikensOverlay';
 import PetsOverlay from '../src/components/PetsOverlay';
 import SkillsOverlay from '../src/components/SkillsOverlay';
 import StoreOverlay from '../src/components/StoreOverlay';
