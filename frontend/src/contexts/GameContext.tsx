@@ -184,7 +184,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }, 30000); // Auto-save every 30 seconds
 
     return () => clearInterval(interval);
-  }, [gameState]);
+  }, []); // Remove gameState dependency to prevent render loop
 
   // Calculate experience required for next level (incremental up to level 15000)
   const calculateExpForLevel = (level: number): number => {
