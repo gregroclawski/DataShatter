@@ -51,35 +51,18 @@ export default function NinjaIdleGame() {
 
   const insets = useSafeAreaInsets();
 
-  // Level-up explosion attack that actually damages enemies
+  // Level-up explosion attack - delegate to combat context
   const triggerLevelUpExplosion = useCallback(() => {
     console.log('💥 LEVEL UP EXPLOSION!');
     setIsLevelingUp(true);
     
-    // Kill all enemies on screen for level-up explosion
-    console.log(`💥 Explosion killing ${combatState.enemies.length} enemies!`);
-    
-    // Award XP for each enemy killed by explosion
-    const explosionXP = combatState.enemies.length * 25; // 25 XP per enemy killed by explosion
-    const explosionGold = combatState.enemies.length * 5; // 5 gold per enemy killed by explosion
-    
-    if (explosionXP > 0) {
-      console.log(`💥 Explosion rewards: ${explosionXP} XP, ${explosionGold} gold`);
-      updateNinja((prev) => ({
-        experience: prev.experience + explosionXP,
-        gold: prev.gold + explosionGold,
-      }));
-    }
-    
-    // Actually clear all enemies
-    console.log('💥 Calling clearAllEnemies function...');
-    clearAllEnemies();
-    console.log('💥 clearAllEnemies called successfully');
+    // Delegate to combat context where we know the context works
+    triggerLevelUpExplosion();
     
     setTimeout(() => {
       setIsLevelingUp(false);
     }, 1000);
-  }, [combatState.enemies, updateNinja, clearAllEnemies]);
+  }, [triggerLevelUpExplosion]);
 
   // Watch for level changes to trigger explosion
   useEffect(() => {
