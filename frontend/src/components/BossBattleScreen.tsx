@@ -429,7 +429,7 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
 
   const renderResult = () => (
     <View style={styles.resultContainer}>
-      {battlePhase === 'victory' ? (
+      {battleResult === 'victory' ? (
         <>
           <Ionicons name="trophy" size={80} color="#f59e0b" />
           <Text style={styles.resultTitle}>🏆 VICTORY!</Text>
@@ -445,6 +445,55 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
         </>
       )}
     </View>
+  );
+
+  const renderResultPopup = () => (
+    <Modal
+      visible={showResultPopup}
+      animationType="fade"
+      transparent={true}
+      onRequestClose={() => {}}
+    >
+      <View style={styles.popupOverlay}>
+        <View style={styles.popup}>
+          {battleResult === 'victory' ? (
+            <>
+              <Ionicons name="trophy" size={100} color="#f59e0b" />
+              <Text style={styles.popupTitle}>🎉 VICTORY! 🎉</Text>
+              <Text style={styles.popupText}>
+                You have defeated {tier.name}!
+              </Text>
+              <Text style={styles.popupSubtext}>
+                Your skills as a ninja are unmatched!
+              </Text>
+            </>
+          ) : (
+            <>
+              <Ionicons name="skull" size={100} color="#ef4444" />
+              <Text style={styles.popupTitle}>💀 DEFEAT 💀</Text>
+              <Text style={styles.popupText}>
+                {tier.name} has proven too powerful...
+              </Text>
+              <Text style={styles.popupSubtext}>
+                Train harder and return when you're stronger!
+              </Text>
+            </>
+          )}
+          
+          <TouchableOpacity 
+            style={styles.popupButton} 
+            onPress={() => {
+              setShowResultPopup(false);
+              setTimeout(() => onComplete(battleResult === 'victory'), 500);
+            }}
+          >
+            <Text style={styles.popupButtonText}>
+              {battleResult === 'victory' ? 'Continue' : 'Return'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
   );
 
   if (!visible) {
