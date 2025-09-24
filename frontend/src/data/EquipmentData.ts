@@ -1,5 +1,6 @@
 // Equipment System - Gear Data and Types
 // Supports 4 slots with rarity tiers and stat bonuses
+// Upgrade materials system for boss drops
 
 export enum EquipmentSlot {
   HEAD = 'head',
@@ -15,6 +16,67 @@ export enum EquipmentRarity {
   EPIC = 'epic',
   LEGENDARY = 'legendary'
 }
+
+// Upgrade Materials from Boss Drops
+export enum UpgradeMaterial {
+  FIRE_ESSENCE = 'fire_essence',
+  ICE_CRYSTAL = 'ice_crystal', 
+  SHADOW_ORB = 'shadow_orb',
+  EARTH_FRAGMENT = 'earth_fragment',
+  MYSTIC_DUST = 'mystic_dust' // Common material from all bosses
+}
+
+export interface UpgradeMaterialData {
+  id: UpgradeMaterial;
+  name: string;
+  icon: string;
+  description: string;
+  rarity: EquipmentRarity;
+  source: string; // Boss name
+}
+
+export const UPGRADE_MATERIALS: Record<UpgradeMaterial, UpgradeMaterialData> = {
+  [UpgradeMaterial.FIRE_ESSENCE]: {
+    id: UpgradeMaterial.FIRE_ESSENCE,
+    name: 'Fire Essence',
+    icon: '🔥🔸',
+    description: 'Crystallized dragon flame, burns with eternal heat',
+    rarity: EquipmentRarity.RARE,
+    source: 'Fire Dragon'
+  },
+  [UpgradeMaterial.ICE_CRYSTAL]: {
+    id: UpgradeMaterial.ICE_CRYSTAL,
+    name: 'Ice Crystal',
+    icon: '❄️🔹',
+    description: 'Frozen shard from the eternal winter realm',
+    rarity: EquipmentRarity.RARE,
+    source: 'Ice Queen'
+  },
+  [UpgradeMaterial.SHADOW_ORB]: {
+    id: UpgradeMaterial.SHADOW_ORB,
+    name: 'Shadow Orb',
+    icon: '🌑🔮',
+    description: 'Condensed darkness that absorbs light',
+    rarity: EquipmentRarity.EPIC,
+    source: 'Shadow Lord'
+  },
+  [UpgradeMaterial.EARTH_FRAGMENT]: {
+    id: UpgradeMaterial.EARTH_FRAGMENT,
+    name: 'Earth Fragment',
+    icon: '⛰️💎',
+    description: 'Core piece of ancient mountains',
+    rarity: EquipmentRarity.UNCOMMON,
+    source: 'Earth Titan'
+  },
+  [UpgradeMaterial.MYSTIC_DUST]: {
+    id: UpgradeMaterial.MYSTIC_DUST,
+    name: 'Mystic Dust',
+    icon: '✨💫',
+    description: 'Universal material that enhances any equipment',
+    rarity: EquipmentRarity.COMMON,
+    source: 'All Bosses'
+  }
+};
 
 export interface EquipmentStats {
   attack?: number;
