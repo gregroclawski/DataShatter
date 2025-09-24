@@ -83,7 +83,14 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   });
   
   const [projectiles, setProjectiles] = useState<CombatProjectile[]>([]);
-  const [ninjaPosition, setNinjaPosition] = useState<{x: number, y: number}>({ x: 195, y: 297 }); // Default center position
+  // Initialize ninja position to match game's starting position (bottom left corner)
+  const SCREEN_WIDTH = 390;
+  const GAME_AREA_HEIGHT = 844 - 250;
+  const NINJA_SIZE = 40;
+  const [ninjaPosition, setNinjaPosition] = useState<{x: number, y: number}>({ 
+    x: 50, 
+    y: GAME_AREA_HEIGHT - NINJA_SIZE - 50 
+  });
 
   // Function to handle enemy kills - just log for now, main component will handle rewards
   const handleEnemyKill = (enemy: CombatEnemy) => {
