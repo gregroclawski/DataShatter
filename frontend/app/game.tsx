@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  PanGestureHandler,
   Animated,
   Alert,
 } from 'react-native';
