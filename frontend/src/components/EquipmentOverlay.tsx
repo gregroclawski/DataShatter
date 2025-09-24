@@ -246,6 +246,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'flex-end',
     zIndex: 500, // Lower z-index so tabs can appear on top
+    pointerEvents: 'none', // Allow clicks to pass through the overlay background
   },
   container: {
     backgroundColor: '#1f2937',
