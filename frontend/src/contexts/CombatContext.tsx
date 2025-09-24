@@ -46,6 +46,12 @@ export const useCombat = (): CombatContextType => {
 export const CombatProvider = ({ children }: { children: ReactNode }) => {
   const [rewardCallback, setRewardCallback] = useState<((xp: number, gold: number) => void) | null>(null);
   
+  // Add debugging for callback setting
+  const setRewardCallbackWithLogging = (callback: (xp: number, gold: number) => void) => {
+    console.log('🔧 Setting reward callback in CombatProvider');
+    setRewardCallback(() => callback);
+  };
+  
   const [combatState, setCombatState] = useState<CombatState>({
     isInCombat: false,
     currentTick: 0,
