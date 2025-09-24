@@ -302,6 +302,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     };
     
     console.log(`🔥 Creating projectile to enemy ${targetEnemy.id} for ${damage} damage`);
+    console.log(`🎯 Projectile origin: ninja at (${ninjaX}, ${ninjaY}), target at (${projectile.targetX}, ${projectile.targetY})`);
     
     setProjectiles(prev => [...prev, projectile]);
     
