@@ -203,19 +203,21 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
 
 const styles = StyleSheet.create({
   overlay: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 80, // Stop 80px from bottom to leave space for tabs
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 80, // Leave space for bottom tabs (80px)
   },
   container: {
     width: '95%',
-    height: '85%', // Reduced from 90% to 85% to ensure tab accessibility
+    height: '90%', // Can use 90% now since overlay doesn't cover bottom
     backgroundColor: '#1f2937',
     borderRadius: 12,
     padding: 16,
-    marginBottom: 20, // Extra margin from bottom
   },
   header: {
     flexDirection: 'row',
