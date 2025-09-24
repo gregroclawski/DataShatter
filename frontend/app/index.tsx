@@ -294,8 +294,8 @@ export default function NinjaIdleGame() {
             <Text style={{color: 'red', position: 'absolute', top: 50, left: 50}}>No enemies in array</Text>
           )}
 
-          {/* Projectiles */}
-          {console.log(`🔥 Projectiles array length: ${projectiles.length}`) || null}
+          {/* Projectiles from Combat System */}
+          {console.log(`🔥 Combat Projectiles array length: ${projectiles.length}`) || null}
           {projectiles.map((projectile) => {
             const currentTime = Date.now();
             const progress = Math.min((currentTime - projectile.startTime) / projectile.duration, 1);
@@ -317,6 +317,7 @@ export default function NinjaIdleGame() {
                 ]}
               >
                 <Ionicons name="diamond" size={12} color="#8b5cf6" />
+                <Text style={styles.projectileDamage}>{projectile.damage}</Text>
               </View>
             );
           })}
