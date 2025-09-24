@@ -262,11 +262,14 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Create projectile that will deal damage when it hits
-  const createProjectile = (targetEnemy: CombatEnemy, damage: number) => {
+  const createProjectile = (targetEnemy: CombatEnemy, damage: number, ninjaPos?: {x: number, y: number}) => {
     const SCREEN_WIDTH = 390;
     const GAME_AREA_HEIGHT = 844 - 250;
-    const ninjaX = SCREEN_WIDTH / 2;
-    const ninjaY = GAME_AREA_HEIGHT / 2;
+    const NINJA_SIZE = 40;
+    
+    // Use provided ninja position or default to center
+    const ninjaX = ninjaPos ? ninjaPos.x + NINJA_SIZE / 2 : SCREEN_WIDTH / 2;
+    const ninjaY = ninjaPos ? ninjaPos.y + NINJA_SIZE / 2 : GAME_AREA_HEIGHT / 2;
     const ENEMY_SIZE = 35;
     
     const projectile: CombatProjectile = {
