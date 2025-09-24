@@ -210,19 +210,10 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     // Calculate final damage with stats
     const damageResult = DamageCalculator.calculateDamage(damage, state.playerStats, target.stats);
 
-    // Apply damage based on ability effects
-    if (ability.effects.includes('SingleTarget')) {
-      target.health -= damageResult.damage;
-      target.lastDamaged = state.currentTick;
-    } else if (ability.effects.includes('AoE')) {
-      // Damage all enemies
-      state.enemies.forEach(enemy => {
-        enemy.health -= Math.floor(damageResult.damage * 0.8); // 80% damage to secondary targets
-        enemy.lastDamaged = state.currentTick;
-      });
-    }
+    // Create projectile for visual effect and delayed damage
+    createProjectile(target, damageResult.damage);
 
-    // Apply DoT effects
+    // Apply DoT effects (immediate)
     if (ability.effects.includes('DoT') && ability.stats.duration) {
       state.statusEffects.addEffect(target.id, {
         id: `${ability.id}_dot`,
@@ -235,7 +226,37 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       });
     }
 
-    console.log(`🎯 ${ability.name} cast! Damage: ${damageResult.damage}${damageResult.isCritical ? ' (CRIT!)' : ''}`);
+    console.log(`🎯 ${ability.name} cast! Projectile created for ${damageResult.damage} damage${damageResult.isCritical ? ' (CRIT!)' : ''}`);
+  };
+
+  // Create projectile that will deal damage when it hits
+  const createProjectile = (targetEnemy: CombatEnemy, damage: number) => {
+    const SCREEN_WIDTH = 390;
+    const GAME_AREA_HEIGHT = 844 - 250;
+    const ninjaX = SCREEN_WIDTH / 2;
+    const ninjaY = GAME_AREA_HEIGHT / 2;
+    const ENEMY_SIZE = 35;
+    
+    const projectile: CombatProjectile = {
+      id: `proj_${Date.now()}_${Math.random()}`,
+      x: ninjaX,
+      y: ninjaY,
+      targetX: targetEnemy.position.x + ENEMY_SIZE / 2,
+      targetY: targetEnemy.position.y + ENEMY_SIZE / 2,
+      targetEnemyId: targetEnemy.id,
+      damage: damage,
+      startTime: Date.now(),
+      duration: 500, // 500ms travel time
+    };
+    
+    console.log(`🔥 Creating projectile to enemy ${targetEnemy.id} for ${damage} damage`);
+    
+    setProjectiles(prev => [...prev, projectile]);
+    
+    // Schedule projectile hit
+    setTimeout(() => {
+      handleProjectileHit(projectile);
+    }, 500);
   };
 
   // Spawn a test enemy
