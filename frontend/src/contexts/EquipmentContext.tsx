@@ -169,17 +169,38 @@ export const EquipmentProvider = ({ children }: { children: ReactNode }) => {
     return true;
   };
 
-  // Upgrade equipment (requires gold)
-  const upgradeEquipment = (equipmentId: string, cost: number): boolean => {
+  // Upgrade equipment (requires gold and materials)
+  const upgradeEquipment = (equipmentId: string): boolean => {
     // Find the equipment (could be equipped or in inventory)
     const equipment = findEquipmentById(equipmentId);
     if (!equipment || !canUpgradeEquipment(equipment)) {
-      console.log('❌ Cannot upgrade equipment');
+      console.log('❌ Cannot upgrade equipment - not found or max level');
       return false;
     }
     
-    // Note: In a full implementation, we would check player's gold here
-    // For now, we'll assume the upgrade is allowed
+    // Get upgrade costs
+    const upgradeCosts = getUpgradeCost(equipment);
+    
+    // Check if player has enough materials
+    if (!hasMaterials(upgradeCosts.materials)) {
+      console.log('❌ Cannot upgrade equipment - insufficient materials');
+      return false;
+    }
+    
+    // Note: Check gold via GameContext in a full implementation
+    // For now, we'll assume the upgrade is allowed if materials are available
+    
+    // Consume materials
+    Object.entries(upgradeCosts.materials).forEach(([material, quantity]) => {
+      if (quantity > 0) {
+        removeMaterial(material as UpgradeMaterial, quantity);
+      }
+    });
+    
+    // Consume gold (via GameContext)
+    updateNinja((prev) => ({
+      gold: Math.max(0, prev.gold - upgradeCosts.gold)
+    }));
     
     setInventory(prev => {
       const newInventory = { ...prev };
