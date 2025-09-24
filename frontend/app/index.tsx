@@ -423,6 +423,10 @@ export default function NinjaIdleGame() {
           {combatState.enemies && combatState.enemies.length > 0 ? (
             combatState.enemies.map((enemy, index) => {
               console.log(`👹 Rendering enemy ${index + 1}: pos(${enemy.position.x}, ${enemy.position.y}) health:${enemy.health}`);
+              const isBoss = enemy.isBoss || false;
+              const enemySize = isBoss ? 90 : 30; // 3x size for bosses (90 vs 30)
+              const enemyIcon = isBoss ? getBossIcon(enemy.element) : "skull";
+              
               return (
                 <View
                   key={enemy.id}
@@ -431,21 +435,31 @@ export default function NinjaIdleGame() {
                     {
                       left: enemy.position.x,
                       top: enemy.position.y,
+                      width: isBoss ? 80 : 35, // Larger container for bosses
+                      height: isBoss ? 80 : 35,
                     },
                   ]}
                 >
-                  <Ionicons name="skull" size={30} color="#ef4444" />
+                  <Ionicons name={enemyIcon} size={enemySize} color={isBoss ? getBossColor(enemy.element) : "#ef4444"} />
                   
                   {/* Enemy Health Bar */}
-                  <View style={styles.enemyHealthBarContainer}>
+                  <View style={[
+                    styles.enemyHealthBarContainer,
+                    isBoss && styles.bossHealthBarContainer
+                  ]}>
                     <View style={styles.enemyHealthBarBackground}>
                       <View 
                         style={[
                           styles.enemyHealthBar, 
-                          { width: `${(enemy.health / enemy.maxHealth) * 100}%` }
+                          { width: `${(enemy.health / enemy.maxHealth) * 100}%` },
+                          isBoss && { backgroundColor: getBossHealthColor(enemy.element) }
                         ]} 
                       />
                     </View>
+                    {/* Show boss name */}
+                    {isBoss && (
+                      <Text style={styles.bossNameLabel}>{enemy.name}</Text>
+                    )}
                   </View>
                 </View>
               );
