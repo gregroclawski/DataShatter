@@ -95,14 +95,11 @@ const NinjaStatsScreen = () => {
     value: number;
     color: string;
   }) => (
-    <LinearGradient
-      colors={['#374151', '#4b5563']}
-      style={styles.resourceCard}
-    >
+    <View style={styles.resourceCard}>
       <Ionicons name={icon} size={24} color={color} />
       <Text style={styles.resourceLabel}>{label}</Text>
       <Text style={styles.resourceValue}>{value.toLocaleString()}</Text>
-    </LinearGradient>
+    </View>
   );
 
   return (
