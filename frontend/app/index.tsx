@@ -681,7 +681,11 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   overlayContainer: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 70, // Leave space for bottom tabs (70px height)
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
   },
