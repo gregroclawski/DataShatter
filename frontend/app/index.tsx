@@ -60,64 +60,40 @@ export default function NinjaIdleGame() {
   const [previousLevel, setPreviousLevel] = useState(ninja.level);
   const [showAbilityDeck, setShowAbilityDeck] = useState(false);
 
-  const ninjaAnimatedPosition = useRef(new Animated.ValueXY({
-    x: SCREEN_WIDTH / 2 - NINJA_SIZE / 2,
-    y: GAME_AREA_HEIGHT / 2 - NINJA_SIZE / 2
-  })).current;
-
-  const gameLoopRef = useRef<NodeJS.Timeout>();
-  const spawnTimerRef = useRef<NodeJS.Timeout>();
+  const insets = useSafeAreaInsets();
 
   // Level-up explosion attack
   const triggerLevelUpExplosion = useCallback(() => {
-    if (localGameState.enemies.length === 0) return;
-    
-    console.log('💥 LEVEL UP EXPLOSION! Killing all', localGameState.enemies.length, 'enemies');
+    console.log('💥 LEVEL UP EXPLOSION!');
     setIsLevelingUp(true);
     
-    let totalGoldReward = 0;
-    let totalExpReward = 0;
+    // In the new system, we could trigger a special ability or clear enemies
+    // This would be handled by the combat system
     
-    // Calculate rewards from all enemies
-    localGameState.enemies.forEach(enemy => {
-      totalGoldReward += enemy.reward.gold;
-      totalExpReward += enemy.reward.exp;
-    });
-    
-    // Clear all enemies and give rewards
-    setLocalGameState(prev => ({
-      ...prev,
-      enemies: [],
-      killCount: prev.killCount + prev.enemies.length,
-    }));
-    
-    // Award rewards for all killed enemies (use setTimeout to avoid render loop)
-    if (totalGoldReward > 0 || totalExpReward > 0) {
-      setTimeout(() => {
-        updateNinja({
-          gold: ninja.gold + totalGoldReward,
-          experience: ninja.experience + totalExpReward,
-        });
-      }, 0);
-    }
-    
-    // Reset explosion state after animation
     setTimeout(() => {
       setIsLevelingUp(false);
     }, 1000);
-  }, [localGameState.enemies, ninja.gold, ninja.experience, updateNinja]);
+  }, []);
 
   // Watch for level changes to trigger explosion
   useEffect(() => {
     if (ninja.level > previousLevel) {
       console.log('🚀 Level up detected!', previousLevel, '->', ninja.level);
-      // Use setTimeout to avoid calling updateNinja during render
-      setTimeout(() => {
-        triggerLevelUpExplosion();
-      }, 0);
+      triggerLevelUpExplosion();
       setPreviousLevel(ninja.level);
     }
   }, [ninja.level, previousLevel, triggerLevelUpExplosion]);
+
+  // Start combat when component mounts
+  useEffect(() => {
+    startCombat();
+    return () => stopCombat();
+  }, []);
+
+  const handleAbilityPress = (slotIndex: number) => {
+    // Open ability deck for management
+    setShowAbilityDeck(true);
+  };
 
   // Enemy stats based on stage
   const getEnemyStats = (type: Enemy['type'], stage: number) => {
