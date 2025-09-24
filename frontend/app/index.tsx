@@ -239,25 +239,29 @@ export default function NinjaIdleGame() {
 
   // Auto-move to enemies
   const autoMoveToEnemy = useCallback(() => {
-    if (!localGameState.isAutoFighting || localGameState.enemies.length === 0) return;
+    setLocalGameState(prev => {
+      if (!prev.isAutoFighting || prev.enemies.length === 0) return prev;
 
-    const currentNinjaX = ninjaAnimatedPosition.x._value + NINJA_SIZE / 2;
-    const currentNinjaY = ninjaAnimatedPosition.y._value + NINJA_SIZE / 2;
+      const currentNinjaX = ninjaAnimatedPosition.x._value + NINJA_SIZE / 2;
+      const currentNinjaY = ninjaAnimatedPosition.y._value + NINJA_SIZE / 2;
 
-    const nearestEnemy = localGameState.enemies.reduce((nearest, enemy) => {
-      const distToEnemy = getDistance({ x: currentNinjaX, y: currentNinjaY }, { x: enemy.x + ENEMY_SIZE / 2, y: enemy.y + ENEMY_SIZE / 2 });
-      const distToNearest = getDistance({ x: currentNinjaX, y: currentNinjaY }, { x: nearest.x + ENEMY_SIZE / 2, y: nearest.y + ENEMY_SIZE / 2 });
-      return distToEnemy < distToNearest ? enemy : nearest;
+      const nearestEnemy = prev.enemies.reduce((nearest, enemy) => {
+        const distToEnemy = getDistance({ x: currentNinjaX, y: currentNinjaY }, { x: enemy.x + ENEMY_SIZE / 2, y: enemy.y + ENEMY_SIZE / 2 });
+        const distToNearest = getDistance({ x: currentNinjaX, y: currentNinjaY }, { x: nearest.x + ENEMY_SIZE / 2, y: nearest.y + ENEMY_SIZE / 2 });
+        return distToEnemy < distToNearest ? enemy : nearest;
+      });
+
+      const targetX = nearestEnemy.x + ENEMY_SIZE / 2;
+      const targetY = nearestEnemy.y + ENEMY_SIZE / 2;
+      const distance = getDistance({ x: currentNinjaX, y: currentNinjaY }, { x: targetX, y: targetY });
+      
+      if (distance > 50) {
+        moveNinja(targetX, targetY);
+      }
+      
+      return prev; // No state changes needed, just triggering movement
     });
-
-    const targetX = nearestEnemy.x + ENEMY_SIZE / 2;
-    const targetY = nearestEnemy.y + ENEMY_SIZE / 2;
-    const distance = getDistance({ x: currentNinjaX, y: currentNinjaY }, { x: targetX, y: targetY });
-    
-    if (distance > 50) {
-      moveNinja(targetX, targetY);
-    }
-  }, [localGameState.isAutoFighting, localGameState.enemies, ninjaAnimatedPosition]);
+  }, [ninjaAnimatedPosition]);
 
   // Combat system
   const attackNearbyEnemies = useCallback(() => {
