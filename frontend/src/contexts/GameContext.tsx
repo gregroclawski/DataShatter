@@ -242,10 +242,12 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   const saveGame = async () => {
     try {
+      const now = Date.now();
       const saveData = {
         ...gameState,
-        lastSaveTime: Date.now(),
+        lastSaveTime: now,
       };
+      lastSaveTimeRef.current = now; // Update ref
       await AsyncStorage.setItem('ninjaGameSave', JSON.stringify(saveData));
     } catch (error) {
       console.error('Failed to save game:', error);
@@ -257,6 +259,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       const savedData = await AsyncStorage.getItem('ninjaGameSave');
       if (savedData) {
         const parsedData = JSON.parse(savedData);
+        lastSaveTimeRef.current = parsedData.lastSaveTime || Date.now(); // Update ref
         setGameState(parsedData);
       }
     } catch (error) {
