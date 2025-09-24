@@ -332,6 +332,19 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
         </TouchableOpacity>
       </View>
 
+      {/* Player Lives Display */}
+      <View style={styles.livesContainer}>
+        <Text style={styles.livesLabel}>Lives:</Text>
+        {[1, 2, 3].map(life => (
+          <Ionicons 
+            key={life}
+            name={life <= playerLives ? "heart" : "heart-outline"}
+            size={24}
+            color={life <= playerLives ? "#ef4444" : "#6b7280"}
+          />
+        ))}
+      </View>
+
       {/* Boss Health Bar */}
       {combatState.enemies.length > 0 && (
         <View style={styles.bossHealthContainer}>
@@ -358,11 +371,59 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
         </View>
       )}
 
+      {/* Boss Attacks Overlay */}
+      <View style={styles.attacksContainer}>
+        {bossAttacks.map(attack => (
+          <Animated.View
+            key={attack.id}
+            style={[
+              styles.bossAttack,
+              {
+                left: attack.position.x,
+                top: attack.position.y,
+                backgroundColor: getAttackColor(attack.element),
+              }
+            ]}
+          >
+            <Text style={styles.attackText}>{getAttackEmoji(attack.type, attack.element)}</Text>
+          </Animated.View>
+        ))}
+      </View>
+
       {/* Combat Arena - the actual combat UI will render here via the main game's combat system */}
       <View style={styles.combatArena}>
         <Text style={styles.arenaLabel}>⚔️ BOSS BATTLE IN PROGRESS ⚔️</Text>
         <Text style={styles.arenaSubtext}>Use your abilities to defeat the boss!</Text>
+        {playerLives < 3 && (
+          <Text style={styles.livesWarning}>
+            ⚠️ Lives remaining: {playerLives}
+          </Text>
+        )}
       </View>
+    </View>
+  );
+
+  const renderRespawning = () => (
+    <View style={styles.respawnContainer}>
+      <Ionicons name="skull-outline" size={80} color="#ef4444" />
+      <Text style={styles.respawnTitle}>You were defeated!</Text>
+      <Text style={styles.respawnText}>Lives remaining: {playerLives}</Text>
+      
+      <View style={styles.respawnTimerContainer}>
+        <Animated.Text
+          style={[
+            styles.respawnTimer,
+            {
+              transform: [{ scale: respawnAnim }],
+              color: respawnTimer <= 2 ? '#ef4444' : '#f59e0b'
+            }
+          ]}
+        >
+          {respawnTimer}
+        </Animated.Text>
+      </View>
+      
+      <Text style={styles.respawnLabel}>Respawning in...</Text>
     </View>
   );
 
