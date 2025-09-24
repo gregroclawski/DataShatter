@@ -109,7 +109,7 @@ export default function NinjaIdleGame() {
     }, 500);
   }, []);
 
-  // Listen for combat logs and count kills + create projectiles
+  // Listen for combat logs and count kills
   useEffect(() => {
     const originalConsoleLog = console.log;
     console.log = (...args) => {
@@ -125,9 +125,24 @@ export default function NinjaIdleGame() {
           return newTotal;
         });
       }
+    };
+    
+    return () => {
+      console.log = originalConsoleLog;
+    };
+  }, []);
+
+  // Create projectiles when abilities are cast (separate effect)
+  useEffect(() => {
+    const originalConsoleLog = console.log;
+    console.log = (...args) => {
+      originalConsoleLog(...args);
+      
+      const message = args.join(' ');
       
       // Check for ability cast messages to create projectiles
       if ((message.includes('Fire Shuriken cast!') || message.includes('Basic Shuriken cast!')) && combatState.enemies.length > 0) {
+        console.log('🔥 Detected ability cast, creating projectile...');
         // Target random enemy for projectile
         const randomEnemy = combatState.enemies[Math.floor(Math.random() * combatState.enemies.length)];
         createProjectile(randomEnemy);
@@ -137,7 +152,7 @@ export default function NinjaIdleGame() {
     return () => {
       console.log = originalConsoleLog;
     };
-  }, [combatState.enemies, createProjectile]);
+  }, [combatState.enemies.length, createProjectile]); // Only depend on enemy count, not full array
 
   // Projectile animation loop
   useEffect(() => {
