@@ -418,6 +418,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
   const contextValue: CombatContextType = {
     combatState,
+    projectiles,
     startCombat,
     stopCombat,
     equipAbility,
@@ -426,6 +427,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     upgradeAbility,
     clearAllEnemies,
     triggerLevelUpExplosion,
+    findClosestEnemy,
   };
 
   return (
