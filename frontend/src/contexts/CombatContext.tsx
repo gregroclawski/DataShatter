@@ -42,6 +42,7 @@ interface CombatContextType {
   startCombat: () => void;
   stopCombat: () => void;
   equipAbility: (abilityId: string, slotIndex: number) => boolean;
+  handleEnemyKill: (enemy: CombatEnemy) => void;
   getDeck: () => AbilityDeck;
   getAvailableAbilities: () => any[];
   upgradeAbility: (abilityId: string) => boolean;
@@ -53,6 +54,7 @@ interface CombatContextType {
   triggerLevelUpExplosion: () => void; // Trigger explosion from combat context
   findClosestEnemy: () => CombatEnemy | null; // Expose closest enemy finding
   updateNinjaPosition: (position: {x: number, y: number}) => void; // Update ninja position for projectiles
+  lastExplosionTime: number;
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
