@@ -45,7 +45,11 @@ interface CombatContextType {
   getDeck: () => AbilityDeck;
   getAvailableAbilities: () => any[];
   upgradeAbility: (abilityId: string) => boolean;
+  // Enhanced enemy spawning and management
+  spawnEnemy: (position?: { x: number; y: number }) => CombatEnemy;
+  spawnBoss: (bossEnemy: CombatEnemy) => void;
   clearAllEnemies: () => void; // For level-up explosion
+  clearSpecificEnemy: (enemyId: string) => void;
   triggerLevelUpExplosion: () => void; // Trigger explosion from combat context
   findClosestEnemy: () => CombatEnemy | null; // Expose closest enemy finding
   updateNinjaPosition: (position: {x: number, y: number}) => void; // Update ninja position for projectiles
