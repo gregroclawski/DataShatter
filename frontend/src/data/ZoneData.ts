@@ -48,7 +48,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👹',
     baseHP: 15,
     baseAttack: 8,
-    baseXP: 10,
+    baseXP: 20,
   },
   'wild_wolf': {
     id: 'wild_wolf', 
