@@ -13,6 +13,34 @@ function NinjaStatsContent() {
     collectIdleRewards();
   }, []);
 
+  React.useEffect(() => {
+    // Level up check
+    if (ninja.experience >= ninja.experienceToNext) {
+      const newLevel = ninja.level + 1;
+      const remainingExp = ninja.experience - ninja.experienceToNext;
+      const newExpToNext = newLevel * 100;
+      
+      updateNinja({
+        level: newLevel,
+        experience: remainingExp,
+        experienceToNext: newExpToNext,
+        maxHealth: ninja.maxHealth + 10,
+        health: ninja.maxHealth + 10,
+        maxEnergy: ninja.maxEnergy + 5,
+        energy: ninja.maxEnergy + 5,
+        skillPoints: ninja.skillPoints + 1,
+        attack: ninja.attack + 1,
+        defense: ninja.defense + 1,
+      });
+
+      Alert.alert(
+        'Level Up!',
+        `Congratulations! You reached level ${newLevel}!\n+1 Skill Point earned!`,
+        [{ text: 'Awesome!' }]
+      );
+    }
+  }, [ninja.experience]);
+
   const StatBar = ({ 
     label, 
     current, 
@@ -110,6 +138,20 @@ function NinjaStatsContent() {
         </View>
       </View>
 
+      {/* Battle Action */}
+      <View style={styles.battleSection}>
+        <Text style={styles.sectionTitle}>Battle Arena</Text>
+        <Link href="/game" asChild>
+          <TouchableOpacity style={styles.battleButton}>
+            <View style={styles.battleButtonContent}>
+              <Ionicons name="flash" size={32} color="#ffffff" />
+              <Text style={styles.battleButtonText}>Enter Battle</Text>
+              <Text style={styles.battleButtonSubtext}>Fight enemies and earn rewards!</Text>
+            </View>
+          </TouchableOpacity>
+        </Link>
+      </View>
+
       {/* Navigation Menu */}
       <View style={styles.menuSection}>
         <Text style={styles.sectionTitle}>Game Menu</Text>
@@ -147,7 +189,7 @@ function NinjaStatsContent() {
         <Link href="/raids" asChild>
           <TouchableOpacity style={styles.menuButton}>
             <View style={styles.menuButtonContent}>
-              <Ionicons name="sword" size={24} color="#f59e0b" />
+              <Ionicons name="nuclear" size={24} color="#f59e0b" />
               <Text style={styles.menuButtonText}>Raids</Text>
               <Ionicons name="chevron-forward" size={20} color="#6b7280" />
             </View>
@@ -340,6 +382,31 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#f8fafc',
+    marginTop: 4,
+  },
+  battleSection: {
+    padding: 20,
+    paddingTop: 0,
+  },
+  battleButton: {
+    backgroundColor: '#ef4444',
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  battleButtonContent: {
+    alignItems: 'center',
+    paddingVertical: 24,
+    paddingHorizontal: 20,
+  },
+  battleButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginTop: 8,
+  },
+  battleButtonSubtext: {
+    fontSize: 14,
+    color: '#fca5a5',
     marginTop: 4,
   },
   menuSection: {

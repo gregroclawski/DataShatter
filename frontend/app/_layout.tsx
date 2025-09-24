@@ -31,6 +31,13 @@ export default function RootLayout() {
             }} 
           />
           <Stack.Screen 
+            name="game" 
+            options={{ 
+              title: 'Battle Arena',
+              headerShown: false,
+            }} 
+          />
+          <Stack.Screen 
             name="shurikens" 
             options={{ 
               title: 'Shurikens',
