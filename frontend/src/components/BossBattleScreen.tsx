@@ -739,11 +739,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.8)',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
     alignSelf: 'center',
+    pointerEvents: 'auto',
   },
   livesLabel: {
     color: '#ffffff',
@@ -754,9 +755,10 @@ const styles = StyleSheet.create({
   // Boss health
   bossHealthContainer: {
     marginBottom: 20,
+    pointerEvents: 'auto',
   },
   bossHealthBar: {
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(0,0,0,0.8)',
     padding: 12,
     borderRadius: 8,
     borderWidth: 2,
