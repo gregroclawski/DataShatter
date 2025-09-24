@@ -254,6 +254,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     padding: 16,
     maxHeight: '90%', // Use available height
+    pointerEvents: 'auto', // Allow clicks on the overlay content
   },
   header: {
     flexDirection: 'row',
