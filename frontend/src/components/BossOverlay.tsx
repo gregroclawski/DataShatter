@@ -211,7 +211,32 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose }) =>
     </View>
   );
 
-  return visible && ninja ? (
+  // Don't render if ninja data is not available yet - but be more lenient
+  if (!visible) {
+    return null;
+  }
+  
+  // Only check for critical ninja properties instead of the whole ninja object
+  const hasNinjaData = ninja && typeof ninja.level === 'number';
+  
+  // If ninja data isn't loaded yet, show a loading state instead of nothing
+  if (!hasNinjaData) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Boss Battles</Text>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Ionicons name="close" size={24} color="#e5e7eb" />
+          </TouchableOpacity>
+        </View>
+        <View style={[styles.content, { justifyContent: 'center', alignItems: 'center' }]}>
+          <Text style={{ color: '#e5e7eb', fontSize: 16 }}>Loading player data...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>
