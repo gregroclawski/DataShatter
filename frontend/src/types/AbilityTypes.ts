@@ -118,6 +118,49 @@ export const BASE_ABILITIES: Ability[] = [
     tags: ['ninja', 'fire', 'dot', 'elemental'],
   },
   {
+    id: 'ice_shuriken',
+    name: 'Ice Shuriken',
+    description: 'Freezing shuriken that slows enemies.',
+    icon: '❄️',
+    rarity: 'uncommon',
+    level: 1,
+    maxLevel: 10,
+    effects: ['SingleTarget', 'Debuff'],
+    stats: {
+      baseDamage: 18,
+      cooldown: 2.5,
+      range: 150,
+      duration: 3, // Slow effect lasts 3 seconds
+    },
+    upgrades: [
+      { level: 2, damageMultiplier: 1.3, cooldownReduction: 8, cost: { gold: 200 } },
+      { level: 3, damageMultiplier: 1.6, cooldownReduction: 15, cost: { gold: 500 } },
+    ],
+    synergies: ['elemental_mastery'],
+    tags: ['ninja', 'ice', 'slow', 'elemental'],
+  },
+  {
+    id: 'poison_shuriken',
+    name: 'Poison Shuriken',
+    description: 'Toxic shuriken that deals poison damage over time.',
+    icon: '☠️',
+    rarity: 'rare',
+    level: 1,
+    maxLevel: 10,
+    effects: ['SingleTarget', 'DoT'],
+    stats: {
+      baseDamage: 15,
+      cooldown: 3.5,
+      range: 150,
+      duration: 6, // Poison lasts 6 seconds
+    },
+    upgrades: [
+      { level: 2, damageMultiplier: 1.4, cooldownReduction: 10, cost: { gold: 300 } },
+    ],
+    synergies: ['elemental_mastery'],
+    tags: ['ninja', 'poison', 'dot', 'elemental'],
+  },
+  {
     id: 'shadow_clone',
     name: 'Shadow Clone',
     description: 'Creates a shadow clone that fights alongside you.',
