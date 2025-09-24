@@ -193,6 +193,11 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     return findClosestEnemyInternal(combatState.enemies);
   };
 
+  // Update ninja position for accurate projectile origin
+  const updateNinjaPosition = (position: {x: number, y: number}) => {
+    setNinjaPosition(position);
+  };
+
   // Handle projectile hit - deals damage to target enemy
   const handleProjectileHit = (projectile: CombatProjectile) => {
     console.log(`💥 Projectile ${projectile.id} hit enemy ${projectile.targetEnemyId} for ${projectile.damage} damage`);
