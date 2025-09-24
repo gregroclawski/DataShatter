@@ -30,6 +30,7 @@ interface CombatContextType {
   getDeck: () => AbilityDeck;
   getAvailableAbilities: () => any[];
   upgradeAbility: (abilityId: string) => boolean;
+  clearAllEnemies: () => void; // For level-up explosion
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
