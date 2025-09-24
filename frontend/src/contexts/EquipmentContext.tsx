@@ -32,8 +32,8 @@ interface EquipmentContextType {
   removeFromInventory: (equipmentId: string) => boolean;
   
   // Upgrade System
-  upgradeEquipment: (equipmentId: string, cost: number) => boolean;
-  getEquipmentUpgradeCost: (equipmentId: string) => number;
+  upgradeEquipment: (equipmentId: string) => boolean;
+  getEquipmentUpgradeCost: (equipmentId: string) => { gold: number; materials: Record<UpgradeMaterial, number> };
   canUpgrade: (equipmentId: string) => boolean;
   
   // Equipment Generation (for testing/boss drops)
