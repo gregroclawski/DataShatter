@@ -507,8 +507,15 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
           }
         ]}
       >
-        {/* Boss Battle Background */}
-        <View style={[styles.background, { backgroundColor: getBossThemeColor(boss.element) }]}>
+        {/* Boss Battle Background - Full for countdown, partial for combat */}
+        <View style={[
+          styles.background, 
+          { 
+            backgroundColor: getBossThemeColor(boss.element),
+            opacity: battlePhase === 'countdown' ? 0.9 : 0.3,
+            height: battlePhase === 'countdown' ? '100%' : 200
+          }
+        ]}>
           <Text style={styles.backgroundPattern}>{getBossPattern(boss.element)}</Text>
         </View>
 
