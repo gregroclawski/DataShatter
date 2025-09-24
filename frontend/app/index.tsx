@@ -29,7 +29,7 @@ type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'raids' | null;
 
 export default function NinjaIdleGame() {
   const { gameState, updateNinja } = useGame();
-  const { combatState, startCombat, stopCombat } = useCombat();
+  const { combatState, startCombat, stopCombat, setRewardCallback } = useCombat();
   
   const ninja = gameState?.ninja;
   
