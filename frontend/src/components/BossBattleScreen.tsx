@@ -55,7 +55,7 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
   useEffect(() => {
     if (visible) {
       setBattlePhase('countdown');
-      setCountdown(10);
+      setCountdown(5);
       setBossSpawned(false);
       setPlayerLives(3);
       setRespawnTimer(5);
