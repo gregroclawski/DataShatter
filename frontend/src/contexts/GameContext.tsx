@@ -267,17 +267,22 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updateNinja = (updates: Partial<NinjaStats>) => {
+  const updateNinja = (updates: Partial<NinjaStats> | ((prev: NinjaStats) => Partial<NinjaStats>)) => {
     setGameState(prev => {
-      const updatedNinja = { ...prev.ninja, ...updates };
+      // Handle both object updates and function updates
+      const actualUpdates = typeof updates === 'function' 
+        ? updates(prev.ninja)
+        : updates;
+        
+      const updatedNinja = { ...prev.ninja, ...actualUpdates };
       
       // Debug experience updates
-      if (updates.experience !== undefined) {
-        console.log(`💰 EXP UPDATE: ${prev.ninja.experience} + ${updates.experience - prev.ninja.experience} = ${updates.experience}`);
+      if (actualUpdates.experience !== undefined) {
+        console.log(`💰 EXP UPDATE: ${prev.ninja.experience} + ${actualUpdates.experience - prev.ninja.experience} = ${actualUpdates.experience}`);
         console.log(`💰 Current level: ${updatedNinja.level}, ExpToNext: ${updatedNinja.experienceToNext}`);
         
-        if (updates.experience >= updatedNinja.experienceToNext) {
-          console.log(`🚨 SHOULD LEVEL UP! Exp: ${updates.experience} >= ExpToNext: ${updatedNinja.experienceToNext}`);
+        if (actualUpdates.experience >= updatedNinja.experienceToNext) {
+          console.log(`🚨 SHOULD LEVEL UP! Exp: ${actualUpdates.experience} >= ExpToNext: ${updatedNinja.experienceToNext}`);
         }
       }
       
