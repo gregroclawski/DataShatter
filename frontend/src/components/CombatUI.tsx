@@ -37,13 +37,6 @@ export default function CombatUI({ onAbilityPress }: Props) {
       {/* Combat Status */}
       <View style={styles.statusBar}>
         <View style={styles.statusItem}>
-          <Ionicons name="flash" size={16} color="#f59e0b" />
-          <Text style={styles.statusText}>
-            Tick: {combatState.currentTick}
-          </Text>
-        </View>
-        
-        <View style={styles.statusItem}>
           <Ionicons name="skull" size={16} color="#ef4444" />
           <Text style={styles.statusText}>
             Enemies: {combatState.enemies.length}
