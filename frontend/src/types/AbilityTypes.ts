@@ -280,11 +280,12 @@ export class AbilityManager {
       this.availableAbilities.set(ability.id, { ...ability });
     });
     
-    // Equip default abilities - one of each shuriken type
+    // Equip default abilities - one of each shuriken type plus shadow clone
     this.equipAbility('basic_shuriken', 0); // Slot 1: Basic Shuriken
     this.equipAbility('fire_shuriken', 1);  // Slot 2: Fire Shuriken  
     this.equipAbility('ice_shuriken', 2);   // Slot 3: Ice Shuriken
     this.equipAbility('poison_shuriken', 3);// Slot 4: Poison Shuriken
+    this.equipAbility('shadow_clone', 4);   // Slot 5: Shadow Clone
   }
 
   // Equip ability to specific slot
