@@ -289,6 +289,15 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     return combatState.abilityManager.upgradeAbility(abilityId);
   };
 
+  // Clear all enemies (for level-up explosion)
+  const clearAllEnemies = () => {
+    console.log('💥 Clearing all enemies for level-up explosion!');
+    setCombatState(prev => ({
+      ...prev,
+      enemies: []
+    }));
+  };
+
   // Initialize combat engine
   useEffect(() => {
     combatEngine.start();
