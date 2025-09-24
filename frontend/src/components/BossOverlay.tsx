@@ -10,6 +10,7 @@ import { BossBattleScreen } from './BossBattleScreen';
 interface BossOverlayProps {
   visible: boolean;
   onClose: () => void;
+  onStartBattle: (boss: Boss, tier: BossTier) => void;
 }
 
 export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose }) => {
