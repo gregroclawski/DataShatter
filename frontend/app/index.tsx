@@ -84,29 +84,8 @@ export default function NinjaIdleGame() {
     }
   }, [ninja?.level, previousLevel, handleLevelUpExplosion]);
 
-  // Disabled: XP is now handled directly by CombatContext for immediate rewards
-  // This prevents duplicate XP awards (CombatContext awards 10 XP per kill)
-  /*
-  useEffect(() => {
-    if (totalKills > lastProcessedKill) {
-      const newKills = totalKills - lastProcessedKill;
-      const xpPerKill = 10;
-      const goldPerKill = 10;
-      
-      const totalXP = newKills * xpPerKill;
-      const totalGold = newKills * goldPerKill;
-      
-      console.log(`📊 Awarding XP for ${newKills} new kills: +${totalXP} XP, +${totalGold} gold`);
-      
-      updateNinja((prev) => ({
-        experience: prev.experience + totalXP,
-        gold: prev.gold + totalGold,
-      }));
-      
-      setLastProcessedKill(totalKills);
-    }
-  }, [totalKills, lastProcessedKill]);
-  */
+  // XP is now handled directly by CombatContext (10 XP per kill)
+  // Removed duplicate XP system to prevent double rewards
 
   // Enhanced AI movement system with proper speed and tracking
   useEffect(() => {
