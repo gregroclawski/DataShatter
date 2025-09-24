@@ -33,7 +33,6 @@ export default function NinjaIdleGame() {
   const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
   const [isLevelingUp, setIsLevelingUp] = useState(false);
   const [previousLevel, setPreviousLevel] = useState(ninja.level);
-  const [showAbilityDeck, setShowAbilityDeck] = useState(false);
 
   const insets = useSafeAreaInsets();
 
