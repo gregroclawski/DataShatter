@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { combatEngine, StatusEffectManager, DamageCalculator, CombatStats } from '../engine/CombatEngine';
 import { AbilityManager, EquippedAbility, AbilityDeck } from '../types/AbilityTypes';
+import { useGame } from './GameContext';
 
 interface CombatState {
   isInCombat: boolean;
