@@ -769,14 +769,13 @@ const styles = StyleSheet.create({
   },
   // Boss health
   bossHealthContainer: {
-    marginBottom: 20,
-    pointerEvents: 'auto',
+    marginBottom: 8,
   },
   bossHealthBar: {
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 2,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    padding: 8,
+    borderRadius: 6,
+    borderWidth: 1,
     borderColor: '#f59e0b',
   },
   bossHealthLabel: {
