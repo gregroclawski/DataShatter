@@ -20,8 +20,10 @@ import StoreOverlay from '../src/components/StoreOverlay';
 import { EnemiesZonesOverlay } from '../src/components/EnemiesZonesOverlay';
 import { EquipmentOverlay } from '../src/components/EquipmentOverlay';
 import { BossOverlay } from '../src/components/BossOverlay';
+import { BossBattleScreen } from '../src/components/BossBattleScreen';
 import CombatUI from '../src/components/CombatUI';
 import AbilityDeckOverlay from '../src/components/AbilityDeckOverlay';
+import { Boss, BossTier } from '../src/data/BossData';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 250; // Leave space for bottom tabs
