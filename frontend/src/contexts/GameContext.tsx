@@ -268,12 +268,12 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   const loadGame = async () => {
     try {
-      // TEMPORARY: Clear corrupted save data and start fresh
-      await AsyncStorage.removeItem('ninjaGameSave');
-      console.log('🔄 Cleared corrupted save data, starting with fresh state');
-      
-      // Start with clean default state
-      setGameState(defaultGameState);
+      const savedData = await AsyncStorage.getItem('ninjaGameSave');
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        lastSaveTimeRef.current = parsedData.lastSaveTime || Date.now();
+        setGameState(parsedData);
+      }
     } catch (error) {
       console.error('Failed to load game:', error);
     }
