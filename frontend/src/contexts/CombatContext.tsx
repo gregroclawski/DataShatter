@@ -52,15 +52,31 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     abilityManager: new AbilityManager(),
     statusEffects: new StatusEffectManager(),
     playerStats: {
-      attack: 50,
-      defense: 20,
-      health: 220,
-      maxHealth: 220,
-      critChance: 10,
+      attack: gameState.ninja.attack,
+      defense: gameState.ninja.defense,
+      health: gameState.ninja.health,
+      maxHealth: gameState.ninja.maxHealth,
+      critChance: gameState.ninja.luck, // Use luck as crit chance
       critDamage: 150,
       cooldownReduction: 0,
     },
   });
+
+  // Update player stats when ninja stats change
+  useEffect(() => {
+    setCombatState(prev => ({
+      ...prev,
+      playerStats: {
+        attack: gameState.ninja.attack,
+        defense: gameState.ninja.defense,
+        health: gameState.ninja.health,
+        maxHealth: gameState.ninja.maxHealth,
+        critChance: gameState.ninja.luck,
+        critDamage: 150,
+        cooldownReduction: 0,
+      }
+    }));
+  }, [gameState.ninja]);
 
   // Function to handle enemy kills and reward XP
   const handleEnemyKill = (enemy: CombatEnemy) => {
