@@ -287,7 +287,7 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose }) =>
         )}
       </ScrollView>
     </View>
-  ) : null;
+  );
 };
 
 const styles = StyleSheet.create({
