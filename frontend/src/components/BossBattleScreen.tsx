@@ -7,6 +7,16 @@ import { useGame } from '../contexts/GameContext';
 import { Boss, BossType, BossTier } from '../data/BossData';
 import { CombatEnemy } from '../engine/CombatEngine';
 
+// Boss attack animation interface
+interface BossAttack {
+  id: string;
+  type: string;
+  element: string;
+  position: { x: number; y: number };
+  startTime: number;
+  duration: number;
+}
+
 interface BossBattleScreenProps {
   visible: boolean;
   boss: Boss;
