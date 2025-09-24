@@ -36,6 +36,7 @@ export default function NinjaIdleGame() {
   const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
   const [isLevelingUp, setIsLevelingUp] = useState(false);
   const [previousLevel, setPreviousLevel] = useState(1);
+  const [lastExplosionTime, setLastExplosionTime] = useState(0);
   const [showAbilityDeck, setShowAbilityDeck] = useState(false);
   const [totalKills, setTotalKills] = useState(0);
   const [lastProcessedKill, setLastProcessedKill] = useState(0);
