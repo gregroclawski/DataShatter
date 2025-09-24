@@ -535,6 +535,42 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#8b5cf6',
   },
+  expBar: {
+    backgroundColor: '#374151',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#4b5563',
+  },
+  expBarHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  expBarLabel: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#f8fafc',
+  },
+  expBarText: {
+    fontSize: 10,
+    color: '#9ca3af',
+  },
+  expBarContainer: {
+    width: '100%',
+  },
+  expBarBg: {
+    height: 6,
+    backgroundColor: '#1e293b',
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  expBarFill: {
+    height: '100%',
+    backgroundColor: '#10b981',
+    borderRadius: 3,
+  },
   gameArea: {
     flex: 1,
     backgroundColor: '#1e293b',
