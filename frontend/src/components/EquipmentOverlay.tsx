@@ -234,7 +234,7 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
           </ScrollView>
         </View>
       </View>
-    </Modal>
+    )}
   );
 };
 
