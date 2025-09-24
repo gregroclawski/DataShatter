@@ -456,27 +456,24 @@ export default function NinjaIdleGame() {
       </View>
 
       {/* Overlays */}
-      {activeOverlay && activeOverlay !== 'zones' && (
+      {activeOverlay && (
         <Modal visible={true} animationType="slide" transparent>
           <View style={styles.overlayContainer}>
             {activeOverlay === 'stats' && <NinjaStatsOverlay onClose={() => setActiveOverlay(null)} />}
             {activeOverlay === 'pets' && <PetsOverlay onClose={() => setActiveOverlay(null)} />}
             {activeOverlay === 'skills' && <SkillsOverlay onClose={() => setActiveOverlay(null)} />}
             {activeOverlay === 'store' && <StoreOverlay onClose={() => setActiveOverlay(null)} />}
+            {activeOverlay === 'zones' && <EnemiesZonesOverlay 
+              visible={true} 
+              onClose={() => setActiveOverlay(null)} 
+            />}
+            {activeOverlay === 'equipment' && <EquipmentOverlay 
+              visible={true} 
+              onClose={() => setActiveOverlay(null)} 
+            />}
           </View>
         </Modal>
       )}
-
-      {/* Zones Overlay - has its own Modal */}
-      <EnemiesZonesOverlay 
-        visible={activeOverlay === 'zones'} 
-        onClose={() => setActiveOverlay(null)} 
-      />
-
-      <EquipmentOverlay 
-        visible={activeOverlay === 'equipment'} 
-        onClose={() => setActiveOverlay(null)} 
-      />
 
       {/* Ability Deck Overlay */}
       <AbilityDeckOverlay
