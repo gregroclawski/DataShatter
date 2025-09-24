@@ -185,6 +185,9 @@ export default function NinjaIdleGame() {
     const currentNinjaX = ninjaAnimatedPosition.x._value + NINJA_SIZE / 2;
     const currentNinjaY = ninjaAnimatedPosition.y._value + NINJA_SIZE / 2;
     
+    let totalGoldReward = 0;
+    let totalExpReward = 0;
+    
     setLocalGameState(prev => {
       const updatedEnemies = prev.enemies.map(enemy => {
         const distance = getDistance(
@@ -201,10 +204,8 @@ export default function NinjaIdleGame() {
 
       const aliveEnemies = updatedEnemies.filter(enemy => {
         if (enemy.health <= 0) {
-          updateNinja({
-            gold: ninja.gold + enemy.reward.gold,
-            experience: ninja.experience + enemy.reward.exp,
-          });
+          totalGoldReward += enemy.reward.gold;
+          totalExpReward += enemy.reward.exp;
           return false;
         }
         return true;
@@ -218,6 +219,14 @@ export default function NinjaIdleGame() {
         killCount: prev.killCount + killedCount,
       };
     });
+    
+    // Update ninja stats outside of setState
+    if (totalGoldReward > 0 || totalExpReward > 0) {
+      updateNinja({
+        gold: ninja.gold + totalGoldReward,
+        experience: ninja.experience + totalExpReward,
+      });
+    }
   };
 
   // Enemy AI
