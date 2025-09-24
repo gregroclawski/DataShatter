@@ -29,7 +29,7 @@ type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'raids' | null;
 
 export default function NinjaIdleGame() {
   const { gameState, updateNinja } = useGame();
-  const { combatState, startCombat, stopCombat, triggerLevelUpExplosion } = useCombat();
+  const { combatState, startCombat, stopCombat, triggerLevelUpExplosion, projectiles } = useCombat();
   
   const ninja = gameState?.ninja;
   
@@ -39,15 +39,14 @@ export default function NinjaIdleGame() {
   const [showAbilityDeck, setShowAbilityDeck] = useState(false);
   const [totalKills, setTotalKills] = useState(0);
   const [lastProcessedKill, setLastProcessedKill] = useState(0);
-  const [projectiles, setProjectiles] = useState<Array<{
-    id: string;
-    x: number;
-    y: number;
-    targetX: number;
-    targetY: number;
-    startTime: number;
-    duration: number;
-  }>>([]);
+  
+  // Auto-movement system for ninja
+  const [ninjaPosition, setNinjaPosition] = useState({
+    x: SCREEN_WIDTH / 2 - NINJA_SIZE / 2,
+    y: GAME_AREA_HEIGHT / 2 - NINJA_SIZE / 2
+  });
+  const [movementDirection, setMovementDirection] = useState({ x: 1, y: 0.5 });
+  const [lastMovementTime, setLastMovementTime] = useState(Date.now());
 
   const insets = useSafeAreaInsets();
 
