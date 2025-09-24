@@ -697,15 +697,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginTop: 2,
   },
-  overlayContainer: {
+  overlayWrapper: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    bottom: 70, // Leave space for bottom tabs (70px height)
+    bottom: 70, // Leave space for bottom tabs
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
-    pointerEvents: 'box-none', // Allow clicks to pass through to tabs but keep overlay content clickable
+    zIndex: 999, // High z-index but lower than tabs
   },
   overlayContent: {
     backgroundColor: '#1e293b',
