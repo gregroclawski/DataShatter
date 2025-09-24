@@ -304,8 +304,8 @@ export default function NinjaIdleGame() {
       if (totalGoldReward > 0 || totalExpReward > 0) {
         setTimeout(() => {
           updateNinja({
-            gold: ninja.gold + totalGoldReward,
-            experience: ninja.experience + totalExpReward,
+            gold: prev.ninja.gold + totalGoldReward,
+            experience: prev.ninja.experience + totalExpReward,
           });
         }, 0);
       }
