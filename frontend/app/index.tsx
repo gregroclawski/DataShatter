@@ -127,7 +127,7 @@ export default function NinjaIdleGame() {
         {/* Combat Status */}
         <View style={styles.combatStatus}>
           <Text style={styles.stageText}>
-            Tick: {combatState.currentTick} | Enemies: {combatState.enemies.length}
+            Enemies: {combatState.enemies.length}
           </Text>
           <Text style={[styles.combatText, { 
             color: combatState.isInCombat ? '#10b981' : '#ef4444' 
