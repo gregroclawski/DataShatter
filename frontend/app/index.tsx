@@ -239,7 +239,7 @@ export default function NinjaIdleGame() {
           </View>
 
           {/* Enemies from Combat System */}
-          {console.log(`🔍 Combat state has ${combatState.enemies?.length || 0} enemies`) || null}
+          {(() => { console.log(`🔍 Combat state has ${combatState.enemies?.length || 0} enemies`); return null; })()}
           {combatState.enemies && combatState.enemies.length > 0 ? (
             combatState.enemies.map((enemy, index) => {
               console.log(`👹 Rendering enemy ${index + 1}: pos(${enemy.position.x}, ${enemy.position.y}) health:${enemy.health}`);
