@@ -71,14 +71,13 @@ export default function NinjaIdleGame() {
       }));
     }
     
-    // Clear all enemies by setting their health to 0
-    // This needs to be handled in the combat system - for now just log it
-    console.log('💥 Requesting enemy elimination from combat system');
+    // Actually clear all enemies
+    clearAllEnemies();
     
     setTimeout(() => {
       setIsLevelingUp(false);
     }, 1000);
-  }, [combatState.enemies, updateNinja]);
+  }, [combatState.enemies, updateNinja, clearAllEnemies]);
 
   // Watch for level changes to trigger explosion
   useEffect(() => {
