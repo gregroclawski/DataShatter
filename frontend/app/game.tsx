@@ -148,7 +148,7 @@ export default function GameScreen() {
     return Math.sqrt(Math.pow(pos1.x - pos2.x, 2) + Math.pow(pos1.y - pos2.y, 2));
   };
 
-  // Auto-move ninja towards nearest enemy
+  // Auto-move ninja towards nearest enemy with smoother movement
   const autoMoveToEnemy = () => {
     if (!localGameState.isAutoFighting || localGameState.enemies.length === 0) return;
 
@@ -161,7 +161,11 @@ export default function GameScreen() {
     const targetX = nearestEnemy.x + ENEMY_SIZE / 2;
     const targetY = nearestEnemy.y + ENEMY_SIZE / 2;
     
-    moveNinja(targetX, targetY);
+    // Only move if not already very close to target
+    const distance = getDistance(localGameState.ninjaPosition, { x: targetX, y: targetY });
+    if (distance > 50) { // Only move if farther than attack range
+      moveNinja(targetX, targetY);
+    }
   };
 
   // Combat system
