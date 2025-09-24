@@ -38,6 +38,7 @@ export default function NinjaIdleGame() {
   const [previousLevel, setPreviousLevel] = useState(1);
   const [showAbilityDeck, setShowAbilityDeck] = useState(false);
   const [totalKills, setTotalKills] = useState(0);
+  const [lastProcessedKill, setLastProcessedKill] = useState(0);
   const [projectiles, setProjectiles] = useState<Array<{
     id: string;
     x: number;
