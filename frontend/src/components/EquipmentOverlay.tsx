@@ -171,6 +171,7 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
 
   return visible ? (
     <View style={styles.overlay}>
+      <View style={styles.overlayBackground} />
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Equipment</Text>
