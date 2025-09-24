@@ -688,6 +688,7 @@ const styles = StyleSheet.create({
     bottom: 70, // Leave space for bottom tabs (70px height)
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
+    pointerEvents: 'box-none', // Allow clicks to pass through to tabs but keep overlay content clickable
   },
   overlayContent: {
     backgroundColor: '#1e293b',
