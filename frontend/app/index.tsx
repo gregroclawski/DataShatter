@@ -169,7 +169,7 @@ export default function NinjaIdleGame() {
 
     const movementInterval = setInterval(moveNinja, 50); // ~20 FPS for movement updates
     return () => clearInterval(movementInterval);
-  }, [lastMovementTime, combatState.enemies]);
+  }, [lastMovementTime, combatState.enemies, isAttacking]);
 
   // Listen for combat logs and count kills
 
