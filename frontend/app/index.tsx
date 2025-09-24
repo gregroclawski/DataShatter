@@ -338,6 +338,24 @@ export default function NinjaIdleGame() {
         </View>
       </View>
 
+      {/* Experience Bar */}
+      <View style={styles.expBar}>
+        <View style={styles.expBarHeader}>
+          <Text style={styles.expBarLabel}>Level {ninja.level}</Text>
+          <Text style={styles.expBarText}>{ninja.experience}/{ninja.experienceToNext} XP</Text>
+        </View>
+        <View style={styles.expBarContainer}>
+          <View style={styles.expBarBg}>
+            <View 
+              style={[
+                styles.expBarFill,
+                { width: `${(ninja.experience / ninja.experienceToNext) * 100}%` }
+              ]}
+            />
+          </View>
+        </View>
+      </View>
+
       {/* Battle Arena */}
       <View style={styles.gameArea}>
         {/* Ninja Character */}
