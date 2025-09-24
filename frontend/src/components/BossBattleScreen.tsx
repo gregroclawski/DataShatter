@@ -598,17 +598,17 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-    opacity: 0.9,
+    height: 200, // Only cover top portion for atmospheric effect
+    opacity: 0.7,
   },
   backgroundPattern: {
     position: 'absolute',
-    top: 50,
+    top: 20,
     left: 0,
     right: 0,
     textAlign: 'center',
-    fontSize: 30,
-    opacity: 0.1,
+    fontSize: 20,
+    opacity: 0.3,
   },
   // Countdown styles
   countdownContainer: {
