@@ -195,16 +195,7 @@ export default function NinjaIdleGame() {
           </View>
         ))}
 
-        {/* Attack Range Indicator */}
-        <View
-          style={[
-            styles.attackRange,
-            {
-              left: ninjaAnimatedPosition.x._value + NINJA_SIZE / 2 - 30,
-              top: ninjaAnimatedPosition.y._value + NINJA_SIZE / 2 - 30,
-            },
-          ]}
-        />
+        {/* Attack Range Indicator - removed for new combat system */}
       </View>
 
       {/* Quick Action Bar */}
