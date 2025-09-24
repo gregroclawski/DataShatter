@@ -26,7 +26,7 @@ const AdventureScreen = () => {
       requirements: { level: 1 },
       rewards: {
         gold: 20,
-        experience: 10,
+        experience: 20,
         items: ['Healing Herb', 'Magic Leaf'],
       },
       description: 'Collect rare herbs from the mystical forest.',
