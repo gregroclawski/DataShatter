@@ -72,10 +72,10 @@ export default function NinjaIdleGame() {
   // Enemy stats based on stage
   const getEnemyStats = (type: Enemy['type'], stage: number) => {
     const baseStats = {
-      goblin: { health: 50, damage: 8, gold: 5, exp: 3, speed: 1 },
-      orc: { health: 120, damage: 15, gold: 12, exp: 8, speed: 0.8 },
-      skeleton: { health: 80, damage: 12, gold: 8, exp: 5, speed: 1.2 },
-      boss: { health: 500, damage: 25, gold: 100, exp: 50, speed: 0.5 },
+      goblin: { health: 50, damage: 8, gold: 5, exp: 10, speed: 1 },
+      orc: { health: 120, damage: 15, gold: 12, exp: 20, speed: 0.8 },
+      skeleton: { health: 80, damage: 12, gold: 8, exp: 15, speed: 1.2 },
+      boss: { health: 500, damage: 25, gold: 100, exp: 200, speed: 0.5 },
     };
     
     const stats = baseStats[type];
@@ -87,7 +87,7 @@ export default function NinjaIdleGame() {
       damage: Math.floor(stats.damage * multiplier),
       reward: {
         gold: Math.floor(stats.gold * multiplier),
-        exp: Math.floor(stats.exp * multiplier),
+        exp: Math.floor(stats.exp * multiplier), // Increased base EXP rewards
       },
       speed: stats.speed,
     };
