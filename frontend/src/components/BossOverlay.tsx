@@ -212,19 +212,13 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose }) =>
     </View>
   );
 
-  // Don't render if ninja data is not available yet - but be more lenient
+  // Don't render if not visible
   if (!visible) {
     return null;
   }
   
-  // Only check for critical ninja properties instead of the whole ninja object
-  const hasNinjaData = ninja && typeof ninja.level === 'number';
-  
-  // Debug logging to see what ninja data we have
-  console.log('🔍 BossOverlay ninja data:', { ninja, hasNinjaData, level: ninja?.level, type: typeof ninja?.level });
-  
-  // If ninja data isn't loaded yet, show a loading state instead of nothing
-  if (!hasNinjaData) {
+  // Simple ninja check - just ensure basic data is available
+  if (!ninja) {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -235,9 +229,6 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose }) =>
         </View>
         <View style={[styles.content, { justifyContent: 'center', alignItems: 'center' }]}>
           <Text style={{ color: '#e5e7eb', fontSize: 16 }}>Loading player data...</Text>
-          <Text style={{ color: '#9ca3af', fontSize: 12, marginTop: 8 }}>
-            Debug: ninja={ninja ? 'exists' : 'null'}, level={ninja?.level}, type={typeof ninja?.level}
-          </Text>
         </View>
       </View>
     );
