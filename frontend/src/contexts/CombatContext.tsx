@@ -46,6 +46,7 @@ interface CombatContextType {
   clearAllEnemies: () => void; // For level-up explosion
   triggerLevelUpExplosion: () => void; // Trigger explosion from combat context
   findClosestEnemy: () => CombatEnemy | null; // Expose closest enemy finding
+  updateNinjaPosition: (position: {x: number, y: number}) => void; // Update ninja position for projectiles
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
