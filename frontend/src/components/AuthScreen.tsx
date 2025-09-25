@@ -246,7 +246,10 @@ export default function AuthScreen() {
             {/* Submit Button */}
             <TouchableOpacity
               style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
-              onPress={handleSubmit}
+              onPress={() => {
+                console.log('🔥 SUBMIT BUTTON PRESSED!');
+                handleSubmit();
+              }}
               disabled={isLoading}
             >
               <LinearGradient
