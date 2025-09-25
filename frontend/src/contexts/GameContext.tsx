@@ -276,9 +276,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         pets: gameState.pets,
         achievements: gameState.achievements,
         unlockedFeatures: gameState.unlockedFeatures,
+        zoneProgress: gameState.zoneProgress || { 1: { zoneId: 1, currentLevel: 1, killsInLevel: 0, completed: false } },
       };
 
-      console.log('💾 Saving game to server for user:', user.id, 'Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience);
+      console.log('💾 Saving game to server for user:', user.id, 'Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience, 'Zone Progress:', gameState.zoneProgress);
 
       const response = await fetch(`${API_BASE_URL}/api/save-game`, {
         method: 'POST',
@@ -296,7 +297,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
       const result = await response.json();
       lastSaveTimeRef.current = now;
-      console.log('✅ Game saved to server successfully - Level:', result.ninja?.level);
+      console.log('✅ Game saved to server successfully - Level:', result.ninja?.level, 'Zone Progress:', result.zoneProgress);
     } catch (error) {
       console.error('❌ Failed to save game to server:', error);
       
