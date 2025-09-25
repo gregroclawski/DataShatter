@@ -189,6 +189,15 @@ export default function NinjaIdleGame() {
 
   const currentProgression = ninja ? getCharacterProgression(ninja.level) : CharacterProgressionNames[1];
 
+  // Level up detection - NOW SAFE to use ninja variable
+  useEffect(() => {
+    if (ninja && ninja.level > previousLevel) {
+      console.log('🚀 Level up detected!', previousLevel, '->', ninja.level);
+      handleLevelUpExplosion();
+      setPreviousLevel(ninja.level);
+    }
+  }, [ninja?.level]); // Only depend on ninja level
+
   if (isBossBattleActive && currentBossBattle) {
     return (
       <BossBattleScreen
