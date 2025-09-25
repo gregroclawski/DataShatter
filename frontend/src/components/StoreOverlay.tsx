@@ -28,7 +28,7 @@ interface GemPackage {
 }
 
 const StoreOverlay = ({ onClose }: Props) => {
-  const { gameState, updateNinja } = useGame();
+  const { gameState, updateNinja, saveOnEvent } = useGame();
   const { ninja } = gameState;
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [storeAvailable, setStoreAvailable] = useState(true);
