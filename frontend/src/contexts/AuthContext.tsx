@@ -42,58 +42,59 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const checkExistingSession = async () => {
     try {
       setIsLoading(true);
-      console.log('🔍 Starting session check...');
+      console.log('🔍 Checking for stored login credentials...');
       
-      // Check stored token with web environment fallback
+      // Check for stored login credentials with web fallback
+      let storedEmail = null;
+      let storedPassword = null;
+      
       try {
-        let storedToken = null;
-        let storedUser = null;
-        
-        try {
-          // Try AsyncStorage first
-          storedToken = await AsyncStorage.getItem('auth_token');
-          storedUser = await AsyncStorage.getItem('auth_user');
-        } catch (asyncError) {
-          console.log('AsyncStorage failed, trying localStorage:', asyncError);
-          // Fallback to localStorage for web environment
-          if (typeof window !== 'undefined' && window.localStorage) {
-            storedToken = window.localStorage.getItem('auth_token');
-            storedUser = window.localStorage.getItem('auth_user');
-            console.log('Using localStorage fallback');
-          }
+        // Try AsyncStorage first
+        storedEmail = await AsyncStorage.getItem('login_email');
+        storedPassword = await AsyncStorage.getItem('login_password');
+      } catch (asyncError) {
+        console.log('AsyncStorage failed, trying localStorage:', asyncError);
+        // Fallback to localStorage for web environment
+        if (typeof window !== 'undefined' && window.localStorage) {
+          storedEmail = window.localStorage.getItem('login_email');
+          storedPassword = window.localStorage.getItem('login_password');
+          console.log('Using localStorage for credential storage');
         }
+      }
+      
+      console.log('🔍 Stored credentials check:');
+      console.log('  - Email exists:', !!storedEmail);
+      console.log('  - Password exists:', !!storedPassword);
+      if (storedEmail) console.log('  - Email:', storedEmail);
+      
+      if (storedEmail && storedPassword) {
+        console.log('🔑 Found stored credentials - attempting auto-login...');
         
-        console.log('🔍 Session storage check:');
-        console.log('  - Token exists:', !!storedToken);
-        console.log('  - User exists:', !!storedUser);
-        if (storedToken) console.log('  - Token preview:', storedToken.substring(0, 20) + '...');
-        if (storedUser) {
-          try {
-            const userData = JSON.parse(storedUser);
-            console.log('  - User email:', userData.email);
-            console.log('  - User ID:', userData.id);
-          } catch (e) {
-            console.log('  - User data parse error:', e);
-          }
-        }
+        // Auto-login with stored credentials
+        const loginResult = await login(storedEmail, storedPassword);
         
-        if (storedToken && storedUser) {
-          const userData = JSON.parse(storedUser);
-          console.log('👤 Restoring session for user:', userData.email);
-          
-          setToken(storedToken);
-          setUser(userData);
-          console.log('✅ Session restored successfully - auto-login active');
+        if (loginResult.success) {
+          console.log('✅ Auto-login successful!');
         } else {
-          console.log('🔍 No stored session found - will show auth screen');
+          console.log('❌ Auto-login failed:', loginResult.error);
+          // Clear invalid credentials
+          try {
+            await AsyncStorage.multiRemove(['login_email', 'login_password']);
+          } catch (e) {
+            // Fallback to localStorage clear
+            if (typeof window !== 'undefined' && window.localStorage) {
+              window.localStorage.removeItem('login_email');
+              window.localStorage.removeItem('login_password');
+            }
+          }
         }
-      } catch (storageError) {
-        console.error('💾 All storage methods failed:', storageError);
+      } else {
+        console.log('🔍 No stored credentials found - will show auth screen');
       }
     } catch (error) {
-      console.error('Error in session check:', error);
+      console.error('Error in credential check:', error);
     } finally {
-      console.log('🏁 Auth loading completed, setting isLoading to false');
+      console.log('🏁 Credential check completed, setting isLoading to false');
       setIsLoading(false);
     }
   };
