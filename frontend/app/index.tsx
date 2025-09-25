@@ -29,7 +29,7 @@ import { Boss, BossTier } from '../src/data/BossData';
 import { MythicTechColors, CharacterProgressionNames } from '../src/theme/MythicTechTheme';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 160; // Account for bottom tabs (60px) + abilities bar (~60px) + buffer (40px)
+const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 140; // Smaller top bar (20% reduction) + compact abilities bar
 const NINJA_SIZE = 40;
 const ENEMY_SIZE = 35;
 
