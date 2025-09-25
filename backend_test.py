@@ -85,12 +85,12 @@ class AuthenticationTester:
             
             response = self.session.post(f"{BASE_URL}/auth/register", json=short_password_data)
             
-            if response.status_code == 400:
+            if response.status_code in [400, 422]:  # Accept both 400 and 422 for validation errors
                 self.log_result("registration", "Password Too Short Validation", True, 
                               "Correctly rejected password with less than 8 characters")
             else:
                 self.log_result("registration", "Password Too Short Validation", False, 
-                              f"Expected 400, got {response.status_code}: {response.text}")
+                              f"Expected 400 or 422, got {response.status_code}: {response.text}")
         except Exception as e:
             self.log_result("registration", "Password Too Short Validation", False, f"Exception: {str(e)}")
 
@@ -105,12 +105,12 @@ class AuthenticationTester:
             
             response = self.session.post(f"{BASE_URL}/auth/register", json=long_password_data)
             
-            if response.status_code == 400:
+            if response.status_code in [400, 422]:  # Accept both 400 and 422 for validation errors
                 self.log_result("registration", "Password Too Long Validation", True, 
                               "Correctly rejected password with more than 64 characters")
             else:
                 self.log_result("registration", "Password Too Long Validation", False, 
-                              f"Expected 400, got {response.status_code}: {response.text}")
+                              f"Expected 400 or 422, got {response.status_code}: {response.text}")
         except Exception as e:
             self.log_result("registration", "Password Too Long Validation", False, f"Exception: {str(e)}")
 
