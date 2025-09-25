@@ -1,5 +1,4 @@
 import React from 'react';
-import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '../src/contexts/AuthContext';
@@ -9,11 +8,12 @@ import { ZoneProvider } from '../src/contexts/ZoneContext';
 import { EquipmentProvider } from '../src/contexts/EquipmentContext';
 import { MaterialsProvider } from '../src/contexts/MaterialsContext';
 import { BossProvider } from '../src/contexts/BossContext';
+import { Slot } from 'expo-router';
 
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-      <StatusBar style="light" backgroundColor="#0f172a" />
+      <StatusBar style="light" backgroundColor="#0a0a0f" />
       <AuthProvider>
         <GameProvider>
           <ZoneProvider>
@@ -21,16 +21,7 @@ export default function RootLayout() {
               <EquipmentProvider>
                 <BossProvider>
                   <CombatProvider>
-                    <Stack
-                      screenOptions={{
-                        headerShown: false,
-                        contentStyle: {
-                          backgroundColor: '#0f172a',
-                        },
-                      }}
-                    >
-                      <Stack.Screen name="index" />
-                    </Stack>
+                    <Slot />
                   </CombatProvider>
                 </BossProvider>
               </EquipmentProvider>
