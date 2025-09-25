@@ -276,6 +276,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         unlockedFeatures: gameState.unlockedFeatures,
       };
 
+      console.log('💾 Saving game to server for user:', user.id, 'Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience);
+
       const response = await fetch(`${API_BASE_URL}/api/save-game`, {
         method: 'POST',
         credentials: 'include',
@@ -290,8 +292,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         throw new Error(`Save failed: ${response.status}`);
       }
 
+      const result = await response.json();
       lastSaveTimeRef.current = now;
-      console.log('✅ Game saved to server successfully');
+      console.log('✅ Game saved to server successfully - Level:', result.ninja?.level);
     } catch (error) {
       console.error('❌ Failed to save game to server:', error);
       
