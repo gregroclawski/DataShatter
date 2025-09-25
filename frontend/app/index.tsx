@@ -179,9 +179,17 @@ export default function NinjaIdleGame() {
   // Initialize ninja data AFTER all loading checks
   const ninja = gameState?.ninja;
   
+  console.log('🎯 NINJA CHECK:', { 
+    ninja: !!ninja, 
+    gameState: !!gameState, 
+    authLoading, 
+    gameLoading, 
+    isAuthenticated 
+  });
+  
   // Ensure ninja is initialized before proceeding
   if (!ninja) {
-    console.log('⏳ Waiting for ninja data to initialize...');
+    console.log('⏳ Waiting for ninja data to initialize...', { gameState });
     return <LoadingScreen message="Initializing ninja data..." />;
   }
   
