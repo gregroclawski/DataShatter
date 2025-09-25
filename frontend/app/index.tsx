@@ -219,8 +219,6 @@ export default function NinjaIdleGame() {
       <Text style={{ color: 'white', fontSize: 16 }}>Progression: {currentProgression.title}</Text>
     </View>
   );
-        
-        <View style={styles.resourcesContainer}>
           <View style={styles.resourceItem}>
             <Ionicons name="diamond" size={14} color={MythicTechColors.neonBlue} />
             <Text style={styles.resourceValue}>{ninja?.gems || 0}</Text>
