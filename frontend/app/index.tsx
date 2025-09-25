@@ -251,7 +251,7 @@ export default function NinjaIdleGame() {
       console.log('🛑 Main component cleanup - calling stopCombat...');
       stopCombat();
     };
-  }, [startCombat, stopCombat]);
+  }, []); // Empty dependency array - run only once on mount
   
   // Authentication flow - AFTER all hooks are declared
   if (authLoading) {
