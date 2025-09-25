@@ -142,8 +142,7 @@ export default function NinjaIdleGame() {
     setPreviousOverlay(null);
   }, []); // EMPTY DEPS TO PREVENT INFINITE LOOP
 
-  // TEMPORARILY DISABLE COMBAT START TO TEST RENDERING
-  /*
+  // Start combat automatically when component mounts
   useEffect(() => {
     console.log('🎮 Starting combat on component mount');
     startCombat();
@@ -153,7 +152,6 @@ export default function NinjaIdleGame() {
       stopCombat();
     };
   }, []); // Empty array - run only once
-  */
   
   // Level up detection - safe to use gameState.ninja with optional chaining
   useEffect(() => {
