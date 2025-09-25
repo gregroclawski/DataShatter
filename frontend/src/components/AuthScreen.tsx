@@ -165,7 +165,7 @@ export default function AuthScreen() {
           <View style={styles.formContainer}>
             {authMode === 'register' && (
               <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Name</Text>
+                <Text style={styles.inputLabel}>User Name</Text>
                 <View style={[styles.inputWrapper, errors.name && styles.inputError]}>
                   <Ionicons name="person-outline" size={20} color={MythicTechColors.neonCyan} />
                   <TextInput
