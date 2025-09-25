@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Idle Ninja Online - Progress Persistence Fix Verification
-Tests authentication and game progression endpoints to verify they're working for the progress persistence fix.
+Backend Authentication System Test Suite - CORS & Authentication Focus
+Tests CORS configuration and authentication endpoints to verify the CORS fix is working.
 
-Focus areas:
-1. Authentication endpoints (/api/auth/login, /api/auth/register)
-2. Game save/load endpoints (/api/save-game, /api/load-game)  
-3. Session management (/api/auth/session/check)
+FOCUS AREAS (as per review request):
+1. Health Check: Test GET /api/ endpoint
+2. Registration Flow: Test POST /api/auth/register with valid data 
+3. Login Flow: Test POST /api/auth/login with correct credentials
+4. CORS Verification: Ensure frontend origins are properly configured and authentication works
+
+The issue before was CORS policy blocking authentication requests because backend was using 
+wildcard '*' with credentials:include mode. Backend has been updated to use specific frontend URLs.
 """
 
 import requests
