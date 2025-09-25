@@ -129,13 +129,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(17, 24, 39, 0.95)',
     borderTopWidth: 1,
     borderTopColor: '#374151',
-    paddingHorizontal: 12, // Reduced from 16
-    paddingVertical: 8, // Reduced from 12
+    paddingHorizontal: 8, // Reduced by 50% (was 12)
+    paddingVertical: 4, // Reduced by 50% (was 8)
   },
   statusBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 8, // Reduced from 12
+    marginBottom: 4, // Reduced by 50% (was 8)
   },
   statusItem: {
     flexDirection: 'row',
