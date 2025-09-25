@@ -136,31 +136,49 @@ const StoreOverlay = ({ onClose }: Props) => {
 
   const handlePurchase = async (gemPackage: GemPackage) => {
     if (!storeAvailable) {
-      Alert.alert('Store Unavailable', 'Please try again later.');
       return;
     }
 
-    // Simplified fake authentication with immediate purchase
-    Alert.alert(
-      'Store Purchase',
-      `Purchase ${gemPackage.name} for ${gemPackage.price}?\n\n` +
-      `You will receive ${gemPackage.gems + (gemPackage.bonus || 0)} gems.\n\n` +
-      `🔒 **DEMO MODE**: Simulated purchase (no real payment)`,
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Face ID Purchase',
-          onPress: () => processPurchase(gemPackage, 'Face ID'),
-        },
-        {
-          text: 'Passcode Purchase', 
-          onPress: () => processPurchase(gemPackage, 'Passcode'),
-        },
-      ]
-    );
+    if (purchasing !== null) {
+      return; // Prevent multiple purchases
+    }
+
+    // Start processing immediately
+    setPurchasing(gemPackage.id);
+    console.log('🛒 Starting purchase for:', gemPackage.name);
+
+    try {
+      // Simulate authentication and purchase processing
+      console.log('💳 Processing purchase with Face ID authentication...');
+      
+      // Simulate processing time
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Calculate total gems
+      const totalGems = gemPackage.gems + (gemPackage.bonus || 0);
+      
+      // Update gems immediately
+      updateNinja({
+        gems: ninja.gems + totalGems,
+      });
+
+      console.log(`✅ Purchase successful: ${gemPackage.name} (+${totalGems} gems)`);
+      console.log(`💎 New gem balance: ${ninja.gems + totalGems}`);
+
+      // Show simple success alert
+      setTimeout(() => {
+        Alert.alert(
+          '🎉 Purchase Successful!',
+          `${gemPackage.name} purchased!\n\nGems Added: +${totalGems.toLocaleString()}\nNew Balance: ${(ninja.gems + totalGems).toLocaleString()} gems`,
+          [{ text: 'Awesome!' }]
+        );
+      }, 100);
+
+    } catch (error) {
+      console.error('Purchase error:', error);
+    } finally {
+      setPurchasing(null);
+    }
   };
 
   const processPurchase = async (gemPackage: GemPackage, authMethod: string) => {
