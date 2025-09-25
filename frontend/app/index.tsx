@@ -357,29 +357,31 @@ export default function NinjaIdleGame() {
         </View>
 
         {/* Enemies */}
-        {combatState.enemies.map(enemy => (
-          <View 
-            key={enemy.id}
-            style={[
-              styles.enemyContainer,
-              { 
-                left: enemy.position.x, 
-                top: enemy.position.y 
-              }
-            ]}
-          >
-            <View style={styles.enemy}>
-              <Text style={styles.enemyEmoji}>👹</Text>
+        {combatState.enemies?.map(enemy => (
+          enemy?.position ? (
+            <View 
+              key={enemy.id}
+              style={[
+                styles.enemyContainer,
+                { 
+                  left: enemy.position.x, 
+                  top: enemy.position.y 
+                }
+              ]}
+            >
+              <View style={styles.enemy}>
+                <Text style={styles.enemyEmoji}>👹</Text>
+              </View>
+              <View style={styles.enemyHealthBar}>
+                <View 
+                  style={[
+                    styles.enemyHealthFill, 
+                    { width: `${(enemy.health / enemy.maxHealth) * 100}%` }
+                  ]} 
+                />
+              </View>
             </View>
-            <View style={styles.enemyHealthBar}>
-              <View 
-                style={[
-                  styles.enemyHealthFill, 
-                  { width: `${(enemy.health / enemy.maxHealth) * 100}%` }
-                ]} 
-              />
-            </View>
-          </View>
+          ) : null
         ))}
 
         {/* Projectiles */}
