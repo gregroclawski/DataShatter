@@ -160,6 +160,8 @@ export default function NinjaIdleGame() {
           let closestDistance = Infinity;
           
           combatState.enemies.forEach(enemy => {
+            if (!enemy?.position) return; // Skip enemies without position
+            
             const distance = Math.sqrt(
               Math.pow(enemy.position.x - (prevPos.x + NINJA_SIZE / 2), 2) + 
               Math.pow(enemy.position.y - (prevPos.y + NINJA_SIZE / 2), 2)
