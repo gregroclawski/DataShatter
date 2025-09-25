@@ -121,9 +121,6 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       position: enemy.position
     };
     
-    // Record the kill for zone progression
-    recordEnemyKill(zoneEnemy);
-    
     // Award XP and gold directly using useGame hook
     const xpReward = 20; // Base XP reward per kill
     const goldReward = 10;
@@ -137,6 +134,12 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         gold: prev.gold + goldReward,
       };
     });
+    
+    // DEFER the zone update to avoid render-time state update
+    // Use setTimeout to move the zone update outside the render cycle
+    setTimeout(() => {
+      recordEnemyKill(zoneEnemy);
+    }, 0);
   };
 
   // Combat tick handler
