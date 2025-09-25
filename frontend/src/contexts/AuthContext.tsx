@@ -197,6 +197,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setToken(data.access_token);
       setUser(data.user);
 
+      console.log('✅ Login successful - SETTING AUTH STATE:');
+      console.log('  - User ID:', data.user.id);
+      console.log('  - User email:', data.user.email);
+      console.log('  - Token set:', !!data.access_token);
+      console.log('  - Token preview:', data.access_token.substring(0, 15) + '...');
+      
+      // Force state verification
+      setTimeout(() => {
+        console.log('🔍 AUTH STATE VERIFICATION (1s after login):');
+        console.log('  - user state:', !!user);
+        console.log('  - token state:', !!token);
+        console.log('  - isAuthenticated calculated:', !!(user && token));
+      }, 1000);
+
       console.log('✅ Login successful - User ID:', data.user.id, 'Credentials stored for auto-login');
 
       return { success: true };
