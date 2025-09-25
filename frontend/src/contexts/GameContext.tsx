@@ -317,6 +317,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       setIsLoading(true);
+      console.log('🔄 Loading game data for user:', user.id);
       
       const response = await fetch(`${API_BASE_URL}/api/load-game/${user.id}`, {
         method: 'GET',
@@ -332,6 +333,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       }
 
       const savedData = await response.json();
+      console.log('📥 Server response:', savedData ? 'Data found' : 'No data');
       
       if (savedData && savedData.ninja) {
         // Server returned valid game data
@@ -349,13 +351,16 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         
         lastSaveTimeRef.current = loadedGameState.lastSaveTime;
         setGameState(loadedGameState);
-        console.log('✅ Game loaded from server successfully', loadedGameState.ninja.level);
+        console.log('✅ Game loaded from server - Level:', loadedGameState.ninja.level, 'XP:', loadedGameState.ninja.experience);
       } else {
         // No server data, check for local backup then use defaults
+        console.log('🆕 No server data found, checking local backup...');
         await loadLocalGameBackup();
       }
     } catch (error) {
       console.error('❌ Failed to load game from server:', error);
+      // Show user-friendly error but don't crash
+      console.log('💾 Attempting to load from local backup...');
       await loadLocalGameBackup();
     } finally {
       setIsLoading(false);
