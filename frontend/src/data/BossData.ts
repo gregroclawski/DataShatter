@@ -85,9 +85,9 @@ export const BOSS_DATA: Record<BossType, Boss> = {
         name: 'Flame Drake',
         requiredLevel: 10,
         stats: {
-          hp: 25000, // 10x harder (was 2500)
-          attack: 800, // 10x harder (was 80)
-          defense: 350, // 10x harder (was 35)
+          hp: 2500, // Back to original (was 25000)
+          attack: 80, // Back to original (was 800)
+          defense: 35, // Back to original (was 350)
           critChance: 15,
           abilities: ['Fire Breath', 'Wing Strike', 'Magma Pool']
         },
