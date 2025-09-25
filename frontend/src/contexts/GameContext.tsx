@@ -397,14 +397,16 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         await loadLocalGameBackup();
       }
 
-      // Ensure minimum 3 second loading time for user experience (reduced from 5s)
+      // Reduce loading time to prevent stuck loading
       const elapsedTime = Date.now() - startTime;
-      const minLoadingTime = 3000; // 3 seconds
+      const minLoadingTime = 2000; // Reduced to 2 seconds 
       if (elapsedTime < minLoadingTime) {
         const remainingTime = minLoadingTime - elapsedTime;
-        console.log(`⏱️ Extending loading screen for ${remainingTime}ms to show themed animation`);
+        console.log(`⏱️ Extending loading screen for ${remainingTime}ms`);
         await new Promise(resolve => setTimeout(resolve, remainingTime));
       }
+      
+      console.log('🏁 Load process completed, setting isLoading to false');
     } catch (error) {
       console.error('❌ LOAD GAME ERROR:', error);
       // Show user-friendly error but don't crash
