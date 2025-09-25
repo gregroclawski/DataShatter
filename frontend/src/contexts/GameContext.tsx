@@ -600,6 +600,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   const value: GameContextType = {
     gameState,
+    isLoading,
     updateNinja,
     addShuriken,
     equipShuriken,
