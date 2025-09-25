@@ -34,6 +34,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const isAuthenticated = !!user && !!token;
 
+  // Debug authentication state changes
+  useEffect(() => {
+    console.log('🔍 AUTH STATE CHANGE:');
+    console.log('  - user exists:', !!user);
+    console.log('  - token exists:', !!token);
+    console.log('  - isAuthenticated:', isAuthenticated);
+    if (user) console.log('  - user email:', user.email);
+    if (token) console.log('  - token preview:', token.substring(0, 15) + '...');
+  }, [user, token, isAuthenticated]);
+
   // Check existing session on app start
   useEffect(() => {
     checkExistingSession();
