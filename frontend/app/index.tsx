@@ -9,9 +9,14 @@ import {
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../src/contexts/AuthContext';
 import { useGame } from '../src/contexts/GameContext';
 import { useCombat } from '../src/contexts/CombatContext';
 import { useZone } from '../src/contexts/ZoneContext';
+
+// Import authentication components
+import LoadingScreen from '../src/components/LoadingScreen';
+import AuthScreen from '../src/components/AuthScreen';
 
 // Import components for overlays
 import NinjaStatsOverlay from '../src/components/NinjaStatsOverlay';
