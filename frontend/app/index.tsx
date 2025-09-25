@@ -400,67 +400,68 @@ const styles = StyleSheet.create({
     backgroundColor: MythicTechColors.darkSpace,
   },
   topBar: {
-    height: 80,
+    height: MOBILE_TOP_BAR_HEIGHT,
     backgroundColor: MythicTechColors.deepVoid,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 12, // Reduced padding for mobile
     borderBottomWidth: 2,
     borderBottomColor: MythicTechColors.neonBlue + '44',
   },
   progressSection: {
     flex: 1,
+    paddingRight: 8,
   },
   progressionTitle: {
-    fontSize: 14,
+    fontSize: 12, // Smaller for mobile
     fontWeight: 'bold',
     color: MythicTechColors.cosmicGold,
-    marginBottom: 4,
+    marginBottom: 2,
   },
   levelContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
+    flexDirection: 'column', // Stack vertically on mobile
+    gap: 4,
   },
   levelText: {
-    fontSize: 16,
+    fontSize: 14, // Smaller for mobile
     fontWeight: 'bold',
     color: MythicTechColors.neonBlue,
-    minWidth: 70,
   },
   xpContainer: {
     flex: 1,
+    minWidth: 120, // Ensure minimum width
   },
   xpBarBackground: {
-    height: 8,
+    height: 6, // Thinner for mobile
     backgroundColor: MythicTechColors.voidSilver + '33',
-    borderRadius: 4,
+    borderRadius: 3,
     overflow: 'hidden',
   },
   xpBarFill: {
     height: '100%',
     backgroundColor: MythicTechColors.neonBlue,
-    borderRadius: 4,
+    borderRadius: 3,
   },
   xpText: {
-    fontSize: 10,
+    fontSize: 9, // Smaller for mobile
     color: MythicTechColors.voidSilver,
     marginTop: 2,
   },
   resourcesContainer: {
     flexDirection: 'column',
-    gap: 6,
+    gap: 4, // Smaller gap for mobile
+    minWidth: 60,
   },
   resourceItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
   },
   resourceValue: {
-    fontSize: 12,
+    fontSize: 11, // Smaller for mobile
     fontWeight: 'bold',
     color: MythicTechColors.white,
-    minWidth: 40,
+    minWidth: 35,
   },
   gameArea: {
     flex: 1,
