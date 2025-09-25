@@ -181,6 +181,12 @@ export default function NinjaIdleGame() {
   
   const ninja = gameState?.ninja;
   
+  // Ensure ninja is initialized before accessing it
+  if (!ninja) {
+    console.log('⏳ Waiting for ninja data to initialize...');
+    return <LoadingScreen message="Loading ninja data..." />;
+  }
+  
   // Get current character progression based on level
   const getCharacterProgression = (level: number) => {
     if (level >= 15000) return CharacterProgressionNames[15000];
