@@ -72,9 +72,19 @@ const getBossHealthColor = (element?: string): string => {
 };
 
 export default function NinjaIdleGame() {
+  const { user, isLoading, isAuthenticated, logout } = useAuth();
   const { gameState, updateNinja } = useGame();
   const { combatState, startCombat, stopCombat, triggerLevelUpExplosion, projectiles, updateNinjaPosition } = useCombat();
   const { currentZone, currentZoneLevel, getZoneProgress, recordEnemyKill } = useZone();
+  
+  // Authentication flow
+  if (isLoading) {
+    return <LoadingScreen message="Connecting to Neural Grid..." />;
+  }
+
+  if (!isAuthenticated) {
+    return <AuthScreen />;
+  }
   
   const ninja = gameState?.ninja;
   
