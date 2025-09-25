@@ -390,8 +390,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         setHasLoadedFromServer(true); // Mark that we've loaded real data
         console.log('✅ GAME STATE SET - Level:', loadedGameState.ninja.level, 'XP:', loadedGameState.ninja.experience);
       } else {
-        // No server data, check for local backup then use defaults
-        console.log('🆕 NO SERVER DATA - Using default game state');
+        // No server data, new player starts with defaults
+        console.log('🆕 NO SERVER DATA - New player starting with defaults');
+        setGameState(defaultGameState);
+        setHasLoadedFromServer(true); // Mark as loaded to allow saves
         await loadLocalGameBackup();
       }
 
