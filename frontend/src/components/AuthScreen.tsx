@@ -147,7 +147,10 @@ export default function AuthScreen() {
                   styles.authToggleButton,
                   authMode === 'login' && styles.authToggleActive,
                 ]}
-                onPress={() => authMode !== 'login' && switchMode()}
+                onPress={() => {
+                  console.log('🔄 AUTH MODE TOGGLE - Switching to login mode');
+                  if (authMode !== 'login') switchMode();
+                }}
               >
                 <Text style={[
                   styles.authToggleText,
@@ -162,7 +165,10 @@ export default function AuthScreen() {
                   styles.authToggleButton,
                   authMode === 'register' && styles.authToggleActive,
                 ]}
-                onPress={() => authMode !== 'register' && switchMode()}
+                onPress={() => {
+                  console.log('🔄 AUTH MODE TOGGLE - Switching to register mode');
+                  if (authMode !== 'register') switchMode();
+                }}
               >
                 <Text style={[
                   styles.authToggleText,
