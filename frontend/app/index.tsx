@@ -426,18 +426,43 @@ export default function NinjaIdleGame() {
           </View>
         </View>
         
-        <View style={styles.resources}>
-          <View style={styles.resourceItem}>
-            <Ionicons name="heart" size={14} color={MythicTechColors.plasmaGlow} />
-            <Text style={styles.resourceText}>{ninja.health}/{ninja.maxHealth}</Text>
+        <View style={styles.rightSection}>
+          {/* User Info */}
+          <View style={styles.userInfo}>
+            <Text style={styles.userName}>
+              {user?.name || 'Player'}
+            </Text>
+            <TouchableOpacity
+              style={styles.logoutButton}
+              onPress={() => {
+                Alert.alert(
+                  'Logout',
+                  'Are you sure you want to logout?',
+                  [
+                    { text: 'Cancel', style: 'cancel' },
+                    { text: 'Logout', style: 'destructive', onPress: logout }
+                  ]
+                );
+              }}
+            >
+              <Ionicons name="log-out-outline" size={16} color={MythicTechColors.neonPink} />
+            </TouchableOpacity>
           </View>
-          <View style={styles.resourceItem}>
-            <Ionicons name="logo-bitcoin" size={14} color={MythicTechColors.divineGold} />
-            <Text style={styles.resourceText}>{ninja.gold}</Text>
-          </View>
-          <View style={styles.resourceItem}>
-            <Ionicons name="diamond" size={14} color={MythicTechColors.neonCyan} />
-            <Text style={styles.resourceText}>{ninja.gems}</Text>
+          
+          {/* Resources */}
+          <View style={styles.resources}>
+            <View style={styles.resourceItem}>
+              <Ionicons name="heart" size={14} color={MythicTechColors.plasmaGlow} />
+              <Text style={styles.resourceText}>{ninja.health}/{ninja.maxHealth}</Text>
+            </View>
+            <View style={styles.resourceItem}>
+              <Ionicons name="logo-bitcoin" size={14} color={MythicTechColors.divineGold} />
+              <Text style={styles.resourceText}>{ninja.gold}</Text>
+            </View>
+            <View style={styles.resourceItem}>
+              <Ionicons name="diamond" size={14} color={MythicTechColors.neonCyan} />
+              <Text style={styles.resourceText}>{ninja.gems}</Text>
+            </View>
           </View>
         </View>
       </View>
