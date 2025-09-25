@@ -125,19 +125,21 @@ export default function CombatUI({ onAbilityPress }: Props) {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 80, // Above bottom tabs
-    left: 0,
-    right: 0,
+    bottom: 100, // Position above bottom navigation tabs (90px height + 10px margin)
+    left: 8,
+    right: 8,
     backgroundColor: MythicTechColors.deepVoid + 'f0', // Semi-transparent neon-dark
     borderTopWidth: 1,
     borderTopColor: MythicTechColors.neonBlue + '88',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     shadowColor: MythicTechColors.neonBlue,
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
-    elevation: 5,
+    elevation: 100, // High elevation to ensure it's above other elements
+    zIndex: 100,
   },
   statusBar: {
     flexDirection: 'row',
