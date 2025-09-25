@@ -458,6 +458,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  submitPressable: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   submitButtonText: {
     fontSize: 16,
     fontWeight: 'bold',
