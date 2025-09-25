@@ -688,6 +688,22 @@ export default function NinjaIdleGame() {
           onEscape={escapeBossBattle}
         />
       )}
+
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmModal
+        visible={showLogoutModal}
+        userName={user?.name}
+        onConfirm={async () => {
+          console.log('🚪 Logout confirmed via modal');
+          setShowLogoutModal(false);
+          await logout();
+          console.log('🚪 Logout completed');
+        }}
+        onCancel={() => {
+          console.log('🚪 Logout cancelled');
+          setShowLogoutModal(false);
+        }}
+      />
     </SafeAreaView>
   );
 }
