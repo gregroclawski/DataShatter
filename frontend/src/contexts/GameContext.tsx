@@ -709,6 +709,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     saveGame,
     loadGame,
     updateZoneProgress,
+    saveOnEvent,
   };
 
   return (
