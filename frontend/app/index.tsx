@@ -477,17 +477,17 @@ const styles = StyleSheet.create({
   },
   zoneInfo: {
     position: 'absolute',
-    top: 60,
-    left: 16,
+    top: 10, // Smaller top margin for mobile
+    left: 12, // Smaller left margin for mobile
     zIndex: 2,
   },
   zoneText: {
-    fontSize: 16,
+    fontSize: 14, // Smaller for mobile
     fontWeight: 'bold',
     color: MythicTechColors.neonBlue,
   },
   killsText: {
-    fontSize: 12,
+    fontSize: 11, // Smaller for mobile
     color: MythicTechColors.voidSilver,
   },
   ninjaContainer: {
