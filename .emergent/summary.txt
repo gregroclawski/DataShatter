@@ -1,5 +1,5 @@
 <analysis>
-The AI engineer's work primarily focused on transforming Idle Ninja Online from a local to an online RPG. Initial development involved re-architecting UI overlays and implementing a boss battle system, followed by a major visual overhaul to a Mythic-Tech theme. The core of this trajectory centered on building a secure authentication system, integrating server-side progression, and fixing numerous associated bugs. Key challenges included resolving persistent UI layering, managing Expo SDK updates leading to  errors, and a recurring critical bug where user progress was lost or overwritten by default game states. The engineer iteratively addressed issues like auto-login failures, a stuck loading screen, and ensuring frontend auto-saves correctly reached the backend, often facing regressions and needing deep debugging, including manual database checks. The latest work involves fixing Expo Go compatibility errors and tackling the persistent progress corruption.
+The AI engineer's work centered on stabilizing the Idle Ninja Online Expo mobile application. The trajectory documents an intensive debugging process, primarily addressing a cascade of frontend rendering, compatibility, and logic errors. Initial efforts fixed critical React 19 compatibility issues, involving version adjustments for React, React Native Reanimated, and Expo Router, alongside extensive cache clearing. This led to a series of errors: React hooks order violations, null property access, object rendering issues, infinite update loops, cross-component state update conflicts, and persistent UI layout disruptions. Each problem was tackled iteratively through targeted code modifications, simplification, and progressive restoration. The latest phase focuses on systematically rebuilding the main game UI in  after finally resolving all underlying rendering and syntax issues, confirming basic component functionality.
 </analysis>
 
 <product_requirements>
@@ -7,55 +7,62 @@ The application is an Idle Ninja Online style mobile RPG. It features an auto-fi
 </product_requirements>
 
 <key_technical_concepts>
-- **Expo & Expo Router**: Mobile app framework with file-based routing.
-- **React Native**: Core UI components, styling via , , .
-- **FastAPI**: Python backend framework.
-- **MongoDB**: Database for persistent storage.
-- **Zustand**: State management (, , , ).
-- **JWT Authentication**: Secure token-based authentication.
-- **CORS**: Cross-Origin Resource Sharing for API security.
-- **AsyncStorage/localStorage**: Client-side storage for session persistence.
-- **UI Layering**: , ,  for complex overlays.
-- **Game Logic**: Tick-based combat, XP, enemy spawning, boss mechanics, server-authoritative progression.
+- Expo & Expo Router: Mobile app framework with file-based routing.
+- React Native: Core UI components, styling, keyboard handling, safe areas.
+- FastAPI: Python backend for APIs.
+- MongoDB: Database for persistent storage.
+- Zustand: State management for game contexts.
+- JWT Authentication: Secure token-based user authentication.
+- CORS: Cross-Origin Resource Sharing for API security.
+- AsyncStorage/localStorage: Client-side storage for session persistence.
 </key_technical_concepts>
 
 <code_architecture>
 **Directory Structure:**
 
 
--   : Main FastAPI backend application.
-    -   **Importance**: Handles API routing, database connection, and now authentication logic and game save/load operations.
-    -   **Changes**: Integrated all authentication logic (user models, registration, login, session check) directly into this file, replacing separate  and . Modified  and  models to include . Updated  endpoint to handle  and . Fixed CORS configuration to allow credentials from specific origins. Added detailed logging for save/load operations. Fixed datetime handling for  in  model.
+-   : Main FastAPI backend.
+    -   **Importance**: Handles API routing, database, authentication, and game save/load.
+    -   **Changes**: Integrated auth logic,  and  to  model, updated  endpoint, fixed CORS, added logging.
 -   : Main game screen and entry point.
-    -   **Importance**: Renders the game world, active overlays, bottom navigation, and character progression. Controls the main app flow between authentication and game.
-    -   **Changes**: Refactored  style. Integrated global  state and / handlers. Conditionally renders  at the root level. Updated character progression display, main container background, XP bar, , top bar, and resources layout to Mythic-Tech theme. Added debug logging and  import. Modified to show user info and a logout button (later removed).  and   states now control whether  or the main game is rendered. Logout button and modal removed per user request.
+    -   **Importance**: Renders game, overlays, navigation. Controls app flow.
+    -   **Changes**: *Extensive edits*: Refactored styles for Mythic-Tech theme and mobile responsiveness. Critical fixes for React hooks order violations (moving all hooks to top), null and object rendering errors (, , ), infinite update loops (useEffect dependencies), and  initialization errors. It was repeatedly simplified and then progressively restored to fix core rendering issues. Current focus is restoring full UI.
 -   : Root layout for Expo Router.
-    -   **Importance**: Defines global navigation structure and wraps the app with context providers.
-    -   **Changes**: Integrated  and . Configured Stack navigation for , , and . Simplified navigation to resolve  errors by removing non-existent routes. Implemented  to control splash screen behavior. Removed  imports and logic.
--    (CREATED/MODIFIED): Manages user authentication state.
-    -   **Importance**: Provides , , , , ,  functions, and handles session persistence.
-    -   **Changes**: Implemented , , ,  functions using  (with  fallback for web) to store user tokens. Manages  state. Initially,  was aggressively called on session validation failure, and  was dependent on both  and  states. Modified  to be less aggressive about logging out on validation failure. Implemented local storage of login credentials (email/password) for auto-login. Added detailed debugging for  and  states during login. Added platform-specific  /  usage.
+    -   **Importance**: Global navigation and context providers.
+    -   **Changes**: Integrated , . Configured Stack navigation, simplified routes to resolve  errors.  component was temporarily added and then removed.
+-   : Manages user authentication.
+    -   **Importance**: Provides auth state, , ,  functions, session persistence.
+    -   **Changes**: Implemented  for token persistence, managed  state, added detailed debugging.
 -   : Provides game state and logic.
-    -   **Importance**: Manages all game data (ninja stats, inventory, resources, zone progress) and handles saving/loading.
-    -   **Changes**: Integrated  and  to communicate with the backend API. Manages  state. Initially reset  to  if not authenticated, causing progress loss (fixed). Implemented  for event-driven saves. Added  flag to prevent  from overwriting real progress. Initialized  to  by default, only setting to  when actively loading. Imported .
+    -   **Importance**: Manages game data, save/load.
+    -   **Changes**: Integrated , . Managed  state, fixed  overwrites.
 -   : Manages zone progression.
-    -   **Importance**: Tracks current zone, level, and kills.
-    -   **Changes**: Updated to ensure  is included in game saves via .
--    (CREATED/MODIFIED): Custom themed loading screen.
-    -   **Importance**: Displays a visual loading experience during app startup and data fetching.
-    -   **Changes**: Implemented Mythic-Tech theme with animated orb, gradient, and particles. Displays Loading your ninja profile... message.
--    (CREATED): Custom modal for logout confirmation.
-    -   **Importance**: Provides a user-friendly confirmation dialog for logout.
-    -   **Changes**: Implemented a React Native  component with themed styling for logout confirmation, replacing .
--   : UI for in-game store.
-    -   **Importance**: Allows users to purchase items and gems.
-    -   **Changes**: Implemented simulated purchase process with fake authentication. Initially used  which caused issues; later simplified the purchase flow and removed problematic async calls within Alert. Replaced  with direct calls, then added  to ensure gem purchases trigger immediate saves. Fixed duplicate  declaration.
--   : Expo app configuration file.
-    -   **Importance**: Defines app name, icon, splash screen, and plugins.
-    -   **Changes**: Modified splash screen configuration to disable default Expo splash or use custom themed settings. Added  to plugins.
--    (CREATED): Babel configuration for React Native Reanimated.
-    -   **Importance**: Required for React Native Reanimated to properly transform code.
-    -   **Changes**: Created to include .
+    -   **Importance**: Tracks current zone, level, kills.
+    -   **Changes**: Ensured  is included in game saves.
+-   : Manages combat state and logic.
+    -   **Importance**: Core combat engine.
+    -   **Changes**: *Crucial fix for cross-component state update*: Moved  logic outside  function within  to prevent  updates during  render. Previously attempted  and .
+-   : Custom themed loading screen.
+    -   **Importance**: Visual loading experience.
+    -   **Changes**: Implemented Mythic-Tech theme.
+-   : Custom modal for logout.
+    -   **Importance**: User-friendly logout confirmation.
+    -   **Changes**: Created to replace .
+-   : Authentication/Registration UI.
+    -   **Importance**: User login and registration.
+    -   **Changes**: Debugged export and overall rendering issues.
+-   : React error boundary.
+    -   **Importance**: Catches and handles React internal errors.
+    -   **Changes**: Created and integrated into , but later removed as it masked actual errors.
+-   : Expo app configuration.
+    -   **Importance**: App name, icon, splash, plugins.
+    -   **Changes**: Modified splash screen, added , toggled .
+-   : Babel configuration.
+    -   **Importance**: Required for React Native Reanimated.
+    -   **Changes**: Created to include , later updated for Reanimated v3/v4 compatibility.
+-   : Manages frontend dependencies.
+    -   **Importance**: Defines all required libraries and their versions.
+    -   **Changes**: Underwent multiple updates to adjust React (19 -> 18 -> 19), React Native Reanimated (v4 -> v3.15.4), and Expo Router (v6.x -> v5.x, then back to compatible 6.x) versions to resolve compatibility issues.
 </code_architecture>
 
 <pending_tasks>
@@ -68,17 +75,11 @@ The application is an Idle Ninja Online style mobile RPG. It features an auto-fi
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was deep-diving into persistent critical bugs: the user's game progress being overwritten by default data (reverting from Level 18 to Level 1) and continuous login prompts.
+Immediately prior to this summary, the AI engineer was deep into resolving a complex set of frontend UI and rendering issues on the main game combat page. After successfully fixing numerous critical errors including React 19 compatibility, React hooks order violations, null/object rendering errors, infinite update loops, cross-component state update conflicts, and proper initialization sequence for the  object, the main UI of the game was still appearing as a dark/blank screen after login.
 
-The debugging process involved:
-1.  **Backend Verification**: Confirmed that the database sometimes contained real user progress (e.g., Level 8 or Level 14/18 at different points), but also numerous Level 1 default saves, indicating a race condition or aggressive overwrite. Manual database checks showed no recent saves for the actual user account, despite frontend logs indicating save requests.
-2.  **Frontend Auto-Save Investigation**: Discovered that the  flag in  was often  even after a successful login, preventing the auto-save  from running. This led to  reaching the backend for authenticated users.
-3.  **Authentication State Debugging**: Added extensive logging to  to trace  and  states during login and session checks, attempting to understand why  was .
-4.  **Expo Go Compatibility**: The user reported 3 errors in the Expo Go app. The AI identified  and  object access as potential web-specific issues that don't work on mobile. Initial fixes included platform-specific  usage. Further general fixes for Expo Go compatibility (e.g.,  import,  for animations) were attempted.
-
-The current state is that user progress is still being lost, and the system is regressing to saving default Level 1 states, indicating that the core persistence bug is still active despite numerous targeted fixes. The Expo Go errors are also unconfirmed as fixed due to the overarching persistence issue.
+The latest debugging confirmed that the core component was finally rendering correctly and all essential logic (authentication, game data loading, combat ticks) was functioning. A breakthrough was achieved by simplifying the  file to a minimal test UI, which successfully rendered, proving the fundamental rendering pipeline was intact. The current work involves progressively restoring the full  to display the complete game interface, building upon the now stable rendering foundation. The first step of this restoration has been completed, with debug logs confirming that the full UI structure is now attempting to render and game data is accessible.
 </current_work>
 
 <optional_next_step>
-Address the recurring progress loss by systematically debugging the  state in  and  to ensure auto-saves trigger for logged-in users.
+Add the missing StyleSheet for the restored UI elements in .
 </optional_next_step>
