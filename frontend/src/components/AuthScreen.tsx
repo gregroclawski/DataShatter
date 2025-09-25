@@ -69,18 +69,31 @@ export default function AuthScreen() {
   const handleSubmit = async () => {
     if (!validateForm()) return;
 
+    console.log('🔐 AUTH FORM SUBMIT - Starting authentication process...');
+    console.log('  - Auth Mode:', authMode);
+    console.log('  - Email:', formData.email);
+    console.log('  - Password length:', formData.password.length);
+
     try {
       let result;
       if (authMode === 'login') {
+        console.log('🔑 CALLING LOGIN FUNCTION...');
         result = await login(formData.email, formData.password);
       } else {
+        console.log('📝 CALLING REGISTER FUNCTION...');
         result = await register(formData.email, formData.password, formData.name);
       }
 
-      if (!result.success) {
+      console.log('🔍 AUTH RESULT:', result);
+
+      if (result.success) {
+        console.log('✅ AUTHENTICATION SUCCESS - should navigate to game');
+      } else {
+        console.log('❌ AUTHENTICATION FAILED:', result.error);
         Alert.alert('Error', result.error || 'Authentication failed');
       }
     } catch (error) {
+      console.error('🚨 AUTH ERROR CAUGHT:', error);
       Alert.alert('Error', 'An unexpected error occurred');
     }
   };
