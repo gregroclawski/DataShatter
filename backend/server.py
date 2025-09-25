@@ -260,6 +260,7 @@ async def save_game(save_request: SaveGameRequest):
             "pets": [p.dict() for p in save_request.pets],
             "achievements": save_request.achievements,
             "unlockedFeatures": save_request.unlockedFeatures,
+            "zoneProgress": save_request.zoneProgress or {},
             "lastSaveTime": datetime.utcnow(),
             "isAlive": True
         }
