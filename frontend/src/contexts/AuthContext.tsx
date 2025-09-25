@@ -165,9 +165,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { success: false, error: data.detail || 'Login failed' };
       }
 
-      // Store auth data
-      await AsyncStorage.setItem('auth_token', data.access_token);
-      await AsyncStorage.setItem('auth_user', JSON.stringify(data.user));
+  // Store auth data with web environment fallback
+      await AsyncStorage.setItem('auth_token', data.access_token).catch(async (asyncError) => {
+        console.error('AsyncStorage failed, using localStorage fallback:', asyncError);
+        // Fallback to localStorage for web environment
+        if (typeof window !== 'undefined' && window.localStorage) {
+          window.localStorage.setItem('auth_token', data.access_token);
+          window.localStorage.setItem('auth_user', JSON.stringify(data.user));
+        }
+      });
+      
+      await AsyncStorage.setItem('auth_user', JSON.stringify(data.user)).catch((error) => {
+        console.error('AsyncStorage user storage failed:', error);
+      });
       
       setToken(data.access_token);
       setUser(data.user);
