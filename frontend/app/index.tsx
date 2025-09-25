@@ -293,7 +293,7 @@ export default function NinjaIdleGame() {
       {/* Top Bar */}
       <View style={styles.topBar}>
         <View style={styles.progressSection}>
-          <Text style={styles.progressionTitle}>{currentProgression}</Text>
+          <Text style={styles.progressionTitle}>{currentProgression.title}</Text>
           <View style={styles.levelContainer}>
             <Text style={styles.levelText}>Level {ninja?.level || 1}</Text>
             <View style={styles.xpContainer}>
