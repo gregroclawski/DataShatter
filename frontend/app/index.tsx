@@ -223,30 +223,13 @@ export default function NinjaIdleGame() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Top Bar */}
-      <View style={styles.topBar}>
-        <View style={styles.progressSection}>
-          <Text style={styles.progressionTitle}>{currentProgression.title}</Text>
-          <View style={styles.levelContainer}>
-            <Text style={styles.levelText}>Level {ninja?.level || 1}</Text>
-            <View style={styles.xpContainer}>
-              <View style={styles.xpBarBackground}>
-                <View 
-                  style={[
-                    styles.xpBarFill, 
-                    { 
-                      width: `${ninja ? (ninja.experience / ninja.experienceToNext) * 100 : 0}%` 
-                    }
-                  ]} 
-                />
-              </View>
-              <Text style={styles.xpText}>
-                {ninja?.experience || 0} / {ninja?.experienceToNext || 100} XP
-              </Text>
-            </View>
-          </View>
-        </View>
+    <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ color: 'white', fontSize: 24 }}>🔴 MINIMAL TEST UI</Text>
+      <Text style={{ color: 'white', fontSize: 16 }}>Level: {testNinja.level}</Text>
+      <Text style={{ color: 'white', fontSize: 16 }}>XP: {testNinja.experience}</Text>
+      <Text style={{ color: 'white', fontSize: 16 }}>Progression: {currentProgression.title}</Text>
+    </View>
+  );
         
         <View style={styles.resourcesContainer}>
           <View style={styles.resourceItem}>
