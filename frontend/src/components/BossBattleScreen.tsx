@@ -91,8 +91,14 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
   useEffect(() => {
     if (battlePhase === 'combat' && bossSpawned && !showResultPopup) {
       const bossEnemy = combatState.enemies.find(enemy => enemy.isBoss);
-      if (bossEnemy && bossEnemy.health <= 0) {
-        handleBossDefeated();
+      if (bossEnemy) {
+        console.log(`🐉 Boss health check: ${bossEnemy.health}/${bossEnemy.maxHealth} (${Math.round((bossEnemy.health / bossEnemy.maxHealth) * 100)}%)`);
+        if (bossEnemy.health <= 0) {
+          console.log('🎯 BOSS HEALTH REACHED 0! Triggering defeat...');
+          handleBossDefeated();
+        }
+      } else {
+        console.log('⚠️ No boss found in enemies array during combat phase');
       }
     }
   }, [combatState.enemies, battlePhase, bossSpawned, showResultPopup]);
