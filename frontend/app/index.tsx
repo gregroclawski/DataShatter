@@ -75,49 +75,36 @@ export default function NinjaIdleGame() {
   // CRITICAL: ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
   const { gameState, isLoading: gameLoading, updateNinja } = useGame();
-  const { combatState, startCombat, stopCombat, triggerLevelUpExplosion, projectiles, updateNinjaPosition } = useCombat();
-  const { currentZone, currentZoneLevel, getZoneProgress, recordEnemyKill } = useZone();
   
-  // Safe area insets hook (must be called before returns)
-  const insets = useSafeAreaInsets();
+  // Debug logging
+  console.log('🔍 MAIN COMPONENT RENDER:');
+  console.log('  - authLoading:', authLoading);
+  console.log('  - isAuthenticated:', isAuthenticated);
+  console.log('  - gameLoading:', gameLoading);
   
-  // All state hooks must be called unconditionally
-  const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
-  const [isLevelingUp, setIsLevelingUp] = useState(false);
-  const [previousLevel, setPreviousLevel] = useState(1);
-  const [lastExplosionTime, setLastExplosionTime] = useState(0);
-  const [showAbilityDeck, setShowAbilityDeck] = useState(false);
-  const [totalKills, setTotalKills] = useState(0);
-  const [lastProcessedKill, setLastProcessedKill] = useState(0);
-  
-  // Boss battle state
-  const [isBossBattleActive, setIsBossBattleActive] = useState(false);
-  const [currentBossBattle, setCurrentBossBattle] = useState<{boss: Boss, tier: BossTier} | null>(null);
-  const [previousOverlay, setPreviousOverlay] = useState<ActiveOverlay>(null);
-  
-  // Ninja position and movement state
-  const [ninjaPosition, setNinjaPosition] = useState({
-    x: 50, // Start in bottom left corner
-    y: GAME_AREA_HEIGHT - NINJA_SIZE - 50
-  });
-  const [lastMovementTime, setLastMovementTime] = useState(Date.now());
-  const [isAttacking, setIsAttacking] = useState(false);
-  const [lastAttackTime, setLastAttackTime] = useState(0);
-  
-  // Authentication flow - AFTER all hooks are declared
+  // SIMPLE CONDITIONAL RENDERING FOR DEBUGGING
   if (authLoading) {
+    console.log('✅ Showing auth loading screen');
     return <LoadingScreen message="Initializing authentication..." />;
   }
 
   if (!isAuthenticated) {
+    console.log('✅ Showing auth screen');
     return <AuthScreen />;
   }
 
   if (gameLoading) {
+    console.log('✅ Showing game loading screen');
     return <LoadingScreen message="Loading your ninja profile..." />;
   }
   
-  const ninja = gameState?.ninja;
+  console.log('✅ Showing main game (this should not happen yet)');
+  return (
+    <View style={{ flex: 1, backgroundColor: '#0a0a0f', justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ color: 'white', fontSize: 24 }}>Game Component - Should not see this yet!</Text>
+    </View>
+  );
+}
   
   // Get current character progression based on level
   const getCharacterProgression = (level: number) => {
