@@ -387,6 +387,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         
         lastSaveTimeRef.current = loadedGameState.lastSaveTime;
         setGameState(loadedGameState);
+        setHasLoadedFromServer(true); // Mark that we've loaded real data
         console.log('✅ GAME STATE SET - Level:', loadedGameState.ninja.level, 'XP:', loadedGameState.ninja.experience);
       } else {
         // No server data, check for local backup then use defaults
