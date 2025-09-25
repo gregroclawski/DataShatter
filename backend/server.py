@@ -230,6 +230,7 @@ class GameSave(BaseModel):
     isAlive: bool = True
     achievements: List[str] = []
     unlockedFeatures: List[str] = ["stats", "shurikens"]
+    zoneProgress: Optional[Dict[str, Any]] = {}
 
 class SaveGameRequest(BaseModel):
     playerId: str
@@ -238,6 +239,7 @@ class SaveGameRequest(BaseModel):
     pets: List[Pet] = []
     achievements: List[str] = []
     unlockedFeatures: List[str] = []
+    zoneProgress: Optional[Dict[str, Any]] = {}
 
 # API Routes
 @api_router.get("/")
