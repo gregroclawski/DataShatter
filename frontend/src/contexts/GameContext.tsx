@@ -190,8 +190,11 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (isAuthenticated && user) {
       loadGameFromServer();
+    } else {
+      // No authenticated user - set loading to false immediately
+      console.log('🔍 No authenticated user - setting game loading to false');
+      setIsLoading(false);
     }
-    // Don't reset game state when not authenticated - keep current state
   }, [isAuthenticated, user]);
 
   // Auto-save when authenticated - Very frequent saves
