@@ -405,9 +405,6 @@ async def get_game_events():
     
     return {"events": events}
 
-# Include the router in the main app
-app.include_router(api_router)
-
 # Authentication Routes
 @api_router.post("/auth/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 async def register(user_data: UserCreate, response: Response):
