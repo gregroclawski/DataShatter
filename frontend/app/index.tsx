@@ -72,6 +72,184 @@ export default function NinjaIdleGame() {
   const [lastMovementTime, setLastMovementTime] = useState(Date.now());
   const [isAttacking, setIsAttacking] = useState(false);
   const [lastAttackTime, setLastAttackTime] = useState(0);
+
+  // ALL useCallback hooks must be declared before returns
+  const handleLevelUpExplosion = useCallback(() => {
+    const now = Date.now();
+    const EXPLOSION_COOLDOWN = 5000;
+    
+    if (now - lastExplosionTime < EXPLOSION_COOLDOWN) {
+      console.log('💥 LEVEL UP EXPLOSION on cooldown, skipping...');
+      return;
+    }
+    
+    console.log('💥 LEVEL UP EXPLOSION!');
+    setIsLevelingUp(true);
+    setLastExplosionTime(now);
+    
+    triggerLevelUpExplosion();
+    
+    setTimeout(() => {
+      setIsLevelingUp(false);
+    }, 1000);
+  }, [triggerLevelUpExplosion, lastExplosionTime]);
+
+  const startBossBattle = useCallback((boss: Boss, tier: BossTier) => {
+    console.log('🐉 Starting boss battle:', boss.name, tier.name);
+    setPreviousOverlay(activeOverlay);
+    setActiveOverlay(null);
+    setCurrentBossBattle({ boss, tier });
+    setIsBossBattleActive(true);
+  }, [activeOverlay]);
+
+  const endBossBattle = useCallback(async (victory: boolean) => {
+    console.log('🏆 Boss battle ended:', victory ? 'Victory' : 'Defeat');
+    
+    if (!currentBossBattle) return;
+    
+    setIsBossBattleActive(false);
+    setCurrentBossBattle(null);
+    
+    if (previousOverlay === 'bosses') {
+      setActiveOverlay('bosses');
+    }
+    setPreviousOverlay(null);
+    
+    Alert.alert(
+      victory ? '🏆 Victory!' : '💀 Defeat',
+      victory 
+        ? `You defeated ${currentBossBattle.tier.name}! Check the boss overlay for rewards.`
+        : `${currentBossBattle.tier.name} was too powerful. Try again when stronger!`,
+      [{ text: 'OK' }]
+    );
+  }, [currentBossBattle, previousOverlay]);
+
+  const escapeBossBattle = useCallback(() => {
+    console.log('🏃 Escaping boss battle');
+    
+    setIsBossBattleActive(false);
+    setCurrentBossBattle(null);
+    
+    if (previousOverlay === 'bosses') {
+      setActiveOverlay('bosses');
+    }
+    setPreviousOverlay(null);
+  }, [previousOverlay]);
+
+  // ALL useEffect hooks must be declared before returns
+  useEffect(() => {
+    if (gameState?.ninja && gameState.ninja.level > previousLevel) {
+      console.log('🚀 Level up detected!', previousLevel, '->', gameState.ninja.level);
+      handleLevelUpExplosion();
+      setPreviousLevel(gameState.ninja.level);
+    }
+  }, [gameState?.ninja?.level, previousLevel, handleLevelUpExplosion]);
+
+  useEffect(() => {
+    const moveNinja = () => {
+      const now = Date.now();
+      const deltaTime = now - lastMovementTime;
+      
+      if (deltaTime >= 16) {
+        setNinjaPosition(prevPos => {
+          if (!combatState.enemies || combatState.enemies.length === 0 || isAttacking) {
+            return prevPos;
+          }
+          
+          let closestEnemy = null;
+          let closestDistance = Infinity;
+          
+          combatState.enemies.forEach(enemy => {
+            const distance = Math.sqrt(
+              Math.pow(enemy.position.x - (prevPos.x + NINJA_SIZE / 2), 2) + 
+              Math.pow(enemy.position.y - (prevPos.y + NINJA_SIZE / 2), 2)
+            );
+            
+            if (distance < closestDistance) {
+              closestDistance = distance;
+              closestEnemy = enemy;
+            }
+          });
+          
+          if (!closestEnemy) return prevPos;
+          
+          const ATTACK_RANGE = 40;
+          if (closestDistance <= ATTACK_RANGE) {
+            return prevPos;
+          }
+          
+          const targetX = closestEnemy.position.x + ENEMY_SIZE / 2 - NINJA_SIZE / 2;
+          const targetY = closestEnemy.position.y + ENEMY_SIZE / 2 - NINJA_SIZE / 2;
+          
+          const directionX = targetX - prevPos.x;
+          const directionY = targetY - prevPos.y;
+          const magnitude = Math.sqrt(directionX * directionX + directionY * directionY);
+          
+          if (magnitude === 0) return prevPos;
+          
+          const normalizedX = directionX / magnitude;
+          const normalizedY = directionY / magnitude;
+          
+          const NINJA_SPEED = 2;
+          const newX = Math.max(0, Math.min(SCREEN_WIDTH - NINJA_SIZE, prevPos.x + normalizedX * NINJA_SPEED));
+          const newY = Math.max(0, Math.min(GAME_AREA_HEIGHT - NINJA_SIZE, prevPos.y + normalizedY * NINJA_SPEED));
+          
+          updateNinjaPosition({ x: newX + NINJA_SIZE / 2, y: newY + NINJA_SIZE / 2 });
+          
+          return { x: newX, y: newY };
+        });
+        
+        setLastMovementTime(now);
+      }
+    };
+
+    const interval = setInterval(moveNinja, 16);
+    return () => clearInterval(interval);
+  }, [combatState.enemies, isAttacking, lastMovementTime, updateNinjaPosition]);
+
+  useEffect(() => {
+    const originalConsoleLog = console.log;
+    console.log = (...args) => {
+      const message = args.join(' ');
+      
+      if (message.includes('💀 Enemy defeated!') && !message.includes('Boss defeated')) {
+        const killsMatch = message.match(/Kill (\d+)/);
+        if (killsMatch) {
+          const killNumber = parseInt(killsMatch[1]);
+          if (killNumber > lastProcessedKill) {
+            setTotalKills(killNumber);
+            setLastProcessedKill(killNumber);
+            recordEnemyKill();
+          }
+        }
+      }
+      
+      if (message.includes('👊 Ninja attacks enemy!')) {
+        const now = Date.now();
+        if (now - lastAttackTime > 100) {
+          setIsAttacking(true);
+          setLastAttackTime(now);
+          setTimeout(() => setIsAttacking(false), 300);
+        }
+      }
+      
+      originalConsoleLog.apply(console, args);
+    };
+
+    return () => {
+      console.log = originalConsoleLog;
+    };
+  }, [lastProcessedKill, recordEnemyKill, lastAttackTime]);
+
+  useEffect(() => {
+    console.log('🎮 Main component calling startCombat...');
+    startCombat();
+    
+    return () => {
+      console.log('🛑 Main component cleanup - calling stopCombat...');
+      stopCombat();
+    };
+  }, [startCombat, stopCombat]);
   
   // Authentication flow - AFTER all hooks are declared
   if (authLoading) {
