@@ -154,7 +154,9 @@ const StoreOverlay = ({ onClose }: Props) => {
           {
             text: 'Confirm Purchase',
             style: 'default',
-            onPress: () => processPurchase(gemPackage, authMethod),
+            onPress: async () => {
+              await processPurchase(gemPackage, authMethod);
+            },
           },
         ]
       );
