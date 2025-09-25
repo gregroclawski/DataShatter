@@ -250,28 +250,32 @@ export default function AuthScreen() {
               <Text style={styles.passwordHint}>8-64 characters required</Text>
             </View>
 
-            {/* Submit Button */}
-            <Pressable
+            {/* Submit Button - Web-Compatible */}
+            <View
               style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
-              onPress={() => {
-                console.log('🔥 SUBMIT BUTTON PRESSED!');
-                handleSubmit();
-              }}
-              disabled={isLoading}
             >
               <LinearGradient
                 colors={[MythicTechColors.neonBlue, MythicTechColors.neonPurple]}
                 style={styles.submitGradient}
               >
-                {isLoading ? (
-                  <Text style={styles.submitButtonText}>Processing...</Text>
-                ) : (
-                  <Text style={styles.submitButtonText}>
-                    {authMode === 'login' ? 'Login' : 'Create Account'}
-                  </Text>
-                )}
+                <Pressable
+                  style={styles.submitPressable}
+                  onPress={() => {
+                    console.log('🔥 PRESSABLE SUBMIT BUTTON PRESSED!');
+                    handleSubmit();
+                  }}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <Text style={styles.submitButtonText}>Processing...</Text>
+                  ) : (
+                    <Text style={styles.submitButtonText}>
+                      {authMode === 'login' ? 'Login' : 'Create Account'}
+                    </Text>
+                  )}
+                </Pressable>
               </LinearGradient>
-            </Pressable>
+            </View>
 
             {/* Divider */}
             <View style={styles.dividerContainer}>
