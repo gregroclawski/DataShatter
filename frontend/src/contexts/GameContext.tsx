@@ -446,9 +446,32 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         ninja: finalNinja
       };
       
-      // Auto-save to server when ninja stats change (debounced)
+      // Event-driven saves - Save immediately on important events
       if (isAuthenticated) {
-        setTimeout(() => saveGameToServer(), 1000);
+        // Save on level up
+        if (finalNinja.level > prev.ninja.level) {
+          console.log('💾 Event-driven save: Level up');
+          setTimeout(() => saveGameToServer(), 100);
+        }
+        // Save on significant XP gain (more than 50 XP)
+        else if (finalNinja.experience > prev.ninja.experience + 50) {
+          console.log('💾 Event-driven save: Significant XP gain');
+          setTimeout(() => saveGameToServer(), 100);
+        }
+        // Save on currency changes (gold/gems)
+        else if (finalNinja.gold !== prev.ninja.gold || finalNinja.gems !== prev.ninja.gems) {
+          console.log('💾 Event-driven save: Currency change');
+          setTimeout(() => saveGameToServer(), 100);
+        }
+        // Save on skill point spending
+        else if (finalNinja.skillPoints < prev.ninja.skillPoints) {
+          console.log('💾 Event-driven save: Skill points spent');
+          setTimeout(() => saveGameToServer(), 100);
+        }
+        // Regular debounced save for other changes
+        else {
+          setTimeout(() => saveGameToServer(), 1000);
+        }
       }
       
       return newGameState;
