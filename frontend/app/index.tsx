@@ -350,7 +350,7 @@ export default function NinjaIdleGame() {
         ))}
       </View>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation - iPhone Optimized */}
       <View style={styles.bottomNavigation}>
         {[
           { key: 'stats', icon: 'stats-chart', label: 'Stats' },
@@ -364,11 +364,16 @@ export default function NinjaIdleGame() {
           <TouchableOpacity
             key={key}
             style={[styles.navButton, activeOverlay === key && styles.navButtonActive]}
-            onPress={() => setActiveOverlay(activeOverlay === key ? null : key as ActiveOverlay)}
+            onPress={() => {
+              console.log(`🎯 Tab pressed: ${key}`);
+              setActiveOverlay(activeOverlay === key ? null : key as ActiveOverlay);
+            }}
+            activeOpacity={0.7}
+            hitSlop={{ top: 10, bottom: 10, left: 5, right: 5 }}
           >
             <Ionicons 
               name={icon as any} 
-              size={20} 
+              size={22} 
               color={activeOverlay === key ? MythicTechColors.neonBlue : MythicTechColors.voidSilver} 
             />
             <Text style={[
