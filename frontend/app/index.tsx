@@ -143,7 +143,7 @@ export default function NinjaIdleGame() {
       handleLevelUpExplosion();
       setPreviousLevel(gameState.ninja.level);
     }
-  }, [gameState?.ninja?.level, previousLevel, handleLevelUpExplosion]);
+  }, [gameState?.ninja?.level, previousLevel]); // Removed handleLevelUpExplosion to prevent infinite loop
 
   useEffect(() => {
     const moveNinja = () => {
