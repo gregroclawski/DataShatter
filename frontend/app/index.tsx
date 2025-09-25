@@ -981,11 +981,15 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   logoutButton: {
-    padding: 4,
+    padding: 8,
     borderRadius: 12,
     backgroundColor: MythicTechColors.shadowGrid + '66',
     borderWidth: 1,
     borderColor: MythicTechColors.neonPink + '33',
+    minWidth: 36,
+    minHeight: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   levelText: {
     fontSize: 16,
