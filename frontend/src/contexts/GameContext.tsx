@@ -284,6 +284,12 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
+    // CRITICAL: Don't save until we've loaded real data from server
+    if (!hasLoadedFromServer && gameState.ninja.level === 1 && gameState.ninja.experience === 0) {
+      console.warn('🚫 PREVENTING DEFAULT STATE SAVE - waiting for real data to load');
+      return;
+    }
+
     try {
       const now = Date.now();
       const saveData = {
