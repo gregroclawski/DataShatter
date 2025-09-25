@@ -153,11 +153,11 @@ const styles = StyleSheet.create({
     marginBottom: 4, // Further reduced from 8
   },
   abilitySlot: {
-    width: (SCREEN_WIDTH - 48 - 40) / 5, // Reduced size for tighter spacing
-    aspectRatio: 1,
+    width: (SCREEN_WIDTH - 60 - 60) / 5, // Much smaller slots (50% reduction)
+    height: 40, // Fixed height instead of aspect ratio for compactness
     backgroundColor: '#374151',
-    borderRadius: 6, // Smaller border radius
-    borderWidth: 1, // Thinner border
+    borderRadius: 4, // Much smaller border radius
+    borderWidth: 1,
     borderColor: '#4b5563',
     position: 'relative',
     overflow: 'hidden',
