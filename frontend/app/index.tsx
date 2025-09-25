@@ -966,22 +966,33 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   resources: {
-    flexDirection: 'row',
-    gap: 12,
+    flexDirection: 'column', // Changed from row to column for vertical stacking
+    gap: 4, // Reduced gap for tighter spacing
+    alignItems: 'flex-end', // Align to the right
   },
   resourceItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#374151',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    gap: 4,
+    backgroundColor: MythicTechColors.shadowGrid + 'aa',
+    paddingHorizontal: 6, // 20% smaller (was 8)
+    paddingVertical: 3, // 20% smaller (was 4)
+    borderRadius: 8, // Slightly smaller radius
+    gap: 3, // Tighter gap
+    borderWidth: 1,
+    borderColor: MythicTechColors.neonBlue + '33',
+    shadowColor: MythicTechColors.neonBlue,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 1,
   },
   resourceText: {
-    fontSize: 12,
+    fontSize: 11, // Slightly smaller (was 12)
     fontWeight: '600',
-    color: '#f8fafc',
+    color: MythicTechColors.neonCyan,
+    textShadowColor: MythicTechColors.neonBlue + '44',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 2,
   },
   combatStatus: {
     flexDirection: 'row',
