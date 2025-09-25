@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   abilityIcon: {
-    fontSize: 20, // Reduced from 24
+    fontSize: 16, // 50% smaller (was 20, originally 24)
   },
   abilityLevel: {
     position: 'absolute',
