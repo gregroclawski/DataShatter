@@ -48,22 +48,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const storedToken = await AsyncStorage.getItem('auth_token');
       const storedUser = await AsyncStorage.getItem('auth_user');
       
-      console.log('🔍 Checking existing session:', !!storedToken, !!storedUser);
+      console.log('🔍 Session check - Token exists:', !!storedToken, 'User exists:', !!storedUser);
       
       if (storedToken && storedUser) {
         try {
           const userData = JSON.parse(storedUser);
+          console.log('👤 Restoring user session:', userData.email, 'ID:', userData.id);
+          
           setToken(storedToken);
           setUser(userData);
-          console.log('✅ Session restored from storage:', userData.email);
           
-          // Skip session validation to avoid logout on network issues
-          // Just trust the stored session for better user experience
-          console.log('✅ Trusting stored session - user auto-logged in');
+          // Simple session validation
+          try {
+            const isValid = await checkSession();
+            if (isValid) {
+              console.log('✅ Session validation successful - user auto-logged in');
+            } else {
+              console.log('❌ Session validation failed - clearing stored session');
+              await logout();
+            }
+          } catch (error) {
+            console.log('⚠️ Session validation error - keeping session:', error);
+            // Keep session on network errors
+          }
           
         } catch (parseError) {
           console.error('Error parsing stored user data:', parseError);
-          // Don't logout immediately, just reset to empty state
+          // Clear invalid stored data
+          await AsyncStorage.multiRemove(['auth_token', 'auth_user']);
           setToken(null);
           setUser(null);
         }
