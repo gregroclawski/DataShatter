@@ -206,7 +206,7 @@ export default function NinjaIdleGame() {
     return CharacterProgressionNames[1];
   };
 
-  const currentProgression = ninja ? getCharacterProgression(ninja.level) : CharacterProgressionNames[1];
+  const currentProgression = testNinja ? getCharacterProgression(testNinja.level) : CharacterProgressionNames[1];
 
   if (isBossBattleActive && currentBossBattle) {
     return (
