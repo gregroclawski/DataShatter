@@ -943,19 +943,22 @@ const styles = StyleSheet.create({
   xpBarBackground: {
     flex: 1,
     height: 8,
-    backgroundColor: '#374151',
+    backgroundColor: MythicTechColors.shadowGrid,
     borderRadius: 4,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: MythicTechColors.neonBlue + '44',
   },
   xpBar: {
     height: '100%',
-    backgroundColor: '#10b981',
     borderRadius: 4,
+    // backgroundColor will be set dynamically based on progression
   },
   xpText: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: MythicTechColors.neonCyan,
     minWidth: 80,
+    fontWeight: '600',
   },
   resources: {
     flexDirection: 'row',
