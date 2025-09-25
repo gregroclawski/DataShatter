@@ -101,9 +101,6 @@ export default function NinjaIdleGame() {
   const [currentBossBattle, setCurrentBossBattle] = useState<{boss: Boss, tier: BossTier} | null>(null);
   const [previousOverlay, setPreviousOverlay] = useState<ActiveOverlay>(null);
   
-  // Logout confirmation state
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-  
   // Get current character progression based on level
   const getCharacterProgression = (level: number) => {
     if (level >= 15000) return CharacterProgressionNames[15000];
