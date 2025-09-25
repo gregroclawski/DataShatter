@@ -265,6 +265,21 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
 
     setBossAttacks(prev => [...prev, newAttack]);
 
+    // APPLY ACTUAL DAMAGE TO PLAYER
+    const baseDamage = tier.stats.attack;
+    const actualDamage = Math.floor(baseDamage * (0.8 + Math.random() * 0.4)); // 80-120% of base damage
+    
+    console.log(`🐉 Boss ${tier.name} attacks with ${randomAbility} for ${actualDamage} damage!`);
+    
+    // Deal damage to player
+    updateNinja(prev => {
+      const newHealth = Math.max(0, prev.health - actualDamage);
+      console.log(`⚡ Player health: ${prev.health} → ${newHealth} (took ${actualDamage} damage)`);
+      return {
+        health: newHealth
+      };
+    });
+
     // Remove attack after duration
     setTimeout(() => {
       setBossAttacks(prev => prev.filter(attack => attack.id !== attackId));
