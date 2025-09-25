@@ -181,47 +181,6 @@ const StoreOverlay = ({ onClose }: Props) => {
     }
   };
 
-  const processPurchase = async (gemPackage: GemPackage, authMethod: string) => {
-    setPurchasing(gemPackage.id);
-
-    try {
-      console.log('💳 Processing purchase with', authMethod, 'authentication');
-      
-      // Simulate purchase processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Calculate total gems
-      const totalGems = gemPackage.gems + (gemPackage.bonus || 0);
-      
-      // Update gems immediately and trigger save
-      updateNinja({
-        gems: ninja.gems + totalGems,
-      });
-
-      console.log(`🛒 Purchase completed: ${gemPackage.name} (+${totalGems} gems)`);
-      console.log(`💎 New gem balance: ${ninja.gems + totalGems}`);
-
-      // Show success message
-      Alert.alert(
-        '🎉 Purchase Successful!',
-        `${gemPackage.name} purchased with ${authMethod}!\n\n` +
-        `• Gems Added: ${totalGems.toLocaleString()}\n` +
-        `• New Balance: ${(ninja.gems + totalGems).toLocaleString()} gems`,
-        [{ text: 'Awesome!', style: 'default' }]
-      );
-
-    } catch (error) {
-      console.error('Purchase processing error:', error);
-      Alert.alert(
-        'Purchase Failed',
-        `Something went wrong with your purchase.\n\nYou have not been charged.`,
-        [{ text: 'OK' }]
-      );
-    } finally {
-      setPurchasing(null);
-    }
-  };
-
   const getPackageColor = (gemPackage: GemPackage) => {
     if (gemPackage.bestValue) return '#f59e0b';
     if (gemPackage.featured) return '#8b5cf6';
