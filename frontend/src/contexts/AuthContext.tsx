@@ -114,12 +114,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const checkSession = async (): Promise<boolean> => {
     try {
+      // Always return true if we have both token and user to avoid unnecessary logouts
+      if (!token || !user) {
+        console.log('No token or user found - session invalid');
+        return false;
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/auth/session/check`, {
         method: 'GET',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          ...(token && { 'Authorization': `Bearer ${token}` }),
+          'Authorization': `Bearer ${token}`,
         },
       });
 
@@ -134,14 +140,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (isValid && data.user) {
         // Update user data if it changed
         setUser(data.user);
+        console.log('✅ Session validated successfully for user:', data.user.email);
+      } else {
+        console.log('❌ Session check returned invalid:', data);
       }
       
-      console.log('Session check result:', isValid);
       return isValid;
     } catch (error) {
-      console.error('Session check network error (keeping current session):', error);
-      // Don't log out on network errors - keep current session
-      return !!token && !!user;
+      console.error('Session check network error - keeping current session:', error);
+      // CRITICAL: Don't log out on network errors - keep current session
+      // This prevents users from losing progress due to temporary network issues
+      return true; // Keep user logged in on network errors
     }
   };
 
