@@ -21,7 +21,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 # Configuration
-BASE_URL = "https://ninja-ui-debug.preview.emergentagent.com/api"
+BASE_URL = "https://ninja-idle-fix.preview.emergentagent.com/api"
 TEST_USER_EMAIL = f"ninja_master_{uuid.uuid4().hex[:8]}@example.com"
 TEST_USER_PASSWORD = "SecureNinja123!"
 TEST_USER_NAME = "Ninja Master Tester"
@@ -81,7 +81,7 @@ class ProgressPersistenceTester:
         
         try:
             # Test preflight request with frontend origin
-            frontend_origin = "https://ninja-ui-debug.preview.emergentagent.com"
+            frontend_origin = "https://ninja-idle-fix.preview.emergentagent.com"
             headers = {
                 'Origin': frontend_origin,
                 'Access-Control-Request-Method': 'POST',
@@ -129,7 +129,7 @@ class ProgressPersistenceTester:
             # Include CORS headers to simulate frontend request
             headers = {
                 'Content-Type': 'application/json',
-                'Origin': 'https://ninja-ui-debug.preview.emergentagent.com'
+                'Origin': 'https://ninja-idle-fix.preview.emergentagent.com'
             }
             
             response = self.session.post(
@@ -182,7 +182,7 @@ class ProgressPersistenceTester:
             # Include CORS headers to simulate frontend request
             headers = {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Origin': 'https://ninja-ui-debug.preview.emergentagent.com'
+                'Origin': 'https://ninja-idle-fix.preview.emergentagent.com'
             }
             
             response = self.session.post(
