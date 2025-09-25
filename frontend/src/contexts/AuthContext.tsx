@@ -44,10 +44,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading(true);
       console.log('🔍 Starting session check...');
       
-      // Check stored token with enhanced debugging
+      // Check stored token with web environment fallback
       try {
-        const storedToken = await AsyncStorage.getItem('auth_token');
-        const storedUser = await AsyncStorage.getItem('auth_user');
+        let storedToken = null;
+        let storedUser = null;
+        
+        try {
+          // Try AsyncStorage first
+          storedToken = await AsyncStorage.getItem('auth_token');
+          storedUser = await AsyncStorage.getItem('auth_user');
+        } catch (asyncError) {
+          console.log('AsyncStorage failed, trying localStorage:', asyncError);
+          // Fallback to localStorage for web environment
+          if (typeof window !== 'undefined' && window.localStorage) {
+            storedToken = window.localStorage.getItem('auth_token');
+            storedUser = window.localStorage.getItem('auth_user');
+            console.log('Using localStorage fallback');
+          }
+        }
         
         console.log('🔍 Session storage check:');
         console.log('  - Token exists:', !!storedToken);
@@ -69,28 +83,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           
           setToken(storedToken);
           setUser(userData);
-          
-          // Simple session validation without aggressive retries
-          try {
-            const isValid = await checkSession();
-            console.log('🔐 Session validation result:', isValid);
-            if (!isValid) {
-              console.log('❌ Session invalid - clearing and showing auth screen');
-              await AsyncStorage.multiRemove(['auth_token', 'auth_user']);
-              setToken(null);
-              setUser(null);
-            } else {
-              console.log('✅ Session restored successfully');
-            }
-          } catch (error) {
-            console.log('⚠️ Session validation error - keeping session:', error);
-          }
-          
+          console.log('✅ Session restored successfully - auto-login active');
         } else {
           console.log('🔍 No stored session found - will show auth screen');
         }
       } catch (storageError) {
-        console.error('💾 AsyncStorage error:', storageError);
+        console.error('💾 All storage methods failed:', storageError);
       }
     } catch (error) {
       console.error('Error in session check:', error);
