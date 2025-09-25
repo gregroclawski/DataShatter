@@ -173,21 +173,35 @@ export const useGame = () => {
 };
 
 export const GameProvider = ({ children }: { children: ReactNode }) => {
+  const { user, token, isAuthenticated } = useAuth();
   const [gameState, setGameState] = useState<GameState>(defaultGameState);
+  const [isLoading, setIsLoading] = useState(true);
   const lastSaveTimeRef = useRef<number>(Date.now());
 
-  useEffect(() => {
-    loadGame();
-  }, []);
+  const API_BASE_URL = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
 
+  // Load game data when user authenticates
   useEffect(() => {
+    if (isAuthenticated && user) {
+      loadGameFromServer();
+    } else if (!isAuthenticated) {
+      // Reset to default state when not authenticated
+      setGameState(defaultGameState);
+      setIsLoading(false);
+    }
+  }, [isAuthenticated, user]);
+
+  // Auto-save when authenticated
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
     const interval = setInterval(() => {
-      saveGame();
+      saveGameToServer();
       collectIdleRewards();
     }, 30000); // Auto-save every 30 seconds
 
     return () => clearInterval(interval);
-  }, []); // Remove gameState dependency to prevent render loop
+  }, [isAuthenticated, gameState]); // Include gameState to ensure latest data is saved
 
   // Calculate experience required for next level (incremental up to level 15000)
   const calculateExpForLevel = (level: number): number => {
