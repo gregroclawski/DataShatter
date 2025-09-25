@@ -41,6 +41,8 @@ const ENEMY_SIZE = 35;
 type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'bosses' | 'zones' | 'equipment' | null;
 
 export default function NinjaIdleGame() {
+  console.log('🔄 COMPONENT RENDER - NinjaIdleGame mounting/re-rendering');
+  
   // CRITICAL: ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
   const { gameState, isLoading: gameLoading, updateNinja } = useGame();
