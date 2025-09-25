@@ -32,6 +32,8 @@ const StoreOverlay = ({ onClose }: Props) => {
   const { ninja } = gameState;
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [storeAvailable, setStoreAvailable] = useState(true);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<GemPackage | null>(null);
 
   const gemPackages: GemPackage[] = [
     {
