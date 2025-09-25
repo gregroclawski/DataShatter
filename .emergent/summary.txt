@@ -1,96 +1,63 @@
 <analysis>
-The AI engineer's trajectory shows an iterative development process for an Expo mobile idle RPG. Initial phases focused on core combat, XP, enemy spawning, and a 50-zone progression system. A major focus was resolving a complex UI/UX bug where overlays covered bottom navigation tabs, blocking interaction. This required multiple attempts involving , , , and finally a unified non-Modal approach. Subsequently, the engineer implemented an XP rate change, default shuriken equipment on the ability bar (including Shadow Clone), and developed a comprehensive equipment system (25 levels, material-based upgrades) and a boss battle system (4 bosses, 5 tiers, daily tickets, drops), including necessary context providers and UI components. The current immediate task is integrating a dedicated boss battle screen with countdown and zone transitions.
+The AI engineer's work in this trajectory primarily focused on enhancing the Idle Ninja Online style mobile RPG by iteratively addressing user requests and bug reports. Initial efforts involved a major refactor of the UI overlay system from Modals to a unified View-based approach to resolve interaction issues. Subsequent development implemented a sophisticated boss battle system with countdowns, multiple lives, and WIN/DEFEAT popups, coupled with dynamic boss sizing and difficulty. Significant effort was then directed towards fixing persistent UI layering and combat zone overlap issues, culminating in a complete architectural shift for the BossBattleScreen to a root-level render. A major visual overhaul to a Mythic-Tech theme was initiated, transforming UI aesthetics and layout. The current task involves building a robust, secure authentication and server-side progression system, ensuring cheat prevention and scalability for an online idle RPG.
 </analysis>
 
 <product_requirements>
-The application is an idle RPG, Idle Ninja Online style, featuring an auto-fighting character against auto-spawning enemies in a battle arena. Key progression includes XP per kill (scaling up to level 15000), 3 stat points per level, and a level-up explosion clearing on-screen enemies. The UI/UX emphasizes a battle arena as the main screen, with bottom tabs for features like Stats, Abilities, Pets, Skills, Store, Raids, and Equipment, opening as overlay modals. A new tick-based combat engine underpins the game. Recent expansions require 50 zones, each with 5 levels and 1000 enemy defeats to unlock the next, featuring progressively difficult enemies and exponential scaling. The implemented features include a working 50-zone system, 25-level gear progression with material-based upgrades, and a Boss Battle System with 4 bosses across 5 tiers, daily tickets, and specific equipment/material drops. Upcoming features include Companions and Idle/Offline Progression. The current work is focused on enhancing boss battles.
+The application is an Idle Ninja Online style mobile RPG featuring an auto-fighting character against auto-spawning enemies across 50 zones, each with 5 levels and 1000 enemy defeats. Progression includes XP scaling to level 15000, 3 stat points per level, and a level-up explosion. The UI centers on a battle arena with bottom tabs for Stats, Abilities, Pets, Skills, Store, Raids, and Equipment, appearing as overlays. A tick-based combat engine is foundational. Implemented features include the 50-zone system, 25-level gear progression with material-based upgrades, and a Boss Battle System with 4 bosses across 5 tiers, daily tickets, and specific drops. Boss battles are enhanced with unique backgrounds, element-specific attacks, WIN/DEFEAT popups, 3 player lives with a 5-second respawn, and zone transitions. The UI has been visually transformed to a Mythic-Tech theme, featuring futuristic aesthetics, neon elements, and a compact top bar with vertically stacked resources. Enemies are cleared during boss fights, and bosses are 3x larger. Upcoming features include Companions, Idle/Offline Progression, and a full, secure server-side login and progression system.
 </product_requirements>
 
 <key_technical_concepts>
 -   **Expo & Expo Router**: Mobile app framework with file-based routing.
--   **React Native**: Core UI components and styling.
--   **Zustand**: State management (GameContext, CombatContext, ZoneContext, EquipmentContext, MaterialsContext, BossContext).
--   **React Hooks**: , ,  for state/lifecycle.
--   **UI Layering**: , ,  for overlay management.
+-   **React Native**: Core UI components, styling via .
+-   **Zustand**: State management (, , , etc.).
+-   **UI Layering**: , ,  for complex overlay management.
+-   **Component Re-architecture**: Moving state and components to root for full-screen overlays.
+-   **Game Logic**: Tick-based combat, XP calculation, enemy spawning, boss mechanics.
 </key_technical_concepts>
 
 <code_architecture>
-The application uses an Expo frontend, FastAPI backend, and MongoDB database.
-
 **Directory Structure:**
 
 
--   : The main game screen and entry point.
-    -   **Importance**: Renders the game world, handles active overlays, and displays bottom navigation.
-    -   **Changes**: Refactored overlay rendering (from  to  with  style), updated  array to include 'bosses', removed debug text, configured  and  for  and .
--   : Wraps all routes, providing global contexts.
-    -   **Importance**: Manages the application's global state providers.
-    -   **Changes**: Reordered provider hierarchy:  ->  ->  ->  ->  ->  ->  -> . This ensures correct context availability for dependent providers.
--   : Manages global game state.
-    -   **Importance**: Holds core player data (level, XP) and game-wide functions.
-    -   **Changes**: Updated adventure  to 20. Its  property was corrected to be accessed as  rather than a direct  property from .
--   : Provides combat engine and state.
-    -   **Importance**: Manages enemy spawning, combat logic, XP distribution, and ability management.
-    -   **Changes**: Updated  and  to 20. Re-integrated  and  for correct zone progression. Added , , ,  functions for new boss battle mechanics.
--   : Manages zone progression.
-    -   **Importance**: Tracks current zone, kill count, and unlocking next zone.
--   : Manages player equipment.
-    -   **Importance**: Handles equipped gear, inventory, and the upgrade system.
-    -   **Changes**: Enhanced to support 25 upgrade levels. Integrated with  for upgrade costs via , and updated  logic.
--    (CREATED): Manages upgrade materials.
-    -   **Importance**: Provides context for handling upgrade material inventory.
--    (CREATED): Manages boss battles.
-    -   **Importance**: Handles boss fight logic, tickets, progression, and rewards.
-    -   **Changes**: Implemented ,  functions. Crucially, fixed access to player data from  by changing  to  and adding null/type checks.
--   : UI for Enemies & Zones.
-    -   **Importance**: Displays zone progression and manages zones.
-    -   **Changes**: Modified extensively to work with the unified non-Modal overlay system (, , ).
--   : UI for Equipment.
-    -   **Importance**: Displays equipped gear and inventory.
-    -   **Changes**: Similarly modified for the unified non-Modal overlay system. Updated to display material-based upgrade options.
--    (CREATED): UI for Boss Battles.
+-   : Main game screen and entry point.
+    -   **Importance**: Renders the game world, handles active overlays, bottom navigation, and character progression.
+    -   **Changes**: Refactored  style. Integrated global  state and / handlers. Conditionally renders  at the root level. Updated character progression display, main container background, XP bar, , top bar, and resources layout to Mythic-Tech theme (neon colors, vertical HP/Gold/Gems stack). Added debug logging and  import.
+-   : Dedicated screen for boss fights.
+    -   **Importance**: Displays countdown, boss combat interface, player lives, WIN/DEFEAT popups, and handles boss attack animations/damage.
+    -   **Changes**: Completely rewritten to include 3 lives, 5s respawn, WIN/DEFEAT popups, element-specific attacks, and visual elements. Adjusted , background transparency, and pointer events for proper overlay behavior. Implemented boss attack logic and debug logging. Updated styles for UI elements (, , ).
+-   : UI for Boss Battles.
     -   **Importance**: Displays available bosses and initiates battles.
-    -   **Changes**: Integrated . Fixed issues with  access and added loading states to prevent premature rendering and resolve stuck on loading issues.
--    (CREATED): Dedicated screen for boss fights.
-    -   **Importance**: Will display a countdown and the boss combat interface.
--   : Defines zone data.
-    -   **Importance**: Stores information about different zones and their enemies.
-    -   **Changes**: Updated  for 'forest_goblin' to 20.
--   : Defines equipment data.
-    -   **Importance**: Stores information about gear types, stats, rarities, and upgrade logic.
-    -   **Changes**: Added  interface and  function to support the new upgrade system.
--    (CREATED): Defines boss data.
+    -   **Changes**: Modified to pass  callback to  and removed internal  state and  rendering. Cleaned up associated logic and import.
+-   : Provides combat engine and state.
+    -   **Importance**: Manages enemy spawning, combat logic, and XP.
+    -   **Changes**: Updated  to match UI adjustments. Modified  logic to prevent normal enemy spawns during active boss battles. Updated  to clear existing enemies before spawning the boss.
+-   : Defines boss data.
     -   **Importance**: Stores details about each boss, tiers, and associated rewards.
--   : Core tick-based combat logic.
-    -   **Importance**: Manages combat mechanics and enemy attributes.
-    -   **Changes**: Added  and  properties to the  interface to support boss-specific combat.
--   : Defines ability types.
-    -   **Importance**: Stores definitions for all abilities.
-    -   **Changes**: Added , ,  abilities.  was updated to equip these and  by default.
--   : Displays adventure content.
-    -   **Importance**: Manages adventure-related UI and logic.
-    -   **Changes**: Updated an adventure  to 20.
+    -   **Changes**: Boss health and damage multipliers were increased by 10x, then rolled back to original values due to user feedback.
+-   : UI for Combat.
+    -   **Importance**: Displays abilities bar and synergy container.
+    -   **Changes**: Reduced padding, ability slot size (50% smaller), icon size, and margins for a more compact design. Updated styling to reflect the Mythic-Tech theme with neon glow effects.
+-    (CREATED): Defines new theme constants.
+    -   **Importance**: Centralizes theme-related styles for the Mythic-Tech Idle RPG aesthetic.
 </code_architecture>
 
 <pending_tasks>
 -   **Backend Persistence**: Implement backend persistence for all new systems (Zones, Equipment, Bosses, Companions).
--   **Boss Battle UI/Logic**: Complete the integration of the  to launch battles, implement the 10-second countdown, enhanced boss attacks, and zone transitions.
 -   **Companions**: Implement battle and support pets with leveling and abilities.
 -   **Idle/Offline Progression**: Simulate combat mathematically while offline for accumulated rewards.
+-   **Login & Server-side Progression**: Implement account creation, authentication, secure player profile fetching, and server-authoritative game logic to prevent cheating.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was implementing a dedicated **Boss Battle Screen** and integrating it into the existing Boss Battle System. The user requested that clicking Fight Boss should lead to a unique map or zone with a visible 10-second countdown before the boss spawns. This boss should be stronger and use more powerful attacks. After the boss is killed, the player should be returned to their previously active zone.
+Immediately before this summary request, the AI engineer initiated the implementation of a comprehensive login and server-side progression system for the Mythic-Tech Idle RPG. This is a significant shift, transforming the game from a local experience to a secure online RPG. The user explicitly requested a security-first approach to prevent client-side cheating.
 
 The AI engineer has:
-1.  **Created**  to serve as the dedicated UI for boss fights.
-2.  **Modified**  by adding , , , and  functions, and made them available through the .
-3.  **Updated**  to include  and  properties in the  interface, preparing the combat engine for boss-specific logic.
-4.  **Updated**  to conditionally render the  when a boss battle is active.
-
-The last message indicates that the AI is in the process of finalizing the integration of the  to properly launch battles and manage zone transitions, meaning the countdown and full transition logic are still being actively developed.
+1.  **Acknowledged** the user's detailed requirements for account creation (email/password, third-party logins), secure credential storage (hashed passwords), session token generation, and server-side player profile fetching (level, items, stats, idle progress).
+2.  **Understood** that all critical gameplay logic (idle progression, combat math, real-time events, currency transactions) must be calculated on the server to prevent exploits.
+3.  **Confirmed** a security-first approach and outlined plans for comprehensive server-side validation.
+4.  **Completed** an internal thought process for creating a comprehensive integration playbook for a secure system, which includes a basic JWT authentication flow blueprint.
 </current_work>
 
 <optional_next_step>
-Finish integrating the  to include the 10-second countdown before boss spawn and handle zone transitions.
+Implement the backend components for user registration and login endpoints with secure password hashing.
 </optional_next_step>

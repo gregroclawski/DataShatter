@@ -11,7 +11,7 @@ from datetime import datetime
 import time
 
 # Get backend URL from environment
-BACKEND_URL = "https://boss-battle-dev.preview.emergentagent.com/api"
+BACKEND_URL = "https://secure-ninja-rpg.preview.emergentagent.com/api"
 
 class NinjaGameAPITester:
     def __init__(self):
