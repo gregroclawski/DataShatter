@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   abilityBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 4, // Further reduced from 8
+    marginBottom: 2, // Reduced by 50% (was 4)
   },
   abilitySlot: {
     width: (SCREEN_WIDTH - 60 - 60) / 5, // Much smaller slots (50% reduction)
