@@ -654,6 +654,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       }
       
       updateNinja(updates);
+      
+      // MILESTONE: Skill training - Critical save
+      saveOnMilestone('skill_training');
     }
   };
 
