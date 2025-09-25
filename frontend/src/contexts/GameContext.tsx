@@ -453,31 +453,36 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         ninja: finalNinja
       };
       
-      // Event-driven saves - Save immediately on important events
+      // AGGRESSIVE Event-driven saves - Save immediately on ANY important event
       if (isAuthenticated) {
-        // Save on level up
+        // CRITICAL MILESTONE: Level up - Save immediately
         if (finalNinja.level > prev.ninja.level) {
-          console.log('💾 Event-driven save: Level up');
-          setTimeout(() => saveGameToServer(), 100);
+          console.log('🏆 CRITICAL MILESTONE: Level up - IMMEDIATE SAVE');
+          saveOnMilestone('level_up');
         }
-        // Save on significant XP gain (more than 50 XP)
-        else if (finalNinja.experience > prev.ninja.experience + 50) {
-          console.log('💾 Event-driven save: Significant XP gain');
-          setTimeout(() => saveGameToServer(), 100);
+        // MILESTONE: Every 10 XP gained - Frequent saves during combat
+        else if (finalNinja.experience >= prev.ninja.experience + 10) {
+          console.log('💾 MILESTONE: 10+ XP gained - SAVE');
+          saveOnEvent('xp_milestone');
         }
-        // Save on currency changes (gold/gems)
+        // MILESTONE: Any currency change - Save all transactions
         else if (finalNinja.gold !== prev.ninja.gold || finalNinja.gems !== prev.ninja.gems) {
-          console.log('💾 Event-driven save: Currency change');
-          setTimeout(() => saveGameToServer(), 100);
+          console.log('💰 MILESTONE: Currency change - SAVE');
+          saveOnMilestone('currency_change');
         }
-        // Save on skill point spending
+        // MILESTONE: Skill point spending - Save character development
         else if (finalNinja.skillPoints < prev.ninja.skillPoints) {
-          console.log('💾 Event-driven save: Skill points spent');
-          setTimeout(() => saveGameToServer(), 100);
+          console.log('📈 MILESTONE: Skill points spent - SAVE');
+          saveOnMilestone('skill_upgrade');
         }
-        // Regular debounced save for other changes
+        // MILESTONE: Health/stats changes - Save character upgrades
+        else if (finalNinja.maxHealth !== prev.ninja.maxHealth || finalNinja.attack !== prev.ninja.attack) {
+          console.log('⚡ MILESTONE: Stats upgraded - SAVE');
+          saveOnMilestone('stat_upgrade');
+        }
+        // Regular save for any other changes
         else {
-          setTimeout(() => saveGameToServer(), 1000);
+          saveOnEvent('general_update');
         }
       }
       
