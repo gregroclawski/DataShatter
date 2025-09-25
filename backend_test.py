@@ -496,25 +496,20 @@ class ProgressPersistenceTester:
         print("="*80)
 
     def run_all_tests(self):
-        """Run all progress persistence tests"""
-        print("🚀 Starting Progress Persistence Fix Verification Tests...")
+        """Run CORS and authentication focused tests"""
+        print("🚀 Starting Backend Authentication System Tests - CORS & Authentication Focus...")
         print(f"Base URL: {BASE_URL}")
         print(f"Test User: {TEST_USER_EMAIL}")
-        print(f"Focus: Authentication + Game Save/Load + Session Management")
+        print(f"Focus: Health Check + CORS Configuration + Authentication Flow")
         
         test_results = []
         
-        # Authentication flow tests
+        # Core authentication and CORS tests (as per review request)
+        test_results.append(self.test_health_check())
+        test_results.append(self.test_cors_configuration())
         test_results.append(self.test_user_registration())
         test_results.append(self.test_user_login())
         test_results.append(self.test_session_check())
-        
-        # Game progression tests (core focus)
-        test_results.append(self.test_save_game_high_level())
-        test_results.append(self.test_load_game())
-        test_results.append(self.test_extreme_level_progression())
-        
-        # Security validation
         test_results.append(self.test_invalid_login())
         
         # Print summary
