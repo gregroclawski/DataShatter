@@ -322,6 +322,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       setIsLoading(true);
+      const startTime = Date.now(); // Track loading start time
       console.log('🔄 Loading game data for user:', user.id);
       
       const response = await fetch(`${API_BASE_URL}/api/load-game/${user.id}`, {
@@ -352,6 +353,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           isAlive: savedData.isAlive !== false,
           achievements: savedData.achievements || [],
           unlockedFeatures: savedData.unlockedFeatures || ['stats', 'shurikens'],
+          zoneProgress: savedData.zoneProgress || { 1: { zoneId: 1, currentLevel: 1, killsInLevel: 0, completed: false } },
         };
         
         lastSaveTimeRef.current = loadedGameState.lastSaveTime;
@@ -361,6 +363,15 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         // No server data, check for local backup then use defaults
         console.log('🆕 No server data found, checking local backup...');
         await loadLocalGameBackup();
+      }
+
+      // Ensure minimum 5 second loading time for user experience
+      const elapsedTime = Date.now() - startTime;
+      const minLoadingTime = 5000; // 5 seconds
+      if (elapsedTime < minLoadingTime) {
+        const remainingTime = minLoadingTime - elapsedTime;
+        console.log(`⏱️ Extending loading screen for ${remainingTime}ms to show themed animation`);
+        await new Promise(resolve => setTimeout(resolve, remainingTime));
       }
     } catch (error) {
       console.error('❌ Failed to load game from server:', error);
