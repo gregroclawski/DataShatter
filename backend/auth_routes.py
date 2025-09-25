@@ -9,7 +9,7 @@ from .auth import (
     UserCreate, UserLogin, User, Token, SessionData,
     validate_password, verify_password, get_password_hash,
     create_access_token, get_current_user, get_user_by_email,
-    create_user, create_session, get_session, delete_session,
+    get_user_by_id, create_user, create_session, get_session, delete_session,
     process_emergent_session
 )
 
