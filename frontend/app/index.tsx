@@ -164,6 +164,12 @@ export default function NinjaIdleGame() {
   }, [gameState?.ninja?.level]); // Safe dependency - no function references
   
   // Authentication flow - AFTER all hooks are declared
+  console.log('🔍 MAIN COMPONENT - Authentication Check:');
+  console.log('  - authLoading:', authLoading);
+  console.log('  - isAuthenticated:', isAuthenticated);
+  console.log('  - user exists:', !!user);
+  console.log('  - gameLoading:', gameLoading);
+  
   if (authLoading) {
     console.log('🔐 AUTH LOADING - showing auth loading screen');
     return <LoadingScreen message="Initializing authentication..." />;
