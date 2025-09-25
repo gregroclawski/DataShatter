@@ -389,11 +389,7 @@ export default function NinjaIdleGame() {
 
   // Show loading if ninja data isn't available
   if (!ninja) {
-    return (
-      <SafeAreaView style={[styles.container, styles.loadingContainer]}>
-        <Text style={styles.loadingText}>Loading Game Data...</Text>
-      </SafeAreaView>
-    );
+    return <LoadingScreen message="Loading Game Data..." />;
   }
 
   return (
