@@ -413,15 +413,15 @@ export default function NinjaIdleGame() {
         
         <View style={styles.resources}>
           <View style={styles.resourceItem}>
-            <Ionicons name="heart" size={16} color="#ef4444" />
+            <Ionicons name="heart" size={14} color={MythicTechColors.plasmaGlow} />
             <Text style={styles.resourceText}>{ninja.health}/{ninja.maxHealth}</Text>
           </View>
           <View style={styles.resourceItem}>
-            <Ionicons name="logo-bitcoin" size={16} color="#f59e0b" />
+            <Ionicons name="logo-bitcoin" size={14} color={MythicTechColors.divineGold} />
             <Text style={styles.resourceText}>{ninja.gold}</Text>
           </View>
           <View style={styles.resourceItem}>
-            <Ionicons name="diamond" size={16} color="#3b82f6" />
+            <Ionicons name="diamond" size={14} color={MythicTechColors.neonCyan} />
             <Text style={styles.resourceText}>{ninja.gems}</Text>
           </View>
         </View>
