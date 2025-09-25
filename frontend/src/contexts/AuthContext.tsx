@@ -164,13 +164,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { success: false, error: data.detail || 'Login failed' };
       }
 
-  // Store auth data with web environment fallback
+  // Store auth data AND credentials for auto-login
       await AsyncStorage.setItem('auth_token', data.access_token).catch(async (asyncError) => {
         console.error('AsyncStorage failed, using localStorage fallback:', asyncError);
         // Fallback to localStorage for web environment
         if (typeof window !== 'undefined' && window.localStorage) {
           window.localStorage.setItem('auth_token', data.access_token);
           window.localStorage.setItem('auth_user', JSON.stringify(data.user));
+          window.localStorage.setItem('login_email', email);
+          window.localStorage.setItem('login_password', password);
         }
       });
       
@@ -178,10 +180,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.error('AsyncStorage user storage failed:', error);
       });
       
+      // Store credentials for auto-login
+      await AsyncStorage.setItem('login_email', email).catch(() => {});
+      await AsyncStorage.setItem('login_password', password).catch(() => {});
+      
       setToken(data.access_token);
       setUser(data.user);
 
-      console.log('✅ Login successful - User ID:', data.user.id, 'Token stored');
+      console.log('✅ Login successful - User ID:', data.user.id, 'Credentials stored for auto-login');
 
       return { success: true };
     } catch (error) {
