@@ -55,45 +55,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const userData = JSON.parse(storedUser);
           setToken(storedToken);
           setUser(userData);
-          console.log('✅ Restored session from storage:', userData.email);
+          console.log('✅ Session restored from storage:', userData.email);
           
-          // Verify session is still valid with retry logic
-          let sessionValid = false;
-          let attempts = 0;
-          const maxAttempts = 3;
+          // Skip session validation to avoid logout on network issues
+          // Just trust the stored session for better user experience
+          console.log('✅ Trusting stored session - user auto-logged in');
           
-          while (!sessionValid && attempts < maxAttempts) {
-            attempts++;
-            console.log(`🔄 Session validation attempt ${attempts}/${maxAttempts}`);
-            
-            try {
-              sessionValid = await checkSession();
-              if (!sessionValid) {
-                console.log('❌ Session validation failed, attempt', attempts);
-                if (attempts < maxAttempts) {
-                  await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s before retry
-                }
-              } else {
-                console.log('✅ Session validated successfully');
-              }
-            } catch (error) {
-              console.log('❌ Session validation error:', error);
-              if (attempts < maxAttempts) {
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s before retry
-              }
-            }
-          }
-          
-          if (!sessionValid) {
-            console.log('❌ Session validation failed after all attempts, logging out');
-            await logout();
-          }
         } catch (parseError) {
           console.error('Error parsing stored user data:', parseError);
-          await logout();
+          // Don't logout immediately, just reset to empty state
+          setToken(null);
+          setUser(null);
         }
       } else {
-        console.log('🔍 No stored session found');
+        console.log('🔍 No stored session found - showing auth screen');
       }
 
       // Ensure minimum 5 second loading time for user experience
@@ -106,7 +81,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error) {
       console.error('Error checking existing session:', error);
-      await logout();
+      // Don't logout on errors, just continue
     } finally {
       setIsLoading(false);
     }
