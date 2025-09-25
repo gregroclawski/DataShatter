@@ -467,54 +467,62 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
     </View>
   );
 
-  const renderResultPopup = () => (
-    <Modal
-      visible={showResultPopup}
-      animationType="fade"
-      transparent={true}
-      onRequestClose={() => {}}
-    >
-      <View style={styles.popupOverlay}>
-        <View style={styles.popup}>
-          {battleResult === 'victory' ? (
-            <>
-              <Ionicons name="trophy" size={100} color="#f59e0b" />
-              <Text style={styles.popupTitle}>🎉 VICTORY! 🎉</Text>
-              <Text style={styles.popupText}>
-                You have defeated {tier.name}!
+  const renderResultPopup = () => {
+    console.log('🎯 Rendering result popup:', { showResultPopup, battleResult });
+    
+    return (
+      <Modal
+        visible={showResultPopup}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => {}}
+      >
+        <View style={styles.popupOverlay}>
+          <View style={styles.popup}>
+            {battleResult === 'victory' ? (
+              <>
+                <Ionicons name="trophy" size={100} color="#f59e0b" />
+                <Text style={styles.popupTitle}>🎉 VICTORY! 🎉</Text>
+                <Text style={styles.popupText}>
+                  You have defeated {tier.name}!
+                </Text>
+                <Text style={styles.popupSubtext}>
+                  Your skills as a Digital Warrior are unmatched!
+                </Text>
+              </>
+            ) : (
+              <>
+                <Ionicons name="skull" size={100} color="#ef4444" />
+                <Text style={styles.popupTitle}>💀 DEFEAT 💀</Text>
+                <Text style={styles.popupText}>
+                  {tier.name} has proven too powerful...
+                </Text>
+                <Text style={styles.popupSubtext}>
+                  Train harder and return when you're stronger!
+                </Text>
+              </>
+            )}
+            
+            <TouchableOpacity 
+              style={styles.popupButton} 
+              onPress={() => {
+                console.log('🎯 Popup button pressed, closing...');
+                setShowResultPopup(false);
+                setTimeout(() => {
+                  console.log('🎯 Calling onComplete with victory:', battleResult === 'victory');
+                  onComplete(battleResult === 'victory');
+                }, 500);
+              }}
+            >
+              <Text style={styles.popupButtonText}>
+                {battleResult === 'victory' ? 'Continue' : 'Return'}
               </Text>
-              <Text style={styles.popupSubtext}>
-                Your skills as a ninja are unmatched!
-              </Text>
-            </>
-          ) : (
-            <>
-              <Ionicons name="skull" size={100} color="#ef4444" />
-              <Text style={styles.popupTitle}>💀 DEFEAT 💀</Text>
-              <Text style={styles.popupText}>
-                {tier.name} has proven too powerful...
-              </Text>
-              <Text style={styles.popupSubtext}>
-                Train harder and return when you're stronger!
-              </Text>
-            </>
-          )}
-          
-          <TouchableOpacity 
-            style={styles.popupButton} 
-            onPress={() => {
-              setShowResultPopup(false);
-              setTimeout(() => onComplete(battleResult === 'victory'), 500);
-            }}
-          >
-            <Text style={styles.popupButtonText}>
-              {battleResult === 'victory' ? 'Continue' : 'Return'}
-            </Text>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </Modal>
-  );
+      </Modal>
+    );
+  };
 
   if (!visible) {
     return null;
