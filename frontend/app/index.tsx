@@ -661,7 +661,7 @@ export default function NinjaIdleGame() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f172a',
+    backgroundColor: MythicTechColors.darkSpace, // Mythic-tech dark background
     position: 'relative', // Establish stacking context for overlays
   },
   loadingContainer: {
@@ -669,7 +669,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    color: '#f8fafc',
+    color: MythicTechColors.neonCyan,
     fontSize: 18,
     fontWeight: '600',
   },
