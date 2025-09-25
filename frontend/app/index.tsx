@@ -427,22 +427,6 @@ export default function NinjaIdleGame() {
         </View>
         
         <View style={styles.rightSection}>
-          {/* User Info */}
-          <View style={styles.userInfo}>
-            <Text style={styles.userName}>
-              {user?.name || 'Player'}
-            </Text>
-            <TouchableOpacity
-              style={styles.logoutButton}
-              onPress={() => {
-                console.log('🚪 Logout button pressed - showing confirmation modal');
-                setShowLogoutModal(true);
-              }}
-            >
-              <Ionicons name="log-out-outline" size={20} color={MythicTechColors.neonPink} />
-            </TouchableOpacity>
-          </View>
-          
           {/* Resources */}
           <View style={styles.resources}>
             <View style={styles.resourceItem}>
