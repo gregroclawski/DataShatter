@@ -213,16 +213,210 @@ export default function NinjaIdleGame() {
 
   const currentProgression = testNinja ? getCharacterProgression(testNinja.level) : CharacterProgressionNames[1];
 
-  console.log('🎯 ABOUT TO RENDER MINIMAL UI - testNinja:', testNinja);
+  console.log('🎯 ABOUT TO RENDER FULL GAME UI - testNinja:', testNinja);
   console.log('🎯 PROGRESSION:', currentProgression);
 
-  // SIMPLIFIED RETURN FOR TESTING
+  // RESTORE FULL GAME INTERFACE - Step 1: Boss Battle Check
+  if (isBossBattleActive && currentBossBattle) {
+    return (
+      <BossBattleScreen
+        boss={currentBossBattle.boss}
+        tier={currentBossBattle.tier}
+        onVictory={() => endBossBattle(true)}
+        onDefeat={() => endBossBattle(false)}
+        onEscape={escapeBossBattle}
+      />
+    );
+  }
+
+  // MAIN GAME INTERFACE - Mobile Optimized
   return (
-    <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ color: 'white', fontSize: 24 }}>🔴 MINIMAL TEST UI</Text>
-      <Text style={{ color: 'white', fontSize: 16 }}>Level: {testNinja.level}</Text>
-      <Text style={{ color: 'white', fontSize: 16 }}>XP: {testNinja.experience}</Text>
-      <Text style={{ color: 'white', fontSize: 16 }}>Progression: {currentProgression.title}</Text>
-    </View>
+    <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Top Bar - Mobile Optimized */}
+      <View style={styles.topBar}>
+        <View style={styles.progressSection}>
+          <Text style={styles.progressionTitle}>{currentProgression.title}</Text>
+          <View style={styles.levelContainer}>
+            <Text style={styles.levelText}>Level {testNinja.level}</Text>
+            <View style={styles.xpContainer}>
+              <View style={styles.xpBarBackground}>
+                <View 
+                  style={[
+                    styles.xpBarFill, 
+                    { 
+                      width: `${(testNinja.experience / testNinja.experienceToNext) * 100}%` 
+                    }
+                  ]} 
+                />
+              </View>
+              <Text style={styles.xpText}>
+                {testNinja.experience} / {testNinja.experienceToNext} XP
+              </Text>
+            </View>
+          </View>
+        </View>
+        
+        <View style={styles.resourcesContainer}>
+          <View style={styles.resourceItem}>
+            <Ionicons name="diamond" size={14} color={MythicTechColors.neonBlue} />
+            <Text style={styles.resourceValue}>{testNinja.gems}</Text>
+          </View>
+          <View style={styles.resourceItem}>
+            <Ionicons name="logo-bitcoin" size={14} color={MythicTechColors.cosmicGold} />
+            <Text style={styles.resourceValue}>{testNinja.gold}</Text>
+          </View>
+          <View style={styles.resourceItem}>
+            <Ionicons name="flash" size={14} color={MythicTechColors.energyPurple} />
+            <Text style={styles.resourceValue}>{testNinja.skillPoints}</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Game Area */}
+      <View style={styles.gameArea}>
+        {/* Combat UI */}
+        <View style={styles.combatContainer}>
+          <CombatUI />
+        </View>
+
+        {/* Zone Info */}
+        <View style={styles.zoneInfo}>
+          <Text style={styles.zoneText}>
+            Zone {currentZone?.id || 1} - Level {currentZoneLevel?.levelNumber || 1}
+          </Text>
+          <Text style={styles.killsText}>
+            Kills: {getZoneProgress(currentZone?.id || 1)?.killsInLevel || 0}/1000
+          </Text>
+        </View>
+
+        {/* Ninja Character */}
+        <View style={[styles.ninjaContainer, { left: ninjaPosition.x, top: ninjaPosition.y }]}>
+          <View style={[styles.ninja, isAttacking && styles.ninjaAttacking, isLevelingUp && styles.ninjaLevelUp]}>
+            <Text style={styles.ninjaEmoji}>🥷</Text>
+          </View>
+        </View>
+
+        {/* Enemies */}
+        {(combatState.enemies || []).map(enemy => (
+          enemy?.position ? (
+            <View 
+              key={enemy.id}
+              style={[
+                styles.enemyContainer,
+                { 
+                  left: enemy.position.x, 
+                  top: enemy.position.y 
+                }
+              ]}
+            >
+              <View style={styles.enemy}>
+                <Text style={styles.enemyEmoji}>👹</Text>
+              </View>
+              <View style={styles.enemyHealthBar}>
+                <View 
+                  style={[
+                    styles.enemyHealthFill, 
+                    { width: `${(enemy.health / enemy.maxHealth) * 100}%` }
+                  ]} 
+                />
+              </View>
+            </View>
+          ) : null
+        ))}
+
+        {/* Projectiles */}
+        {(projectiles || []).map(projectile => (
+          projectile?.position ? (
+            <View
+              key={projectile.id}
+              style={[
+                styles.projectile,
+                {
+                  left: projectile.position.x - 5,
+                  top: projectile.position.y - 5,
+                }
+              ]}
+            >
+              <Text style={styles.projectileText}>⭐</Text>
+            </View>
+          ) : null
+        ))}
+      </View>
+
+      {/* Bottom Navigation */}
+      <View style={styles.bottomNavigation}>
+        {[
+          { key: 'stats', icon: 'stats-chart', label: 'Stats' },
+          { key: 'equipment', icon: 'shield', label: 'Equipment' },
+          { key: 'pets', icon: 'paw', label: 'Pets' },
+          { key: 'skills', icon: 'flash', label: 'Skills' },
+          { key: 'store', icon: 'storefront', label: 'Store' },
+          { key: 'bosses', icon: 'skull', label: 'Bosses' },
+          { key: 'zones', icon: 'map', label: 'Zones' },
+        ].map(({ key, icon, label }) => (
+          <TouchableOpacity
+            key={key}
+            style={[styles.navButton, activeOverlay === key && styles.navButtonActive]}
+            onPress={() => setActiveOverlay(activeOverlay === key ? null : key as ActiveOverlay)}
+          >
+            <Ionicons 
+              name={icon as any} 
+              size={20} 
+              color={activeOverlay === key ? MythicTechColors.neonBlue : MythicTechColors.voidSilver} 
+            />
+            <Text style={[
+              styles.navButtonText, 
+              activeOverlay === key && styles.navButtonTextActive
+            ]}>
+              {label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Overlays - Conditional rendering */}
+      {activeOverlay === 'stats' && (
+        <View style={styles.overlayWrapper}>
+          <NinjaStatsOverlay onClose={() => setActiveOverlay(null)} />
+        </View>
+      )}
+      {activeOverlay === 'equipment' && (
+        <View style={styles.overlayWrapper}>
+          <EquipmentOverlay onClose={() => setActiveOverlay(null)} />
+        </View>
+      )}
+      {activeOverlay === 'pets' && (
+        <View style={styles.overlayWrapper}>
+          <PetsOverlay onClose={() => setActiveOverlay(null)} />
+        </View>
+      )}
+      {activeOverlay === 'skills' && (
+        <View style={styles.overlayWrapper}>
+          <SkillsOverlay onClose={() => setActiveOverlay(null)} />
+        </View>
+      )}
+      {activeOverlay === 'store' && (
+        <View style={styles.overlayWrapper}>
+          <StoreOverlay onClose={() => setActiveOverlay(null)} />
+        </View>
+      )}
+      {activeOverlay === 'bosses' && (
+        <View style={styles.overlayWrapper}>
+          <BossOverlay 
+            onClose={() => setActiveOverlay(null)}
+            onStartBossBattle={startBossBattle}
+          />
+        </View>
+      )}
+      {activeOverlay === 'zones' && (
+        <View style={styles.overlayWrapper}>
+          <EnemiesZonesOverlay onClose={() => setActiveOverlay(null)} />
+        </View>
+      )}
+
+      {showAbilityDeck && (
+        <AbilityDeckOverlay onClose={() => setShowAbilityDeck(false)} />
+      )}
+    </SafeAreaView>
   );
 }
