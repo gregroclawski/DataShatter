@@ -78,6 +78,9 @@ export default function NinjaIdleGame() {
   const { combatState, startCombat, stopCombat, triggerLevelUpExplosion, projectiles, updateNinjaPosition } = useCombat();
   const { currentZone, currentZoneLevel, getZoneProgress, recordEnemyKill } = useZone();
   
+  // Safe area insets hook (must be called before returns)
+  const insets = useSafeAreaInsets();
+  
   // All state hooks must be called unconditionally
   const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
   const [isLevelingUp, setIsLevelingUp] = useState(false);
@@ -91,6 +94,15 @@ export default function NinjaIdleGame() {
   const [isBossBattleActive, setIsBossBattleActive] = useState(false);
   const [currentBossBattle, setCurrentBossBattle] = useState<{boss: Boss, tier: BossTier} | null>(null);
   const [previousOverlay, setPreviousOverlay] = useState<ActiveOverlay>(null);
+  
+  // Ninja position and movement state
+  const [ninjaPosition, setNinjaPosition] = useState({
+    x: 50, // Start in bottom left corner
+    y: GAME_AREA_HEIGHT - NINJA_SIZE - 50
+  });
+  const [lastMovementTime, setLastMovementTime] = useState(Date.now());
+  const [isAttacking, setIsAttacking] = useState(false);
+  const [lastAttackTime, setLastAttackTime] = useState(0);
   
   // Authentication flow - AFTER all hooks are declared
   if (authLoading) {
