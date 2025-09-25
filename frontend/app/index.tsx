@@ -72,12 +72,27 @@ const getBossHealthColor = (element?: string): string => {
 };
 
 export default function NinjaIdleGame() {
+  // CRITICAL: ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
   const { gameState, isLoading: gameLoading, updateNinja } = useGame();
   const { combatState, startCombat, stopCombat, triggerLevelUpExplosion, projectiles, updateNinjaPosition } = useCombat();
   const { currentZone, currentZoneLevel, getZoneProgress, recordEnemyKill } = useZone();
   
-  // Authentication flow - Simplified to prevent infinite loading
+  // All state hooks must be called unconditionally
+  const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
+  const [isLevelingUp, setIsLevelingUp] = useState(false);
+  const [previousLevel, setPreviousLevel] = useState(1);
+  const [lastExplosionTime, setLastExplosionTime] = useState(0);
+  const [showAbilityDeck, setShowAbilityDeck] = useState(false);
+  const [totalKills, setTotalKills] = useState(0);
+  const [lastProcessedKill, setLastProcessedKill] = useState(0);
+  
+  // Boss battle state
+  const [isBossBattleActive, setIsBossBattleActive] = useState(false);
+  const [currentBossBattle, setCurrentBossBattle] = useState<{boss: Boss, tier: BossTier} | null>(null);
+  const [previousOverlay, setPreviousOverlay] = useState<ActiveOverlay>(null);
+  
+  // Authentication flow - AFTER all hooks are declared
   if (authLoading) {
     return <LoadingScreen message="Initializing authentication..." />;
   }
@@ -91,19 +106,6 @@ export default function NinjaIdleGame() {
   }
   
   const ninja = gameState?.ninja;
-  
-  const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
-  const [isLevelingUp, setIsLevelingUp] = useState(false);
-  const [previousLevel, setPreviousLevel] = useState(1);
-  const [lastExplosionTime, setLastExplosionTime] = useState(0);
-  const [showAbilityDeck, setShowAbilityDeck] = useState(false);
-  const [totalKills, setTotalKills] = useState(0);
-  const [lastProcessedKill, setLastProcessedKill] = useState(0);
-  
-  // Boss battle state
-  const [isBossBattleActive, setIsBossBattleActive] = useState(false);
-  const [currentBossBattle, setCurrentBossBattle] = useState<{boss: Boss, tier: BossTier} | null>(null);
-  const [previousOverlay, setPreviousOverlay] = useState<ActiveOverlay>(null);
   
   // Get current character progression based on level
   const getCharacterProgression = (level: number) => {
