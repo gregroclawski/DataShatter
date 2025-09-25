@@ -258,32 +258,136 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     return updates;
   };
 
-  const saveGame = async () => {
+  const saveGameToServer = async () => {
+    if (!isAuthenticated || !user?.id) {
+      console.warn('Cannot save game: user not authenticated');
+      return;
+    }
+
     try {
       const now = Date.now();
       const saveData = {
-        ...gameState,
-        lastSaveTime: now,
+        playerId: user.id,
+        ninja: gameState.ninja,
+        shurikens: gameState.shurikens,
+        pets: gameState.pets,
+        achievements: gameState.achievements,
+        unlockedFeatures: gameState.unlockedFeatures,
       };
-      lastSaveTimeRef.current = now; // Update ref
-      await AsyncStorage.setItem('ninjaGameSave', JSON.stringify(saveData));
+
+      const response = await fetch(`${API_BASE_URL}/api/save-game`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+        },
+        body: JSON.stringify(saveData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Save failed: ${response.status}`);
+      }
+
+      lastSaveTimeRef.current = now;
+      console.log('✅ Game saved to server successfully');
     } catch (error) {
-      console.error('Failed to save game:', error);
+      console.error('❌ Failed to save game to server:', error);
+      
+      // Fallback to local storage
+      try {
+        const saveData = {
+          ...gameState,
+          lastSaveTime: Date.now(),
+        };
+        await AsyncStorage.setItem(`ninjaGameSave_${user.id}`, JSON.stringify(saveData));
+        console.log('💾 Game saved locally as fallback');
+      } catch (localError) {
+        console.error('Failed to save locally:', localError);
+      }
     }
   };
 
-  const loadGame = async () => {
+  const loadGameFromServer = async () => {
+    if (!isAuthenticated || !user?.id) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const savedData = await AsyncStorage.getItem('ninjaGameSave');
+      setIsLoading(true);
+      
+      const response = await fetch(`${API_BASE_URL}/api/load-game/${user.id}`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Load failed: ${response.status}`);
+      }
+
+      const savedData = await response.json();
+      
+      if (savedData && savedData.ninja) {
+        // Server returned valid game data
+        const loadedGameState: GameState = {
+          ninja: savedData.ninja,
+          shurikens: savedData.shurikens || [],
+          pets: savedData.pets || [],
+          raids: defaultGameState.raids, // Keep default raids for now
+          adventures: defaultGameState.adventures, // Keep default adventures for now
+          lastSaveTime: new Date(savedData.lastSaveTime).getTime(),
+          isAlive: savedData.isAlive !== false,
+          achievements: savedData.achievements || [],
+          unlockedFeatures: savedData.unlockedFeatures || ['stats', 'shurikens'],
+        };
+        
+        lastSaveTimeRef.current = loadedGameState.lastSaveTime;
+        setGameState(loadedGameState);
+        console.log('✅ Game loaded from server successfully', loadedGameState.ninja.level);
+      } else {
+        // No server data, check for local backup then use defaults
+        await loadLocalGameBackup();
+      }
+    } catch (error) {
+      console.error('❌ Failed to load game from server:', error);
+      await loadLocalGameBackup();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadLocalGameBackup = async () => {
+    if (!user?.id) return;
+    
+    try {
+      const savedData = await AsyncStorage.getItem(`ninjaGameSave_${user.id}`);
       if (savedData) {
         const parsedData = JSON.parse(savedData);
         lastSaveTimeRef.current = parsedData.lastSaveTime || Date.now();
         setGameState(parsedData);
+        console.log('💾 Game loaded from local backup');
+        
+        // Try to save this data to server
+        setTimeout(() => saveGameToServer(), 1000);
+      } else {
+        // No local data either, start with fresh game
+        console.log('🆕 Starting fresh game for user');
+        setGameState(defaultGameState);
       }
     } catch (error) {
-      console.error('Failed to load game:', error);
+      console.error('Failed to load local backup:', error);
+      setGameState(defaultGameState);
     }
   };
+
+  // Legacy functions for backward compatibility
+  const saveGame = () => saveGameToServer();
+  const loadGame = () => loadGameFromServer();
 
   const updateNinja = (updates: Partial<NinjaStats> | ((prev: NinjaStats) => Partial<NinjaStats>)) => {
     setGameState(prev => {
