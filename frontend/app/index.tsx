@@ -27,7 +27,7 @@ import AbilityDeckOverlay from '../src/components/AbilityDeckOverlay';
 import { Boss, BossTier } from '../src/data/BossData';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 200; // Reduced space for smaller UI (was 250)
+const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 160; // Account for bottom tabs (60px) + abilities bar (~60px) + buffer (40px)
 const NINJA_SIZE = 40;
 const ENEMY_SIZE = 35;
 
