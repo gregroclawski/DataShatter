@@ -60,9 +60,9 @@ export const BOSS_DATA: Record<BossType, Boss> = {
         name: 'Ember Wyrm',
         requiredLevel: 5,
         stats: {
-          hp: 10000, // 10x harder (was 1000)
-          attack: 500, // 10x harder (was 50)
-          defense: 200, // 10x harder (was 20)
+          hp: 1000, // Back to original (was 10000)
+          attack: 50, // Back to original (was 500)
+          defense: 20, // Back to original (was 200)
           critChance: 10,
           abilities: ['Fire Breath', 'Wing Strike']
         },
