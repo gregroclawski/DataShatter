@@ -207,7 +207,7 @@ export default function NinjaIdleGame() {
 
     const interval = setInterval(moveNinja, 16);
     return () => clearInterval(interval);
-  }, [combatState.enemies, isAttacking, lastMovementTime, updateNinjaPosition]);
+  }, [combatState.enemies, isAttacking, updateNinjaPosition]); // Removed lastMovementTime to prevent infinite loop
 
   useEffect(() => {
     const originalConsoleLog = console.log;
