@@ -279,15 +279,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const loginWithGoogle = async (): Promise<{ success: boolean; error?: string }> => {
     try {
-      // For now, redirect to Google OAuth URL
-      // In a real implementation, you'd use WebBrowser.openAuthSessionAsync
-      const redirectUrl = encodeURIComponent(window.location.href);
-      const googleAuthUrl = `https://auth.emergentagent.com/?redirect=${redirectUrl}`;
-      
-      // Open Google auth in new window/tab
-      window.open(googleAuthUrl, '_self');
-      
-      return { success: true };
+      // Check if we're in web environment
+      if (typeof window !== 'undefined' && window.location) {
+        // Web environment - use redirect
+        const redirectUrl = encodeURIComponent(window.location.href);
+        const googleAuthUrl = `https://auth.emergentagent.com/?redirect=${redirectUrl}`;
+        
+        // Open Google auth in new window/tab
+        window.open(googleAuthUrl, '_self');
+        
+        return { success: true };
+      } else {
+        // Mobile environment - show message
+        console.log('Google OAuth not available in mobile environment');
+        return { success: false, error: 'Google login not available in mobile app' };
+      }
     } catch (error) {
       console.error('Google login error:', error);
       return { success: false, error: 'Google login failed' };
