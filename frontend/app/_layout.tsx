@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider } from '../src/contexts/AuthContext';
 import { GameProvider } from '../src/contexts/GameContext';
 import { CombatProvider } from '../src/contexts/CombatContext';
@@ -10,7 +11,18 @@ import { EquipmentProvider } from '../src/contexts/EquipmentContext';
 import { MaterialsProvider } from '../src/contexts/MaterialsContext';
 import { BossProvider } from '../src/contexts/BossContext';
 
+// Prevent the splash screen from auto-hiding
+SplashScreen.preventAutoHideAsync();
+
 export default function RootLayout() {
+  useEffect(() => {
+    // Hide splash screen immediately when layout loads
+    const hideSplash = async () => {
+      await SplashScreen.hideAsync();
+    };
+    hideSplash();
+  }, []);
+
   return (
     <SafeAreaProvider>
       <AuthProvider>
