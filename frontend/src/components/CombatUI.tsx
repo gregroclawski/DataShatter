@@ -10,6 +10,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useCombat } from '../contexts/CombatContext';
 import { EquippedAbility } from '../types/AbilityTypes';
 
+import { MythicTechColors } from '../theme/MythicTechTheme';
+
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 interface Props {
