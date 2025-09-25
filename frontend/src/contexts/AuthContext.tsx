@@ -159,6 +159,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setToken(data.access_token);
       setUser(data.user);
 
+      console.log('✅ Login successful - User ID:', data.user.id, 'Token stored');
+
       return { success: true };
     } catch (error) {
       console.error('Login error:', error);
