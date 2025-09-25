@@ -560,27 +560,32 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   bottomNavigation: {
-    height: 80,
+    height: MOBILE_BOTTOM_NAV_HEIGHT,
     backgroundColor: MythicTechColors.deepVoid,
     flexDirection: 'row',
     borderTopWidth: 2,
     borderTopColor: MythicTechColors.neonBlue + '44',
     zIndex: 1000,
+    paddingBottom: 8, // Extra padding for iPhone home indicator
   },
   navButton: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12, // Increased for better touch targets
+    paddingHorizontal: 4,
     pointerEvents: 'auto',
+    minHeight: 60, // Ensure minimum 44pt touch target
   },
   navButtonActive: {
     backgroundColor: MythicTechColors.neonBlue + '22',
+    borderRadius: 8,
   },
   navButtonText: {
-    fontSize: 10,
+    fontSize: 9, // Smaller for mobile
     color: MythicTechColors.voidSilver,
     marginTop: 2,
+    textAlign: 'center',
   },
   navButtonTextActive: {
     color: MythicTechColors.neonBlue,
