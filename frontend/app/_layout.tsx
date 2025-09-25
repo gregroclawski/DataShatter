@@ -8,30 +8,27 @@ import { ZoneProvider } from '../src/contexts/ZoneContext';
 import { EquipmentProvider } from '../src/contexts/EquipmentContext';
 import { MaterialsProvider } from '../src/contexts/MaterialsContext';
 import { BossProvider } from '../src/contexts/BossContext';
-import { ErrorBoundary } from '../src/components/ErrorBoundary';
 import { Slot } from 'expo-router';
 
 export default function RootLayout() {
   return (
-    <ErrorBoundary>
-      <SafeAreaProvider>
-        <StatusBar style="light" backgroundColor="#0a0a0f" />
-        <AuthProvider>
-          <GameProvider>
-            <ZoneProvider>
-              <MaterialsProvider>
-                <EquipmentProvider>
-                  <BossProvider>
-                    <CombatProvider>
-                      <Slot />
-                    </CombatProvider>
-                  </BossProvider>
-                </EquipmentProvider>
-              </MaterialsProvider>
-            </ZoneProvider>
-          </GameProvider>
-        </AuthProvider>
-      </SafeAreaProvider>
-    </ErrorBoundary>
+    <SafeAreaProvider>
+      <StatusBar style="light" backgroundColor="#0a0a0f" />
+      <AuthProvider>
+        <GameProvider>
+          <ZoneProvider>
+            <MaterialsProvider>
+              <EquipmentProvider>
+                <BossProvider>
+                  <CombatProvider>
+                    <Slot />
+                  </CombatProvider>
+                </BossProvider>
+              </EquipmentProvider>
+            </MaterialsProvider>
+          </ZoneProvider>
+        </GameProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }
