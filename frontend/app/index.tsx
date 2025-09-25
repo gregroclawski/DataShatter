@@ -128,15 +128,6 @@ export default function NinjaIdleGame() {
   };
 
   const currentProgression = ninja ? getCharacterProgression(ninja.level) : CharacterProgressionNames[1];
-  const [ninjaPosition, setNinjaPosition] = useState({
-    x: 50, // Start in bottom left corner
-    y: GAME_AREA_HEIGHT - NINJA_SIZE - 50
-  });
-  const [lastMovementTime, setLastMovementTime] = useState(Date.now());
-  const [isAttacking, setIsAttacking] = useState(false);
-  const [lastAttackTime, setLastAttackTime] = useState(0);
-
-  const insets = useSafeAreaInsets();
 
   // Level-up explosion attack - delegate to combat context with cooldown
   const handleLevelUpExplosion = useCallback(() => {
