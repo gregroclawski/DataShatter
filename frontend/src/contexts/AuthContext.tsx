@@ -43,19 +43,56 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setIsLoading(true);
       
-      // Check stored token
+      // Check stored token first
       const storedToken = await AsyncStorage.getItem('auth_token');
       const storedUser = await AsyncStorage.getItem('auth_user');
       
+      console.log('🔍 Checking existing session:', !!storedToken, !!storedUser);
+      
       if (storedToken && storedUser) {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
-        
-        // Verify session is still valid
-        const isValid = await checkSession();
-        if (!isValid) {
+        try {
+          const userData = JSON.parse(storedUser);
+          setToken(storedToken);
+          setUser(userData);
+          console.log('✅ Restored session from storage:', userData.email);
+          
+          // Verify session is still valid with retry logic
+          let sessionValid = false;
+          let attempts = 0;
+          const maxAttempts = 3;
+          
+          while (!sessionValid && attempts < maxAttempts) {
+            attempts++;
+            console.log(`🔄 Session validation attempt ${attempts}/${maxAttempts}`);
+            
+            try {
+              sessionValid = await checkSession();
+              if (!sessionValid) {
+                console.log('❌ Session validation failed, attempt', attempts);
+                if (attempts < maxAttempts) {
+                  await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s before retry
+                }
+              } else {
+                console.log('✅ Session validated successfully');
+              }
+            } catch (error) {
+              console.log('❌ Session validation error:', error);
+              if (attempts < maxAttempts) {
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s before retry
+              }
+            }
+          }
+          
+          if (!sessionValid) {
+            console.log('❌ Session validation failed after all attempts, logging out');
+            await logout();
+          }
+        } catch (parseError) {
+          console.error('Error parsing stored user data:', parseError);
           await logout();
         }
+      } else {
+        console.log('🔍 No stored session found');
       }
     } catch (error) {
       console.error('Error checking existing session:', error);
