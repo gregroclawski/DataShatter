@@ -142,7 +142,8 @@ export default function NinjaIdleGame() {
     setPreviousOverlay(null);
   }, [previousOverlay]);
 
-  // ALL useEffect hooks MUST be called before any returns - using safe dependencies
+  // TEMPORARILY DISABLE COMBAT START TO TEST RENDERING
+  /*
   useEffect(() => {
     console.log('🎮 Starting combat on component mount');
     startCombat();
@@ -152,6 +153,7 @@ export default function NinjaIdleGame() {
       stopCombat();
     };
   }, []); // Empty array - run only once
+  */
   
   // Level up detection - safe to use gameState.ninja with optional chaining
   useEffect(() => {
