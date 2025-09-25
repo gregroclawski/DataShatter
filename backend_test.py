@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend API Tests for Ninja Master Mobile Game
-Tests all API endpoints with realistic game data
+Comprehensive Backend API Testing for Mythic-Tech Idle RPG Authentication System
+Tests all authentication endpoints including registration, login, OAuth, profile, session management, and logout.
 """
 
 import requests
 import json
+import time
 import uuid
 from datetime import datetime
-import time
+from typing import Dict, Any, Optional
 
-# Get backend URL from environment
-BACKEND_URL = "https://secure-ninja-rpg.preview.emergentagent.com/api"
+# Configuration
+BASE_URL = "https://secure-ninja-rpg.preview.emergentagent.com/api"
+TEST_USER_EMAIL = "ninja.master.test@example.com"
+TEST_USER_PASSWORD = "SecureNinja123!"
+TEST_USER_NAME = "Ninja Master Tester"
 
-class NinjaGameAPITester:
+class AuthenticationTester:
     def __init__(self):
         self.base_url = BACKEND_URL
         self.test_results = []
