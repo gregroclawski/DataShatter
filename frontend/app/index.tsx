@@ -385,19 +385,21 @@ export default function NinjaIdleGame() {
         ))}
 
         {/* Projectiles */}
-        {projectiles.map(projectile => (
-          <View
-            key={projectile.id}
-            style={[
-              styles.projectile,
-              {
-                left: projectile.position.x - 5,
-                top: projectile.position.y - 5,
-              }
-            ]}
-          >
-            <Text style={styles.projectileText}>⭐</Text>
-          </View>
+        {projectiles?.map(projectile => (
+          projectile?.position ? (
+            <View
+              key={projectile.id}
+              style={[
+                styles.projectile,
+                {
+                  left: projectile.position.x - 5,
+                  top: projectile.position.y - 5,
+                }
+              ]}
+            >
+              <Text style={styles.projectileText}>⭐</Text>
+            </View>
+          ) : null
         ))}
       </View>
 
