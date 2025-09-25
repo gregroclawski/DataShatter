@@ -902,12 +902,17 @@ const styles = StyleSheet.create({
   topBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#1e293b',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    alignItems: 'flex-start', // Changed to support vertical stacking
+    backgroundColor: MythicTechColors.deepVoid,
+    paddingHorizontal: 13, // 20% smaller (was 16)
+    paddingVertical: 10, // 20% smaller (was 12)
     borderBottomWidth: 1,
-    borderBottomColor: '#374151',
+    borderBottomColor: MythicTechColors.neonBlue + '44',
+    shadowColor: MythicTechColors.neonBlue,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 3,
   },
   playerInfo: {
     flex: 1,
