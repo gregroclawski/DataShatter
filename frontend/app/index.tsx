@@ -179,12 +179,13 @@ export default function NinjaIdleGame() {
     return <LoadingScreen message="Loading your ninja profile..." />;
   }
   
+  // Initialize ninja data AFTER all loading checks
   const ninja = gameState?.ninja;
   
-  // Ensure ninja is initialized before accessing it
+  // Ensure ninja is initialized before proceeding
   if (!ninja) {
     console.log('⏳ Waiting for ninja data to initialize...');
-    return <LoadingScreen message="Loading ninja data..." />;
+    return <LoadingScreen message="Initializing ninja data..." />;
   }
   
   // Get current character progression based on level
