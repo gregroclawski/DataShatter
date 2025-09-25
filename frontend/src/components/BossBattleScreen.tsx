@@ -249,14 +249,32 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
   };
 
   const startBossAttackPattern = () => {
+    console.log('🐉 Starting boss attack pattern...');
+    
     // Create periodic boss attacks with element-specific visuals
     const attackInterval = setInterval(() => {
+      console.log('🔥 Boss attack interval tick - checking battle state...', {
+        battlePhase,
+        bossSpawned,
+        showResultPopup
+      });
+      
       if (battlePhase === 'combat' && bossSpawned && !showResultPopup) {
+        console.log('✅ Conditions met - triggering boss attack!');
         triggerBossAttack();
       } else {
+        console.log('❌ Clearing attack interval - battle conditions not met');
         clearInterval(attackInterval);
       }
     }, 3000); // Boss attacks every 3 seconds
+    
+    // Store interval reference to clear it later if needed
+    setTimeout(() => {
+      if (battlePhase !== 'combat') {
+        console.log('⏰ Clearing boss attack interval after timeout');
+        clearInterval(attackInterval);
+      }
+    }, 30000); // Clear after 30 seconds max
   };
 
   const triggerBossAttack = () => {
