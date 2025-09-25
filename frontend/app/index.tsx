@@ -77,13 +77,17 @@ export default function NinjaIdleGame() {
   const { combatState, startCombat, stopCombat, triggerLevelUpExplosion, projectiles, updateNinjaPosition } = useCombat();
   const { currentZone, currentZoneLevel, getZoneProgress, recordEnemyKill } = useZone();
   
-  // Authentication flow
-  if (authLoading || gameLoading) {
-    return <LoadingScreen message="Loading your ninja profile..." />;
+  // Authentication flow - Simplified to prevent infinite loading
+  if (authLoading) {
+    return <LoadingScreen message="Initializing authentication..." />;
   }
 
   if (!isAuthenticated) {
     return <AuthScreen />;
+  }
+
+  if (gameLoading) {
+    return <LoadingScreen message="Loading your ninja profile..." />;
   }
   
   const ninja = gameState?.ninja;
