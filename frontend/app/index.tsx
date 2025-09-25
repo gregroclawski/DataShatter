@@ -3,16 +3,16 @@ import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../src/contexts/AuthContext';
 import { useGame } from '../src/contexts/GameContext';
 import { useCombat } from '../src/contexts/CombatContext';
 import { useZone } from '../src/contexts/ZoneContext';
+import { useResponsiveLayout } from '../src/hooks/useResponsiveLayout';
 
 // Import authentication components
 import LoadingScreen from '../src/components/LoadingScreen';
@@ -33,19 +33,13 @@ import { Boss, BossTier } from '../src/data/BossData';
 
 import { MythicTechColors, CharacterProgressionNames } from '../src/theme/MythicTechTheme';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-
-// Mobile-optimized dimensions for iPhone 16 Pro Max (430x932)
-const MOBILE_TOP_BAR_HEIGHT = 80;
-const MOBILE_BOTTOM_NAV_HEIGHT = 90; // Increased for better touch targets
-const GAME_AREA_HEIGHT = SCREEN_HEIGHT - MOBILE_TOP_BAR_HEIGHT - MOBILE_BOTTOM_NAV_HEIGHT;
-const NINJA_SIZE = 35; // Slightly smaller for mobile
-const ENEMY_SIZE = 30;
-
 type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'bosses' | 'zones' | 'equipment' | null;
 
 export default function NinjaIdleGame() {
   console.log('🔄 COMPONENT RENDER - NinjaIdleGame mounting/re-rendering');
+  
+  // Get responsive layout dimensions
+  const layout = useResponsiveLayout();
   
   // CRITICAL: ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
@@ -53,33 +47,34 @@ export default function NinjaIdleGame() {
   const { combatState, startCombat, stopCombat, triggerLevelUpExplosion, projectiles, updateNinjaPosition } = useCombat();
   const { currentZone, currentZoneLevel, getZoneProgress, recordEnemyKill } = useZone();
   
-  // Safe area insets hook (must be called before returns)
-  const insets = useSafeAreaInsets();
-  
   // All state hooks must be called unconditionally
   const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
   const [isLevelingUp, setIsLevelingUp] = useState(false);
   const [previousLevel, setPreviousLevel] = useState(1);
   const [lastExplosionTime, setLastExplosionTime] = useState(0);
   const [showAbilityDeck, setShowAbilityDeck] = useState(false);
-  const [totalKills, setTotalKills] = useState(0);
-  const [lastProcessedKill, setLastProcessedKill] = useState(0);
   
   // Boss battle state
   const [isBossBattleActive, setIsBossBattleActive] = useState(false);
   const [currentBossBattle, setCurrentBossBattle] = useState<{boss: Boss, tier: BossTier} | null>(null);
   const [previousOverlay, setPreviousOverlay] = useState<ActiveOverlay>(null);
   
-  // Ninja position and movement state
+  // Ninja position and movement state - responsive to screen size
   const [ninjaPosition, setNinjaPosition] = useState({
-    x: 50,
-    y: GAME_AREA_HEIGHT - NINJA_SIZE - 50
+    x: layout.screenWidth * 0.1, // 10% from left
+    y: layout.gameAreaHeight - layout.ninjaSize - layout.paddingXL
   });
-  const [lastMovementTime, setLastMovementTime] = useState(Date.now());
   const [isAttacking, setIsAttacking] = useState(false);
-  const [lastAttackTime, setLastAttackTime] = useState(0);
 
-  // TEMPORARILY FIX useCallback dependencies to stop infinite loop
+  // Update ninja position when layout changes (screen rotation, etc.)
+  useEffect(() => {
+    setNinjaPosition({
+      x: layout.screenWidth * 0.1,
+      y: layout.gameAreaHeight - layout.ninjaSize - layout.paddingXL
+    });
+  }, [layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, layout.paddingXL]);
+
+  // Level up explosion handler
   const handleLevelUpExplosion = useCallback(() => {
     const now = Date.now();
     const EXPLOSION_COOLDOWN = 5000;
@@ -98,7 +93,7 @@ export default function NinjaIdleGame() {
     setTimeout(() => {
       setIsLevelingUp(false);
     }, 1000);
-  }, []); // EMPTY DEPS TO PREVENT INFINITE LOOP
+  }, [lastExplosionTime, triggerLevelUpExplosion]);
 
   const startBossBattle = useCallback((boss: Boss, tier: BossTier) => {
     console.log('🐉 Starting boss battle:', boss.name, tier.name);
@@ -106,7 +101,7 @@ export default function NinjaIdleGame() {
     setActiveOverlay(null);
     setCurrentBossBattle({ boss, tier });
     setIsBossBattleActive(true);
-  }, []); // EMPTY DEPS TO PREVENT INFINITE LOOP
+  }, [activeOverlay]);
 
   const endBossBattle = useCallback(async (victory: boolean) => {
     console.log('🏆 Boss battle ended:', victory ? 'Victory' : 'Defeat');
@@ -128,7 +123,7 @@ export default function NinjaIdleGame() {
         : `${currentBossBattle.tier.name} was too powerful. Try again when stronger!`,
       [{ text: 'OK' }]
     );
-  }, []); // EMPTY DEPS TO PREVENT INFINITE LOOP
+  }, [currentBossBattle, previousOverlay]);
 
   const escapeBossBattle = useCallback(() => {
     console.log('🏃 Escaping boss battle');
@@ -140,7 +135,7 @@ export default function NinjaIdleGame() {
       setActiveOverlay('bosses');
     }
     setPreviousOverlay(null);
-  }, []); // EMPTY DEPS TO PREVENT INFINITE LOOP
+  }, [previousOverlay]);
 
   // Start combat automatically when component mounts
   useEffect(() => {
@@ -151,7 +146,7 @@ export default function NinjaIdleGame() {
       console.log('🛑 Cleaning up combat on unmount');
       stopCombat();
     };
-  }, []); // Empty array - run only once
+  }, [startCombat, stopCombat]);
   
   // Level up detection - safe to use gameState.ninja with optional chaining
   useEffect(() => {
@@ -161,7 +156,7 @@ export default function NinjaIdleGame() {
       handleLevelUpExplosion();
       setPreviousLevel(currentNinjaLevel);
     }
-  }, [gameState?.ninja?.level]); // Safe dependency - no function references
+  }, [gameState?.ninja?.level, previousLevel, handleLevelUpExplosion]);
   
   // Authentication flow - AFTER all hooks are declared
   console.log('🔍 MAIN COMPONENT - Authentication Check:');
@@ -196,7 +191,6 @@ export default function NinjaIdleGame() {
     isAuthenticated 
   });
   
-  // TEMPORARILY BYPASS ninja check to test layout
   // Create default ninja if missing to test UI
   const testNinja = ninja || {
     level: 1,
@@ -220,7 +214,7 @@ export default function NinjaIdleGame() {
   console.log('🎯 ABOUT TO RENDER FULL GAME UI - testNinja:', testNinja);
   console.log('🎯 PROGRESSION:', currentProgression);
 
-  // RESTORE FULL GAME INTERFACE - Step 1: Boss Battle Check
+  // Boss Battle Check
   if (isBossBattleActive && currentBossBattle) {
     return (
       <BossBattleScreen
@@ -233,10 +227,13 @@ export default function NinjaIdleGame() {
     );
   }
 
-  // MAIN GAME INTERFACE - Mobile Optimized
+  // Create responsive styles
+  const styles = createResponsiveStyles(layout);
+
+  // MAIN GAME INTERFACE - Fully Responsive
   return (
-    <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Top Bar - Mobile Optimized */}
+    <SafeAreaView style={styles.container}>
+      {/* Top Bar - Responsive */}
       <View style={styles.topBar}>
         <View style={styles.progressSection}>
           <Text style={styles.progressionTitle}>{currentProgression.title}</Text>
@@ -248,7 +245,7 @@ export default function NinjaIdleGame() {
                   style={[
                     styles.xpBarFill, 
                     { 
-                      width: `${(testNinja.experience / testNinja.experienceToNext) * 100}%` 
+                      width: `${Math.max(0, Math.min(100, (testNinja.experience / testNinja.experienceToNext) * 100))}%` 
                     }
                   ]} 
                 />
@@ -262,30 +259,22 @@ export default function NinjaIdleGame() {
         
         <View style={styles.resourcesContainer}>
           <View style={styles.resourceItem}>
-            <Ionicons name="diamond" size={14} color={MythicTechColors.neonBlue} />
+            <Ionicons name="diamond" size={layout.iconSize} color={MythicTechColors.neonBlue} />
             <Text style={styles.resourceValue}>{testNinja.gems}</Text>
           </View>
           <View style={styles.resourceItem}>
-            <Ionicons name="logo-bitcoin" size={14} color={MythicTechColors.cosmicGold} />
+            <Ionicons name="logo-bitcoin" size={layout.iconSize} color={MythicTechColors.cosmicGold} />
             <Text style={styles.resourceValue}>{testNinja.gold}</Text>
           </View>
           <View style={styles.resourceItem}>
-            <Ionicons name="flash" size={14} color={MythicTechColors.energyPurple} />
+            <Ionicons name="flash" size={layout.iconSize} color={MythicTechColors.energyPurple} />
             <Text style={styles.resourceValue}>{testNinja.skillPoints}</Text>
           </View>
         </View>
       </View>
 
-      {/* Game Area */}
+      {/* Game Area - Responsive */}
       <View style={styles.gameArea}>
-        {/* Combat UI - Skills/Abilities Bar */}
-        <View style={styles.combatContainer}>
-          <CombatUI onAbilityPress={(slotIndex) => {
-            console.log('🎯 Ability slot pressed:', slotIndex);
-            // TODO: Implement ability activation
-          }} />
-        </View>
-
         {/* Zone Info */}
         <View style={styles.zoneInfo}>
           <Text style={styles.zoneText}>
@@ -296,14 +285,28 @@ export default function NinjaIdleGame() {
           </Text>
         </View>
 
-        {/* Ninja Character */}
-        <View style={[styles.ninjaContainer, { left: ninjaPosition.x, top: ninjaPosition.y }]}>
-          <View style={[styles.ninja, isAttacking && styles.ninjaAttacking, isLevelingUp && styles.ninjaLevelUp]}>
-            <Text style={styles.ninjaEmoji}>🥷</Text>
+        {/* Ninja Character - Responsive */}
+        <View style={[styles.ninjaContainer, { 
+          left: ninjaPosition.x, 
+          top: ninjaPosition.y,
+          width: layout.ninjaSize,
+          height: layout.ninjaSize 
+        }]}>
+          <View style={[
+            styles.ninja, 
+            { 
+              width: layout.ninjaSize, 
+              height: layout.ninjaSize,
+              borderRadius: layout.ninjaSize / 2
+            },
+            isAttacking && styles.ninjaAttacking, 
+            isLevelingUp && styles.ninjaLevelUp
+          ]}>
+            <Text style={[styles.ninjaEmoji, { fontSize: layout.ninjaSize * 0.6 }]}>🥷</Text>
           </View>
         </View>
 
-        {/* Enemies */}
+        {/* Enemies - Responsive */}
         {(combatState.enemies || []).map(enemy => (
           enemy?.position ? (
             <View 
@@ -312,18 +315,27 @@ export default function NinjaIdleGame() {
                 styles.enemyContainer,
                 { 
                   left: enemy.position.x, 
-                  top: enemy.position.y 
+                  top: enemy.position.y,
+                  width: layout.enemySize,
+                  height: layout.enemySize + 8
                 }
               ]}
             >
-              <View style={styles.enemy}>
-                <Text style={styles.enemyEmoji}>👹</Text>
+              <View style={[
+                styles.enemy,
+                {
+                  width: layout.enemySize,
+                  height: layout.enemySize,
+                  borderRadius: layout.enemySize / 2
+                }
+              ]}>
+                <Text style={[styles.enemyEmoji, { fontSize: layout.enemySize * 0.6 }]}>👹</Text>
               </View>
-              <View style={styles.enemyHealthBar}>
+              <View style={[styles.enemyHealthBar, { width: layout.enemySize }]}>
                 <View 
                   style={[
                     styles.enemyHealthFill, 
-                    { width: `${(enemy.health / enemy.maxHealth) * 100}%` }
+                    { width: `${Math.max(0, Math.min(100, (enemy.health / enemy.maxHealth) * 100))}%` }
                   ]} 
                 />
               </View>
@@ -331,7 +343,7 @@ export default function NinjaIdleGame() {
           ) : null
         ))}
 
-        {/* Projectiles */}
+        {/* Projectiles - Responsive */}
         {(projectiles || []).map(projectile => (
           projectile?.position ? (
             <View
@@ -339,18 +351,27 @@ export default function NinjaIdleGame() {
               style={[
                 styles.projectile,
                 {
-                  left: projectile.position.x - 5,
-                  top: projectile.position.y - 5,
+                  left: projectile.position.x - layout.paddingXS,
+                  top: projectile.position.y - layout.paddingXS,
                 }
               ]}
             >
-              <Text style={styles.projectileText}>⭐</Text>
+              <Text style={[styles.projectileText, { fontSize: layout.smallFontSize }]}>⭐</Text>
             </View>
           ) : null
         ))}
+
+        {/* Combat UI - Responsive positioning */}
+        <CombatUI 
+          layout={layout}
+          onAbilityPress={(slotIndex) => {
+            console.log('🎯 Ability slot pressed:', slotIndex);
+            // TODO: Implement ability activation
+          }} 
+        />
       </View>
 
-      {/* Bottom Navigation - iPhone Optimized */}
+      {/* Bottom Navigation - Fully Responsive */}
       <View style={styles.bottomNavigation}>
         {[
           { key: 'stats', icon: 'stats-chart', label: 'Stats' },
@@ -369,11 +390,16 @@ export default function NinjaIdleGame() {
               setActiveOverlay(activeOverlay === key ? null : key as ActiveOverlay);
             }}
             activeOpacity={0.7}
-            hitSlop={{ top: 10, bottom: 10, left: 5, right: 5 }}
+            hitSlop={{ 
+              top: layout.paddingS, 
+              bottom: layout.paddingS, 
+              left: layout.paddingXS, 
+              right: layout.paddingXS 
+            }}
           >
             <Ionicons 
               name={icon as any} 
-              size={22} 
+              size={layout.iconSize} 
               color={activeOverlay === key ? MythicTechColors.neonBlue : MythicTechColors.voidSilver} 
             />
             <Text style={[
@@ -386,10 +412,10 @@ export default function NinjaIdleGame() {
         ))}
       </View>
 
-      {/* Overlays - Conditional rendering */}
+      {/* Overlays - Responsive */}
       {activeOverlay === 'stats' && (
         <View style={styles.overlayWrapper}>
-          <NinjaStatsOverlay onClose={() => setActiveOverlay(null)} />
+          <NinjaStatsOverlay onClose={() => setActiveOverlay(null)} layout={layout} />
         </View>
       )}
       {activeOverlay === 'equipment' && (
@@ -433,214 +459,206 @@ export default function NinjaIdleGame() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: MythicTechColors.darkSpace,
-  },
-  topBar: {
-    height: MOBILE_TOP_BAR_HEIGHT,
-    backgroundColor: MythicTechColors.deepVoid,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    borderBottomWidth: 2,
-    borderBottomColor: MythicTechColors.neonBlue + '44',
-  },
-  progressSection: {
-    flex: 1,
-    paddingRight: 8,
-  },
-  progressionTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: MythicTechColors.cosmicGold,
-    marginBottom: 2,
-  },
-  levelContainer: {
-    flexDirection: 'column',
-    gap: 4,
-  },
-  levelText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: MythicTechColors.neonBlue,
-  },
-  xpContainer: {
-    flex: 1,
-    minWidth: 120,
-  },
-  xpBarBackground: {
-    height: 6,
-    backgroundColor: MythicTechColors.voidSilver + '33',
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  xpBarFill: {
-    height: '100%',
-    backgroundColor: MythicTechColors.neonBlue,
-    borderRadius: 3,
-  },
-  xpText: {
-    fontSize: 9,
-    color: MythicTechColors.voidSilver,
-    marginTop: 2,
-  },
-  resourcesContainer: {
-    flexDirection: 'column',
-    gap: 4,
-    minWidth: 60,
-  },
-  resourceItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  resourceValue: {
-    fontSize: 11,
-    fontWeight: 'bold',
-    color: MythicTechColors.white,
-    minWidth: 35,
-  },
-  gameArea: {
-    flex: 1,
-    position: 'relative',
-    backgroundColor: MythicTechColors.darkSpace,
-  },
-  combatContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-  },
-  zoneInfo: {
-    position: 'absolute',
-    top: 10,
-    left: 12,
-    zIndex: 2,
-  },
-  zoneText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: MythicTechColors.neonBlue,
-  },
-  killsText: {
-    fontSize: 11,
-    color: MythicTechColors.voidSilver,
-  },
-  ninjaContainer: {
-    position: 'absolute',
-    width: NINJA_SIZE,
-    height: NINJA_SIZE,
-    zIndex: 10,
-  },
-  ninja: {
-    width: NINJA_SIZE,
-    height: NINJA_SIZE,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: MythicTechColors.neonBlue + '22',
-    borderRadius: NINJA_SIZE / 2,
-    borderWidth: 2,
-    borderColor: MythicTechColors.neonBlue,
-  },
-  ninjaAttacking: {
-    backgroundColor: MythicTechColors.energyPurple + '44',
-    borderColor: MythicTechColors.energyPurple,
-    transform: [{ scale: 1.2 }],
-  },
-  ninjaLevelUp: {
-    backgroundColor: MythicTechColors.cosmicGold + '44',
-    borderColor: MythicTechColors.cosmicGold,
-    transform: [{ scale: 1.3 }],
-  },
-  ninjaEmoji: {
-    fontSize: 20,
-  },
-  enemyContainer: {
-    position: 'absolute',
-    width: ENEMY_SIZE,
-    height: ENEMY_SIZE + 8,
-    zIndex: 5,
-  },
-  enemy: {
-    width: ENEMY_SIZE,
-    height: ENEMY_SIZE,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: MythicTechColors.crimsonRed + '22',
-    borderRadius: ENEMY_SIZE / 2,
-    borderWidth: 1,
-    borderColor: MythicTechColors.crimsonRed,
-  },
-  enemyEmoji: {
-    fontSize: 16,
-  },
-  enemyHealthBar: {
-    width: ENEMY_SIZE,
-    height: 4,
-    backgroundColor: MythicTechColors.voidSilver + '44',
-    borderRadius: 2,
-    marginTop: 2,
-  },
-  enemyHealthFill: {
-    height: '100%',
-    backgroundColor: MythicTechColors.crimsonRed,
-    borderRadius: 2,
-  },
-  projectile: {
-    position: 'absolute',
-    width: 10,
-    height: 10,
-    zIndex: 8,
-  },
-  projectileText: {
-    fontSize: 10,
-  },
-  bottomNavigation: {
-    height: MOBILE_BOTTOM_NAV_HEIGHT,
-    backgroundColor: MythicTechColors.deepVoid,
-    flexDirection: 'row',
-    borderTopWidth: 2,
-    borderTopColor: MythicTechColors.neonBlue + '44',
-    zIndex: 1000,
-    paddingBottom: 8,
-    elevation: 1000,
-  },
-  navButton: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 2,
-    pointerEvents: 'auto',
-    minHeight: 70, // Increased for better iPhone touch
-    borderRadius: 8,
-  },
-  navButtonActive: {
-    backgroundColor: MythicTechColors.neonBlue + '22',
-    borderRadius: 8,
-    transform: [{ scale: 1.05 }],
-  },
-  navButtonText: {
-    fontSize: 10,
-    color: MythicTechColors.voidSilver,
-    marginTop: 4,
-    textAlign: 'center',
-    fontWeight: '600',
-  },
-  navButtonTextActive: {
-    color: MythicTechColors.neonBlue,
-    fontWeight: 'bold',
-  },
-  overlayWrapper: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: MOBILE_BOTTOM_NAV_HEIGHT,
-    zIndex: 500,
-    pointerEvents: 'box-none',
-  },
-});
+// Create responsive styles function
+function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: MythicTechColors.darkSpace,
+    },
+    topBar: {
+      height: layout.topBarHeight,
+      backgroundColor: MythicTechColors.deepVoid,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: layout.paddingM,
+      paddingTop: layout.topInset * 0.5,
+      borderBottomWidth: 2,
+      borderBottomColor: MythicTechColors.neonBlue + '44',
+    },
+    progressSection: {
+      flex: 1,
+      paddingRight: layout.paddingS,
+    },
+    progressionTitle: {
+      fontSize: layout.smallFontSize,
+      fontWeight: 'bold',
+      color: MythicTechColors.cosmicGold,
+      marginBottom: layout.paddingXS * 0.5,
+    },
+    levelContainer: {
+      flexDirection: 'column',
+      gap: layout.paddingXS,
+    },
+    levelText: {
+      fontSize: layout.titleFontSize,
+      fontWeight: 'bold',
+      color: MythicTechColors.neonBlue,
+    },
+    xpContainer: {
+      flex: 1,
+      minWidth: layout.screenWidth * 0.3,
+    },
+    xpBarBackground: {
+      height: Math.max(4, layout.paddingXS * 0.75),
+      backgroundColor: MythicTechColors.voidSilver + '33',
+      borderRadius: layout.paddingXS * 0.375,
+      overflow: 'hidden',
+    },
+    xpBarFill: {
+      height: '100%',
+      backgroundColor: MythicTechColors.neonBlue,
+      borderRadius: layout.paddingXS * 0.375,
+    },
+    xpText: {
+      fontSize: layout.smallFontSize * 0.9,
+      color: MythicTechColors.voidSilver,
+      marginTop: layout.paddingXS * 0.5,
+    },
+    resourcesContainer: {
+      flexDirection: 'column',
+      gap: layout.paddingXS,
+      minWidth: layout.screenWidth * 0.15,
+    },
+    resourceItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: layout.paddingXS,
+    },
+    resourceValue: {
+      fontSize: layout.bodyFontSize,
+      fontWeight: 'bold',
+      color: MythicTechColors.white,
+      minWidth: layout.screenWidth * 0.1,
+    },
+    gameArea: {
+      flex: 1,
+      position: 'relative',
+      backgroundColor: MythicTechColors.darkSpace,
+    },
+    zoneInfo: {
+      position: 'absolute',
+      top: layout.paddingS,
+      left: layout.paddingM,
+      zIndex: 2,
+      backgroundColor: MythicTechColors.deepVoid + '88',
+      paddingHorizontal: layout.paddingS,
+      paddingVertical: layout.paddingXS,
+      borderRadius: layout.paddingS,
+    },
+    zoneText: {
+      fontSize: layout.titleFontSize,
+      fontWeight: 'bold',
+      color: MythicTechColors.neonBlue,
+    },
+    killsText: {
+      fontSize: layout.bodyFontSize,
+      color: MythicTechColors.voidSilver,
+    },
+    ninjaContainer: {
+      position: 'absolute',
+      zIndex: 10,
+    },
+    ninja: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: MythicTechColors.neonBlue + '22',
+      borderWidth: 2,
+      borderColor: MythicTechColors.neonBlue,
+    },
+    ninjaAttacking: {
+      backgroundColor: MythicTechColors.energyPurple + '44',
+      borderColor: MythicTechColors.energyPurple,
+      transform: [{ scale: 1.2 }],
+    },
+    ninjaLevelUp: {
+      backgroundColor: MythicTechColors.cosmicGold + '44',
+      borderColor: MythicTechColors.cosmicGold,
+      transform: [{ scale: 1.3 }],
+    },
+    ninjaEmoji: {
+      // fontSize is set dynamically
+    },
+    enemyContainer: {
+      position: 'absolute',
+      zIndex: 5,
+    },
+    enemy: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: MythicTechColors.crimsonRed + '22',
+      borderWidth: 1,
+      borderColor: MythicTechColors.crimsonRed,
+    },
+    enemyEmoji: {
+      // fontSize is set dynamically
+    },
+    enemyHealthBar: {
+      height: Math.max(3, layout.paddingXS * 0.5),
+      backgroundColor: MythicTechColors.voidSilver + '44',
+      borderRadius: layout.paddingXS * 0.25,
+      marginTop: layout.paddingXS * 0.5,
+    },
+    enemyHealthFill: {
+      height: '100%',
+      backgroundColor: MythicTechColors.crimsonRed,
+      borderRadius: layout.paddingXS * 0.25,
+    },
+    projectile: {
+      position: 'absolute',
+      width: layout.paddingS + layout.paddingXS,
+      height: layout.paddingS + layout.paddingXS,
+      zIndex: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    projectileText: {
+      // fontSize is set dynamically
+    },
+    bottomNavigation: {
+      height: layout.bottomNavHeight,
+      backgroundColor: MythicTechColors.deepVoid,
+      flexDirection: 'row',
+      borderTopWidth: 2,
+      borderTopColor: MythicTechColors.neonBlue + '44',
+      zIndex: 1000,
+      paddingBottom: layout.bottomInset * 0.5,
+      paddingHorizontal: layout.paddingXS,
+      elevation: 1000,
+    },
+    navButton: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: layout.paddingS,
+      paddingHorizontal: layout.paddingXS,
+      minHeight: layout.bottomNavHeight * 0.8,
+      borderRadius: layout.paddingS,
+      marginHorizontal: layout.paddingXS * 0.5,
+    },
+    navButtonActive: {
+      backgroundColor: MythicTechColors.neonBlue + '22',
+      transform: [{ scale: 1.05 }],
+    },
+    navButtonText: {
+      fontSize: layout.smallFontSize,
+      color: MythicTechColors.voidSilver,
+      marginTop: layout.paddingXS,
+      textAlign: 'center',
+      fontWeight: '600',
+    },
+    navButtonTextActive: {
+      color: MythicTechColors.neonBlue,
+      fontWeight: 'bold',
+    },
+    overlayWrapper: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: layout.bottomNavHeight,
+      zIndex: 500,
+      backgroundColor: MythicTechColors.darkSpace + 'cc',
+    },
+  });
+}
