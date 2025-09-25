@@ -249,6 +249,10 @@ async def get_game_events():
 # Include the router in the main app
 app.include_router(api_router)
 
+# Include authentication routes
+auth_router = create_auth_router(db)
+api_router.include_router(auth_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
