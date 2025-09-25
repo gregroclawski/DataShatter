@@ -197,14 +197,15 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isAuthenticated, user]);
 
-  // Auto-save when authenticated - Very frequent saves
+  // Auto-save when authenticated - VERY frequent saves to catch all progress
   useEffect(() => {
     if (!isAuthenticated) return;
 
     const interval = setInterval(() => {
+      console.log('⏰ Auto-save triggered - Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience);
       saveGameToServer();
       collectIdleRewards();
-    }, 5000); // Changed to 5 seconds for very frequent saves
+    }, 3000); // Changed to 3 seconds for maximum safety
 
     return () => clearInterval(interval);
   }, [isAuthenticated]);
