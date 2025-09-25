@@ -1,63 +1,84 @@
 <analysis>
-The AI engineer's work in this trajectory primarily focused on enhancing the Idle Ninja Online style mobile RPG by iteratively addressing user requests and bug reports. Initial efforts involved a major refactor of the UI overlay system from Modals to a unified View-based approach to resolve interaction issues. Subsequent development implemented a sophisticated boss battle system with countdowns, multiple lives, and WIN/DEFEAT popups, coupled with dynamic boss sizing and difficulty. Significant effort was then directed towards fixing persistent UI layering and combat zone overlap issues, culminating in a complete architectural shift for the BossBattleScreen to a root-level render. A major visual overhaul to a Mythic-Tech theme was initiated, transforming UI aesthetics and layout. The current task involves building a robust, secure authentication and server-side progression system, ensuring cheat prevention and scalability for an online idle RPG.
+The AI engineer's work primarily focused on transforming Idle Ninja Online from a local to an online RPG. Initial development involved re-architecting UI overlays and implementing a boss battle system, followed by a major visual overhaul to a Mythic-Tech theme. The core of this trajectory centered on building a secure authentication system, integrating server-side progression, and fixing numerous associated bugs. Key challenges included resolving persistent UI layering, managing Expo SDK updates leading to  errors, and a recurring critical bug where user progress was lost or overwritten by default game states. The engineer iteratively addressed issues like auto-login failures, a stuck loading screen, and ensuring frontend auto-saves correctly reached the backend, often facing regressions and needing deep debugging, including manual database checks. The latest work involves fixing Expo Go compatibility errors and tackling the persistent progress corruption.
 </analysis>
 
 <product_requirements>
-The application is an Idle Ninja Online style mobile RPG featuring an auto-fighting character against auto-spawning enemies across 50 zones, each with 5 levels and 1000 enemy defeats. Progression includes XP scaling to level 15000, 3 stat points per level, and a level-up explosion. The UI centers on a battle arena with bottom tabs for Stats, Abilities, Pets, Skills, Store, Raids, and Equipment, appearing as overlays. A tick-based combat engine is foundational. Implemented features include the 50-zone system, 25-level gear progression with material-based upgrades, and a Boss Battle System with 4 bosses across 5 tiers, daily tickets, and specific drops. Boss battles are enhanced with unique backgrounds, element-specific attacks, WIN/DEFEAT popups, 3 player lives with a 5-second respawn, and zone transitions. The UI has been visually transformed to a Mythic-Tech theme, featuring futuristic aesthetics, neon elements, and a compact top bar with vertically stacked resources. Enemies are cleared during boss fights, and bosses are 3x larger. Upcoming features include Companions, Idle/Offline Progression, and a full, secure server-side login and progression system.
+The application is an Idle Ninja Online style mobile RPG. It features an auto-fighting character across 50 zones (5 levels each, 1000 enemy defeats). Progression includes XP to level 15000, 3 stat points per level, and level-up explosions. The UI has a battle arena with bottom tabs for Stats, Abilities, Pets, Skills, Store, Raids, and Equipment, appearing as overlays. A tick-based combat engine is foundational. Implemented features include a 50-zone system, 25-level gear progression with material upgrades, and a Boss Battle System with 4 bosses across 5 tiers, daily tickets, and specific drops. Boss battles feature unique backgrounds, element-specific attacks, WIN/DEFEAT popups, 3 player lives with a 5-second respawn, and dynamic boss sizing/difficulty. The UI adopted a Mythic-Tech theme with futuristic aesthetics, neon elements, and a compact top bar with vertically stacked resources. Enemies are cleared during boss fights, and bosses are 3x larger. The current development includes a comprehensive, secure server-side login and progression system to prevent client-side cheating, with an upcoming need for Companions and Idle/Offline Progression.
 </product_requirements>
 
 <key_technical_concepts>
--   **Expo & Expo Router**: Mobile app framework with file-based routing.
--   **React Native**: Core UI components, styling via .
--   **Zustand**: State management (, , , etc.).
--   **UI Layering**: , ,  for complex overlay management.
--   **Component Re-architecture**: Moving state and components to root for full-screen overlays.
--   **Game Logic**: Tick-based combat, XP calculation, enemy spawning, boss mechanics.
+- **Expo & Expo Router**: Mobile app framework with file-based routing.
+- **React Native**: Core UI components, styling via , , .
+- **FastAPI**: Python backend framework.
+- **MongoDB**: Database for persistent storage.
+- **Zustand**: State management (, , , ).
+- **JWT Authentication**: Secure token-based authentication.
+- **CORS**: Cross-Origin Resource Sharing for API security.
+- **AsyncStorage/localStorage**: Client-side storage for session persistence.
+- **UI Layering**: , ,  for complex overlays.
+- **Game Logic**: Tick-based combat, XP, enemy spawning, boss mechanics, server-authoritative progression.
 </key_technical_concepts>
 
 <code_architecture>
 **Directory Structure:**
 
 
+-   : Main FastAPI backend application.
+    -   **Importance**: Handles API routing, database connection, and now authentication logic and game save/load operations.
+    -   **Changes**: Integrated all authentication logic (user models, registration, login, session check) directly into this file, replacing separate  and . Modified  and  models to include . Updated  endpoint to handle  and . Fixed CORS configuration to allow credentials from specific origins. Added detailed logging for save/load operations. Fixed datetime handling for  in  model.
 -   : Main game screen and entry point.
-    -   **Importance**: Renders the game world, handles active overlays, bottom navigation, and character progression.
-    -   **Changes**: Refactored  style. Integrated global  state and / handlers. Conditionally renders  at the root level. Updated character progression display, main container background, XP bar, , top bar, and resources layout to Mythic-Tech theme (neon colors, vertical HP/Gold/Gems stack). Added debug logging and  import.
--   : Dedicated screen for boss fights.
-    -   **Importance**: Displays countdown, boss combat interface, player lives, WIN/DEFEAT popups, and handles boss attack animations/damage.
-    -   **Changes**: Completely rewritten to include 3 lives, 5s respawn, WIN/DEFEAT popups, element-specific attacks, and visual elements. Adjusted , background transparency, and pointer events for proper overlay behavior. Implemented boss attack logic and debug logging. Updated styles for UI elements (, , ).
--   : UI for Boss Battles.
-    -   **Importance**: Displays available bosses and initiates battles.
-    -   **Changes**: Modified to pass  callback to  and removed internal  state and  rendering. Cleaned up associated logic and import.
--   : Provides combat engine and state.
-    -   **Importance**: Manages enemy spawning, combat logic, and XP.
-    -   **Changes**: Updated  to match UI adjustments. Modified  logic to prevent normal enemy spawns during active boss battles. Updated  to clear existing enemies before spawning the boss.
--   : Defines boss data.
-    -   **Importance**: Stores details about each boss, tiers, and associated rewards.
-    -   **Changes**: Boss health and damage multipliers were increased by 10x, then rolled back to original values due to user feedback.
--   : UI for Combat.
-    -   **Importance**: Displays abilities bar and synergy container.
-    -   **Changes**: Reduced padding, ability slot size (50% smaller), icon size, and margins for a more compact design. Updated styling to reflect the Mythic-Tech theme with neon glow effects.
--    (CREATED): Defines new theme constants.
-    -   **Importance**: Centralizes theme-related styles for the Mythic-Tech Idle RPG aesthetic.
+    -   **Importance**: Renders the game world, active overlays, bottom navigation, and character progression. Controls the main app flow between authentication and game.
+    -   **Changes**: Refactored  style. Integrated global  state and / handlers. Conditionally renders  at the root level. Updated character progression display, main container background, XP bar, , top bar, and resources layout to Mythic-Tech theme. Added debug logging and  import. Modified to show user info and a logout button (later removed).  and   states now control whether  or the main game is rendered. Logout button and modal removed per user request.
+-   : Root layout for Expo Router.
+    -   **Importance**: Defines global navigation structure and wraps the app with context providers.
+    -   **Changes**: Integrated  and . Configured Stack navigation for , , and . Simplified navigation to resolve  errors by removing non-existent routes. Implemented  to control splash screen behavior. Removed  imports and logic.
+-    (CREATED/MODIFIED): Manages user authentication state.
+    -   **Importance**: Provides , , , , ,  functions, and handles session persistence.
+    -   **Changes**: Implemented , , ,  functions using  (with  fallback for web) to store user tokens. Manages  state. Initially,  was aggressively called on session validation failure, and  was dependent on both  and  states. Modified  to be less aggressive about logging out on validation failure. Implemented local storage of login credentials (email/password) for auto-login. Added detailed debugging for  and  states during login. Added platform-specific  /  usage.
+-   : Provides game state and logic.
+    -   **Importance**: Manages all game data (ninja stats, inventory, resources, zone progress) and handles saving/loading.
+    -   **Changes**: Integrated  and  to communicate with the backend API. Manages  state. Initially reset  to  if not authenticated, causing progress loss (fixed). Implemented  for event-driven saves. Added  flag to prevent  from overwriting real progress. Initialized  to  by default, only setting to  when actively loading. Imported .
+-   : Manages zone progression.
+    -   **Importance**: Tracks current zone, level, and kills.
+    -   **Changes**: Updated to ensure  is included in game saves via .
+-    (CREATED/MODIFIED): Custom themed loading screen.
+    -   **Importance**: Displays a visual loading experience during app startup and data fetching.
+    -   **Changes**: Implemented Mythic-Tech theme with animated orb, gradient, and particles. Displays Loading your ninja profile... message.
+-    (CREATED): Custom modal for logout confirmation.
+    -   **Importance**: Provides a user-friendly confirmation dialog for logout.
+    -   **Changes**: Implemented a React Native  component with themed styling for logout confirmation, replacing .
+-   : UI for in-game store.
+    -   **Importance**: Allows users to purchase items and gems.
+    -   **Changes**: Implemented simulated purchase process with fake authentication. Initially used  which caused issues; later simplified the purchase flow and removed problematic async calls within Alert. Replaced  with direct calls, then added  to ensure gem purchases trigger immediate saves. Fixed duplicate  declaration.
+-   : Expo app configuration file.
+    -   **Importance**: Defines app name, icon, splash screen, and plugins.
+    -   **Changes**: Modified splash screen configuration to disable default Expo splash or use custom themed settings. Added  to plugins.
+-    (CREATED): Babel configuration for React Native Reanimated.
+    -   **Importance**: Required for React Native Reanimated to properly transform code.
+    -   **Changes**: Created to include .
 </code_architecture>
 
 <pending_tasks>
--   **Backend Persistence**: Implement backend persistence for all new systems (Zones, Equipment, Bosses, Companions).
+-   **Backend Persistence**: Ensure all game systems (Companions, etc.) are properly integrated with server-side save/load mechanisms.
 -   **Companions**: Implement battle and support pets with leveling and abilities.
--   **Idle/Offline Progression**: Simulate combat mathematically while offline for accumulated rewards.
--   **Login & Server-side Progression**: Implement account creation, authentication, secure player profile fetching, and server-authoritative game logic to prevent cheating.
+-   **Idle/Offline Progression**: Simulate combat mathematically while offline for accumulated rewards, integrating with the new server-side progression.
+-   **PlayFab Integration**: Evaluate and potentially integrate PlayFab as a game backend service.
+-   **Frontend Expo Go Compatibility**: Fully resolve the 3 errors reported in Expo Go, potentially related to ,  import, and  issues.
+-   **Progress Persistence Reliability**: Investigate and fix the recurring issue of user progress being overwritten by default Level 1 data.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer initiated the implementation of a comprehensive login and server-side progression system for the Mythic-Tech Idle RPG. This is a significant shift, transforming the game from a local experience to a secure online RPG. The user explicitly requested a security-first approach to prevent client-side cheating.
+Immediately before this summary request, the AI engineer was deep-diving into persistent critical bugs: the user's game progress being overwritten by default data (reverting from Level 18 to Level 1) and continuous login prompts.
 
-The AI engineer has:
-1.  **Acknowledged** the user's detailed requirements for account creation (email/password, third-party logins), secure credential storage (hashed passwords), session token generation, and server-side player profile fetching (level, items, stats, idle progress).
-2.  **Understood** that all critical gameplay logic (idle progression, combat math, real-time events, currency transactions) must be calculated on the server to prevent exploits.
-3.  **Confirmed** a security-first approach and outlined plans for comprehensive server-side validation.
-4.  **Completed** an internal thought process for creating a comprehensive integration playbook for a secure system, which includes a basic JWT authentication flow blueprint.
+The debugging process involved:
+1.  **Backend Verification**: Confirmed that the database sometimes contained real user progress (e.g., Level 8 or Level 14/18 at different points), but also numerous Level 1 default saves, indicating a race condition or aggressive overwrite. Manual database checks showed no recent saves for the actual user account, despite frontend logs indicating save requests.
+2.  **Frontend Auto-Save Investigation**: Discovered that the  flag in  was often  even after a successful login, preventing the auto-save  from running. This led to  reaching the backend for authenticated users.
+3.  **Authentication State Debugging**: Added extensive logging to  to trace  and  states during login and session checks, attempting to understand why  was .
+4.  **Expo Go Compatibility**: The user reported 3 errors in the Expo Go app. The AI identified  and  object access as potential web-specific issues that don't work on mobile. Initial fixes included platform-specific  usage. Further general fixes for Expo Go compatibility (e.g.,  import,  for animations) were attempted.
+
+The current state is that user progress is still being lost, and the system is regressing to saving default Level 1 states, indicating that the core persistence bug is still active despite numerous targeted fixes. The Expo Go errors are also unconfirmed as fixed due to the overarching persistence issue.
 </current_work>
 
 <optional_next_step>
-Implement the backend components for user registration and login endpoints with secure password hashing.
+Address the recurring progress loss by systematically debugging the  state in  and  to ensure auto-saves trigger for logged-in users.
 </optional_next_step>

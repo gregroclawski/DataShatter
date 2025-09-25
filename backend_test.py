@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 # Configuration
-BASE_URL = "https://secure-ninja-rpg.preview.emergentagent.com/api"
+BASE_URL = "https://mythic-ninja-save.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "ninja.master.test@example.com"
 TEST_USER_PASSWORD = "SecureNinja123!"
 TEST_USER_NAME = "Ninja Master Tester"
