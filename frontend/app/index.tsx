@@ -1,107 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../src/contexts/AuthContext';
-import { useGame } from '../src/contexts/GameContext';
-import { useCombat } from '../src/contexts/CombatContext';
-import { useZone } from '../src/contexts/ZoneContext';
-
-// Import authentication components
-import LoadingScreen from '../src/components/LoadingScreen';
-import AuthScreen from '../src/components/AuthScreen';
-
-// Import components for overlays
-import NinjaStatsOverlay from '../src/components/NinjaStatsOverlay';
-import PetsOverlay from '../src/components/PetsOverlay';
-import SkillsOverlay from '../src/components/SkillsOverlay';
-import StoreOverlay from '../src/components/StoreOverlay';
-import { EnemiesZonesOverlay } from '../src/components/EnemiesZonesOverlay';
-import { EquipmentOverlay } from '../src/components/EquipmentOverlay';
-import { BossOverlay } from '../src/components/BossOverlay';
-import { BossBattleScreen } from '../src/components/BossBattleScreen';
-import CombatUI from '../src/components/CombatUI';
-import AbilityDeckOverlay from '../src/components/AbilityDeckOverlay';
-import { Boss, BossTier } from '../src/data/BossData';
-
-import { MythicTechColors, CharacterProgressionNames } from '../src/theme/MythicTechTheme';
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 140; // Smaller top bar (20% reduction) + compact abilities bar
-const NINJA_SIZE = 40;
-const ENEMY_SIZE = 35;
-
-type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'bosses' | 'zones' | 'equipment' | null;
-
-// Boss rendering helper functions
-const getBossIcon = (element?: string): any => {
-  switch (element?.toLowerCase()) {
-    case 'fire': return 'flame';
-    case 'ice': return 'snow';
-    case 'shadow': return 'moon';
-    case 'earth': return 'earth';
-    default: return 'skull';
-  }
-};
-
-const getBossColor = (element?: string): string => {
-  switch (element?.toLowerCase()) {
-    case 'fire': return '#dc2626';
-    case 'ice': return '#2563eb';
-    case 'shadow': return '#6b7280';
-    case 'earth': return '#65a30d';
-    default: return '#ef4444';
-  }
-};
-
-const getBossHealthColor = (element?: string): string => {
-  switch (element?.toLowerCase()) {
-    case 'fire': return '#f97316';
-    case 'ice': return '#3b82f6';
-    case 'shadow': return '#8b5cf6';
-    case 'earth': return '#84cc16';
-    default: return '#10b981';
-  }
-};
+import React from 'react';
+import { View, Text } from 'react-native';
 
 export default function NinjaIdleGame() {
-  // CRITICAL: ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
-  const { user, isLoading: authLoading, isAuthenticated } = useAuth();
-  const { gameState, isLoading: gameLoading, updateNinja } = useGame();
+  console.log('🔍 SIMPLE COMPONENT RENDERED!');
   
-  // Debug logging
-  console.log('🔍 MAIN COMPONENT RENDER:');
-  console.log('  - authLoading:', authLoading);
-  console.log('  - isAuthenticated:', isAuthenticated);
-  console.log('  - gameLoading:', gameLoading);
-  
-  // SIMPLE CONDITIONAL RENDERING FOR DEBUGGING
-  if (authLoading) {
-    console.log('✅ Showing auth loading screen');
-    return <LoadingScreen message="Initializing authentication..." />;
-  }
-
-  if (!isAuthenticated) {
-    console.log('✅ Showing auth screen');
-    return <AuthScreen />;
-  }
-
-  if (gameLoading) {
-    console.log('✅ Showing game loading screen');
-    return <LoadingScreen message="Loading your ninja profile..." />;
-  }
-  
-  console.log('✅ Showing main game (this should not happen yet)');
   return (
     <View style={{ flex: 1, backgroundColor: '#0a0a0f', justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ color: 'white', fontSize: 24 }}>Game Component - Should not see this yet!</Text>
+      <Text style={{ color: 'white', fontSize: 24 }}>Simple Test Component</Text>
     </View>
   );
 }
