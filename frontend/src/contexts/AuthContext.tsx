@@ -59,16 +59,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       let storedPassword = null;
       
       try {
-        // Try AsyncStorage first
+        // Try AsyncStorage first (mobile)
         storedEmail = await AsyncStorage.getItem('login_email');
         storedPassword = await AsyncStorage.getItem('login_password');
+        console.log('✅ Using AsyncStorage for mobile');
       } catch (asyncError) {
-        console.log('AsyncStorage failed, trying localStorage:', asyncError);
-        // Fallback to localStorage for web environment
+        console.log('AsyncStorage failed:', asyncError);
+        // Only use localStorage if in web environment
         if (typeof window !== 'undefined' && window.localStorage) {
-          storedEmail = window.localStorage.getItem('login_email');
-          storedPassword = window.localStorage.getItem('login_password');
-          console.log('Using localStorage for credential storage');
+          try {
+            storedEmail = window.localStorage.getItem('login_email');
+            storedPassword = window.localStorage.getItem('login_password');
+            console.log('✅ Using localStorage fallback for web');
+          } catch (localError) {
+            console.error('localStorage also failed:', localError);
+          }
+        } else {
+          console.log('📱 Mobile environment - no localStorage available');
         }
       }
       
