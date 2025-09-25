@@ -616,6 +616,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Legacy functions for backward compatibility
+  const saveGame = () => saveGameToServer();
+  const loadGame = () => loadGameFromServer();
+
   const value: GameContextType = {
     gameState,
     isLoading,
@@ -635,6 +639,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     collectIdleRewards,
     saveGame,
     loadGame,
+    updateZoneProgress,
   };
 
   return (
