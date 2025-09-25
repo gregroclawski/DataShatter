@@ -97,7 +97,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   const [lastExplosionTime, setLastExplosionTime] = useState<number>(0);
   // Initialize ninja position to match game's starting position (bottom left corner)
   const SCREEN_WIDTH = 390;
-  const GAME_AREA_HEIGHT = 844 - 250;
+  const GAME_AREA_HEIGHT = 844 - 200; // Updated to match smaller UI
   const NINJA_SIZE = 40;
   const [ninjaPosition, setNinjaPosition] = useState<{x: number, y: number}>({ 
     x: 50, 
@@ -214,7 +214,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     
     // Ninja position (center of screen)
     const SCREEN_WIDTH = 390;
-    const GAME_AREA_HEIGHT = 844 - 250;
+    const GAME_AREA_HEIGHT = 844 - 200; // Updated to match smaller UI
     const ninjaX = SCREEN_WIDTH / 2;
     const ninjaY = GAME_AREA_HEIGHT / 2;
     
@@ -321,7 +321,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   // Create projectile that will deal damage when it hits
   const createProjectile = (targetEnemy: CombatEnemy, damage: number, ninjaPos?: {x: number, y: number}) => {
     const SCREEN_WIDTH = 390;
-    const GAME_AREA_HEIGHT = 844 - 250;
+    const GAME_AREA_HEIGHT = 844 - 200; // Updated to match smaller UI
     const NINJA_SIZE = 40;
     
     // Use provided ninja position or default to center
@@ -356,7 +356,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   const spawnTestEnemy = (state: CombatState) => {
     // Get screen dimensions for proper positioning
     const SCREEN_WIDTH = 390; // Mobile width
-    const GAME_AREA_HEIGHT = 844 - 250; // Screen height minus bottom tabs
+    const GAME_AREA_HEIGHT = 844 - 200; // Updated to match smaller UI // Screen height minus bottom tabs
     const ENEMY_SIZE = 35;
     
     // Random position within game area bounds (like ninja positioning)
@@ -470,7 +470,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   // Enhanced enemy spawning function
   const spawnEnemy = (position?: { x: number; y: number }): CombatEnemy => {
     const SCREEN_WIDTH = 390;
-    const GAME_AREA_HEIGHT = 844 - 250;
+    const GAME_AREA_HEIGHT = 844 - 200; // Updated to match smaller UI
     const ENEMY_SIZE = 35;
     
     // Use provided position or generate random position
