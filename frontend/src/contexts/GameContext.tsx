@@ -199,16 +199,26 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   // Auto-save when authenticated - VERY frequent saves to catch all progress
   useEffect(() => {
-    if (!isAuthenticated) return;
+    console.log('🔍 Auto-save useEffect - isAuthenticated:', isAuthenticated, 'user:', !!user);
+    
+    if (!isAuthenticated) {
+      console.log('❌ Auto-save NOT running - user not authenticated');
+      return;
+    }
 
+    console.log('✅ Starting auto-save interval for authenticated user');
+    
     const interval = setInterval(() => {
-      console.log('⏰ Auto-save triggered - Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience);
+      console.log('⏰ Auto-save triggered - Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience, 'Auth:', isAuthenticated);
       saveGameToServer();
       collectIdleRewards();
     }, 3000); // Changed to 3 seconds for maximum safety
 
-    return () => clearInterval(interval);
-  }, [isAuthenticated]);
+    return () => {
+      console.log('🛑 Auto-save interval cleared');
+      clearInterval(interval);
+    };
+  }, [isAuthenticated, user, gameState.ninja.level]); // Add dependencies to ensure it runs when user logs in
 
   // Event-driven saves - Save on important game events
   const saveOnEvent = useCallback((eventType: string) => {
