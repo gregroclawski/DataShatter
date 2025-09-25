@@ -194,17 +194,25 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isAuthenticated, user]);
 
-  // Auto-save when authenticated
+  // Auto-save when authenticated - More frequent saves
   useEffect(() => {
     if (!isAuthenticated) return;
 
     const interval = setInterval(() => {
       saveGameToServer();
       collectIdleRewards();
-    }, 30000); // Auto-save every 30 seconds
+    }, 10000); // Changed to 10 seconds for more frequent saves
 
     return () => clearInterval(interval);
   }, [isAuthenticated]); // Remove gameState dependency to prevent constant restarts
+
+  // Event-driven saves - Save on important game events
+  const saveOnEvent = useCallback((eventType: string) => {
+    if (isAuthenticated) {
+      console.log(`💾 Event-driven save triggered: ${eventType}`);
+      saveGameToServer();
+    }
+  }, [isAuthenticated]);
 
   // Calculate experience required for next level (incremental up to level 15000)
   const calculateExpForLevel = (level: number): number => {
