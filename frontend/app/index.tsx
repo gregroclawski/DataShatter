@@ -210,18 +210,7 @@ export default function NinjaIdleGame() {
 
   const currentProgression = testNinja ? getCharacterProgression(testNinja.level) : CharacterProgressionNames[1];
 
-  if (isBossBattleActive && currentBossBattle) {
-    return (
-      <BossBattleScreen
-        boss={currentBossBattle.boss}
-        tier={currentBossBattle.tier}
-        onVictory={() => endBossBattle(true)}
-        onDefeat={() => endBossBattle(false)}
-        onEscape={escapeBossBattle}
-      />
-    );
-  }
-
+  // SIMPLIFIED RETURN FOR TESTING
   return (
     <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' }}>
       <Text style={{ color: 'white', fontSize: 24 }}>🔴 MINIMAL TEST UI</Text>
