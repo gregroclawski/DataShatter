@@ -88,6 +88,7 @@ export interface GameState {
 
 interface GameContextType {
   gameState: GameState;
+  isLoading: boolean;
   updateNinja: (updates: Partial<NinjaStats>) => void;
   addShuriken: (shuriken: Shuriken) => void;
   equipShuriken: (id: string) => void;
