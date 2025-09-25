@@ -145,6 +145,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   // Combat tick handler
   const handleCombatTick = () => {
     console.log('🔄 Combat tick running...');
+    
+    let enemiesToKill: CombatEnemy[] = []; // Track enemies to kill outside of setState
+    
     setCombatState(prev => {
       const newTick = combatEngine.getCurrentTick();
       const newState = { ...prev, currentTick: newTick };
@@ -177,11 +180,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         }
       }
 
-      // Handle dead enemies and reward XP
+      // Identify dead enemies but DON'T handle kills inside setState
       const deadEnemies = newState.enemies.filter(enemy => enemy.health <= 0);
-      deadEnemies.forEach(enemy => {
-        handleEnemyKill(enemy);
-      });
+      enemiesToKill = [...deadEnemies]; // Store for processing outside setState
       
       // Remove dead enemies
       newState.enemies = newState.enemies.filter(enemy => enemy.health > 0);
@@ -208,6 +209,11 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       }
 
       return newState;
+    });
+    
+    // HANDLE ENEMY KILLS OUTSIDE OF setCombatState TO AVOID CROSS-COMPONENT ISSUES
+    enemiesToKill.forEach(enemy => {
+      handleEnemyKill(enemy);
     });
   };
 
