@@ -138,8 +138,29 @@ export default function NinjaIdleGame() {
     setPreviousOverlay(null);
   }, [previousOverlay]);
 
-  // TEMPORARILY DISABLED ALL useEffect HOOKS TO PREVENT INFINITE LOOPS
-  // TODO: Re-enable these after fixing the infinite loop issue
+  // ESSENTIAL useEffect hooks - carefully added back without infinite loop issues
+  
+  // Start combat once when component mounts (no dependencies to prevent loop)
+  useEffect(() => {
+    console.log('🎮 Starting combat on component mount');
+    startCombat();
+    
+    return () => {
+      console.log('🛑 Cleaning up combat on unmount');
+      stopCombat();
+    };
+  }, []); // Empty array - run only once
+  
+  // Level up detection (safe dependencies)
+  useEffect(() => {
+    if (ninja && ninja.level > previousLevel) {
+      console.log('🚀 Level up detected!', previousLevel, '->', ninja.level);
+      handleLevelUpExplosion();
+      setPreviousLevel(ninja.level);
+    }
+  }, [ninja?.level]); // Only depend on ninja level, not the callback
+  
+  // TEMPORARILY DISABLED OTHER EFFECTS TO PREVENT LOOPS
   
   // Authentication flow - AFTER all hooks are declared
   if (authLoading) {
