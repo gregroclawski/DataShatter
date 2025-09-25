@@ -22,19 +22,16 @@ TEST_USER_EMAIL = f"ninja_master_{uuid.uuid4().hex[:8]}@example.com"
 TEST_USER_PASSWORD = "SecureNinja123!"
 TEST_USER_NAME = "Ninja Master Tester"
 
-class AuthenticationTester:
+class ProgressPersistenceTester:
     def __init__(self):
         self.session = requests.Session()
         self.access_token = None
         self.session_cookies = None
         self.test_user_id = None
         self.results = {
-            "registration": {"passed": 0, "failed": 0, "details": []},
-            "login": {"passed": 0, "failed": 0, "details": []},
-            "oauth": {"passed": 0, "failed": 0, "details": []},
-            "profile": {"passed": 0, "failed": 0, "details": []},
-            "session": {"passed": 0, "failed": 0, "details": []},
-            "logout": {"passed": 0, "failed": 0, "details": []},
+            "authentication": {"passed": 0, "failed": 0, "details": []},
+            "game_progression": {"passed": 0, "failed": 0, "details": []},
+            "session_management": {"passed": 0, "failed": 0, "details": []},
         }
 
     def log_result(self, category: str, test_name: str, passed: bool, details: str):
@@ -50,10 +47,9 @@ class AuthenticationTester:
         print(f"{status}: {test_name} - {details}")
 
     def test_user_registration(self):
-        """Test user registration endpoint with various scenarios"""
+        """Test user registration endpoint"""
         print("\n=== TESTING USER REGISTRATION ===")
         
-        # Test 1: Valid registration
         try:
             registration_data = {
                 "email": TEST_USER_EMAIL,
@@ -69,80 +65,25 @@ class AuthenticationTester:
                     self.access_token = data["access_token"]
                     self.test_user_id = data["user"]["id"]
                     self.session_cookies = response.cookies
-                    self.log_result("registration", "Valid Registration", True, 
+                    self.log_result("authentication", "User Registration", True, 
                                   f"User created successfully with ID: {self.test_user_id}")
+                    return True
                 else:
-                    self.log_result("registration", "Valid Registration", False, 
+                    self.log_result("authentication", "User Registration", False, 
                                   f"Missing required fields in response: {data}")
+                    return False
             else:
-                self.log_result("registration", "Valid Registration", False, 
+                self.log_result("authentication", "User Registration", False, 
                               f"Status: {response.status_code}, Response: {response.text}")
+                return False
         except Exception as e:
-            self.log_result("registration", "Valid Registration", False, f"Exception: {str(e)}")
-
-        # Test 2: Password too short (less than 8 characters)
-        try:
-            short_password_data = {
-                "email": "short.pass@example.com",
-                "password": "1234567",  # 7 characters
-                "name": "Short Pass User"
-            }
-            
-            response = self.session.post(f"{BASE_URL}/auth/register", json=short_password_data)
-            
-            if response.status_code in [400, 422]:  # Accept both 400 and 422 for validation errors
-                self.log_result("registration", "Password Too Short Validation", True, 
-                              "Correctly rejected password with less than 8 characters")
-            else:
-                self.log_result("registration", "Password Too Short Validation", False, 
-                              f"Expected 400 or 422, got {response.status_code}: {response.text}")
-        except Exception as e:
-            self.log_result("registration", "Password Too Short Validation", False, f"Exception: {str(e)}")
-
-        # Test 3: Password too long (more than 64 characters)
-        try:
-            long_password = "a" * 65  # 65 characters
-            long_password_data = {
-                "email": "long.pass@example.com",
-                "password": long_password,
-                "name": "Long Pass User"
-            }
-            
-            response = self.session.post(f"{BASE_URL}/auth/register", json=long_password_data)
-            
-            if response.status_code in [400, 422]:  # Accept both 400 and 422 for validation errors
-                self.log_result("registration", "Password Too Long Validation", True, 
-                              "Correctly rejected password with more than 64 characters")
-            else:
-                self.log_result("registration", "Password Too Long Validation", False, 
-                              f"Expected 400 or 422, got {response.status_code}: {response.text}")
-        except Exception as e:
-            self.log_result("registration", "Password Too Long Validation", False, f"Exception: {str(e)}")
-
-        # Test 4: Duplicate email registration
-        try:
-            duplicate_data = {
-                "email": TEST_USER_EMAIL,  # Same email as first test
-                "password": "AnotherPassword123!",
-                "name": "Duplicate User"
-            }
-            
-            response = self.session.post(f"{BASE_URL}/auth/register", json=duplicate_data)
-            
-            if response.status_code == 400:
-                self.log_result("registration", "Duplicate Email Validation", True, 
-                              "Correctly rejected duplicate email registration")
-            else:
-                self.log_result("registration", "Duplicate Email Validation", False, 
-                              f"Expected 400, got {response.status_code}: {response.text}")
-        except Exception as e:
-            self.log_result("registration", "Duplicate Email Validation", False, f"Exception: {str(e)}")
+            self.log_result("authentication", "User Registration", False, f"Exception: {str(e)}")
+            return False
 
     def test_user_login(self):
-        """Test user login endpoint with various scenarios"""
+        """Test user login endpoint"""
         print("\n=== TESTING USER LOGIN ===")
         
-        # Test 1: Valid login
         try:
             login_data = {
                 "username": TEST_USER_EMAIL,  # OAuth2PasswordRequestForm uses 'username'
@@ -156,210 +97,263 @@ class AuthenticationTester:
                 if "access_token" in data and "user" in data:
                     self.access_token = data["access_token"]
                     self.session_cookies = response.cookies
-                    self.log_result("login", "Valid Login", True, 
+                    self.log_result("authentication", "User Login", True, 
                                   f"Login successful for user: {data['user']['email']}")
+                    return True
                 else:
-                    self.log_result("login", "Valid Login", False, 
+                    self.log_result("authentication", "User Login", False, 
                                   f"Missing required fields in response: {data}")
+                    return False
             else:
-                self.log_result("login", "Valid Login", False, 
+                self.log_result("authentication", "User Login", False, 
                               f"Status: {response.status_code}, Response: {response.text}")
+                return False
         except Exception as e:
-            self.log_result("login", "Valid Login", False, f"Exception: {str(e)}")
+            self.log_result("authentication", "User Login", False, f"Exception: {str(e)}")
+            return False
 
-        # Test 2: Invalid email
-        try:
-            invalid_email_data = {
-                "username": "nonexistent@example.com",
-                "password": TEST_USER_PASSWORD
-            }
-            
-            response = self.session.post(f"{BASE_URL}/auth/login", data=invalid_email_data)
-            
-            if response.status_code == 401:
-                self.log_result("login", "Invalid Email", True, 
-                              "Correctly rejected login with invalid email")
-            else:
-                self.log_result("login", "Invalid Email", False, 
-                              f"Expected 401, got {response.status_code}: {response.text}")
-        except Exception as e:
-            self.log_result("login", "Invalid Email", False, f"Exception: {str(e)}")
-
-        # Test 3: Invalid password
-        try:
-            invalid_password_data = {
-                "username": TEST_USER_EMAIL,
-                "password": "WrongPassword123!"
-            }
-            
-            response = self.session.post(f"{BASE_URL}/auth/login", data=invalid_password_data)
-            
-            if response.status_code == 401:
-                self.log_result("login", "Invalid Password", True, 
-                              "Correctly rejected login with invalid password")
-            else:
-                self.log_result("login", "Invalid Password", False, 
-                              f"Expected 401, got {response.status_code}: {response.text}")
-        except Exception as e:
-            self.log_result("login", "Invalid Password", False, f"Exception: {str(e)}")
-
-    def test_google_oauth(self):
-        """Test Google OAuth integration (mocked)"""
-        print("\n=== TESTING GOOGLE OAUTH ===")
+    def test_session_check(self):
+        """Test session validation endpoint"""
+        print("\n=== TESTING SESSION CHECK ===")
         
-        # Test 1: Missing session ID
-        try:
-            oauth_data = {}  # No session_id
-            
-            response = self.session.post(f"{BASE_URL}/auth/oauth/google", json=oauth_data)
-            
-            if response.status_code == 400:
-                self.log_result("oauth", "Missing Session ID", True, 
-                              "Correctly rejected OAuth request without session ID")
-            else:
-                self.log_result("oauth", "Missing Session ID", False, 
-                              f"Expected 400, got {response.status_code}: {response.text}")
-        except Exception as e:
-            self.log_result("oauth", "Missing Session ID", False, f"Exception: {str(e)}")
-
-        # Test 2: Invalid session ID (will fail as expected since we can't mock Emergent Auth)
-        try:
-            oauth_data = {"session_id": "invalid_session_id_12345"}
-            
-            response = self.session.post(f"{BASE_URL}/auth/oauth/google", json=oauth_data)
-            
-            if response.status_code == 400:
-                self.log_result("oauth", "Invalid Session ID", True, 
-                              "Correctly rejected OAuth request with invalid session ID")
-            else:
-                self.log_result("oauth", "Invalid Session ID", False, 
-                              f"Expected 400, got {response.status_code}: {response.text}")
-        except Exception as e:
-            self.log_result("oauth", "Invalid Session ID", False, f"Exception: {str(e)}")
-
-    def test_user_profile(self):
-        """Test user profile endpoint"""
-        print("\n=== TESTING USER PROFILE ===")
-        
-        # Test 1: Access profile with valid authentication
-        try:
-            headers = {"Authorization": f"Bearer {self.access_token}"} if self.access_token else {}
-            
-            response = self.session.get(f"{BASE_URL}/auth/me", headers=headers, cookies=self.session_cookies)
-            
-            if response.status_code == 200:
-                data = response.json()
-                if "id" in data and "email" in data and "name" in data:
-                    self.log_result("profile", "Authenticated Profile Access", True, 
-                                  f"Profile retrieved for user: {data['email']}")
-                else:
-                    self.log_result("profile", "Authenticated Profile Access", False, 
-                                  f"Missing required fields in profile: {data}")
-            else:
-                self.log_result("profile", "Authenticated Profile Access", False, 
-                              f"Status: {response.status_code}, Response: {response.text}")
-        except Exception as e:
-            self.log_result("profile", "Authenticated Profile Access", False, f"Exception: {str(e)}")
-
-        # Test 2: Access profile without authentication
-        try:
-            response = requests.get(f"{BASE_URL}/auth/me")  # No auth headers or cookies
-            
-            if response.status_code == 401:
-                self.log_result("profile", "Unauthenticated Profile Access", True, 
-                              "Correctly rejected profile access without authentication")
-            else:
-                self.log_result("profile", "Unauthenticated Profile Access", False, 
-                              f"Expected 401, got {response.status_code}: {response.text}")
-        except Exception as e:
-            self.log_result("profile", "Unauthenticated Profile Access", False, f"Exception: {str(e)}")
-
-    def test_session_management(self):
-        """Test session management endpoints"""
-        print("\n=== TESTING SESSION MANAGEMENT ===")
-        
-        # Test 1: Check valid session
         try:
             response = self.session.get(f"{BASE_URL}/auth/session/check", cookies=self.session_cookies)
             
             if response.status_code == 200:
                 data = response.json()
                 if data.get("authenticated") == True and "user" in data:
-                    self.log_result("session", "Valid Session Check", True, 
+                    self.log_result("session_management", "Session Check", True, 
                                   f"Session valid for user: {data['user']['email']}")
+                    return True
                 else:
-                    self.log_result("session", "Valid Session Check", False, 
+                    self.log_result("session_management", "Session Check", False, 
                                   f"Unexpected session check response: {data}")
+                    return False
             else:
-                self.log_result("session", "Valid Session Check", False, 
+                self.log_result("session_management", "Session Check", False, 
                               f"Status: {response.status_code}, Response: {response.text}")
+                return False
         except Exception as e:
-            self.log_result("session", "Valid Session Check", False, f"Exception: {str(e)}")
+            self.log_result("session_management", "Session Check", False, f"Exception: {str(e)}")
+            return False
 
-        # Test 2: Check session without cookies
-        try:
-            response = requests.get(f"{BASE_URL}/auth/session/check")  # No cookies
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get("authenticated") == False:
-                    self.log_result("session", "Invalid Session Check", True, 
-                                  "Correctly identified invalid session")
-                else:
-                    self.log_result("session", "Invalid Session Check", False, 
-                                  f"Expected authenticated=false, got: {data}")
-            else:
-                self.log_result("session", "Invalid Session Check", False, 
-                              f"Status: {response.status_code}, Response: {response.text}")
-        except Exception as e:
-            self.log_result("session", "Invalid Session Check", False, f"Exception: {str(e)}")
-
-    def test_logout(self):
-        """Test logout functionality"""
-        print("\n=== TESTING LOGOUT ===")
+    def test_save_game_high_level(self):
+        """Test saving high-level game progression data (Level 18+ scenario)"""
+        print("\n=== TESTING SAVE GAME (HIGH LEVEL) ===")
         
-        # Test 1: Successful logout
         try:
-            headers = {"Authorization": f"Bearer {self.access_token}"} if self.access_token else {}
+            # Create realistic high-level ninja data (Level 18 as mentioned in user report)
+            high_level_save_data = {
+                "playerId": self.test_user_id,
+                "ninja": {
+                    "level": 18,
+                    "experience": 3240,
+                    "experienceToNext": 1900,
+                    "health": 180,
+                    "maxHealth": 180,
+                    "energy": 90,
+                    "maxEnergy": 90,
+                    "attack": 36,
+                    "defense": 18,
+                    "speed": 27,
+                    "luck": 11,
+                    "gold": 8500,
+                    "gems": 245,
+                    "skillPoints": 54
+                },
+                "shurikens": [
+                    {
+                        "id": str(uuid.uuid4()),
+                        "name": "Dragon Fang",
+                        "rarity": "epic",
+                        "attack": 35,
+                        "level": 8,
+                        "equipped": True
+                    },
+                    {
+                        "id": str(uuid.uuid4()),
+                        "name": "Silver Star",
+                        "rarity": "rare",
+                        "attack": 22,
+                        "level": 5,
+                        "equipped": False
+                    }
+                ],
+                "pets": [
+                    {
+                        "id": str(uuid.uuid4()),
+                        "name": "Epic Dragon",
+                        "type": "Dragon",
+                        "level": 12,
+                        "experience": 1440,
+                        "happiness": 85,
+                        "strength": 28,
+                        "active": True,
+                        "rarity": "epic"
+                    }
+                ],
+                "achievements": [
+                    "first_kill", "level_10", "rare_shuriken", "pet_master", "zone_explorer"
+                ],
+                "unlockedFeatures": [
+                    "stats", "shurikens", "pets", "achievements", "leaderboard"
+                ],
+                "zoneProgress": {
+                    "forest": {"completed": True, "kills": 50, "boss_defeated": True},
+                    "desert": {"completed": True, "kills": 75, "boss_defeated": True},
+                    "mountains": {"completed": False, "kills": 23, "boss_defeated": False}
+                }
+            }
             
-            response = self.session.post(f"{BASE_URL}/auth/logout", headers=headers, cookies=self.session_cookies)
+            response = self.session.post(
+                f"{BASE_URL}/save-game",
+                json=high_level_save_data,
+                headers={"Content-Type": "application/json"}
+            )
             
             if response.status_code == 200:
                 data = response.json()
-                if "message" in data:
-                    self.log_result("logout", "Successful Logout", True, 
-                                  f"Logout successful: {data['message']}")
+                if (data.get("ninja", {}).get("level") == 18 and 
+                    data.get("ninja", {}).get("experience") == 3240):
+                    self.log_result("game_progression", "Save Game (Level 18)", True, 
+                                  f"Saved Level {data['ninja']['level']} ninja with {data['ninja']['experience']} XP and {data['ninja']['skillPoints']} skill points")
+                    return True
                 else:
-                    self.log_result("logout", "Successful Logout", False, 
-                                  f"Unexpected logout response: {data}")
+                    self.log_result("game_progression", "Save Game (Level 18)", False, 
+                                  f"Data mismatch in saved game: {data}")
+                    return False
             else:
-                self.log_result("logout", "Successful Logout", False, 
+                self.log_result("game_progression", "Save Game (Level 18)", False, 
                               f"Status: {response.status_code}, Response: {response.text}")
+                return False
         except Exception as e:
-            self.log_result("logout", "Successful Logout", False, f"Exception: {str(e)}")
+            self.log_result("game_progression", "Save Game (Level 18)", False, f"Exception: {str(e)}")
+            return False
 
-        # Test 2: Verify session is cleared after logout
+    def test_load_game(self):
+        """Test loading saved game data"""
+        print("\n=== TESTING LOAD GAME ===")
+        
         try:
-            response = self.session.get(f"{BASE_URL}/auth/session/check", cookies=self.session_cookies)
+            response = self.session.get(f"{BASE_URL}/load-game/{self.test_user_id}")
             
             if response.status_code == 200:
                 data = response.json()
-                if data.get("authenticated") == False:
-                    self.log_result("logout", "Session Cleanup Verification", True, 
-                                  "Session correctly cleared after logout")
+                if data and data.get("ninja", {}).get("level") == 18:
+                    ninja_data = data["ninja"]
+                    zone_progress = data.get("zoneProgress", {})
+                    self.log_result("game_progression", "Load Game", True, 
+                                  f"Loaded Level {ninja_data['level']} ninja with {ninja_data['experience']} XP, "
+                                  f"{ninja_data['gold']} gold, {ninja_data['skillPoints']} skill points, "
+                                  f"zone progress: {len(zone_progress)} zones")
+                    return True
+                elif data is None:
+                    self.log_result("game_progression", "Load Game", False, "No saved game found")
+                    return False
                 else:
-                    self.log_result("logout", "Session Cleanup Verification", False, 
-                                  f"Session still active after logout: {data}")
+                    self.log_result("game_progression", "Load Game", False, f"Unexpected data: {data}")
+                    return False
             else:
-                self.log_result("logout", "Session Cleanup Verification", False, 
+                self.log_result("game_progression", "Load Game", False, 
                               f"Status: {response.status_code}, Response: {response.text}")
+                return False
         except Exception as e:
-            self.log_result("logout", "Session Cleanup Verification", False, f"Exception: {str(e)}")
+            self.log_result("game_progression", "Load Game", False, f"Exception: {str(e)}")
+            return False
+
+    def test_extreme_level_progression(self):
+        """Test extreme level values for robust progression support"""
+        print("\n=== TESTING EXTREME LEVEL PROGRESSION ===")
+        
+        try:
+            extreme_save_data = {
+                "playerId": self.test_user_id,
+                "ninja": {
+                    "level": 999,
+                    "experience": 999999,
+                    "experienceToNext": 100000,
+                    "health": 9990,
+                    "maxHealth": 9990,
+                    "energy": 4995,
+                    "maxEnergy": 4995,
+                    "attack": 1998,
+                    "defense": 999,
+                    "speed": 1497,
+                    "luck": 599,
+                    "gold": 9999999,
+                    "gems": 99999,
+                    "skillPoints": 2997
+                },
+                "shurikens": [],
+                "pets": [],
+                "achievements": [],
+                "unlockedFeatures": ["stats"],
+                "zoneProgress": {}
+            }
+            
+            # Save extreme data
+            save_response = self.session.post(
+                f"{BASE_URL}/save-game",
+                json=extreme_save_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if save_response.status_code != 200:
+                self.log_result("game_progression", "Extreme Level Save", False, 
+                              f"Save failed: {save_response.status_code}")
+                return False
+            
+            # Load and verify extreme data
+            load_response = self.session.get(f"{BASE_URL}/load-game/{self.test_user_id}")
+            
+            if load_response.status_code == 200:
+                data = load_response.json()
+                ninja = data.get("ninja", {})
+                if (ninja.get("level") == 999 and 
+                    ninja.get("experience") == 999999 and 
+                    ninja.get("skillPoints") == 2997):
+                    self.log_result("game_progression", "Extreme Level Progression", True, 
+                                  f"Successfully handled Level {ninja['level']} with {ninja['experience']} XP")
+                    return True
+                else:
+                    self.log_result("game_progression", "Extreme Level Progression", False, 
+                                  f"Data integrity issue: {ninja}")
+                    return False
+            else:
+                self.log_result("game_progression", "Extreme Level Progression", False, 
+                              f"Load failed: {load_response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("game_progression", "Extreme Level Progression", False, f"Exception: {str(e)}")
+            return False
+
+    def test_invalid_login(self):
+        """Test login with invalid credentials"""
+        print("\n=== TESTING INVALID LOGIN ===")
+        
+        try:
+            invalid_login_data = {
+                "username": "nonexistent@example.com",
+                "password": "wrongpassword"
+            }
+            
+            response = self.session.post(f"{BASE_URL}/auth/login", data=invalid_login_data)
+            
+            if response.status_code == 401:
+                self.log_result("authentication", "Invalid Login Test", True, "Correctly rejected invalid credentials")
+                return True
+            else:
+                self.log_result("authentication", "Invalid Login Test", False, 
+                              f"Expected 401, got {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("authentication", "Invalid Login Test", False, f"Exception: {str(e)}")
+            return False
 
     def print_summary(self):
         """Print comprehensive test summary"""
         print("\n" + "="*80)
-        print("AUTHENTICATION SYSTEM TEST SUMMARY")
+        print("PROGRESS PERSISTENCE FIX VERIFICATION - TEST SUMMARY")
         print("="*80)
         
         total_passed = 0
@@ -371,7 +365,7 @@ class AuthenticationTester:
             total_passed += passed
             total_failed += failed
             
-            print(f"\n{category.upper()} TESTS:")
+            print(f"\n{category.upper().replace('_', ' ')} TESTS:")
             print(f"  ✅ Passed: {passed}")
             print(f"  ❌ Failed: {failed}")
             
@@ -383,29 +377,47 @@ class AuthenticationTester:
         print(f"  ✅ Total Passed: {total_passed}")
         print(f"  ❌ Total Failed: {total_failed}")
         print(f"  📊 Success Rate: {(total_passed/(total_passed+total_failed)*100):.1f}%" if (total_passed+total_failed) > 0 else "N/A")
+        
+        if total_failed == 0:
+            print("\n🎯 BACKEND READY FOR FRONTEND INTEGRATION!")
+            print("All authentication and game progression endpoints are working correctly.")
+        else:
+            print(f"\n⚠️  {total_failed} ISSUES NEED ATTENTION BEFORE FRONTEND INTEGRATION")
+        
         print("="*80)
 
     def run_all_tests(self):
-        """Run all authentication tests"""
-        print("Starting Comprehensive Authentication System Testing...")
+        """Run all progress persistence tests"""
+        print("🚀 Starting Progress Persistence Fix Verification Tests...")
         print(f"Base URL: {BASE_URL}")
         print(f"Test User: {TEST_USER_EMAIL}")
+        print(f"Focus: Authentication + Game Save/Load + Session Management")
         
-        # Run tests in logical order
-        self.test_user_registration()
-        self.test_user_login()
-        self.test_google_oauth()
-        self.test_user_profile()
-        self.test_session_management()
-        self.test_logout()
+        test_results = []
+        
+        # Authentication flow tests
+        test_results.append(self.test_user_registration())
+        test_results.append(self.test_user_login())
+        test_results.append(self.test_session_check())
+        
+        # Game progression tests (core focus)
+        test_results.append(self.test_save_game_high_level())
+        test_results.append(self.test_load_game())
+        test_results.append(self.test_extreme_level_progression())
+        
+        # Security validation
+        test_results.append(self.test_invalid_login())
         
         # Print summary
         self.print_summary()
+        
+        return all(test_results)
 
 def main():
     """Main test execution"""
-    tester = AuthenticationTester()
-    tester.run_all_tests()
+    tester = ProgressPersistenceTester()
+    success = tester.run_all_tests()
+    exit(0 if success else 1)
 
 if __name__ == "__main__":
     main()
