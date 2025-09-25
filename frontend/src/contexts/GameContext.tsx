@@ -347,7 +347,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       setIsLoading(true);
-      const startTime = Date.now(); // Track loading start time
       console.log('🔄 LOADING GAME DATA - User ID:', user.id);
       
       const response = await fetch(`${API_BASE_URL}/api/load-game/${user.id}`, {
@@ -376,8 +375,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           ninja: savedData.ninja,
           shurikens: savedData.shurikens || [],
           pets: savedData.pets || [],
-          raids: defaultGameState.raids, // Keep default raids for now
-          adventures: defaultGameState.adventures, // Keep default adventures for now
+          raids: defaultGameState.raids,
+          adventures: defaultGameState.adventures,
           lastSaveTime: new Date(savedData.lastSaveTime).getTime(),
           isAlive: savedData.isAlive !== false,
           achievements: savedData.achievements || [],
@@ -387,32 +386,23 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         
         lastSaveTimeRef.current = loadedGameState.lastSaveTime;
         setGameState(loadedGameState);
-        setHasLoadedFromServer(true); // Mark that we've loaded real data
+        setHasLoadedFromServer(true);
         console.log('✅ GAME STATE SET - Level:', loadedGameState.ninja.level, 'XP:', loadedGameState.ninja.experience);
       } else {
         // No server data, new player starts with defaults
         console.log('🆕 NO SERVER DATA - New player starting with defaults');
         setGameState(defaultGameState);
-        setHasLoadedFromServer(true); // Mark as loaded to allow saves
-        await loadLocalGameBackup();
+        setHasLoadedFromServer(true);
       }
-
-      // Reduce loading time to prevent stuck loading
-      const elapsedTime = Date.now() - startTime;
-      const minLoadingTime = 2000; // Reduced to 2 seconds 
-      if (elapsedTime < minLoadingTime) {
-        const remainingTime = minLoadingTime - elapsedTime;
-        console.log(`⏱️ Extending loading screen for ${remainingTime}ms`);
-        await new Promise(resolve => setTimeout(resolve, remainingTime));
-      }
-      
-      console.log('🏁 Load process completed, setting isLoading to false');
     } catch (error) {
       console.error('❌ LOAD GAME ERROR:', error);
-      // Show user-friendly error but don't crash
-      console.log('💾 Attempting to load from local backup...');
-      await loadLocalGameBackup();
+      // On error, use default state and mark as loaded
+      console.log('🆕 LOAD ERROR - Using default state');
+      setGameState(defaultGameState);
+      setHasLoadedFromServer(true);
     } finally {
+      // CRITICAL: Always set loading to false
+      console.log('🏁 Game loading completed, setting isLoading to false');
       setIsLoading(false);
     }
   };
