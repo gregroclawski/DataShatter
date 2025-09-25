@@ -26,7 +26,7 @@ export default function LoadingScreen({ message = 'Initializing Neural Grid...' 
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1000,
-      useNativeDriver: true,
+      useNativeDriver: false, // Set to false for web compatibility
     }).start();
 
     // Pulsing orb animation
