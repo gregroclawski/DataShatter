@@ -694,7 +694,11 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://app.emergent.sh",
+        "http://127.0.0.1:3000",
+    ],  # Specific origins instead of wildcard
     allow_methods=["*"],
     allow_headers=["*"],
 )
