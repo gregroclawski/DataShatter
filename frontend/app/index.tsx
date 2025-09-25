@@ -386,13 +386,24 @@ export default function NinjaIdleGame() {
       {/* Top UI Bar */}
       <View style={styles.topBar}>
         <View style={styles.playerInfo}>
-          <Text style={styles.levelText}>Level {ninja.level}</Text>
+          <Text style={[styles.levelText, { color: currentProgression.aura }]}>
+            Level {ninja.level}
+          </Text>
+          <Text style={[styles.progressionTitle, { color: currentProgression.aura }]}>
+            {currentProgression.title}
+          </Text>
+          <Text style={styles.progressionDesc}>
+            {currentProgression.description}
+          </Text>
           <View style={styles.xpContainer}>
             <View style={styles.xpBarBackground}>
               <View 
                 style={[
                   styles.xpBar, 
-                  { width: `${(ninja.experience / ninja.experienceToNext) * 100}%` }
+                  { 
+                    width: `${(ninja.experience / ninja.experienceToNext) * 100}%`,
+                    backgroundColor: currentProgression.aura
+                  }
                 ]} 
               />
             </View>
