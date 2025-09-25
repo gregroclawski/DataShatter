@@ -50,6 +50,71 @@ class ProgressPersistenceTester:
         self.results[category]["details"].append(f"{status}: {test_name} - {details}")
         print(f"{status}: {test_name} - {details}")
 
+    def test_health_check(self):
+        """Test GET /api/ endpoint"""
+        print("\n=== TESTING HEALTH CHECK ENDPOINT ===")
+        
+        try:
+            response = self.session.get(f"{BASE_URL}/")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "message" in data and "API" in data["message"]:
+                    self.log_result("authentication", "Health Check", True, 
+                                  f"Health endpoint working: {data['message']}")
+                    return True
+                else:
+                    self.log_result("authentication", "Health Check", False, 
+                                  f"Unexpected response format: {data}")
+                    return False
+            else:
+                self.log_result("authentication", "Health Check", False, 
+                              f"Status: {response.status_code}, Response: {response.text}")
+                return False
+        except Exception as e:
+            self.log_result("authentication", "Health Check", False, f"Exception: {str(e)}")
+            return False
+
+    def test_cors_configuration(self):
+        """Test CORS headers are properly configured for frontend origins"""
+        print("\n=== TESTING CORS CONFIGURATION ===")
+        
+        try:
+            # Test preflight request with frontend origin
+            frontend_origin = "https://ninja-ui-debug.preview.emergentagent.com"
+            headers = {
+                'Origin': frontend_origin,
+                'Access-Control-Request-Method': 'POST',
+                'Access-Control-Request-Headers': 'Content-Type'
+            }
+            
+            response = self.session.options(f"{BASE_URL}/auth/register", headers=headers)
+            
+            print(f"CORS Preflight Status: {response.status_code}")
+            print(f"CORS Headers: {dict(response.headers)}")
+            
+            cors_origin = response.headers.get('Access-Control-Allow-Origin')
+            cors_credentials = response.headers.get('Access-Control-Allow-Credentials')
+            
+            # Check if CORS is properly configured (not wildcard with credentials)
+            if cors_origin and cors_origin != '*':
+                if cors_credentials and cors_credentials.lower() == 'true':
+                    self.log_result("authentication", "CORS Configuration", True, 
+                                  f"CORS properly configured - Origin: {cors_origin}, Credentials: {cors_credentials}")
+                    return True
+                else:
+                    self.log_result("authentication", "CORS Configuration", False, 
+                                  f"CORS credentials not enabled: {cors_credentials}")
+                    return False
+            else:
+                self.log_result("authentication", "CORS Configuration", False, 
+                              f"CORS using wildcard origin (incompatible with credentials): {cors_origin}")
+                return False
+                
+        except Exception as e:
+            self.log_result("authentication", "CORS Configuration", False, f"Exception: {str(e)}")
+            return False
+
     def test_user_registration(self):
         """Test user registration endpoint"""
         print("\n=== TESTING USER REGISTRATION ===")
