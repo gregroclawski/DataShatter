@@ -106,6 +106,7 @@ interface GameContextType {
   collectIdleRewards: () => void;
   saveGame: () => void;
   loadGame: () => void;
+  updateZoneProgress: (zoneProgress: Record<number, any>) => void;
 }
 
 const defaultGameState: GameState = {
