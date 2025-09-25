@@ -108,6 +108,7 @@ interface GameContextType {
   loadGame: () => void;
   updateZoneProgress: (zoneProgress: Record<number, any>) => void;
   saveOnEvent: (eventType: string) => void;
+  saveOnMilestone: (milestoneType: string) => void;
 }
 
 const defaultGameState: GameState = {
