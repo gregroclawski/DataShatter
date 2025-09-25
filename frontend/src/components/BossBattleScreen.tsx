@@ -171,10 +171,17 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
   };
 
   const handleBossDefeated = () => {
+    console.log('🏆 BOSS DEFEATED! Showing victory popup...');
     setBattleResult('victory');
     setShowResultPopup(true);
     clearAllEnemies();
-    console.log('🏆 Boss defeated!');
+    
+    // Debug logging
+    console.log('🏆 Victory state set:', { 
+      battleResult: 'victory', 
+      showResultPopup: true,
+      battlePhase: 'combat'
+    });
   };
 
   const handlePlayerDeath = () => {
