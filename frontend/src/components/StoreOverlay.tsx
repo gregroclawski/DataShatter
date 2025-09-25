@@ -262,6 +262,14 @@ const StoreOverlay = ({ onClose }: Props) => {
         <View style={styles.noticeCard}>
           <Ionicons name="information-circle" size={20} color="#8b5cf6" />
           <Text style={styles.noticeText}>
+            **DEMO MODE**: Purchases are simulated for testing. No real money will be charged.
+          </Text>
+        </View>
+
+        {/* Store Benefits */}
+        <View style={styles.noticeCard}>
+          <Ionicons name="diamond" size={20} color="#10b981" />
+          <Text style={styles.noticeText}>
             Gems are used to purchase upgrades, boost your progress, and unlock special features!
           </Text>
         </View>
