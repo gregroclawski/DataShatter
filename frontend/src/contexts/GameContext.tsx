@@ -287,38 +287,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    // SMART save protection - only block obvious default states
-    const isObviousDefault = (
-      gameState.ninja.level === 1 && 
-      gameState.ninja.experience === 0 && 
-      gameState.ninja.gold === 100 && 
-      gameState.ninja.gems === 10 &&
-      gameState.ninja.skillPoints === 3 &&
-      !hasLoadedFromServer
-    );
-    
-    if (isObviousDefault) {
-      console.warn('🚫 BLOCKING OBVIOUS DEFAULT STATE SAVE (Level 1, 0 XP, 3 skill points, not loaded from server)');
-      return;
-    }
-
-    // ALWAYS ALLOW saves if user has made ANY progress beyond defaults
-    const hasRealProgress = (
-      gameState.ninja.level > 1 || 
-      gameState.ninja.experience > 0 || 
-      gameState.ninja.gold !== 100 || 
-      gameState.ninja.gems !== 10 ||
-      gameState.ninja.skillPoints !== 3
-    );
-
-    if (hasRealProgress) {
-      console.log('✅ REAL PROGRESS DETECTED - SAVE APPROVED:');
-      console.log('  - Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience);
-      console.log('  - Gold:', gameState.ninja.gold, 'Gems:', gameState.ninja.gems);
-      console.log('  - Skill Points:', gameState.ninja.skillPoints);
-    } else {
-      console.log('✅ BASIC SAVE APPROVED - Has loaded from server:', hasLoadedFromServer);
-    }
+    // ALLOW ALL SAVES - Remove blocking logic temporarily to fix progress loss
+    console.log('✅ SAVE ALWAYS ALLOWED - Removing all blocking logic');
+    console.log('💾 SAVING:', 'Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience, 'Gold:', gameState.ninja.gold, 'Gems:', gameState.ninja.gems);
 
     try {
       const now = Date.now();
@@ -331,8 +302,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         unlockedFeatures: gameState.unlockedFeatures,
         zoneProgress: gameState.zoneProgress || { 1: { zoneId: 1, currentLevel: 1, killsInLevel: 0, completed: false } },
       };
-
-      console.log('💾 SAVING REAL PROGRESS - Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience, 'Gold:', gameState.ninja.gold, 'Gems:', gameState.ninja.gems);
 
       const response = await fetch(`${API_BASE_URL}/api/save-game`, {
         method: 'POST',
@@ -350,9 +319,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
       const result = await response.json();
       lastSaveTimeRef.current = now;
-      console.log('✅ PROGRESS SAVED SUCCESSFULLY - Level:', result.ninja?.level, 'XP:', result.ninja?.experience);
+      console.log('✅ PROGRESS SAVED - Level:', result.ninja?.level, 'XP:', result.ninja?.experience);
     } catch (error) {
-      console.error('❌ Failed to save progress to server:', error);
+      console.error('❌ Save failed:', error);
     }
   };
 
