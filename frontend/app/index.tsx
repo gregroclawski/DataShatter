@@ -357,7 +357,7 @@ export default function NinjaIdleGame() {
         </View>
 
         {/* Enemies */}
-        {combatState.enemies?.map(enemy => (
+        {(combatState.enemies || []).map(enemy => (
           enemy?.position ? (
             <View 
               key={enemy.id}
