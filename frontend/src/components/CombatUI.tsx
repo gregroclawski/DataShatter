@@ -162,19 +162,25 @@ const styles = StyleSheet.create({
   abilitySlot: {
     width: (SCREEN_WIDTH - 60 - 60) / 5, // Much smaller slots (50% reduction)
     height: 40, // Fixed height instead of aspect ratio for compactness
-    backgroundColor: '#374151',
+    backgroundColor: MythicTechColors.shadowGrid,
     borderRadius: 4, // Much smaller border radius
     borderWidth: 1,
-    borderColor: '#4b5563',
+    borderColor: MythicTechColors.neonBlue + '66',
     position: 'relative',
     overflow: 'hidden',
+    shadowColor: MythicTechColors.neonBlue,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 2,
   },
   emptySlot: {
-    borderColor: '#374151',
-    backgroundColor: '#1f2937',
+    borderColor: MythicTechColors.shadowGrid,
+    backgroundColor: MythicTechColors.darkSpace,
   },
   onCooldownSlot: {
-    borderColor: '#ef4444',
+    borderColor: MythicTechColors.plasmaGlow,
+    shadowColor: MythicTechColors.plasmaGlow,
   },
   abilityContent: {
     flex: 1,
