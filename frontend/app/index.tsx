@@ -343,7 +343,7 @@ export default function NinjaIdleGame() {
             Zone {currentZone} - Level {currentZoneLevel}
           </Text>
           <Text style={styles.killsText}>
-            Kills: {getZoneProgress()?.killsInLevel || 0}/1000
+            Kills: {getZoneProgress(currentZone)?.killsInLevel || 0}/1000
           </Text>
         </View>
 
