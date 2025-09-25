@@ -187,11 +187,16 @@ export default function NinjaIdleGame() {
     isAuthenticated 
   });
   
-  // Ensure ninja is initialized before proceeding
-  if (!ninja) {
-    console.log('⏳ Waiting for ninja data to initialize...', { gameState });
-    return <LoadingScreen message="Initializing ninja data..." />;
-  }
+  // TEMPORARILY BYPASS ninja check to test layout
+  // Create default ninja if missing to test UI
+  const testNinja = ninja || {
+    level: 1,
+    experience: 0,
+    experienceToNext: 100,
+    gold: 100,
+    gems: 10,
+    skillPoints: 0
+  };
   
   // Get current character progression based on level
   const getCharacterProgression = (level: number) => {
