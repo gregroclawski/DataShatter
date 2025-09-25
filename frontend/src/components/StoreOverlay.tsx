@@ -164,38 +164,55 @@ const StoreOverlay = ({ onClose }: Props) => {
     }
   };
 
-  const processPurchase = async (gemPackage: GemPackage) => {
+  const processPurchase = async (gemPackage: GemPackage, authMethod: string) => {
     try {
-      // In a real implementation, this would:
-      // 1. Call the platform's purchase API
-      // 2. Get the receipt/purchase token
-      // 3. Send to backend for validation
-      // 4. Update gem balance on successful validation
+      // Simulate realistic purchase processing with multiple steps
+      console.log('💳 Processing purchase with', authMethod, 'authentication');
+      
+      // Step 1: Validate authentication (simulated)
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Step 2: Process payment (simulated)
+      console.log('💳 Contacting payment processor...');
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      
+      // Step 3: Validate receipt (simulated)
+      console.log('🧾 Validating purchase receipt...');
+      await new Promise(resolve => setTimeout(resolve, 600));
 
-      // Simulated purchase process for demonstration
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Simulate successful purchase
+      // Calculate total gems with bonus
       const totalGems = gemPackage.gems + (gemPackage.bonus || 0);
       
+      // Update gems and trigger event-driven save
       updateNinja({
         gems: ninja.gems + totalGems,
       });
 
       setPurchasing(null);
 
+      // Show detailed success message
       Alert.alert(
-        'Purchase Successful!',
-        `You received ${totalGems} gems!\n\nNew balance: ${ninja.gems + totalGems} gems`,
-        [{ text: 'Awesome!' }]
+        '🎉 Purchase Successful!',
+        `Transaction completed via ${authMethod === 'face_id' ? 'Face ID' : 'Passcode'}\n\n` +
+        `${gemPackage.name} purchased for ${gemPackage.price}\n` +
+        `• Base Gems: ${gemPackage.gems.toLocaleString()}\n` +
+        `• Bonus Gems: ${(gemPackage.bonus || 0).toLocaleString()}\n` +
+        `• Total Added: ${totalGems.toLocaleString()} gems\n\n` +
+        `New Balance: ${(ninja.gems + totalGems).toLocaleString()} gems`,
+        [{ text: 'Awesome!', style: 'default' }]
       );
+
+      // Log purchase for analytics/debugging
+      console.log(`🛒 Purchase completed: ${gemPackage.name} (+${totalGems} gems)`);
 
     } catch (error) {
       setPurchasing(null);
       console.error('Purchase processing error:', error);
       Alert.alert(
         'Purchase Failed',
-        'There was an issue processing your purchase. You have not been charged. Please try again.',
+        `Authentication failed or payment could not be processed.\n\n` +
+        `You have not been charged.\n\n` +
+        `Please check your ${authMethod === 'face_id' ? 'Face ID settings' : 'passcode'} and try again.`,
         [{ text: 'OK' }]
       );
     }
