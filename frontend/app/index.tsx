@@ -278,9 +278,12 @@ export default function NinjaIdleGame() {
 
       {/* Game Area */}
       <View style={styles.gameArea}>
-        {/* Combat UI */}
+        {/* Combat UI - Skills/Abilities Bar */}
         <View style={styles.combatContainer}>
-          <CombatUI />
+          <CombatUI onAbilityPress={(slotIndex) => {
+            console.log('🎯 Ability slot pressed:', slotIndex);
+            // TODO: Implement ability activation
+          }} />
         </View>
 
         {/* Zone Info */}
