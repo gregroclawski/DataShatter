@@ -116,8 +116,8 @@ class ProgressPersistenceTester:
             return False
 
     def test_user_registration(self):
-        """Test user registration endpoint"""
-        print("\n=== TESTING USER REGISTRATION ===")
+        """Test user registration endpoint with CORS headers"""
+        print("\n=== TESTING USER REGISTRATION WITH CORS ===")
         
         try:
             registration_data = {
@@ -126,7 +126,20 @@ class ProgressPersistenceTester:
                 "name": TEST_USER_NAME
             }
             
-            response = self.session.post(f"{BASE_URL}/auth/register", json=registration_data)
+            # Include CORS headers to simulate frontend request
+            headers = {
+                'Content-Type': 'application/json',
+                'Origin': 'https://ninja-ui-debug.preview.emergentagent.com'
+            }
+            
+            response = self.session.post(
+                f"{BASE_URL}/auth/register", 
+                json=registration_data,
+                headers=headers
+            )
+            
+            print(f"Registration Status: {response.status_code}")
+            print(f"Response Headers: {dict(response.headers)}")
             
             if response.status_code == 201:
                 data = response.json()
@@ -134,16 +147,23 @@ class ProgressPersistenceTester:
                     self.access_token = data["access_token"]
                     self.test_user_id = data["user"]["id"]
                     self.session_cookies = response.cookies
+                    
+                    # Check CORS headers in response
+                    cors_origin = response.headers.get('Access-Control-Allow-Origin')
+                    cors_credentials = response.headers.get('Access-Control-Allow-Credentials')
+                    
+                    cors_msg = f"CORS Origin: {cors_origin}, Credentials: {cors_credentials}"
                     self.log_result("authentication", "User Registration", True, 
-                                  f"User created successfully with ID: {self.test_user_id}")
+                                  f"User created successfully with ID: {self.test_user_id}. {cors_msg}")
                     return True
                 else:
                     self.log_result("authentication", "User Registration", False, 
                                   f"Missing required fields in response: {data}")
                     return False
             else:
+                error_text = response.text
                 self.log_result("authentication", "User Registration", False, 
-                              f"Status: {response.status_code}, Response: {response.text}")
+                              f"Status: {response.status_code}, Response: {error_text}")
                 return False
         except Exception as e:
             self.log_result("authentication", "User Registration", False, f"Exception: {str(e)}")
