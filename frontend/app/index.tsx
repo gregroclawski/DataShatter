@@ -34,9 +34,13 @@ import { Boss, BossTier } from '../src/data/BossData';
 import { MythicTechColors, CharacterProgressionNames } from '../src/theme/MythicTechTheme';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 140;
-const NINJA_SIZE = 40;
-const ENEMY_SIZE = 35;
+
+// Mobile-optimized dimensions for iPhone 16 Pro Max (430x932)
+const MOBILE_TOP_BAR_HEIGHT = 80;
+const MOBILE_BOTTOM_NAV_HEIGHT = 90; // Increased for better touch targets
+const GAME_AREA_HEIGHT = SCREEN_HEIGHT - MOBILE_TOP_BAR_HEIGHT - MOBILE_BOTTOM_NAV_HEIGHT;
+const NINJA_SIZE = 35; // Slightly smaller for mobile
+const ENEMY_SIZE = 30;
 
 type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'bosses' | 'zones' | 'equipment' | null;
 
