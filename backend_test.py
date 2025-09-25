@@ -170,8 +170,8 @@ class ProgressPersistenceTester:
             return False
 
     def test_user_login(self):
-        """Test user login endpoint"""
-        print("\n=== TESTING USER LOGIN ===")
+        """Test user login endpoint with CORS headers"""
+        print("\n=== TESTING USER LOGIN WITH CORS ===")
         
         try:
             login_data = {
@@ -179,23 +179,43 @@ class ProgressPersistenceTester:
                 "password": TEST_USER_PASSWORD
             }
             
-            response = self.session.post(f"{BASE_URL}/auth/login", data=login_data)
+            # Include CORS headers to simulate frontend request
+            headers = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Origin': 'https://ninja-ui-debug.preview.emergentagent.com'
+            }
+            
+            response = self.session.post(
+                f"{BASE_URL}/auth/login", 
+                data=login_data,
+                headers=headers
+            )
+            
+            print(f"Login Status: {response.status_code}")
+            print(f"Response Headers: {dict(response.headers)}")
             
             if response.status_code == 200:
                 data = response.json()
                 if "access_token" in data and "user" in data:
                     self.access_token = data["access_token"]
                     self.session_cookies = response.cookies
+                    
+                    # Check CORS headers in response
+                    cors_origin = response.headers.get('Access-Control-Allow-Origin')
+                    cors_credentials = response.headers.get('Access-Control-Allow-Credentials')
+                    
+                    cors_msg = f"CORS Origin: {cors_origin}, Credentials: {cors_credentials}"
                     self.log_result("authentication", "User Login", True, 
-                                  f"Login successful for user: {data['user']['email']}")
+                                  f"Login successful for user: {data['user']['email']}. {cors_msg}")
                     return True
                 else:
                     self.log_result("authentication", "User Login", False, 
                                   f"Missing required fields in response: {data}")
                     return False
             else:
+                error_text = response.text
                 self.log_result("authentication", "User Login", False, 
-                              f"Status: {response.status_code}, Response: {response.text}")
+                              f"Status: {response.status_code}, Response: {error_text}")
                 return False
         except Exception as e:
             self.log_result("authentication", "User Login", False, f"Exception: {str(e)}")
