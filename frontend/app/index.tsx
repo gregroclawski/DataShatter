@@ -596,8 +596,8 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 80,
+    bottom: MOBILE_BOTTOM_NAV_HEIGHT, // Account for mobile bottom nav
     zIndex: 500,
-    pointerEvents: 'none',
+    pointerEvents: 'box-none', // Allow touches to pass through to background
   },
 });
