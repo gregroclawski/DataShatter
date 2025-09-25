@@ -79,7 +79,7 @@ export default function NinjaIdleGame() {
   const [isAttacking, setIsAttacking] = useState(false);
   const [lastAttackTime, setLastAttackTime] = useState(0);
 
-  // ALL useCallback hooks must be declared before returns
+  // TEMPORARILY FIX useCallback dependencies to stop infinite loop
   const handleLevelUpExplosion = useCallback(() => {
     const now = Date.now();
     const EXPLOSION_COOLDOWN = 5000;
@@ -98,7 +98,7 @@ export default function NinjaIdleGame() {
     setTimeout(() => {
       setIsLevelingUp(false);
     }, 1000);
-  }, [triggerLevelUpExplosion, lastExplosionTime]);
+  }, []); // EMPTY DEPS TO PREVENT INFINITE LOOP
 
   const startBossBattle = useCallback((boss: Boss, tier: BossTier) => {
     console.log('🐉 Starting boss battle:', boss.name, tier.name);
@@ -106,7 +106,7 @@ export default function NinjaIdleGame() {
     setActiveOverlay(null);
     setCurrentBossBattle({ boss, tier });
     setIsBossBattleActive(true);
-  }, [activeOverlay]);
+  }, []); // EMPTY DEPS TO PREVENT INFINITE LOOP
 
   const endBossBattle = useCallback(async (victory: boolean) => {
     console.log('🏆 Boss battle ended:', victory ? 'Victory' : 'Defeat');
@@ -128,7 +128,7 @@ export default function NinjaIdleGame() {
         : `${currentBossBattle.tier.name} was too powerful. Try again when stronger!`,
       [{ text: 'OK' }]
     );
-  }, [currentBossBattle, previousOverlay]);
+  }, []); // EMPTY DEPS TO PREVENT INFINITE LOOP
 
   const escapeBossBattle = useCallback(() => {
     console.log('🏃 Escaping boss battle');
@@ -140,7 +140,7 @@ export default function NinjaIdleGame() {
       setActiveOverlay('bosses');
     }
     setPreviousOverlay(null);
-  }, [previousOverlay]);
+  }, []); // EMPTY DEPS TO PREVENT INFINITE LOOP
 
   // TEMPORARILY DISABLE COMBAT START TO TEST RENDERING
   /*
