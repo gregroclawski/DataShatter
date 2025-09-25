@@ -167,14 +167,17 @@ export default function NinjaIdleGame() {
   
   // Authentication flow - AFTER all hooks are declared
   if (authLoading) {
+    console.log('🔐 AUTH LOADING - showing auth loading screen');
     return <LoadingScreen message="Initializing authentication..." />;
   }
 
   if (!isAuthenticated) {
+    console.log('🔐 NOT AUTHENTICATED - showing auth screen');
     return <AuthScreen />;
   }
 
   if (gameLoading) {
+    console.log('🎮 GAME LOADING - showing game loading screen');
     return <LoadingScreen message="Loading your ninja profile..." />;
   }
   
@@ -209,6 +212,9 @@ export default function NinjaIdleGame() {
   };
 
   const currentProgression = testNinja ? getCharacterProgression(testNinja.level) : CharacterProgressionNames[1];
+
+  console.log('🎯 ABOUT TO RENDER MINIMAL UI - testNinja:', testNinja);
+  console.log('🎯 PROGRESSION:', currentProgression);
 
   // SIMPLIFIED RETURN FOR TESTING
   return (
