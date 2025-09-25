@@ -953,6 +953,31 @@ const styles = StyleSheet.create({
   playerInfo: {
     flex: 1,
   },
+  rightSection: {
+    alignItems: 'flex-end',
+    gap: 8,
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
+  },
+  userName: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: MythicTechColors.neonPink,
+    textShadowColor: MythicTechColors.neonPink + '44',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 3,
+  },
+  logoutButton: {
+    padding: 4,
+    borderRadius: 12,
+    backgroundColor: MythicTechColors.shadowGrid + '66',
+    borderWidth: 1,
+    borderColor: MythicTechColors.neonPink + '33',
+  },
   levelText: {
     fontSize: 16,
     fontWeight: 'bold',
