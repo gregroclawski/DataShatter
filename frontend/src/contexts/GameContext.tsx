@@ -283,15 +283,24 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   const saveGameToServer = async () => {
     if (!isAuthenticated || !user?.id) {
-      console.warn('Cannot save game: user not authenticated');
+      console.warn('🚫 Cannot save game: user not authenticated');
       return;
     }
 
     // CRITICAL: Don't save until we've loaded real data from server
-    if (!hasLoadedFromServer && gameState.ninja.level === 1 && gameState.ninja.experience === 0) {
-      console.warn('🚫 PREVENTING DEFAULT STATE SAVE - waiting for real data to load');
+    const isDefaultState = gameState.ninja.level === 1 && gameState.ninja.experience === 0 && gameState.ninja.gold === 100 && gameState.ninja.gems === 10;
+    
+    if (!hasLoadedFromServer && isDefaultState) {
+      console.warn('🚫 PREVENTING DEFAULT STATE SAVE:');
+      console.warn('  - Has loaded from server:', hasLoadedFromServer);
+      console.warn('  - Is default state:', isDefaultState);
+      console.warn('  - Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience);
+      console.warn('  - Gold:', gameState.ninja.gold, 'Gems:', gameState.ninja.gems);
+      console.warn('  - SAVE BLOCKED - waiting for real data to load');
       return;
     }
+
+    console.log('✅ SAVE ALLOWED - Has loaded:', hasLoadedFromServer, 'Is default:', isDefaultState);
 
     try {
       const now = Date.now();
@@ -305,7 +314,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         zoneProgress: gameState.zoneProgress || { 1: { zoneId: 1, currentLevel: 1, killsInLevel: 0, completed: false } },
       };
 
-      console.log('💾 Saving game to server for user:', user.id, 'Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience, 'Zone Progress:', gameState.zoneProgress);
+      console.log('💾 Saving game to server for user:', user.id, 'Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience);
 
       const response = await fetch(`${API_BASE_URL}/api/save-game`, {
         method: 'POST',
@@ -323,7 +332,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
       const result = await response.json();
       lastSaveTimeRef.current = now;
-      console.log('✅ Game saved to server successfully - Level:', result.ninja?.level, 'Zone Progress:', result.zoneProgress);
+      console.log('✅ Game saved to server successfully - Level:', result.ninja?.level);
     } catch (error) {
       console.error('❌ Failed to save game to server:', error);
       
