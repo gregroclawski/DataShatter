@@ -5,7 +5,7 @@ from datetime import datetime, timezone, timedelta
 import uuid
 import secrets
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from .auth import (
+from auth import (
     UserCreate, UserLogin, User, Token, SessionData,
     validate_password, verify_password, get_password_hash,
     create_access_token, get_current_user, get_user_by_email,
