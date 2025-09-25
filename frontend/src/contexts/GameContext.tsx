@@ -396,9 +396,17 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Legacy functions for backward compatibility
-  const saveGame = () => saveGameToServer();
-  const loadGame = () => loadGameFromServer();
+  const updateZoneProgress = (zoneProgress: Record<number, any>) => {
+    setGameState(prev => ({
+      ...prev,
+      zoneProgress
+    }));
+    
+    // Auto-save when zone progress updates
+    if (isAuthenticated) {
+      setTimeout(() => saveGameToServer(), 500);
+    }
+  };
 
   const updateNinja = (updates: Partial<NinjaStats> | ((prev: NinjaStats) => Partial<NinjaStats>)) => {
     setGameState(prev => {
