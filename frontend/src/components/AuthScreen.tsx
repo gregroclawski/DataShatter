@@ -31,6 +31,38 @@ export default function AuthScreen() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const submitButtonRef = useRef<View>(null);
+
+  // Web-compatible button click handler
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      console.log('🔧 Setting up web DOM event listener for submit button');
+      
+      const handleGlobalClick = (event: MouseEvent) => {
+        const target = event.target as HTMLElement;
+        
+        // Check if the clicked element or its parents contain "Login" text and are a submit button
+        const isSubmitButton = target.textContent && 
+          target.textContent.includes('Login') && 
+          (target.style?.background?.includes('gradient') || 
+           target.closest('[style*="gradient"]')) &&
+          !target.closest('[role="tab"]'); // Exclude toggle tabs
+        
+        if (isSubmitButton && !isLoading) {
+          console.log('🎯 DOM EVENT - Submit button clicked via global listener');
+          event.preventDefault();
+          event.stopPropagation();
+          handleSubmit();
+        }
+      };
+      
+      document.addEventListener('click', handleGlobalClick);
+      
+      return () => {
+        document.removeEventListener('click', handleGlobalClick);
+      };
+    }
+  }, [authMode, formData, isLoading]);
 
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
