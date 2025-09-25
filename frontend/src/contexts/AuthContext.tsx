@@ -221,14 +221,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { success: false, error: data.detail || 'Registration failed' };
       }
 
-      // Store auth data
+      // Store auth data AND credentials for auto-login
       await AsyncStorage.setItem('auth_token', data.access_token);
       await AsyncStorage.setItem('auth_user', JSON.stringify(data.user));
+      
+      // Store credentials for auto-login with web fallback
+      try {
+        await AsyncStorage.setItem('login_email', email);
+        await AsyncStorage.setItem('login_password', password);
+      } catch (asyncError) {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          window.localStorage.setItem('auth_token', data.access_token);
+          window.localStorage.setItem('auth_user', JSON.stringify(data.user));
+          window.localStorage.setItem('login_email', email);
+          window.localStorage.setItem('login_password', password);
+          console.log('Stored credentials in localStorage for web compatibility');
+        }
+      }
       
       setToken(data.access_token);
       setUser(data.user);
 
-      console.log('✅ Registration successful - User ID:', data.user.id, 'Token stored');
+      console.log('✅ Registration successful - User ID:', data.user.id, 'Credentials stored for auto-login');
 
       return { success: true };
     } catch (error) {
