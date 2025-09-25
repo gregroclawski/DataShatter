@@ -420,3 +420,211 @@ export default function NinjaIdleGame() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: MythicTechColors.darkSpace,
+  },
+  topBar: {
+    height: MOBILE_TOP_BAR_HEIGHT,
+    backgroundColor: MythicTechColors.deepVoid,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: MythicTechColors.neonBlue + '44',
+  },
+  progressSection: {
+    flex: 1,
+    paddingRight: 8,
+  },
+  progressionTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: MythicTechColors.cosmicGold,
+    marginBottom: 2,
+  },
+  levelContainer: {
+    flexDirection: 'column',
+    gap: 4,
+  },
+  levelText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: MythicTechColors.neonBlue,
+  },
+  xpContainer: {
+    flex: 1,
+    minWidth: 120,
+  },
+  xpBarBackground: {
+    height: 6,
+    backgroundColor: MythicTechColors.voidSilver + '33',
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  xpBarFill: {
+    height: '100%',
+    backgroundColor: MythicTechColors.neonBlue,
+    borderRadius: 3,
+  },
+  xpText: {
+    fontSize: 9,
+    color: MythicTechColors.voidSilver,
+    marginTop: 2,
+  },
+  resourcesContainer: {
+    flexDirection: 'column',
+    gap: 4,
+    minWidth: 60,
+  },
+  resourceItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  resourceValue: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: MythicTechColors.white,
+    minWidth: 35,
+  },
+  gameArea: {
+    flex: 1,
+    position: 'relative',
+    backgroundColor: MythicTechColors.darkSpace,
+  },
+  combatContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+  },
+  zoneInfo: {
+    position: 'absolute',
+    top: 10,
+    left: 12,
+    zIndex: 2,
+  },
+  zoneText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: MythicTechColors.neonBlue,
+  },
+  killsText: {
+    fontSize: 11,
+    color: MythicTechColors.voidSilver,
+  },
+  ninjaContainer: {
+    position: 'absolute',
+    width: NINJA_SIZE,
+    height: NINJA_SIZE,
+    zIndex: 10,
+  },
+  ninja: {
+    width: NINJA_SIZE,
+    height: NINJA_SIZE,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: MythicTechColors.neonBlue + '22',
+    borderRadius: NINJA_SIZE / 2,
+    borderWidth: 2,
+    borderColor: MythicTechColors.neonBlue,
+  },
+  ninjaAttacking: {
+    backgroundColor: MythicTechColors.energyPurple + '44',
+    borderColor: MythicTechColors.energyPurple,
+    transform: [{ scale: 1.2 }],
+  },
+  ninjaLevelUp: {
+    backgroundColor: MythicTechColors.cosmicGold + '44',
+    borderColor: MythicTechColors.cosmicGold,
+    transform: [{ scale: 1.3 }],
+  },
+  ninjaEmoji: {
+    fontSize: 20,
+  },
+  enemyContainer: {
+    position: 'absolute',
+    width: ENEMY_SIZE,
+    height: ENEMY_SIZE + 8,
+    zIndex: 5,
+  },
+  enemy: {
+    width: ENEMY_SIZE,
+    height: ENEMY_SIZE,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: MythicTechColors.crimsonRed + '22',
+    borderRadius: ENEMY_SIZE / 2,
+    borderWidth: 1,
+    borderColor: MythicTechColors.crimsonRed,
+  },
+  enemyEmoji: {
+    fontSize: 16,
+  },
+  enemyHealthBar: {
+    width: ENEMY_SIZE,
+    height: 4,
+    backgroundColor: MythicTechColors.voidSilver + '44',
+    borderRadius: 2,
+    marginTop: 2,
+  },
+  enemyHealthFill: {
+    height: '100%',
+    backgroundColor: MythicTechColors.crimsonRed,
+    borderRadius: 2,
+  },
+  projectile: {
+    position: 'absolute',
+    width: 10,
+    height: 10,
+    zIndex: 8,
+  },
+  projectileText: {
+    fontSize: 10,
+  },
+  bottomNavigation: {
+    height: MOBILE_BOTTOM_NAV_HEIGHT,
+    backgroundColor: MythicTechColors.deepVoid,
+    flexDirection: 'row',
+    borderTopWidth: 2,
+    borderTopColor: MythicTechColors.neonBlue + '44',
+    zIndex: 1000,
+    paddingBottom: 8,
+  },
+  navButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 4,
+    pointerEvents: 'auto',
+    minHeight: 60,
+  },
+  navButtonActive: {
+    backgroundColor: MythicTechColors.neonBlue + '22',
+    borderRadius: 8,
+  },
+  navButtonText: {
+    fontSize: 9,
+    color: MythicTechColors.voidSilver,
+    marginTop: 2,
+    textAlign: 'center',
+  },
+  navButtonTextActive: {
+    color: MythicTechColors.neonBlue,
+    fontWeight: 'bold',
+  },
+  overlayWrapper: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: MOBILE_BOTTOM_NAV_HEIGHT,
+    zIndex: 500,
+    pointerEvents: 'box-none',
+  },
+});
