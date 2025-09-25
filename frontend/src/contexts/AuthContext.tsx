@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const checkExistingSession = async () => {
     try {
       setIsLoading(true);
+      const startTime = Date.now(); // Track loading start time
       
       // Check stored token first
       const storedToken = await AsyncStorage.getItem('auth_token');
@@ -93,6 +94,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       } else {
         console.log('🔍 No stored session found');
+      }
+
+      // Ensure minimum 5 second loading time for user experience
+      const elapsedTime = Date.now() - startTime;
+      const minLoadingTime = 5000; // 5 seconds
+      if (elapsedTime < minLoadingTime) {
+        const remainingTime = minLoadingTime - elapsedTime;
+        console.log(`⏱️ Extending loading screen for ${remainingTime}ms to show themed animation`);
+        await new Promise(resolve => setTimeout(resolve, remainingTime));
       }
     } catch (error) {
       console.error('Error checking existing session:', error);
