@@ -471,6 +471,8 @@ async def register(user_data: UserCreate, response: Response):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
         )
+    except HTTPException:
+        raise  # Re-raise HTTPExceptions without wrapping
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
