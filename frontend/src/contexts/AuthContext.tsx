@@ -83,9 +83,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log('🔍 No stored session found - showing auth screen');
       }
 
-      // Reduce loading time to prevent stuck loading
+      // Minimal loading time to prevent stuck loading
       const elapsedTime = Date.now() - startTime;
-      const minLoadingTime = 2000; // Reduced to 2 seconds
+      const minLoadingTime = 1000; // Reduced to 1 second
       if (elapsedTime < minLoadingTime) {
         const remainingTime = minLoadingTime - elapsedTime;
         console.log(`⏱️ Extending loading screen for ${remainingTime}ms`);
