@@ -186,6 +186,15 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   const API_BASE_URL = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
 
+  // Debug authentication state changes
+  useEffect(() => {
+    console.log('🔍 GAMECONTEXT AUTH STATE CHANGE:');
+    console.log('  - isAuthenticated:', isAuthenticated);
+    console.log('  - user exists:', !!user);
+    console.log('  - user ID:', user?.id);
+    console.log('  - token exists:', !!token);
+  }, [isAuthenticated, user, token]);
+
   // Load game data when user authenticates
   useEffect(() => {
     if (isAuthenticated && user) {
