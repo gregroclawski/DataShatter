@@ -42,61 +42,60 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const checkExistingSession = async () => {
     try {
       setIsLoading(true);
-      const startTime = Date.now(); // Track loading start time
+      console.log('🔍 Starting session check...');
       
-      // Check stored token first
-      const storedToken = await AsyncStorage.getItem('auth_token');
-      const storedUser = await AsyncStorage.getItem('auth_user');
-      
-      console.log('🔍 Session check - Token exists:', !!storedToken, 'User exists:', !!storedUser);
-      
-      if (storedToken && storedUser) {
-        try {
+      // Check stored token with enhanced debugging
+      try {
+        const storedToken = await AsyncStorage.getItem('auth_token');
+        const storedUser = await AsyncStorage.getItem('auth_user');
+        
+        console.log('🔍 Session storage check:');
+        console.log('  - Token exists:', !!storedToken);
+        console.log('  - User exists:', !!storedUser);
+        if (storedToken) console.log('  - Token preview:', storedToken.substring(0, 20) + '...');
+        if (storedUser) {
+          try {
+            const userData = JSON.parse(storedUser);
+            console.log('  - User email:', userData.email);
+            console.log('  - User ID:', userData.id);
+          } catch (e) {
+            console.log('  - User data parse error:', e);
+          }
+        }
+        
+        if (storedToken && storedUser) {
           const userData = JSON.parse(storedUser);
-          console.log('👤 Restoring user session:', userData.email, 'ID:', userData.id);
+          console.log('👤 Restoring session for user:', userData.email);
           
           setToken(storedToken);
           setUser(userData);
           
-          // Simple session validation
+          // Simple session validation without aggressive retries
           try {
             const isValid = await checkSession();
-            if (isValid) {
-              console.log('✅ Session validation successful - user auto-logged in');
+            console.log('🔐 Session validation result:', isValid);
+            if (!isValid) {
+              console.log('❌ Session invalid - clearing and showing auth screen');
+              await AsyncStorage.multiRemove(['auth_token', 'auth_user']);
+              setToken(null);
+              setUser(null);
             } else {
-              console.log('❌ Session validation failed - clearing stored session');
-              await logout();
+              console.log('✅ Session restored successfully');
             }
           } catch (error) {
             console.log('⚠️ Session validation error - keeping session:', error);
-            // Keep session on network errors
           }
           
-        } catch (parseError) {
-          console.error('Error parsing stored user data:', parseError);
-          // Clear invalid stored data
-          await AsyncStorage.multiRemove(['auth_token', 'auth_user']);
-          setToken(null);
-          setUser(null);
+        } else {
+          console.log('🔍 No stored session found - will show auth screen');
         }
-      } else {
-        console.log('🔍 No stored session found - showing auth screen');
+      } catch (storageError) {
+        console.error('💾 AsyncStorage error:', storageError);
       }
-
-      // Minimal loading time to prevent stuck loading
-      const elapsedTime = Date.now() - startTime;
-      const minLoadingTime = 1000; // Reduced to 1 second
-      if (elapsedTime < minLoadingTime) {
-        const remainingTime = minLoadingTime - elapsedTime;
-        console.log(`⏱️ Extending loading screen for ${remainingTime}ms`);
-        await new Promise(resolve => setTimeout(resolve, remainingTime));
-      }
-      
-      console.log('🏁 Auth loading completed, setting isLoading to false');
     } catch (error) {
-      console.error('Error checking existing session:', error);
-      // Don't logout on errors, just continue
+      console.error('Error in session check:', error);
     } finally {
+      console.log('🏁 Auth loading completed, setting isLoading to false');
       setIsLoading(false);
     }
   };
