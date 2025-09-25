@@ -109,33 +109,6 @@ const StoreOverlay = ({ onClose }: Props) => {
 
   const handlePurchase = async (gemPackage: GemPackage) => {
     if (!storeAvailable) {
-      Alert.alert('Store Unavailable', 'Please try again later.');
-      return;
-    }
-
-    // Fake authentication step for realistic feel
-    Alert.alert(
-      'Store Authentication',
-      'Please authenticate your purchase',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Face ID',
-          onPress: () => authenticateAndPurchase(gemPackage, 'face_id'),
-        },
-        {
-          text: 'Passcode',
-          onPress: () => authenticateAndPurchase(gemPackage, 'passcode'),
-        },
-      ]
-    );
-  };
-
-  const handlePurchase = async (gemPackage: GemPackage) => {
-    if (!storeAvailable) {
       return;
     }
 
