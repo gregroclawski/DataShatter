@@ -458,9 +458,9 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Authentication Integration"
+    - "Server-Side Game Progression"
+    - "Authentication Flow Integration"
   stuck_tasks:
-    - "Authentication Integration"
     - "Server-Side Game Progression"
     - "Authentication Flow Integration"
   test_all: false
