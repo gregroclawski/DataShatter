@@ -397,9 +397,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         await loadLocalGameBackup();
       }
 
-      // Ensure minimum 5 second loading time for user experience
+      // Ensure minimum 3 second loading time for user experience (reduced from 5s)
       const elapsedTime = Date.now() - startTime;
-      const minLoadingTime = 5000; // 5 seconds
+      const minLoadingTime = 3000; // 3 seconds
       if (elapsedTime < minLoadingTime) {
         const remainingTime = minLoadingTime - elapsedTime;
         console.log(`⏱️ Extending loading screen for ${remainingTime}ms to show themed animation`);
