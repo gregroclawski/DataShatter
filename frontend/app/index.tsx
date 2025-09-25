@@ -431,17 +431,26 @@ export default function NinjaIdleGame() {
             <TouchableOpacity
               style={styles.logoutButton}
               onPress={() => {
+                console.log('🚪 Logout button pressed');
                 Alert.alert(
                   'Logout',
                   'Are you sure you want to logout?',
                   [
                     { text: 'Cancel', style: 'cancel' },
-                    { text: 'Logout', style: 'destructive', onPress: logout }
+                    { 
+                      text: 'Logout', 
+                      style: 'destructive', 
+                      onPress: async () => {
+                        console.log('🚪 Logout confirmed, calling logout function');
+                        await logout();
+                        console.log('🚪 Logout function completed');
+                      }
+                    }
                   ]
                 );
               }}
             >
-              <Ionicons name="log-out-outline" size={16} color={MythicTechColors.neonPink} />
+              <Ionicons name="log-out-outline" size={20} color={MythicTechColors.neonPink} />
             </TouchableOpacity>
           </View>
           
