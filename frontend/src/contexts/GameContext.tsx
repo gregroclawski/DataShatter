@@ -403,10 +403,17 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       const levelUpUpdates = handleLevelUp(updatedNinja);
       const finalNinja = { ...updatedNinja, ...levelUpUpdates };
       
-      return {
+      const newGameState = {
         ...prev,
         ninja: finalNinja
       };
+      
+      // Auto-save to server when ninja stats change (debounced)
+      if (isAuthenticated) {
+        setTimeout(() => saveGameToServer(), 1000);
+      }
+      
+      return newGameState;
     });
   };
 
