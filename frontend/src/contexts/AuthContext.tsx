@@ -83,14 +83,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log('🔍 No stored session found - showing auth screen');
       }
 
-      // Ensure minimum 5 second loading time for user experience
+      // Reduce loading time to prevent stuck loading
       const elapsedTime = Date.now() - startTime;
-      const minLoadingTime = 5000; // 5 seconds
+      const minLoadingTime = 2000; // Reduced to 2 seconds
       if (elapsedTime < minLoadingTime) {
         const remainingTime = minLoadingTime - elapsedTime;
-        console.log(`⏱️ Extending loading screen for ${remainingTime}ms to show themed animation`);
+        console.log(`⏱️ Extending loading screen for ${remainingTime}ms`);
         await new Promise(resolve => setTimeout(resolve, remainingTime));
       }
+      
+      console.log('🏁 Auth loading completed, setting isLoading to false');
     } catch (error) {
       console.error('Error checking existing session:', error);
       // Don't logout on errors, just continue
