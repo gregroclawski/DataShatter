@@ -13,6 +13,7 @@ import { BossProvider } from '../src/contexts/BossContext';
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
+      <StatusBar style="light" backgroundColor="#0f172a" />
       <AuthProvider>
         <GameProvider>
           <ZoneProvider>
@@ -20,28 +21,15 @@ export default function RootLayout() {
               <EquipmentProvider>
                 <BossProvider>
                   <CombatProvider>
-                    <StatusBar style="light" backgroundColor="#0f172a" />
                     <Stack
                       screenOptions={{
-                        headerStyle: {
-                          backgroundColor: '#1e293b',
-                        },
-                        headerTintColor: '#f8fafc',
-                        headerTitleStyle: {
-                          fontWeight: 'bold',
-                        },
+                        headerShown: false,
                         contentStyle: {
                           backgroundColor: '#0f172a',
                         },
                       }}
                     >
-                      <Stack.Screen 
-                        name="index" 
-                        options={{ 
-                          title: 'Ninja Master',
-                          headerShown: false,
-                        }} 
-                      />
+                      <Stack.Screen name="index" />
                     </Stack>
                   </CombatProvider>
                 </BossProvider>
