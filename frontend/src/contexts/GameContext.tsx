@@ -180,7 +180,7 @@ export const useGame = () => {
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   const { user, token, isAuthenticated } = useAuth();
   const [gameState, setGameState] = useState<GameState>(defaultGameState);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Start with false, only set true when actually loading
   const [hasLoadedFromServer, setHasLoadedFromServer] = useState(false); // Track if we've loaded real data
   const lastSaveTimeRef = useRef<number>(Date.now());
 
