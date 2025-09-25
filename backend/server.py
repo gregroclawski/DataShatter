@@ -686,6 +686,9 @@ async def check_session(request: Request):
     except Exception as e:
         return {"authenticated": False, "error": str(e)}
 
+# Include the router in the main app
+app.include_router(api_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
