@@ -128,11 +128,16 @@ const styles = StyleSheet.create({
     bottom: 80, // Above bottom tabs
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(17, 24, 39, 0.95)',
+    backgroundColor: MythicTechColors.deepVoid + 'f0', // Semi-transparent neon-dark
     borderTopWidth: 1,
-    borderTopColor: '#374151',
-    paddingHorizontal: 8, // Reduced by 50% (was 12)
-    paddingVertical: 4, // Reduced by 50% (was 8)
+    borderTopColor: MythicTechColors.neonBlue + '88',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    shadowColor: MythicTechColors.neonBlue,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
   },
   statusBar: {
     flexDirection: 'row',
