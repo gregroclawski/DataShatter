@@ -251,7 +251,7 @@ export default function AuthScreen() {
             </View>
 
             {/* Submit Button */}
-            <TouchableOpacity
+            <Pressable
               style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
               onPress={() => {
                 console.log('🔥 SUBMIT BUTTON PRESSED!');
@@ -271,7 +271,7 @@ export default function AuthScreen() {
                   </Text>
                 )}
               </LinearGradient>
-            </TouchableOpacity>
+            </Pressable>
 
             {/* Divider */}
             <View style={styles.dividerContainer}>
