@@ -430,9 +430,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       zoneProgress
     }));
     
-    // Auto-save when zone progress updates
+    // MILESTONE SAVE: Zone progression is critical - save immediately
     if (isAuthenticated) {
-      setTimeout(() => saveGameToServer(), 500);
+      console.log('🗺️ MILESTONE: Zone progression updated - IMMEDIATE SAVE');
+      saveOnMilestone('zone_progression');
     }
   };
 
