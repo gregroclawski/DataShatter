@@ -192,22 +192,31 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     // Don't reset game state when not authenticated - keep current state
   }, [isAuthenticated, user]);
 
-  // Auto-save when authenticated - More frequent saves
+  // Auto-save when authenticated - Very frequent saves
   useEffect(() => {
     if (!isAuthenticated) return;
 
     const interval = setInterval(() => {
       saveGameToServer();
       collectIdleRewards();
-    }, 10000); // Changed to 10 seconds for more frequent saves
+    }, 5000); // Changed to 5 seconds for very frequent saves
 
     return () => clearInterval(interval);
-  }, [isAuthenticated]); // Remove gameState dependency to prevent constant restarts
+  }, [isAuthenticated]);
 
   // Event-driven saves - Save on important game events
   const saveOnEvent = useCallback((eventType: string) => {
     if (isAuthenticated) {
       console.log(`💾 Event-driven save triggered: ${eventType}`);
+      saveGameToServer();
+    }
+  }, [isAuthenticated]);
+
+  // Critical milestone save - Save immediately on very important events
+  const saveOnMilestone = useCallback((milestoneType: string) => {
+    if (isAuthenticated) {
+      console.log(`🏆 MILESTONE SAVE triggered: ${milestoneType}`);
+      // Save immediately without delay for critical milestones
       saveGameToServer();
     }
   }, [isAuthenticated]);
