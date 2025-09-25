@@ -108,19 +108,6 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   const handleEnemyKill = (enemy: CombatEnemy) => {
     console.log(`🎯 Enemy killed! Max HP: ${enemy.maxHealth}`);
     
-    // Convert CombatEnemy to CurrentEnemy format for zone progression
-    const zoneEnemy = {
-      id: enemy.id,
-      typeId: 'test_orc', // Default type for test enemies
-      name: enemy.name,
-      icon: '🧌', // Default icon for test enemies
-      hp: 0, // Dead enemy
-      maxHP: enemy.maxHealth,
-      attack: enemy.stats.attack,
-      xp: 20, // Base XP reward - updated to 20
-      position: enemy.position
-    };
-    
     // Award XP and gold directly using useGame hook
     const xpReward = 20; // Base XP reward per kill
     const goldReward = 10;
@@ -135,11 +122,24 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       };
     });
     
-    // DEFER the zone update to avoid render-time state update
-    // Use setTimeout to move the zone update outside the render cycle
-    setTimeout(() => {
+    // COMPLETELY ISOLATE zone update using React.startTransition for safer state updates
+    // This ensures the state update happens outside the current render cycle
+    React.startTransition(() => {
+      // Convert CombatEnemy to CurrentEnemy format for zone progression
+      const zoneEnemy = {
+        id: enemy.id,
+        typeId: 'test_orc', // Default type for test enemies
+        name: enemy.name,
+        icon: '🧌', // Default icon for test enemies
+        hp: 0, // Dead enemy
+        maxHP: enemy.maxHealth,
+        attack: enemy.stats.attack,
+        xp: 20, // Base XP reward
+        position: enemy.position
+      };
+      
       recordEnemyKill(zoneEnemy);
-    }, 0);
+    });
   };
 
   // Combat tick handler
