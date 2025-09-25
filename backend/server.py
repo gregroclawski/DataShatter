@@ -250,8 +250,16 @@ async def root():
 async def save_game(save_request: SaveGameRequest):
     """Save player's game progress"""
     try:
+        print(f"💾 SAVE REQUEST - Player ID: {save_request.playerId}")
+        print(f"💾 SAVE REQUEST - Ninja Level: {save_request.ninja.level}")
+        print(f"💾 SAVE REQUEST - Ninja XP: {save_request.ninja.experience}")
+        print(f"💾 SAVE REQUEST - Ninja Gold: {save_request.ninja.gold}")
+        print(f"💾 SAVE REQUEST - Ninja Gems: {save_request.ninja.gems}")
+        print(f"💾 SAVE REQUEST - Zone Progress: {save_request.zoneProgress}")
+        
         # Check if save exists
         existing_save = await db.game_saves.find_one({"playerId": save_request.playerId})
+        print(f"💾 EXISTING SAVE FOUND: {existing_save is not None}")
         
         save_data = {
             "playerId": save_request.playerId,
@@ -268,15 +276,18 @@ async def save_game(save_request: SaveGameRequest):
         if existing_save:
             # Update existing save
             save_data["id"] = existing_save["id"]
-            await db.game_saves.update_one(
+            update_result = await db.game_saves.update_one(
                 {"playerId": save_request.playerId},
                 {"$set": save_data}
             )
+            print(f"💾 UPDATE RESULT - Modified: {update_result.modified_count}")
         else:
             # Create new save
             save_data["id"] = str(uuid.uuid4())
-            await db.game_saves.insert_one(save_data)
+            insert_result = await db.game_saves.insert_one(save_data)
+            print(f"💾 INSERT RESULT - ID: {insert_result.inserted_id}")
         
+        print(f"✅ SAVE COMPLETED - Player: {save_request.playerId}, Level: {save_request.ninja.level}")
         return GameSave(**save_data)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save game: {str(e)}")
