@@ -86,7 +86,15 @@ export default function NinjaIdleGame() {
   const [currentBossBattle, setCurrentBossBattle] = useState<{boss: Boss, tier: BossTier} | null>(null);
   const [previousOverlay, setPreviousOverlay] = useState<ActiveOverlay>(null);
   
-  // Auto-movement system for ninja - start in bottom left corner so ninja has to move
+  // Get current character progression based on level
+  const getCharacterProgression = (level: number) => {
+    if (level >= 15000) return CharacterProgressionNames[15000];
+    if (level >= 10000) return CharacterProgressionNames[10000];
+    if (level >= 5000) return CharacterProgressionNames[5000];
+    return CharacterProgressionNames[1];
+  };
+
+  const currentProgression = ninja ? getCharacterProgression(ninja.level) : CharacterProgressionNames[1];
   const [ninjaPosition, setNinjaPosition] = useState({
     x: 50, // Start in bottom left corner
     y: GAME_AREA_HEIGHT - NINJA_SIZE - 50
