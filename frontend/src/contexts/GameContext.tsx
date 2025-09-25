@@ -84,6 +84,7 @@ export interface GameState {
   isAlive: boolean;
   achievements: string[];
   unlockedFeatures: string[];
+  zoneProgress?: Record<number, any>; // Zone progression data
 }
 
 interface GameContextType {
