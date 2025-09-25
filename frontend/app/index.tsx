@@ -915,8 +915,25 @@ const styles = StyleSheet.create({
   levelText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#f8fafc',
+    color: MythicTechColors.neonCyan, // Dynamic color based on progression
+    marginBottom: 2,
+    textShadowColor: 'rgba(0, 245, 255, 0.5)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
+  },
+  progressionTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 2,
+    textShadowColor: 'rgba(0, 245, 255, 0.3)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
+  },
+  progressionDesc: {
+    fontSize: 10,
+    color: MythicTechColors.voidSilver,
     marginBottom: 4,
+    fontStyle: 'italic',
   },
   xpContainer: {
     flexDirection: 'row',
