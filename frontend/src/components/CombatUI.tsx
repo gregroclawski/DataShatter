@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   synergiesContainer: {
-    marginTop: 4, // Reduced from 8
+    marginTop: 2, // Reduced by 50% (was 4)
   },
   synergiesTitle: {
     fontSize: 10,
