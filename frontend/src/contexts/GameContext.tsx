@@ -398,7 +398,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         lastSaveTimeRef.current = loadedGameState.lastSaveTime;
         setGameState(loadedGameState);
         setHasLoadedFromServer(true);
-        console.log('✅ GAME STATE SET - Level:', loadedGameState.ninja.level, 'XP:', loadedGameState.ninja.experience);
+        console.log('✅ REAL PROGRESS LOADED - Level:', loadedGameState.ninja.level, 'XP:', loadedGameState.ninja.experience, 'Gold:', loadedGameState.ninja.gold, 'Gems:', loadedGameState.ninja.gems);
+        console.log('🔓 hasLoadedFromServer set to TRUE - saves now enabled');
       } else {
         // No server data, new player starts with defaults
         console.log('🆕 NO SERVER DATA - New player starting with defaults');
