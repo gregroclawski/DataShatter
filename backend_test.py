@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend API Testing for Mythic-Tech Idle RPG Authentication System
-Tests all authentication endpoints including registration, login, OAuth, profile, session management, and logout.
+Backend API Testing for Idle Ninja Online - Progress Persistence Fix Verification
+Tests authentication and game progression endpoints to verify they're working for the progress persistence fix.
+
+Focus areas:
+1. Authentication endpoints (/api/auth/login, /api/auth/register)
+2. Game save/load endpoints (/api/save-game, /api/load-game)  
+3. Session management (/api/auth/session/check)
 """
 
 import requests
@@ -13,7 +18,7 @@ from typing import Dict, Any, Optional
 
 # Configuration
 BASE_URL = "https://mythic-ninja-save.preview.emergentagent.com/api"
-TEST_USER_EMAIL = "ninja.master.test@example.com"
+TEST_USER_EMAIL = f"ninja_master_{uuid.uuid4().hex[:8]}@example.com"
 TEST_USER_PASSWORD = "SecureNinja123!"
 TEST_USER_NAME = "Ninja Master Tester"
 
