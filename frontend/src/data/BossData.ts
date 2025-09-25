@@ -162,9 +162,9 @@ export const BOSS_DATA: Record<BossType, Boss> = {
         name: 'Ancient Fire Lord',
         requiredLevel: 50,
         stats: {
-          hp: 200000, // 10x harder (was 20000)
-          attack: 2500, // 10x harder (was 250)
-          defense: 1000, // 10x harder (was 100)
+          hp: 20000, // Back to original (was 200000)
+          attack: 250, // Back to original (was 2500)
+          defense: 100, // Back to original (was 1000)
           critChance: 30,
           abilities: ['Fire Breath', 'Wing Strike', 'Magma Pool', 'Meteor Strike', 'Dragon Rage', 'Phoenix Rebirth']
         },
