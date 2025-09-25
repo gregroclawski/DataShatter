@@ -111,14 +111,40 @@ const StoreOverlay = ({ onClose }: Props) => {
       return;
     }
 
+    // Fake authentication step for realistic feel
+    Alert.alert(
+      'Store Authentication',
+      'Please authenticate your purchase',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Face ID',
+          onPress: () => authenticateAndPurchase(gemPackage, 'face_id'),
+        },
+        {
+          text: 'Passcode',
+          onPress: () => authenticateAndPurchase(gemPackage, 'passcode'),
+        },
+      ]
+    );
+  };
+
+  const authenticateAndPurchase = async (gemPackage: GemPackage, authMethod: string) => {
     setPurchasing(gemPackage.id);
 
     try {
-      // Show purchase confirmation
+      // Simulate authentication process
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Show purchase confirmation after "authentication"
       Alert.alert(
         'Confirm Purchase',
         `Purchase ${gemPackage.name} for ${gemPackage.price}?\n\n` +
-        `You will receive ${gemPackage.gems + (gemPackage.bonus || 0)} gems.`,
+        `You will receive ${gemPackage.gems + (gemPackage.bonus || 0)} gems.\n\n` +
+        `✅ Authenticated via ${authMethod === 'face_id' ? 'Face ID' : 'Passcode'}`,
         [
           {
             text: 'Cancel',
@@ -126,14 +152,15 @@ const StoreOverlay = ({ onClose }: Props) => {
             onPress: () => setPurchasing(null),
           },
           {
-            text: 'Purchase',
-            onPress: () => processPurchase(gemPackage),
+            text: 'Confirm Purchase',
+            style: 'default',
+            onPress: () => processPurchase(gemPackage, authMethod),
           },
         ]
       );
     } catch (error) {
       setPurchasing(null);
-      Alert.alert('Purchase Error', 'Failed to process purchase. Please try again.');
+      Alert.alert('Authentication Failed', 'Please try again.');
     }
   };
 
