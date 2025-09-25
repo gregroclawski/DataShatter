@@ -76,11 +76,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
       });
 
+      if (!response.ok) {
+        console.log('Session check failed:', response.status);
+        return false;
+      }
+
       const data = await response.json();
-      return data.authenticated === true;
+      const isValid = data.authenticated === true;
+      
+      if (isValid && data.user) {
+        // Update user data if it changed
+        setUser(data.user);
+      }
+      
+      console.log('Session check result:', isValid);
+      return isValid;
     } catch (error) {
-      console.error('Error checking session:', error);
-      return false;
+      console.error('Session check network error (keeping current session):', error);
+      // Don't log out on network errors - keep current session
+      return !!token && !!user;
     }
   };
 
