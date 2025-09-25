@@ -173,6 +173,12 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
     // Start boss attack patterns
     startBossAttackPattern();
     
+    // Trigger first attack after 2 seconds to ensure system works
+    setTimeout(() => {
+      console.log('🎯 Triggering initial boss attack...');
+      triggerBossAttack();
+    }, 2000);
+    
     console.log(`🐉 Boss spawned: ${tier.name} (${tier.stats.hp} HP, ${tier.stats.attack} ATK)`);
   };
 
