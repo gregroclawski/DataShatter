@@ -219,4 +219,4 @@ export default function NinjaIdleGame() {
       <Text style={{ color: 'white', fontSize: 16 }}>Progression: {currentProgression.title}</Text>
     </View>
   );
-          <View style={styles.resourceItem}>
+}
