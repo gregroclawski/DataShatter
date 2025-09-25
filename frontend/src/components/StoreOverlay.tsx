@@ -130,12 +130,18 @@ const StoreOverlay = ({ onClose }: Props) => {
       // Calculate total gems
       const totalGems = gemPackage.gems + (gemPackage.bonus || 0);
       
-      // Update gems immediately
+      // Update gems immediately and force save
       updateNinja({
         gems: ninja.gems + totalGems,
       });
 
-      console.log(`✅ Purchase successful: ${gemPackage.name} (+${totalGems} gems)`);
+      // FORCE SAVE after gem purchase
+      console.log('💎 Gem purchase complete - forcing immediate save');
+      if (saveOnEvent) {
+        saveOnEvent('gem_purchase');
+      }
+
+      console.log(`🛒 Purchase completed: ${gemPackage.name} (+${totalGems} gems)`);
       console.log(`💎 New gem balance: ${ninja.gems + totalGems}`);
 
       // Show simple success alert
