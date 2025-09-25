@@ -17,7 +17,6 @@ import { useZone } from '../src/contexts/ZoneContext';
 // Import authentication components
 import LoadingScreen from '../src/components/LoadingScreen';
 import AuthScreen from '../src/components/AuthScreen';
-import LogoutConfirmModal from '../src/components/LogoutConfirmModal';
 
 // Import components for overlays
 import NinjaStatsOverlay from '../src/components/NinjaStatsOverlay';
