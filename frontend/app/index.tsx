@@ -385,7 +385,7 @@ export default function NinjaIdleGame() {
         ))}
 
         {/* Projectiles */}
-        {projectiles?.map(projectile => (
+        {(projectiles || []).map(projectile => (
           projectile?.position ? (
             <View
               key={projectile.id}
