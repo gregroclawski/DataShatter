@@ -21,70 +21,28 @@ export default function RootLayout() {
                 <BossProvider>
                   <CombatProvider>
                     <StatusBar style="light" backgroundColor="#0f172a" />
-          <Stack
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: '#1e293b',
-            },
-            headerTintColor: '#f8fafc',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-            contentStyle: {
-              backgroundColor: '#0f172a',
-            },
-          }}
-        >
-          <Stack.Screen 
-            name="index" 
-            options={{ 
-              title: 'Ninja Master',
-              headerShown: false,
-            }} 
-          />
-          <Stack.Screen 
-            name="game" 
-            options={{ 
-              title: 'Battle Arena',
-              headerShown: false,
-            }} 
-          />
-          <Stack.Screen 
-            name="shurikens" 
-            options={{ 
-              title: 'Shurikens',
-              headerShown: false,
-            }} 
-          />
-          <Stack.Screen 
-            name="pets" 
-            options={{ 
-              title: 'Pets',
-              headerShown: false,
-            }} 
-          />
-          <Stack.Screen 
-            name="training" 
-            options={{ 
-              title: 'Training',
-              headerShown: false,
-            }} 
-          />
-          <Stack.Screen 
-            name="raids" 
-            options={{ 
-              title: 'Raids',
-              headerShown: false,
-            }} 
-          />
-          <Stack.Screen 
-            name="adventure" 
-            options={{ 
-              title: 'Adventure',
-              headerShown: false,
-            }} 
-          />
-        </Stack>
+                    <Stack
+                      screenOptions={{
+                        headerStyle: {
+                          backgroundColor: '#1e293b',
+                        },
+                        headerTintColor: '#f8fafc',
+                        headerTitleStyle: {
+                          fontWeight: 'bold',
+                        },
+                        contentStyle: {
+                          backgroundColor: '#0f172a',
+                        },
+                      }}
+                    >
+                      <Stack.Screen 
+                        name="index" 
+                        options={{ 
+                          title: 'Ninja Master',
+                          headerShown: false,
+                        }} 
+                      />
+                    </Stack>
                   </CombatProvider>
                 </BossProvider>
               </EquipmentProvider>
