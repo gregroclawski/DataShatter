@@ -356,7 +356,12 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       console.log('📥 LOAD RESPONSE:', savedData ? 'Data found' : 'No data');
       
       if (savedData && savedData.ninja) {
-        console.log('📊 LOADED DATA - Level:', savedData.ninja.level, 'XP:', savedData.ninja.experience, 'Gold:', savedData.ninja.gold, 'Gems:', savedData.ninja.gems);
+        console.log('📊 LOADING YOUR REAL PROGRESS:');
+        console.log('  - API returned Level:', savedData.ninja.level);
+        console.log('  - API returned XP:', savedData.ninja.experience);
+        console.log('  - API returned Gold:', savedData.ninja.gold);
+        console.log('  - API returned Gems:', savedData.ninja.gems);
+        console.log('  - API returned Skill Points:', savedData.ninja.skillPoints);
         
         // Server returned valid game data
         const loadedGameState: GameState = {
@@ -372,11 +377,24 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           zoneProgress: savedData.zoneProgress || { 1: { zoneId: 1, currentLevel: 1, killsInLevel: 0, completed: false } },
         };
         
+        console.log('🎯 SETTING GAME STATE TO:');
+        console.log('  - Level:', loadedGameState.ninja.level);
+        console.log('  - XP:', loadedGameState.ninja.experience);
+        console.log('  - Gold:', loadedGameState.ninja.gold);
+        console.log('  - Gems:', loadedGameState.ninja.gems);
+        
         lastSaveTimeRef.current = loadedGameState.lastSaveTime;
         setGameState(loadedGameState);
         setHasLoadedFromServer(true);
         console.log('✅ REAL PROGRESS LOADED - Level:', loadedGameState.ninja.level, 'XP:', loadedGameState.ninja.experience, 'Gold:', loadedGameState.ninja.gold, 'Gems:', loadedGameState.ninja.gems);
         console.log('🔓 hasLoadedFromServer set to TRUE - saves now enabled');
+        
+        // Verify game state was set correctly
+        setTimeout(() => {
+          console.log('🔍 VERIFYING GAME STATE SET CORRECTLY:');
+          console.log('  - Current gameState Level:', gameState.ninja.level);
+          console.log('  - Current gameState XP:', gameState.ninja.experience);
+        }, 1000);
       } else {
         // No server data, new player starts with defaults
         console.log('🆕 NO SERVER DATA - New player starting with defaults');
