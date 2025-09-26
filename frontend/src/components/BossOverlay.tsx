@@ -28,6 +28,20 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose, onSt
   const [selectedTier, setSelectedTier] = useState<BossTier | null>(null);
   const [isFighting, setIsFighting] = useState(false);
 
+  // Memoize event handlers to prevent inline arrow function recreation
+  const handleBossSelect = useCallback((boss: Boss) => {
+    setSelectedBoss(boss);
+  }, []);
+
+  const handleFightBoss = useCallback((bossId: number, tier: number) => {
+    fightBoss(bossId, tier);
+  }, [fightBoss]);
+
+  const handleCloseDetails = useCallback(() => {
+    setSelectedBoss(null);
+    setSelectedTier(null);
+  }, []);
+
   // Add safety check for ninja data availability
   const { gameState } = useGame();
   const ninja = gameState.ninja;
