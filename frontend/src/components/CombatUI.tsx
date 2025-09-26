@@ -45,13 +45,6 @@ export default function CombatUI({ onAbilityPress }: Props) {
     return seconds > 0 ? `${seconds}s` : '';
   };
 
-  const getCooldownPercentage = (ability: EquippedAbility): number => {
-    if (ability.currentCooldown <= 0) return 0;
-    
-    const maxCooldown = ability.stats.cooldown * 10; // Convert to ticks
-    return (ability.currentCooldown / maxCooldown) * 100;
-  };
-
   return (
     <View style={styles.container}>
       {/* Combat Status */}
