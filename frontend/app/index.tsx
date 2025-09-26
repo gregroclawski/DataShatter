@@ -518,9 +518,21 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       flexDirection: 'row',
       alignItems: 'center',
       paddingHorizontal: layout.paddingM,
-      paddingTop: layout.topInset * 0.5,
+      // Proper mobile SafeAreaView integration - use layout.topInset directly
+      paddingTop: Math.max(layout.topInset, layout.paddingM),
       borderBottomWidth: 2,
       borderBottomColor: MythicTechColors.neonBlue + '44',
+      // Ensure proper z-index for mobile
+      zIndex: 35,
+      // Mobile-optimized shadow
+      ...(Platform.OS === 'ios' ? {
+        shadowColor: MythicTechColors.neonBlue,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      } : {
+        elevation: 4,
+      }),
     },
     progressSection: {
       flex: 1,
