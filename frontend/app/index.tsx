@@ -107,7 +107,58 @@ export default function NinjaIdleGame() {
   
   // MOBILE FIX: Removed joystick movement system to debug crashes
 
-  // MOBILE FIX: Simplified ninja positioning without joystick
+  // MOBILE-SAFE Movement System - Uses simple touch events instead of complex gestures
+  useEffect(() => {
+    if (!isAutoMovement && isManualControlActive && movementDirection.x !== 0 || movementDirection.y !== 0) {
+      // Mobile-safe movement using simple state updates and setTimeout
+      movementIntervalRef.current = setTimeout(() => {
+        setNinjaPosition(prev => {
+          const moveSpeed = 2; // Slower for mobile stability
+          const newX = Math.max(
+            0,
+            Math.min(
+              layout.screenWidth - layout.ninjaSize,
+              prev.x + (movementDirection.x * moveSpeed)
+            )
+          );
+          const newY = Math.max(
+            0,
+            Math.min(
+              layout.gameAreaHeight - layout.ninjaSize,
+              prev.y + (movementDirection.y * moveSpeed)
+            )
+          );
+          
+          const newPosition = { x: newX, y: newY };
+          updateNinjaPosition(newPosition); // Update combat context
+          return newPosition;
+        });
+      }, 33); // 30fps for mobile stability
+    }
+    
+    return () => {
+      if (movementIntervalRef.current) {
+        clearTimeout(movementIntervalRef.current);
+      }
+    };
+  }, [isManualControlActive, movementDirection.x, movementDirection.y, isAutoMovement, layout, updateNinjaPosition]);
+
+  // Toggle between auto and manual movement
+  const toggleMovementMode = useCallback(() => {
+    setIsAutoMovement(prev => {
+      const newMode = !prev;
+      if (newMode) {
+        // Switching to auto movement - stop manual control
+        setIsManualControlActive(false);
+        setMovementDirection({ x: 0, y: 0 });
+        if (movementIntervalRef.current) {
+          clearTimeout(movementIntervalRef.current);
+        }
+      }
+      console.log(`🎮 Movement mode: ${newMode ? 'Auto' : 'Manual'}`);
+      return newMode;
+    });
+  }, []);
 
   // MOBILE FIX: Joystick system removed to debug crashes
 
