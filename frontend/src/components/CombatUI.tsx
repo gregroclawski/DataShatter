@@ -175,11 +175,9 @@ const CombatUI: React.FC = () => {
               </View>
 
               {/* Ability Icon */}
-              <Ionicons
-                name={ability.iconName || 'flash'}
-                size={24}
-                color={MythicTechColors.neonBlue}
-              />
+              <Text style={{ fontSize: 24 }}>
+                {ability.icon || '⚡'}
+              </Text>
 
               {/* Cooldown Overlay */}
               {(() => {
