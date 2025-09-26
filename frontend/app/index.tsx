@@ -495,7 +495,10 @@ export default function NinjaIdleGame() {
       )}
       {activeOverlay === 'zones' && (
         <View style={styles.overlayWrapper}>
-          <EnemiesZonesOverlay onClose={() => setActiveOverlay(null)} />
+          <EnemiesZonesOverlay 
+            visible={true}
+            onClose={() => setActiveOverlay(null)} 
+          />
         </View>
       )}
 
