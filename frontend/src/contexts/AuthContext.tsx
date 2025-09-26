@@ -392,20 +392,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const contextValue = React.useMemo(() => ({
+    user,
+    token,
+    isLoading: actualIsLoading,  // Use combined loading state
+    isAuthenticated,
+    login,
+    register,
+    loginWithGoogle,
+    logout,
+    checkSession,
+  }), [user, token, actualIsLoading, isAuthenticated, login, register, loginWithGoogle, logout, checkSession]);
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        isLoading: actualIsLoading,  // Use combined loading state
-        isAuthenticated,
-        login,
-        register,
-        loginWithGoogle,
-        logout,
-        checkSession,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
