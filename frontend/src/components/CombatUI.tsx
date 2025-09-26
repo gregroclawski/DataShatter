@@ -235,7 +235,7 @@ const CombatUI: React.FC = () => {
                 ) : null;
               })()}
             </TouchableOpacity>
-          ))}
+          ) : null)}
         </View>
       </View>
     </>
