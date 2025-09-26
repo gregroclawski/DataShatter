@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const checkExistingSession = async () => {
     // Ensure loading screen shows for minimum duration
     const startTime = Date.now();
-    const minLoadingDuration = 1500; // 1.5 seconds
+    const minLoadingDuration = 8000; // 8 seconds
     
     try {
       setIsLoading(true);
