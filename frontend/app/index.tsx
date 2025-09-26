@@ -710,10 +710,11 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
     },
     overlayWrapper: {
       position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: layout.bottomNavHeight,
+      // Proper safe area handling for mobile devices
+      top: layout.topInset,
+      left: layout.leftInset,
+      right: layout.rightInset,
+      bottom: layout.bottomNavHeight + layout.bottomInset,
       zIndex: 500,
       backgroundColor: MythicTechColors.darkSpace + 'cc',
     },
