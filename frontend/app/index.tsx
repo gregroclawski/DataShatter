@@ -154,7 +154,7 @@ export default function NinjaIdleGame() {
         const closestEnemy = findClosestEnemy();
         if (closestEnemy && closestEnemy.position) {
           setNinjaPosition(prev => {
-            const moveSpeed = 1.5; // Slower auto movement for mobile
+            const moveSpeed = 7.5; // 5x faster auto movement (was 1.5)
             
             // Calculate direction to closest enemy
             const deltaX = closestEnemy.position.x - prev.x;
@@ -188,7 +188,7 @@ export default function NinjaIdleGame() {
             return { x: newX, y: newY };
           });
         }
-      }, 50); // 20fps for mobile-friendly auto movement
+      }, 16); // 60fps for smoother auto movement (was 50ms/20fps)
       
       return () => clearInterval(autoMovementInterval);
     }
