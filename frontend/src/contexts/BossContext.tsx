@@ -402,7 +402,7 @@ export const BossProvider = ({ children }: { children: ReactNode }) => {
     console.log('🧪 Test materials added!');
   };
 
-  const contextValue: BossContextType = {
+  const contextValue: BossContextType = React.useMemo(() => ({
     dailyBossState,
     canFightBoss,
     fightBoss,
@@ -416,7 +416,21 @@ export const BossProvider = ({ children }: { children: ReactNode }) => {
     getBossProgress,
     resetDailyTickets,
     addTestMaterials,
-  };
+  }), [
+    dailyBossState,
+    canFightBoss,
+    fightBoss,
+    unlockNextTier,
+    getTicketsRemaining,
+    getTimeUntilTicketRegen,
+    hasTickets,
+    getBoss,
+    getBossTier,
+    getAvailableBosses,
+    getBossProgress,
+    resetDailyTickets,
+    addTestMaterials,
+  ]);
 
   return (
     <BossContext.Provider value={contextValue}>
