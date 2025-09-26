@@ -170,8 +170,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       // MOBILE FIX: Add enemy movement logic - enemies were spawning but never moving!
       newState.enemies.forEach(enemy => {
         if (!enemy.isBoss) { // Only move regular enemies, not bosses
-          // Mobile-optimized enemy movement - slower, more predictable
-          const MOVEMENT_SPEED = 0.3; // Pixels per tick (slower for mobile)
+          // Mobile-optimized enemy movement - 5x faster and smoother
+          const MOVEMENT_SPEED = 1.5; // 5x faster (was 0.3)
           const SCREEN_WIDTH = 390;
           const GAME_AREA_HEIGHT = 704; // 844 - 140 (top bar + bottom nav)
           const ENEMY_SIZE = 35;
