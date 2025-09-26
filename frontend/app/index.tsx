@@ -677,9 +677,21 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       justifyContent: 'center',
       paddingVertical: layout.paddingS,
       paddingHorizontal: layout.paddingXS,
-      minHeight: layout.bottomNavHeight * 0.8,
+      // Use platform-specific minimum touch targets for mobile accessibility
+      minHeight: Math.max(layout.tabTouchTarget, layout.bottomNavHeight * 0.8),
       borderRadius: layout.paddingS,
       marginHorizontal: layout.paddingXS * 0.5,
+      // Platform-specific touch feedback
+      ...(Platform.OS === 'ios' ? {
+        // iOS shadow for better touch feedback
+        shadowColor: MythicTechColors.neonBlue,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+      } : {
+        // Android elevation for material design
+        elevation: 1,
+      }),
     },
     navButtonActive: {
       backgroundColor: MythicTechColors.neonBlue + '22',
