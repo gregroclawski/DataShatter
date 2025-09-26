@@ -560,22 +560,10 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     updateNinjaPosition,
     lastExplosionTime,
   }), [
+    // Only include primitive values and state to prevent infinite loop
+    // Remove function dependencies that recreate and cause circular refs
     combatState,
     projectiles,
-    startCombat,
-    stopCombat,
-    equipAbility,
-    handleEnemyKill,
-    getDeck,
-    getAvailableAbilities,
-    upgradeAbility,
-    spawnEnemy,
-    spawnBoss,
-    clearAllEnemies,
-    clearSpecificEnemy,
-    triggerLevelUpExplosion,
-    findClosestEnemy,
-    updateNinjaPosition,
     lastExplosionTime,
   ]);
 
