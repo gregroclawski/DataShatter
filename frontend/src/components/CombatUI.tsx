@@ -194,7 +194,7 @@ const CombatUI: React.FC = () => {
                 ) : null;
               })()}
             </TouchableOpacity>
-          ))}
+          ) : null)}
         </View>
 
         {/* Bottom Row - 2 Abilities (centered) */}
