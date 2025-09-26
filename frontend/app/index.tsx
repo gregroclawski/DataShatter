@@ -400,26 +400,30 @@ export default function NinjaIdleGame() {
           </Text>
         </View>
 
-        {/* Ninja Character - Responsive */}
-        <View style={[styles.ninjaContainer, { 
-          left: ninjaPosition.x, 
-          top: ninjaPosition.y,
-          width: layout.ninjaSize,
-          height: layout.ninjaSize 
-        }]}>
-          <View style={[
-            styles.ninja, 
+        {/* Ninja Character - Responsive with Touch & Drag Movement */}
+        <GestureDetector gesture={panGesture}>
+          <Animated.View style={[
+            styles.ninjaContainer, 
             { 
-              width: layout.ninjaSize, 
-              height: layout.ninjaSize,
-              borderRadius: layout.ninjaSize / 2
+              width: layout.ninjaSize,
+              height: layout.ninjaSize 
             },
-            isAttacking && styles.ninjaAttacking, 
-            isLevelingUp && styles.ninjaLevelUp
+            animatedNinjaStyle
           ]}>
-            <Text style={[styles.ninjaEmoji, ninjaFontStyle]}>🥷</Text>
-          </View>
-        </View>
+            <View style={[
+              styles.ninja, 
+              { 
+                width: layout.ninjaSize, 
+                height: layout.ninjaSize,
+                borderRadius: layout.ninjaSize / 2
+              },
+              isAttacking && styles.ninjaAttacking, 
+              isLevelingUp && styles.ninjaLevelUp
+            ]}>
+              <Text style={[styles.ninjaEmoji, ninjaFontStyle]}>🥷</Text>
+            </View>
+          </Animated.View>
+        </GestureDetector>
 
         {/* Enemies - Responsive */}
         {(combatState.enemies || []).map(enemy => (
