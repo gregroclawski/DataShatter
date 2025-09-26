@@ -100,6 +100,56 @@ export default function NinjaIdleGame() {
     translateY.value = ninjaPosition.y;
   }, [ninjaPosition.x, ninjaPosition.y, translateX, translateY]);
 
+  // Create pan gesture for ninja movement - mobile optimized
+  const panGesture = Gesture.Pan()
+    .onStart(() => {
+      // Optional: Add visual feedback when drag starts
+      console.log('🥷 Ninja movement started');
+    })
+    .onUpdate((event) => {
+      // Calculate new position within game area bounds
+      const newX = Math.max(
+        0, 
+        Math.min(
+          layout.screenWidth - layout.ninjaSize, 
+          translateX.value + event.changeX
+        )
+      );
+      const newY = Math.max(
+        0, 
+        Math.min(
+          layout.gameAreaHeight - layout.ninjaSize, 
+          translateY.value + event.changeY
+        )
+      );
+      
+      translateX.value = newX;
+      translateY.value = newY;
+    })
+    .onEnd(() => {
+      // Update the actual ninja position state and combat context
+      const finalPosition = {
+        x: translateX.value,
+        y: translateY.value
+      };
+      
+      // Use runOnJS to update React state from worklet
+      runOnJS(setNinjaPosition)(finalPosition);
+      runOnJS(updateNinjaPosition)(finalPosition);
+      
+      console.log('🥷 Ninja moved to:', finalPosition);
+    });
+
+  // Animated style for ninja position
+  const animatedNinjaStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: translateX.value },
+        { translateY: translateY.value }
+      ]
+    };
+  });
+
   // Use useRef to track previous position and prevent infinite loops
   const previousLayoutRef = useRef({
     screenWidth: layout.screenWidth,
