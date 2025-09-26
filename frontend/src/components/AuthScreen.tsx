@@ -35,23 +35,11 @@ export default function AuthScreen() {
 
   // Web-compatible button click handler
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      console.log('🔧 Setting up web DOM event listener for submit button');
-      
-      const handleGlobalClick = (event: MouseEvent) => {
+    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+      const handleGlobalClick = (event: Event) => {
         const target = event.target as HTMLElement;
-        
-        // Check if the clicked element or its parents contain "Login" text and are a submit button
-        const isSubmitButton = target.textContent && 
-          target.textContent.includes('Login') && 
-          (target.style?.background?.includes('gradient') || 
-           target.closest('[style*="gradient"]')) &&
-          !target.closest('[role="tab"]'); // Exclude toggle tabs
-        
-        if (isSubmitButton && !isLoading) {
-          console.log('🎯 DOM EVENT - Submit button clicked via global listener');
-          event.preventDefault();
-          event.stopPropagation();
+        if (target?.textContent?.includes('Login') || target?.textContent?.includes('Register')) {
+          console.log('🎯 Global click listener - Login/Register button detected');
           handleSubmit();
         }
       };
@@ -62,7 +50,7 @@ export default function AuthScreen() {
         document.removeEventListener('click', handleGlobalClick);
       };
     }
-  }, [authMode, formData, isLoading]);
+  }, []); // Remove dependencies to prevent infinite re-renders
 
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
