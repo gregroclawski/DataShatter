@@ -80,6 +80,14 @@ export default function NinjaIdleGame() {
   const [isBossBattleActive, setIsBossBattleActive] = useState(false);
   const [currentBossBattle, setCurrentBossBattle] = useState<{boss: Boss, tier: BossTier} | null>(null);
   const [previousOverlay, setPreviousOverlay] = useState<ActiveOverlay>(null);
+
+  // MOBILE-SAFE Movement Control System
+  const [isAutoMovement, setIsAutoMovement] = useState(true); // Start with auto movement
+  const [isManualControlActive, setIsManualControlActive] = useState(false);
+  const [joystickPosition, setJoystickPosition] = useState({ x: 0, y: 0 });
+  const [knobPosition, setKnobPosition] = useState({ x: 0, y: 0 });
+  const [movementDirection, setMovementDirection] = useState({ x: 0, y: 0 });
+  const movementIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
   // Mobile-compatible projectile animation system
   const [animatedProjectiles, setAnimatedProjectiles] = useState<any[]>([]);
