@@ -820,7 +820,38 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       fontSize: layout.bodyFontSize,
       color: MythicTechColors.voidSilver,
     },
-    // MOBILE FIX: Removed joystick touch surface
+    // Mobile Movement Controls
+    movementToggle: {
+      position: 'absolute',
+      top: layout.topBarHeight + layout.paddingS,
+      right: layout.paddingM,
+      paddingHorizontal: layout.paddingM,
+      paddingVertical: layout.paddingS,
+      borderRadius: layout.paddingS,
+      zIndex: 60, // Above ninja
+      minWidth: 80,
+      alignItems: 'center',
+      // Mobile-compatible shadow
+      ...(Platform.OS === 'ios' ? {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      } : {
+        elevation: 4,
+      }),
+    },
+    movementToggleText: {
+      color: MythicTechColors.white,
+      fontSize: layout.smallFontSize,
+      fontWeight: 'bold',
+    },
+    joystickArea: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      zIndex: 10, // Below ninja but above game area
+    },
     ninjaContainer: {
       position: 'absolute',
       // Higher z-index to ensure ninja appears above skill bar (Combat UI has zIndex: 30)
