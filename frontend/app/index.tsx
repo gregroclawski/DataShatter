@@ -590,7 +590,7 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: MythicTechColors.darkSpace,
+      backgroundColor: MythicTechColors.shadowGrid, // Changed from darkSpace for mobile visibility
     },
     topBar: {
       height: layout.topBarHeight,
@@ -677,7 +677,7 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
     gameArea: {
       flex: 1,
       position: 'relative',
-      backgroundColor: MythicTechColors.darkSpace,
+      backgroundColor: MythicTechColors.shadowGrid, // Changed from darkSpace for mobile visibility
     },
     zoneInfo: {
       position: 'absolute',
