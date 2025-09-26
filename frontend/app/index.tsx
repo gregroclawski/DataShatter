@@ -498,16 +498,16 @@ export default function NinjaIdleGame() {
           ) : null
         ))}
 
-        {/* Projectiles - Responsive */}
-        {(projectiles || []).map(projectile => (
+        {/* Projectiles - Mobile-optimized animation */}
+        {(animatedProjectiles || []).map(projectile => (
           projectile ? (
             <View
               key={projectile.id}
               style={[
                 styles.projectile,
                 {
-                  left: projectile.x - layout.paddingXS,
-                  top: projectile.y - layout.paddingXS,
+                  left: (projectile.currentX || projectile.x) - layout.paddingXS,
+                  top: (projectile.currentY || projectile.y) - layout.paddingXS,
                 }
               ]}
             >
