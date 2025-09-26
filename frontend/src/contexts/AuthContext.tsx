@@ -117,6 +117,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error) {
       console.error('Error in credential check:', error);
+      if (error.message === 'Authentication timeout') {
+        console.log('❌ Authentication timed out - clearing stored credentials');
+        try {
+          await AsyncStorage.multiRemove(['login_email', 'login_password']);
+        } catch (e) {
+          if (typeof window !== 'undefined' && window.localStorage) {
+            window.localStorage.removeItem('login_email');
+            window.localStorage.removeItem('login_password');
+          }
+        }
+      }
     } finally {
       console.log('🏁 Credential check completed, setting isLoading to false');
       setIsLoading(false);
