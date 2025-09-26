@@ -394,7 +394,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Start combat
-  const startCombat = () => {
+  const startCombat = React.useCallback(() => {
     console.log('🚀 Starting combat, adding tick callback...');
     setCombatState(prev => ({ ...prev, isInCombat: true }));
     
