@@ -55,6 +55,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading(true);
       console.log('🔍 Checking for stored login credentials...');
       
+      // Add timeout to prevent infinite loading
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Authentication timeout')), 10000)
+      );
+      
       // Check for stored login credentials with web fallback
       let storedEmail = null;
       let storedPassword = null;
