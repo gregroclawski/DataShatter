@@ -976,5 +976,45 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       zIndex: 500,
       backgroundColor: MythicTechColors.darkSpace + 'cc',
     },
+    // Joystick Styles
+    joystickBase: {
+      position: 'absolute',
+      width: 80,
+      height: 80,
+      zIndex: 100,
+      pointerEvents: 'none',
+    },
+    joystickBaseInner: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      backgroundColor: MythicTechColors.neonBlue + '40', // Semi-transparent
+      borderWidth: 2,
+      borderColor: MythicTechColors.neonBlue + '80',
+    },
+    joystickKnob: {
+      position: 'absolute',
+      width: 30,
+      height: 30,
+      zIndex: 101,
+      pointerEvents: 'none',
+    },
+    joystickKnobInner: {
+      width: 30,
+      height: 30,
+      borderRadius: 15,
+      backgroundColor: MythicTechColors.neonBlue,
+      borderWidth: 2,
+      borderColor: MythicTechColors.white,
+      // Mobile-compatible shadow
+      ...(Platform.OS === 'ios' ? {
+        shadowColor: MythicTechColors.neonBlue,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 4,
+      } : {
+        elevation: 6,
+      }),
+    },
   });
 }
