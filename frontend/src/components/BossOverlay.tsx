@@ -84,7 +84,7 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose, onSt
       <TouchableOpacity
         key={boss.id}
         style={styles.bossCard}
-        onPress={() => setSelectedBoss(boss)}
+        onPress={() => handleBossSelect(boss)}
       >
         <View style={styles.bossHeader}>
           <Text style={styles.bossIcon}>{boss.icon}</Text>
