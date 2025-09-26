@@ -293,11 +293,13 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     return findClosestEnemyInternal(combatState.enemies);
   };
 
-  // Update ninja position for accurate projectile origin
-  const updateNinjaPosition = (position: {x: number, y: number}) => {
-    console.log(`🎯 Combat context ninja position updated to: (${position.x.toFixed(0)}, ${position.y.toFixed(0)})`);
-    setNinjaPosition(position);
-  };
+  // MOBILE FIX: Track ninja position from main game instead of managing separate state
+  const [currentNinjaPosition, setCurrentNinjaPosition] = useState<{x: number, y: number}>({ x: 0, y: 0 });
+  
+  // Update ninja position for combat calculations - now just tracks main game position
+  const updateNinjaPosition = useCallback((newPosition: {x: number, y: number}) => {
+    setCurrentNinjaPosition(newPosition);
+  }, []);
 
   // Handle projectile hit - deals damage to target enemy
   const handleProjectileHit = (projectile: CombatProjectile) => {
