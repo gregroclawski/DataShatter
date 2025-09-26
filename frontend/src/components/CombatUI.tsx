@@ -183,7 +183,6 @@ const styles = StyleSheet.create({
     marginBottom: 2, // Reduced by 50% (was 4)
   },
   abilitySlot: {
-    width: (SCREEN_WIDTH - 60 - 60) / 5, // Much smaller slots (50% reduction)
     height: 40, // Fixed height instead of aspect ratio for compactness
     backgroundColor: MythicTechColors.shadowGrid,
     borderRadius: 4, // Much smaller border radius
