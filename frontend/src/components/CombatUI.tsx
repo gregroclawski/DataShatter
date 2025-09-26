@@ -92,7 +92,7 @@ export default function CombatUI({ onAbilityPress }: Props) {
                     <View 
                       style={[
                         styles.cooldownOverlay,
-                        { height: `${getCooldownPercentage(ability)}%` }
+                        getCooldownOverlayStyle(ability)
                       ]} 
                     />
                     <Text style={styles.cooldownText}>
