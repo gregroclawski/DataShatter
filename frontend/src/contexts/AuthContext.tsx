@@ -26,24 +26,39 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Dynamically determine backend URL based on current hostname
-const getBackendUrl = () => {
-  if (typeof window !== 'undefined') {
-    const currentHost = window.location.hostname;
+const getBackendUrl = (): string => {
+  // Get the backend URL from environment variable first
+  const envBackendUrl = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL;
+  
+  console.log('🔧 BACKEND URL DETECTION:');
+  console.log('  - Platform.OS:', Platform.OS);
+  console.log('  - Constants.appOwnership:', Constants.appOwnership);
+  console.log('  - ENV EXPO_PUBLIC_BACKEND_URL:', process.env.EXPO_PUBLIC_BACKEND_URL);
+  console.log('  - expoConfig.extra.backendUrl:', Constants.expoConfig?.extra?.backendUrl);
+  
+  // For Expo Go mobile, use the environment variable directly
+  if (Platform.OS !== 'web' && envBackendUrl) {
+    console.log('  - Using mobile/expo backend URL:', envBackendUrl);
+    return envBackendUrl;
+  }
+  
+  // For web, try to detect current domain
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
     const currentProtocol = window.location.protocol;
+    const currentHost = window.location.host;
+    console.log('  - Web detected - Protocol:', currentProtocol, 'Host:', currentHost);
     
-    // If we're on ngrok (mobile Expo Go), use the same ngrok URL for backend
-    if (currentHost.includes('.ngrok.io')) {
-      return `${currentProtocol}//${currentHost}`;
-    }
-    // If we're on preview domain (web), use the preview domain for backend
     if (currentHost.includes('.preview.emergentagent.com')) {
-      return `${currentProtocol}//${currentHost}`;
+      const webUrl = `${currentProtocol}//${currentHost}`;
+      console.log('  - Using web backend URL:', webUrl);
+      return webUrl;
     }
   }
   
-  // Fallback to environment variable or localhost
-  return Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+  // Final fallback
+  const fallbackUrl = envBackendUrl || 'http://localhost:8001';
+  console.log('  - Using fallback URL:', fallbackUrl);
+  return fallbackUrl;
 };
 
 const API_BASE_URL = getBackendUrl();
