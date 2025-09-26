@@ -116,18 +116,18 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     
     console.log(`💰 Awarding ${xpReward} XP and ${goldReward} gold for kill`);
     
-    // BATCH all state updates to prevent cross-context cascade on mobile
+    // MOBILE FIX: Defer ALL cross-context state updates to prevent render-phase violations
     // Use setTimeout to break the synchronous chain and prevent React Native bridge overload
-    updateNinja((prev) => {
-      console.log(`📊 XP before: ${prev.experience}, after: ${prev.experience + xpReward}`);
-      return {
-        experience: prev.experience + xpReward,
-        gold: prev.gold + goldReward,
-      };
-    });
-    
-    // Defer zone update to next event loop to prevent cascade
     setTimeout(() => {
+      // Award XP and gold using GameContext
+      updateNinja((prev) => {
+        console.log(`📊 XP before: ${prev.experience}, after: ${prev.experience + xpReward}`);
+        return {
+          experience: prev.experience + xpReward,
+          gold: prev.gold + goldReward,
+        };
+      });
+      
       // Convert CombatEnemy to CurrentEnemy format for zone progression
       const zoneEnemy = {
         id: enemy.id,
@@ -140,7 +140,6 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         xp: 20, // Base XP reward
         position: enemy.position
       };
-      
       recordEnemyKill(zoneEnemy);
     }, 0); // 0ms delay to defer to next event loop
   }, [updateNinja, recordEnemyKill]);
