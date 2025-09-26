@@ -133,7 +133,9 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
                     Enemy HP: ×{level?.enemyMultiplier || 1} | XP: ×{level?.xpMultiplier || 1}
                   </Text>
                   <Text style={[styles.statText, !isUnlocked && styles.lockedText]}>
-                    Enemies: {(level?.enemyTypes || []).join(', ') || 'None'}
+                    Enemies: {level?.enemyTypes && level.enemyTypes.length > 0 
+                      ? level.enemyTypes.filter(type => type && typeof type === 'string').join(', ') 
+                      : 'None'}
                   </Text>
                 </View>
                 
