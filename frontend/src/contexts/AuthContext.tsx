@@ -393,7 +393,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       value={{
         user,
         token,
-        isLoading,
+        isLoading: actualIsLoading,  // Use combined loading state
         isAuthenticated,
         login,
         register,
