@@ -380,7 +380,7 @@ export default function NinjaIdleGame() {
                 <View 
                   style={[
                     styles.enemyHealthFill, 
-                    { width: `${Math.max(0, Math.min(100, (enemy.health / enemy.maxHealth) * 100))}%` }
+                    getEnemyHealthWidth(enemy)
                   ]} 
                 />
               </View>
