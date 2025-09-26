@@ -251,34 +251,26 @@ export default function NinjaIdleGame() {
     paddingXL: layout.paddingXL
   });
 
-  // Update ninja position when layout changes (mobile-stable, no circular dependency)
+  // MOBILE FIX: Only reset position on significant layout changes, not during normal movement
   useEffect(() => {
-    const newPosition = {
+    const newCenterPosition = {
       x: (layout.screenWidth - layout.ninjaSize) / 2, // Center horizontally
       y: (layout.gameAreaHeight - layout.ninjaSize) / 2 // Center vertically
     };
-    
-    // Check if layout actually changed to prevent unnecessary updates
-    const prevLayout = previousLayoutRef.current;
-    const layoutChanged = 
-      Math.abs(layout.screenWidth - prevLayout.screenWidth) > 5 ||
-      Math.abs(layout.gameAreaHeight - prevLayout.gameAreaHeight) > 5 ||
-      Math.abs(layout.ninjaSize - prevLayout.ninjaSize) > 2 ||
-      Math.abs(layout.paddingXL - prevLayout.paddingXL) > 2;
-    
-    if (layoutChanged) {
-      console.log('📱 Layout changed, updating ninja position');
-      setNinjaPosition(newPosition);
-      
-      // Update ref to current layout values
-      previousLayoutRef.current = {
-        screenWidth: layout.screenWidth,
-        gameAreaHeight: layout.gameAreaHeight,
-        ninjaSize: layout.ninjaSize,
-        paddingXL: layout.paddingXL
-      };
+
+    // Only reset if this is the initial layout setup (ninja position is at 0,0) or major layout change
+    const isInitialSetup = ninjaPosition.x === 0 && ninjaPosition.y === 0;
+    const hasMajorLayoutChange = (
+      Math.abs(layout.screenWidth - (ninjaPosition.x + layout.ninjaSize)) < layout.ninjaSize ||
+      Math.abs(layout.gameAreaHeight - (ninjaPosition.y + layout.ninjaSize)) < layout.ninjaSize
+    );
+
+    if (isInitialSetup || hasMajorLayoutChange) {
+      console.log('📱 Major layout change or initial setup, centering ninja position');
+      setNinjaPosition(newCenterPosition);
+      updateNinjaPosition(newCenterPosition);
     }
-  }, [layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, layout.paddingXL]); // NO ninjaPosition dependencies!
+  }, [layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize]); // Removed paddingXL to prevent unnecessary resets
 
   // Mobile-compatible projectile animation system - replaces web-specific requestAnimationFrame
   useEffect(() => {
