@@ -48,6 +48,13 @@ const getBackendUrl = () => {
 
 const API_BASE_URL = getBackendUrl();
 
+console.log('🔧 AuthContext - Backend URL Configuration:');
+console.log('  - Detected API_BASE_URL:', API_BASE_URL);
+if (typeof window !== 'undefined') {
+  console.log('  - Current hostname:', window.location.hostname);
+  console.log('  - Current protocol:', window.location.protocol);
+}
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
