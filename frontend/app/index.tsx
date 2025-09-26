@@ -52,7 +52,7 @@ export default function NinjaIdleGame() {
   // CRITICAL: ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
   const { gameState, isLoading: gameLoading, updateNinja } = useGame();
-  const { combatState, startCombat, stopCombat, triggerLevelUpExplosion, projectiles, updateNinjaPosition } = useCombat();
+  const { combatState, startCombat, stopCombat, triggerLevelUpExplosion, projectiles, updateNinjaPosition, findClosestEnemy } = useCombat();
   const { currentZone, currentZoneLevel, getZoneProgress, recordEnemyKill } = useZone();
   
   // All state hooks must be called unconditionally
