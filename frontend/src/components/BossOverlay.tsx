@@ -110,16 +110,16 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose, onSt
                 onPress={() => isUnlocked && canFight ? handleFightBoss(boss.id, tier.tier) : null}
                 disabled={!canFight}
               >
-                <Text style={styles.tierTitle}>Tier {tier.tier}</Text>
-                <Text style={styles.tierLevel}>Req. Level {tier.requiredLevel}</Text>
-                <Text style={styles.tierHealth}>HP: {tier.health.toLocaleString()}</Text>
-                <Text style={styles.tierAttack}>ATK: {tier.attack.toLocaleString()}</Text>
+                <Text style={styles.tierTitle}>Tier {tier?.tier || 'N/A'}</Text>
+                <Text style={styles.tierLevel}>Req. Level {tier?.requiredLevel || 0}</Text>
+                <Text style={styles.tierHealth}>HP: {tier?.health?.toLocaleString() || '0'}</Text>
+                <Text style={styles.tierAttack}>ATK: {tier?.attack?.toLocaleString() || '0'}</Text>
                 
                 <View style={styles.tierRewards}>
                   <Text style={styles.tierRewardsTitle}>Rewards:</Text>
-                  <Text style={styles.tierReward}>XP: {tier.rewards.xp.toLocaleString()}</Text>
-                  <Text style={styles.tierReward}>Gold: {tier.rewards.gold.toLocaleString()}</Text>
-                  {tier.rewards.materials && (
+                  <Text style={styles.tierReward}>XP: {tier?.rewards?.xp?.toLocaleString() || '0'}</Text>
+                  <Text style={styles.tierReward}>Gold: {tier?.rewards?.gold?.toLocaleString() || '0'}</Text>
+                  {tier?.rewards?.materials && (
                     <Text style={styles.tierReward}>Materials: {tier.rewards.materials.amount}</Text>
                   )}
                 </View>
