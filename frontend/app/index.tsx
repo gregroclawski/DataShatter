@@ -170,29 +170,33 @@ export default function NinjaIdleGame() {
     };
   }, [joystickVisible]); // FIXED: Only depend on joystickVisible to prevent infinite loop
 
-  // Create touch gesture for joystick control
+  // Create touch gesture for joystick control - FIXED: Using worklets and shared values
   const touchGesture = Gesture.Pan()
     .onStart((event) => {
-      // Show joystick at touch position
+      'worklet';
+      // Show joystick at touch position using shared values
       const touchX = event.x;
       const touchY = event.y;
-      
-      setJoystickPosition({ x: touchX, y: touchY });
-      setJoystickVisible(true);
-      setKnobOffset({ x: 0, y: 0 });
       
       joystickBaseX.value = touchX;
       joystickBaseY.value = touchY;
       joystickKnobX.value = touchX;
       joystickKnobY.value = touchY;
+      knobOffsetX.value = 0;
+      knobOffsetY.value = 0;
       
-      console.log('🕹️ Joystick appeared at:', { x: touchX, y: touchY });
+      // Show joystick on main thread
+      runOnJS(setJoystickVisible)(true);
+      runOnJS(console.log)('🕹️ Joystick appeared at:', { x: touchX, y: touchY });
     })
     .onUpdate((event) => {
-      // Update joystick knob position
+      'worklet';
+      // Update joystick knob position using shared values only
       const maxDistance = 40;
-      const deltaX = event.x - joystickPosition.x;
-      const deltaY = event.y - joystickPosition.y;
+      const baseX = joystickBaseX.value;
+      const baseY = joystickBaseY.value;
+      const deltaX = event.x - baseX;
+      const deltaY = event.y - baseY;
       
       // Limit knob distance from base
       const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
@@ -202,22 +206,27 @@ export default function NinjaIdleGame() {
       const knobX = Math.cos(angle) * limitedDistance;
       const knobY = Math.sin(angle) * limitedDistance;
       
-      setKnobOffset({ x: knobX, y: knobY });
-      joystickKnobX.value = joystickPosition.x + knobX;
-      joystickKnobY.value = joystickPosition.y + knobY;
+      // Update shared values for animation
+      knobOffsetX.value = knobX;
+      knobOffsetY.value = knobY;
+      joystickKnobX.value = baseX + knobX;
+      joystickKnobY.value = baseY + knobY;
     })
     .onEnd(() => {
-      // Hide joystick and update final position
-      setJoystickVisible(false);
-      setKnobOffset({ x: 0, y: 0 });
+      'worklet';
+      // Hide joystick and reset values
+      knobOffsetX.value = 0;
+      knobOffsetY.value = 0;
       
       const finalPosition = {
         x: translateX.value,
         y: translateY.value
       };
       
+      // Update on main thread
+      runOnJS(setJoystickVisible)(false);
       runOnJS(setNinjaPosition)(finalPosition);
-      console.log('🕹️ Joystick hidden, ninja final position:', finalPosition);
+      runOnJS(console.log)('🕹️ Joystick hidden, ninja final position:', finalPosition);
     });
 
   // Animated style for ninja position
