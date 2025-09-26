@@ -610,6 +610,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     triggerLevelUpExplosion,
     findClosestEnemy,
     updateNinjaPosition,
+    setManualControlActive,
     lastExplosionTime,
   }), [
     // Only include primitive values and state to prevent infinite loop
