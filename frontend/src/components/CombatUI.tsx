@@ -166,7 +166,8 @@ const styles = StyleSheet.create({
     } : {
       elevation: 8,
     }),
-    zIndex: 100,
+    // Lower z-index so ninja (zIndex: 50) and enemies (zIndex: 45) appear above skill bar
+    zIndex: 30,
   },
   statusBar: {
     flexDirection: 'row',
