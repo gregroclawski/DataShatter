@@ -73,10 +73,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (token) console.log('  - token preview:', token.substring(0, 15) + '...');
   }, [user, token, isAuthenticated]);
 
-  // Check existing session on app start
+  // Set up minimum loading timer on app start
   useEffect(() => {
+    console.log('🕐 Starting 8-second loading timer...');
+    const minLoadingTimer = setTimeout(() => {
+      console.log('⏰ 8-second loading timer complete');
+      setMinLoadingComplete(true);
+    }, 8000);
+
+    // Start authentication check
     checkExistingSession();
+
+    return () => clearTimeout(minLoadingTimer);
   }, []);
+
+  // Only allow loading to finish when both auth check is done AND minimum time has passed
+  const actualIsLoading = isLoading || !minLoadingComplete;
 
   const checkExistingSession = async () => {
     // Ensure loading screen shows for minimum duration
