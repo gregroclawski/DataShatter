@@ -342,7 +342,7 @@ export default function NinjaIdleGame() {
             isAttacking && styles.ninjaAttacking, 
             isLevelingUp && styles.ninjaLevelUp
           ]}>
-            <Text style={[styles.ninjaEmoji, { fontSize: layout.ninjaSize * 0.6 }]}>🥷</Text>
+            <Text style={[styles.ninjaEmoji, ninjaFontStyle]}>🥷</Text>
           </View>
         </View>
 
