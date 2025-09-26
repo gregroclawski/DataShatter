@@ -460,8 +460,7 @@ frontend:
           comment: "FIXED: Implemented complete solution with 1) Bottom tabs z-index: 1000 (higher than overlays), 2) Overlays z-index: 500 (lower than tabs), 3) Overlay background pointerEvents: 'none' to allow clicks through to tabs, 4) Overlay content pointerEvents: 'auto' to maintain overlay functionality. Tested with automated screenshots - both Equipment and Zones tabs now support perfect dock-style behavior (click to open, click again to close) while keeping tabs visible and interactive."
 
 test_plan:
-  current_focus:
-    - "UI Restoration and Main Game Interface"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
