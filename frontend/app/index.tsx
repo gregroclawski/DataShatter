@@ -525,6 +525,10 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
     progressSection: {
       flex: 1,
       paddingRight: layout.paddingS,
+      // Ensure level display appears above zone info (which has zIndex: 2)
+      zIndex: 5,
+      // Mobile-optimized positioning
+      position: 'relative',
     },
     progressionTitle: {
       fontSize: layout.smallFontSize,
