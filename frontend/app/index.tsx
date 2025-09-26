@@ -198,9 +198,9 @@ export default function NinjaIdleGame() {
           if (!projectile) return null;
           
           // Calculate projectile flight progress (0 to 1)
-          const startTime = projectile.createdAt || Date.now();
+          const startTime = projectile.startTime || Date.now();
           const elapsedTime = Date.now() - startTime;
-          const flightDuration = 500; // 500ms flight time for mobile performance
+          const flightDuration = projectile.duration || 500; // Use projectile's duration
           const progress = Math.min(elapsedTime / flightDuration, 1);
           
           // Interpolate position from ninja to target
