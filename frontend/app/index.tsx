@@ -86,8 +86,8 @@ export default function NinjaIdleGame() {
   
   // Memoize ninja position calculation to prevent infinite re-renders on mobile
   const initialNinjaPosition = useMemo(() => ({
-    x: layout.screenWidth * 0.1, // 10% from left
-    y: layout.gameAreaHeight - layout.ninjaSize - layout.paddingXL
+    x: (layout.screenWidth - layout.ninjaSize) / 2, // Center horizontally
+    y: (layout.gameAreaHeight - layout.ninjaSize) / 2 // Center vertically
   }), [layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, layout.paddingXL]);
   
   const [ninjaPosition, setNinjaPosition] = useState(initialNinjaPosition);
