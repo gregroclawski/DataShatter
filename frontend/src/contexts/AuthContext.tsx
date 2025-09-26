@@ -304,8 +304,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       return { success: true };
     } catch (error) {
-      console.error('Login error:', error);
-      return { success: false, error: 'Network error occurred' };
+      console.error('❌ LOGIN ERROR DETAILS:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+        cause: error.cause
+      });
+      
+      // More specific error handling
+      if (error.message.includes('JSON')) {
+        console.error('❌ JSON Parse Error - Server likely returned HTML instead of JSON');
+        return { success: false, error: 'Server communication error. Please check your connection and try again.' };
+      }
+      
+      if (error.message.includes('Network') || error.message.includes('fetch')) {
+        console.error('❌ Network Error - Check internet connection');
+        return { success: false, error: 'Network error. Please check your internet connection and try again.' };
+      }
+      
+      console.error('❌ Unknown error type:', error);
+      return { success: false, error: error.message || 'An unexpected error occurred' };
     } finally {
       setIsLoading(false);
     }
