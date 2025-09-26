@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode, useRef } from 'react';
+import { Animated, Dimensions } from 'react-native';
 import { combatEngine, StatusEffectManager, DamageCalculator, CombatStats } from '../engine/CombatEngine';
 import { AbilityManager, EquippedAbility, AbilityDeck } from '../types/AbilityTypes';
 import { useGame } from './GameContext';
