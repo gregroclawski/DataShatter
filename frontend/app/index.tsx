@@ -115,7 +115,7 @@ export default function NinjaIdleGame() {
   // MOBILE FIX: Removed problematic useEffect animation loop that was accessing shared values from main thread
   // Movement now handled entirely within gesture worklets for proper React Native threading
 
-  // Create touch gesture for joystick control - FIXED: Using worklets and shared values
+  // Create touch gesture for joystick control - MOBILE FIX: All movement in worklets
   const touchGesture = Gesture.Pan()
     .onStart((event) => {
       'worklet';
@@ -136,8 +136,9 @@ export default function NinjaIdleGame() {
     })
     .onUpdate((event) => {
       'worklet';
-      // Update joystick knob position using shared values only
+      // Update joystick knob position and move ninja in single worklet
       const maxDistance = 40;
+      const moveSpeed = 3;
       const baseX = joystickBaseX.value;
       const baseY = joystickBaseY.value;
       const deltaX = event.x - baseX;
@@ -151,15 +152,42 @@ export default function NinjaIdleGame() {
       const knobX = Math.cos(angle) * limitedDistance;
       const knobY = Math.sin(angle) * limitedDistance;
       
-      // Update shared values for animation
+      // Update joystick visual position
       knobOffsetX.value = knobX;
       knobOffsetY.value = knobY;
       joystickKnobX.value = baseX + knobX;
       joystickKnobY.value = baseY + knobY;
+      
+      // Move ninja based on joystick input - ALL IN WORKLET
+      const normalizedX = knobX / maxDistance;
+      const normalizedY = knobY / maxDistance;
+      
+      // Only move if there's significant input
+      if (Math.abs(normalizedX) > 0.05 || Math.abs(normalizedY) > 0.05) {
+        // Calculate new ninja position with boundary constraints
+        const newX = Math.max(
+          0,
+          Math.min(
+            layout.screenWidth - layout.ninjaSize,
+            translateX.value + (normalizedX * moveSpeed)
+          )
+        );
+        const newY = Math.max(
+          0,
+          Math.min(
+            layout.gameAreaHeight - layout.ninjaSize,
+            translateY.value + (normalizedY * moveSpeed)
+          )
+        );
+        
+        // Update ninja position immediately in worklet
+        translateX.value = newX;
+        translateY.value = newY;
+      }
     })
     .onEnd(() => {
       'worklet';
-      // Hide joystick and reset values
+      // Hide joystick and update final position
       knobOffsetX.value = 0;
       knobOffsetY.value = 0;
       
@@ -171,6 +199,7 @@ export default function NinjaIdleGame() {
       // Update on main thread
       runOnJS(setJoystickVisible)(false);
       runOnJS(setNinjaPosition)(finalPosition);
+      runOnJS(updateNinjaPosition)(finalPosition);
       runOnJS(console.log)('🕹️ Joystick hidden, ninja final position:', finalPosition);
     });
 
