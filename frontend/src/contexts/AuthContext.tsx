@@ -82,6 +82,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading(true);
       console.log('🔍 Checking for stored login credentials...');
       
+      // Ensure loading screen shows for minimum duration
+      const startTime = Date.now();
+      const minLoadingDuration = 1500; // 1.5 seconds
+      
       // Check for stored login credentials with web fallback
       let storedEmail = null;
       let storedPassword = null;
