@@ -632,7 +632,8 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
     },
     enemyContainer: {
       position: 'absolute',
-      zIndex: 5,
+      // Higher z-index to ensure enemies appear above skill bar (Combat UI has zIndex: 30)
+      zIndex: 45,
     },
     enemy: {
       justifyContent: 'center',
