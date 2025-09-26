@@ -9,6 +9,8 @@ export const MythicTechColors = {
   neonPink: '#ff00aa',
   neonGreen: '#00ff88',
   neonOrange: '#ff6600',
+  electricBlue: '#0066ff',
+  holographicBlue: '#4da6ff',
   
   // Background colors
   darkSpace: '#0a0a0f',
