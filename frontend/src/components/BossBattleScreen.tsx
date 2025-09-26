@@ -47,8 +47,10 @@ export const BossBattleScreen: React.FC<BossBattleScreenProps> = ({
   const screenAnim = useRef(new Animated.Value(0)).current;
   const respawnAnim = useRef(new Animated.Value(1)).current;
 
-  const SCREEN_WIDTH = Dimensions.get('window').width;
-  const SCREEN_HEIGHT = Dimensions.get('window').height;
+  // Use responsive layout hook to prevent infinite re-renders on mobile
+  const layout = useResponsiveLayout();
+  const SCREEN_WIDTH = layout.screenWidth;
+  const SCREEN_HEIGHT = layout.screenHeight;
   const GAME_AREA_HEIGHT = SCREEN_HEIGHT - 100; // Leave space for UI
 
   // Initialize boss battle when visible
