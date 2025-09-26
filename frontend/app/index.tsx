@@ -487,6 +487,7 @@ export default function NinjaIdleGame() {
       {activeOverlay === 'bosses' && (
         <View style={styles.overlayWrapper}>
           <BossOverlay 
+            visible={true}
             onClose={() => setActiveOverlay(null)}
             onStartBossBattle={startBossBattle}
           />
