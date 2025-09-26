@@ -437,7 +437,7 @@ export default function NinjaIdleGame() {
           </Text>
         </View>
 
-        {/* Ninja Character - Fixed Position */}
+        {/* Ninja Character - Position based on movement mode */}
         <View style={[
           styles.ninjaContainer, 
           { 
@@ -460,6 +460,89 @@ export default function NinjaIdleGame() {
             <Text style={[styles.ninjaEmoji, ninjaFontStyle]}>🥷</Text>
           </View>
         </View>
+
+        {/* Movement Mode Toggle Button - Mobile Optimized */}
+        <TouchableOpacity
+          style={[styles.movementToggle, { 
+            backgroundColor: isAutoMovement ? MythicTechColors.neonBlue : MythicTechColors.energyPurple 
+          }]}
+          onPress={toggleMovementMode}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.movementToggleText}>
+            {isAutoMovement ? '🤖 AUTO' : '🕹️ MANUAL'}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Mobile-Safe Virtual Joystick - Only show in manual mode */}
+        {!isAutoMovement && (
+          <View 
+            style={[styles.joystickArea, {
+              width: layout.screenWidth,
+              height: layout.gameAreaHeight,
+            }]}
+            onTouchStart={(event) => {
+              const touch = event.nativeEvent.touches[0];
+              const touchX = touch.pageX;
+              const touchY = touch.pageY - layout.topBarHeight; // Adjust for top bar
+              
+              setJoystickPosition({ x: touchX, y: touchY });
+              setKnobPosition({ x: touchX, y: touchY });
+              setIsManualControlActive(true);
+              console.log('🕹️ Joystick activated at:', { x: touchX, y: touchY });
+            }}
+            onTouchMove={(event) => {
+              if (isManualControlActive) {
+                const touch = event.nativeEvent.touches[0];
+                const touchX = touch.pageX;
+                const touchY = touch.pageY - layout.topBarHeight;
+                
+                const deltaX = touchX - joystickPosition.x;
+                const deltaY = touchY - joystickPosition.y;
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                const maxDistance = 50; // Mobile-friendly size
+                
+                const limitedDistance = Math.min(distance, maxDistance);
+                const angle = Math.atan2(deltaY, deltaX);
+                
+                const knobX = joystickPosition.x + Math.cos(angle) * limitedDistance;
+                const knobY = joystickPosition.y + Math.sin(angle) * limitedDistance;
+                
+                setKnobPosition({ x: knobX, y: knobY });
+                setMovementDirection({
+                  x: Math.cos(angle) * (limitedDistance / maxDistance),
+                  y: Math.sin(angle) * (limitedDistance / maxDistance)
+                });
+              }
+            }}
+            onTouchEnd={() => {
+              setIsManualControlActive(false);
+              setMovementDirection({ x: 0, y: 0 });
+              console.log('🕹️ Joystick deactivated');
+            }}
+          >
+            {/* Joystick Visual - Only show when active */}
+            {isManualControlActive && (
+              <>
+                {/* Joystick Base */}
+                <View style={[styles.joystickBase, {
+                  left: joystickPosition.x - 40,
+                  top: joystickPosition.y - 40,
+                }]}>
+                  <View style={styles.joystickBaseInner} />
+                </View>
+                
+                {/* Joystick Knob */}
+                <View style={[styles.joystickKnob, {
+                  left: knobPosition.x - 15,
+                  top: knobPosition.y - 15,
+                }]}>
+                  <View style={styles.joystickKnobInner} />
+                </View>
+              </>
+            )}
+          </View>
+        )}
 
         {/* Enemies - Responsive */}
         {(combatState.enemies || []).map(enemy => (
