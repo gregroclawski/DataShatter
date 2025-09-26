@@ -525,15 +525,11 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
     progressSection: {
       flex: 1,
       paddingRight: layout.paddingS,
-      // Use absolute positioning with proper SafeAreaView integration for mobile
-      position: 'absolute',
-      top: layout.topInset + 5, // Add small offset from safe area
-      left: layout.paddingM,
-      right: layout.paddingM,
-      // Higher z-index to ensure header appears above all game elements
+      // Mobile-first: Use flex layout instead of absolute positioning
+      // This works properly with SafeAreaView and parent topBar container
+      justifyContent: 'flex-start',
+      // Higher z-index for visibility (but use flex layout, not absolute positioning)
       zIndex: 40,
-      // Mobile-optimized height
-      height: 60,
     },
     progressionTitle: {
       fontSize: layout.smallFontSize,
