@@ -148,7 +148,7 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
                       />
                     </View>
                     <Text style={styles.progressText}>
-                      {progress.killsInLevel}/1000 kills ({Math.floor((progress.killsInLevel / 1000) * 100)}%)
+                      {progress?.killsInLevel || 0}/1000 kills ({Math.floor(((progress?.killsInLevel || 0) / 1000) * 100)}%)
                     </Text>
                   </View>
                 )}
