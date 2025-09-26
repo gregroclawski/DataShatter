@@ -353,7 +353,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     const damageResult = DamageCalculator.calculateDamage(damage, state.playerStats, target.stats);
 
     // Create projectile for visual effect and delayed damage
-    createProjectile(target, damageResult.damage, ninjaPosition);
+    createProjectile(target, damageResult.damage, currentNinjaPosition);
 
     // Apply DoT effects (immediate)
     if (ability.effects.includes('DoT') && ability.stats.duration) {
