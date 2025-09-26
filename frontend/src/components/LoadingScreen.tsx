@@ -369,10 +369,16 @@ const styles = StyleSheet.create({
   loadingProgress: {
     height: '100%',
     backgroundColor: MythicTechColors.neonCyan,
-    shadowColor: MythicTechColors.neonCyan,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 4,
+    // Platform-specific shadows for better mobile compatibility
+    ...(Platform.OS === 'ios' ? {
+      shadowColor: MythicTechColors.neonCyan,
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.8,
+      shadowRadius: 4,
+    } : {
+      elevation: 2,
+    }),
+    letterSpacing: 1,
   },
   message: {
     fontSize: 16,
