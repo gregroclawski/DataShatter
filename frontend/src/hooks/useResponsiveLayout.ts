@@ -39,7 +39,7 @@ export interface ResponsiveLayout {
 }
 
 export const useResponsiveLayout = (): ResponsiveLayout => {
-  const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   
   return useMemo(() => {
