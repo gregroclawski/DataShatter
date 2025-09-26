@@ -10,17 +10,19 @@ import { Slot } from 'expo-router';
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <StatusBar style="light" backgroundColor="#0a0a0f" />
-      <AuthProvider>
-        <GameProvider>
-          <ZoneProvider>
-            <CombinedGameProvider>
-              <Slot />
-            </CombinedGameProvider>
-          </ZoneProvider>
-        </GameProvider>
-      </AuthProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <StatusBar style="light" backgroundColor="#0a0a0f" />
+        <AuthProvider>
+          <GameProvider>
+            <ZoneProvider>
+              <CombinedGameProvider>
+                <Slot />
+              </CombinedGameProvider>
+            </ZoneProvider>
+          </GameProvider>
+        </AuthProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
