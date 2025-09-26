@@ -154,7 +154,7 @@ export default function NinjaIdleGame() {
         const closestEnemy = findClosestEnemy();
         if (closestEnemy && closestEnemy.position) {
           setNinjaPosition(prev => {
-            const moveSpeed = 7.5; // 5x faster auto movement (was 1.5)
+            const moveSpeed = 4.5; // 3x faster auto movement (was 1.5)
             
             // Calculate direction to closest enemy
             const deltaX = closestEnemy.position.x - prev.x;
