@@ -97,16 +97,14 @@ export default function NinjaIdleGame() {
   const translateX = useSharedValue(ninjaPosition.x);
   const translateY = useSharedValue(ninjaPosition.y);
   
-  // Joystick state
+  // Joystick state - FIXED: Use shared values to prevent race conditions
   const [joystickVisible, setJoystickVisible] = useState(false);
-  const [joystickPosition, setJoystickPosition] = useState({ x: 0, y: 0 });
-  const [knobOffset, setKnobOffset] = useState({ x: 0, y: 0 });
-  
-  // Joystick movement values
   const joystickBaseX = useSharedValue(0);
   const joystickBaseY = useSharedValue(0);
   const joystickKnobX = useSharedValue(0);
   const joystickKnobY = useSharedValue(0);
+  const knobOffsetX = useSharedValue(0);
+  const knobOffsetY = useSharedValue(0);
 
   // Initialize animated values when layout changes
   useEffect(() => {
