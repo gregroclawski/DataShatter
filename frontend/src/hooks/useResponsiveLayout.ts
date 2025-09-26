@@ -64,7 +64,7 @@ export const useResponsiveLayout = (): ResponsiveLayout => {
     // Dynamic layout dimensions
     const topBarHeight = Math.max(60, 50 + topInset * 0.5);
     const bottomNavHeight = Math.max(70, 60 + bottomInset * 0.3);
-    const gameAreaHeight = screenHeight - topBarHeight - bottomNavHeight - topInset - bottomInset;
+    const gameAreaHeight = screenHeight - topBarHeight - bottomNavHeight;
     
     // Responsive element sizes
     const ninjaSize = Math.max(30, 35 * scale);
