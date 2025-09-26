@@ -1,11 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Animated,
-  Dimensions,
-} from 'react-native';
+import React, { useEffect, useRef, useMemo, useCallback } from 'react';
+import { View, Text, StyleSheet, Animated, Dimensions, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MythicTechColors } from '../theme/MythicTechTheme';
 
@@ -15,22 +9,99 @@ interface LoadingScreenProps {
   message?: string;
 }
 
-export default function LoadingScreen({ message = 'Initializing Neural Grid...' }: LoadingScreenProps) {
+const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = "Initializing authentication..." }) => {
+  // Animation refs
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const pulseAnim = useRef(new Animated.Value(0.5)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
-  const glitchAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    // Fade in animation
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const glitchTranslate = useRef(new Animated.Value(0)).current;
+  const gridPulse = useRef(new Animated.Value(0.3)).current;
+  const orbGlow = useRef(new Animated.Value(0.5)).current;
+  
+  // Memoize all dynamic styles to prevent inline object recreation
+  const contentStyle = useMemo(() => ([
+    styles.content,
+    {
+      opacity: fadeAnim,
+      transform: [{ translateX: glitchTranslate }],
+    },
+  ]), [fadeAnim, glitchTranslate]);
+  
+  const orbStyle = useMemo(() => ([
+    styles.orb,
+    {
+      transform: [{ rotate: rotateAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg'],
+      }) }],
+      opacity: orbGlow,
+    },
+  ]), [rotateAnim, orbGlow]);
+  
+  const orbGlowStyle = useMemo(() => ([
+    styles.orbGlow,
+    {
+      transform: [{ scale: pulseAnim }],
+      opacity: orbGlow.interpolate({
+        inputRange: [0.3, 1],
+        outputRange: [0.1, 0.3],
+      }),
+    },
+  ]), [pulseAnim, orbGlow]);
+  
+  const gridOverlayStyle = useMemo(() => ([
+    styles.gridOverlay,
+    {
+      opacity: gridPulse,
+    },
+  ]), [gridPulse]);
+  
+  // Memoize particle styles to prevent recreation
+  const particleStyles = useMemo(() => {
+    return Array.from({ length: 6 }, (_, i) => {
+      const animValue = useRef(new Animated.Value(0)).current;
+      return {
+        animValue,
+        style: [
+          styles.particle,
+          {
+            left: (i * SCREEN_WIDTH / 6) + (SCREEN_WIDTH / 12),
+            transform: [{
+              translateY: animValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [SCREEN_HEIGHT, -100],
+              }),
+            }],
+            opacity: animValue.interpolate({
+              inputRange: [0, 0.2, 0.8, 1],
+              outputRange: [0, 1, 1, 0],
+            }),
+          },
+        ],
+      };
+    });
+  }, []);
+  
+  // Memoize animation functions
+  const startAnimations = useCallback(() => {
+    // Main fade in
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1000,
-      useNativeDriver: false, // Set to false for web compatibility
+      useNativeDriver: true,
     }).start();
-
-    // Pulsing orb animation
-    const pulseAnimation = Animated.loop(
+    
+    // Continuous orb rotation
+    const rotateLoop = Animated.loop(
+      Animated.timing(rotateAnim, {
+        toValue: 1,
+        duration: 4000,
+        useNativeDriver: true,
+      })
+    );
+    
+    // Pulse animation
+    const pulseLoop = Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
           toValue: 1.2,
@@ -38,342 +109,214 @@ export default function LoadingScreen({ message = 'Initializing Neural Grid...' 
           useNativeDriver: true,
         }),
         Animated.timing(pulseAnim, {
-          toValue: 0.8,
+          toValue: 1,
           duration: 1500,
           useNativeDriver: true,
         }),
       ])
     );
-    pulseAnimation.start();
-
-    // Rotation animation
-    const rotateAnimation = Animated.loop(
-      Animated.timing(rotateAnim, {
-        toValue: 1,
-        duration: 4000,
-        useNativeDriver: true,
-      })
-    );
-    rotateAnimation.start();
-
-    // Glitch effect animation
-    const glitchAnimation = Animated.loop(
+    
+    // Glitch effect
+    const glitchLoop = Animated.loop(
       Animated.sequence([
-        Animated.timing(glitchAnim, {
-          toValue: 1,
+        Animated.timing(glitchTranslate, {
+          toValue: 2,
           duration: 100,
           useNativeDriver: true,
         }),
-        Animated.timing(glitchAnim, {
+        Animated.timing(glitchTranslate, {
+          toValue: -2,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+        Animated.timing(glitchTranslate, {
           toValue: 0,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+        Animated.delay(3000),
+      ])
+    );
+    
+    // Grid pulse
+    const gridLoop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(gridPulse, {
+          toValue: 0.6,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(gridPulse, {
+          toValue: 0.3,
           duration: 2000,
           useNativeDriver: true,
         }),
       ])
     );
-    glitchAnimation.start();
-
+    
+    // Orb glow
+    const orbGlowLoop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(orbGlow, {
+          toValue: 1,
+          duration: 2500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(orbGlow, {
+          toValue: 0.5,
+          duration: 2500,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    
+    // Particle animations
+    const particleAnimations = particleStyles.map((particle, i) => {
+      return Animated.loop(
+        Animated.timing(particle.animValue, {
+          toValue: 1,
+          duration: 3000 + (i * 500),
+          useNativeDriver: true,
+        })
+      );
+    });
+    
+    // Start all animations
+    rotateLoop.start();
+    pulseLoop.start();
+    glitchLoop.start();
+    gridLoop.start();
+    orbGlowLoop.start();
+    particleAnimations.forEach(anim => anim.start());
+    
+    // Return cleanup function
     return () => {
-      pulseAnimation.stop();
-      rotateAnimation.stop();
-      glitchAnimation.stop();
+      rotateLoop.stop();
+      pulseLoop.stop();
+      glitchLoop.stop();
+      gridLoop.stop();
+      orbGlowLoop.stop();
+      particleAnimations.forEach(anim => anim.stop());
     };
-  }, [fadeAnim, pulseAnim, rotateAnim, glitchAnim]);
-
-  const rotateInterpolate = rotateAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
-  });
-
-  const glitchTranslate = glitchAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 2],
-  });
-
+  }, [fadeAnim, rotateAnim, pulseAnim, glitchTranslate, gridPulse, orbGlow, particleStyles]);
+  
+  useEffect(() => {
+    const cleanup = startAnimations();
+    return cleanup;
+  }, [startAnimations]);
+  
   return (
     <LinearGradient
       colors={[MythicTechColors.darkSpace, MythicTechColors.deepVoid, MythicTechColors.shadowGrid]}
       locations={[0, 0.5, 1]}
       style={styles.container}
     >
-      <Animated.View
-        style={[
-          styles.content,
-          {
-            opacity: fadeAnim,
-            transform: [{ translateX: glitchTranslate }],
-          },
-        ]}
-      >
+      <Animated.View style={contentStyle}>
         {/* Central Energy Orb */}
         <View style={styles.orbContainer}>
-          <Animated.View
-            style={[
-              styles.outerOrb,
-              {
-                transform: [
-                  { scale: pulseAnim },
-                  { rotate: rotateInterpolate },
-                ],
-              },
-            ]}
-          >
-            <View style={styles.outerRing} />
+          <Animated.View style={orbGlowStyle} />
+          <Animated.View style={orbStyle}>
+            <View style={styles.orbCore} />
+            <View style={styles.orbRing} />
           </Animated.View>
-          
-          <Animated.View
-            style={[
-              styles.innerOrb,
-              {
-                transform: [
-                  { scale: pulseAnim },
-                ],
-              },
-            ]}
-          >
-            <LinearGradient
-              colors={[MythicTechColors.neonBlue, MythicTechColors.neonPurple, MythicTechColors.neonCyan]}
-              style={styles.orbGradient}
-            />
-          </Animated.View>
-
-          {/* Rotating rings */}
-          <Animated.View
-            style={[
-              styles.rotatingRing,
-              {
-                transform: [
-                  { rotate: rotateInterpolate },
-                  { scale: 1.5 },
-                ],
-              },
-            ]}
-          />
-          
-          <Animated.View
-            style={[
-              styles.rotatingRing,
-              styles.secondaryRing,
-              {
-                transform: [
-                  { rotate: rotateInterpolate },
-                  { scale: 2 },
-                ],
-              },
-            ]}
-          />
         </View>
-
-        {/* Main Title */}
-        <Animated.View style={styles.titleContainer}>
-          <Text style={styles.mainTitle}>MYTHIC-TECH</Text>
-          <Text style={styles.subtitle}>IDLE RPG</Text>
-          
-          <View style={styles.divider} />
-          
-          <Text style={styles.tagline}>
-            Where Ancient Power Meets Digital Evolution
-          </Text>
+        
+        {/* Grid Overlay */}
+        <Animated.View style={gridOverlayStyle}>
+          <View style={styles.gridLines} />
         </Animated.View>
-
-        {/* Loading Message */}
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>{message}</Text>
-          
-          {/* Loading Bar */}
-          <View style={styles.loadingBarContainer}>
-            <View style={styles.loadingBarBackground}>
-              <Animated.View
-                style={[
-                  styles.loadingBarFill,
-                  {
-                    transform: [{ scaleX: pulseAnim }],
-                  },
-                ]}
-              />
-            </View>
-          </View>
-        </View>
-
+        
         {/* Floating Particles */}
-        <View style={styles.particlesContainer}>
-          {[...Array(6)].map((_, index) => (
-            <Animated.View
-              key={index}
-              style={[
-                styles.particle,
-                {
-                  left: `${20 + index * 15}%`,
-                  top: `${30 + (index % 3) * 20}%`,
-                  transform: [
-                    { 
-                      translateY: pulseAnim.interpolate({
-                        inputRange: [0.5, 1.2],
-                        outputRange: [0, -10],
-                      })
-                    },
-                  ],
-                },
-              ]}
-            />
-          ))}
+        {particleStyles.map((particle, i) => (
+          <Animated.View key={i} style={particle.style} />
+        ))}
+        
+        {/* Loading Text */}
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>MYTHIC-TECH</Text>
+          <Text style={styles.subtitle}>NINJA SYSTEMS</Text>
+          <View style={styles.loadingBar}>
+            <Animated.View style={[styles.loadingProgress, { width: '100%' }]} />
+          </View>
+          <Text style={styles.message}>{message}</Text>
         </View>
       </Animated.View>
     </LinearGradient>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: MythicTechColors.darkSpace,
   },
   content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    paddingHorizontal: 20,
   },
   orbContainer: {
-    position: 'relative',
-    width: 150,
-    height: 150,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 60,
+    marginBottom: 80,
   },
-  outerOrb: {
-    position: 'absolute',
-    width: 150,
-    height: 150,
+  orb: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: MythicTechColors.neonCyan,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  outerRing: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 75,
-    borderWidth: 2,
-    borderColor: MythicTechColors.neonBlue,
-    backgroundColor: 'transparent',
-  },
-  innerOrb: {
-    position: 'absolute',
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    overflow: 'hidden',
     shadowColor: MythicTechColors.neonCyan,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 20,
-    elevation: 10,
+    elevation: 20,
   },
-  orbGradient: {
-    flex: 1,
-    borderRadius: 40,
-  },
-  rotatingRing: {
-    position: 'absolute',
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 1,
-    borderColor: MythicTechColors.neonPurple + '66',
-    backgroundColor: 'transparent',
-  },
-  secondaryRing: {
+  orbCore: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    borderColor: MythicTechColors.neonCyan + '44',
-  },
-  titleContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  mainTitle: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: MythicTechColors.neonBlue,
-    textShadowColor: MythicTechColors.neonBlue + '88',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 15,
-    letterSpacing: 4,
-    marginBottom: 5,
-  },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: MythicTechColors.neonPurple,
-    textShadowColor: MythicTechColors.neonPurple + '88',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
-    letterSpacing: 2,
-    marginBottom: 15,
-  },
-  divider: {
-    width: 100,
-    height: 2,
-    backgroundColor: MythicTechColors.neonCyan,
-    marginVertical: 10,
-    shadowColor: MythicTechColors.neonCyan,
+    backgroundColor: MythicTechColors.electricBlue,
+    shadowColor: MythicTechColors.electricBlue,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 5,
-    elevation: 3,
+    shadowOpacity: 1,
+    shadowRadius: 15,
   },
-  tagline: {
-    fontSize: 14,
-    color: MythicTechColors.voidSilver,
-    textAlign: 'center',
-    fontStyle: 'italic',
-    letterSpacing: 1,
-    marginTop: 10,
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: 300,
-  },
-  loadingText: {
-    fontSize: 16,
-    color: MythicTechColors.neonCyan,
-    marginBottom: 20,
-    textAlign: 'center',
-    fontWeight: '500',
-    letterSpacing: 1,
-  },
-  loadingBarContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  loadingBarBackground: {
-    width: '80%',
-    height: 4,
-    backgroundColor: MythicTechColors.shadowGrid,
-    borderRadius: 2,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: MythicTechColors.neonBlue + '44',
-  },
-  loadingBarFill: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: MythicTechColors.neonBlue,
-    borderRadius: 2,
-    shadowColor: MythicTechColors.neonBlue,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  particlesContainer: {
+  orbRing: {
     position: 'absolute',
-    width: '100%',
-    height: '100%',
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    borderWidth: 2,
+    borderColor: MythicTechColors.neonCyan,
+    opacity: 0.6,
+  },
+  orbGlow: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: MythicTechColors.neonCyan,
+    opacity: 0.2,
+  },
+  gridOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0.3,
+  },
+  gridLines: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: MythicTechColors.matrixGreen,
+    opacity: 0.2,
   },
   particle: {
     position: 'absolute',
@@ -384,7 +327,53 @@ const styles = StyleSheet.create({
     shadowColor: MythicTechColors.neonCyan,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
-    shadowRadius: 5,
-    elevation: 2,
+    shadowRadius: 4,
+  },
+  textContainer: {
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: MythicTechColors.neonCyan,
+    textAlign: 'center',
+    marginBottom: 8,
+    textShadowColor: MythicTechColors.neonCyan,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+    letterSpacing: 3,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: MythicTechColors.electricBlue,
+    textAlign: 'center',
+    marginBottom: 40,
+    letterSpacing: 2,
+    opacity: 0.8,
+  },
+  loadingBar: {
+    width: 200,
+    height: 3,
+    backgroundColor: MythicTechColors.shadowGrid,
+    borderRadius: 2,
+    marginBottom: 20,
+    overflow: 'hidden',
+  },
+  loadingProgress: {
+    height: '100%',
+    backgroundColor: MythicTechColors.neonCyan,
+    shadowColor: MythicTechColors.neonCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+  },
+  message: {
+    fontSize: 16,
+    color: MythicTechColors.holographicBlue,
+    textAlign: 'center',
+    opacity: 0.9,
+    letterSpacing: 1,
   },
 });
+
+export default LoadingScreen;
