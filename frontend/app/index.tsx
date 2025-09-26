@@ -190,6 +190,39 @@ export default function NinjaIdleGame() {
     }
   }, [layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, layout.paddingXL]); // NO ninjaPosition dependencies!
 
+  // Mobile-compatible projectile animation system - replaces web-specific requestAnimationFrame
+  useEffect(() => {
+    const animateProjectiles = () => {
+      setAnimatedProjectiles(currentProjectiles => {
+        return (projectiles || []).map(projectile => {
+          if (!projectile) return null;
+          
+          // Calculate projectile flight progress (0 to 1)
+          const startTime = projectile.createdAt || Date.now();
+          const elapsedTime = Date.now() - startTime;
+          const flightDuration = 500; // 500ms flight time for mobile performance
+          const progress = Math.min(elapsedTime / flightDuration, 1);
+          
+          // Interpolate position from ninja to target
+          const currentX = projectile.x + (projectile.targetX - projectile.x) * progress;
+          const currentY = projectile.y + (projectile.targetY - projectile.y) * progress;
+          
+          return {
+            ...projectile,
+            currentX,
+            currentY,
+            progress
+          };
+        }).filter(Boolean);
+      });
+    };
+
+    // Mobile-compatible animation loop using setInterval instead of requestAnimationFrame
+    const projectileAnimationInterval = setInterval(animateProjectiles, 16); // ~60fps
+    
+    return () => clearInterval(projectileAnimationInterval);
+  }, [projectiles]);
+
   // Level up explosion handler
   const handleLevelUpExplosion = useCallback(() => {
     const now = Date.now();
