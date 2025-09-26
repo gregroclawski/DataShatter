@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AuthProvider } from '../src/contexts/AuthContext';
 import { GameProvider } from '../src/contexts/GameContext';
 import { ZoneProvider } from '../src/contexts/ZoneContext';
+import { CombatProvider } from '../src/contexts/CombatContext';
 import { CombinedGameProvider } from '../src/contexts/CombinedGameProvider';
 import { Slot } from 'expo-router';
 
