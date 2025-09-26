@@ -228,6 +228,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       formData.append('username', email); // OAuth2PasswordRequestForm uses 'username'
       formData.append('password', password);
 
+      console.log('🔐 LOGIN ATTEMPT:');
+      console.log('  - API_BASE_URL:', API_BASE_URL);
+      console.log('  - Login URL:', `${API_BASE_URL}/api/auth/login`);
+      console.log('  - Email:', email);
+
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         credentials: 'include',
@@ -237,9 +242,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         body: formData.toString(),
       });
 
+      console.log('📡 RESPONSE RECEIVED:');
+      console.log('  - Status:', response.status);
+      console.log('  - Status Text:', response.statusText);
+      console.log('  - Content-Type:', response.headers.get('content-type'));
+
+      // Check if response is actually JSON before parsing
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.error('❌ Non-JSON response received:', contentType);
+        const textResponse = await response.text();
+        console.error('❌ Response body:', textResponse);
+        return { success: false, error: 'Server returned invalid response. Please check your internet connection.' };
+      }
+
       const data = await response.json();
 
       if (!response.ok) {
+        console.error('❌ Login failed:', data.detail || 'Unknown error');
         return { success: false, error: data.detail || 'Login failed' };
       }
 
