@@ -391,14 +391,14 @@ export default function NinjaIdleGame() {
 
         {/* Projectiles - Responsive */}
         {(projectiles || []).map(projectile => (
-          projectile?.position ? (
+          projectile ? (
             <View
               key={projectile.id}
               style={[
                 styles.projectile,
                 {
-                  left: projectile.position.x - layout.paddingXS,
-                  top: projectile.position.y - layout.paddingXS,
+                  left: projectile.x - layout.paddingXS,
+                  top: projectile.y - layout.paddingXS,
                 }
               ]}
             >
