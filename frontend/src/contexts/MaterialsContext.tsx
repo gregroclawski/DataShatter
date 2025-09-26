@@ -103,7 +103,7 @@ export const MaterialsProvider = ({ children }: { children: ReactNode }) => {
     return UPGRADE_MATERIALS[material];
   };
 
-  const contextValue: MaterialsContextType = {
+  const contextValue: MaterialsContextType = React.useMemo(() => ({
     materialsInventory,
     addMaterial,
     removeMaterial,
@@ -111,7 +111,15 @@ export const MaterialsProvider = ({ children }: { children: ReactNode }) => {
     hasMaterials,
     getAllMaterials,
     getMaterialData,
-  };
+  }), [
+    materialsInventory,
+    addMaterial,
+    removeMaterial,
+    getMaterialCount,
+    hasMaterials,
+    getAllMaterials,
+    getMaterialData,
+  ]);
 
   return (
     <MaterialsContext.Provider value={contextValue}>
