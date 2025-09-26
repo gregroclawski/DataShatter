@@ -29,7 +29,7 @@ export default function CombatUI({ onAbilityPress }: Props) {
 
   // Helper function to get cooldown overlay style (memoization handled per ability)
   const getCooldownOverlayStyle = (ability: EquippedAbility) => ({
-    height: `${getCooldownPercentage(ability)}%`
+    height: `${getCooldownPercentage(ability)}%` as const
   });
 
   const formatCooldown = (ticks: number): string => {
