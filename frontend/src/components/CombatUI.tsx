@@ -215,7 +215,7 @@ const CombatUI: React.FC = () => {
                 </Text>
               </View>
 
-              <Text style={{ fontSize: 24 }}>
+              <Text style={{ fontSize: 16 }}>
                 {ability.icon || '⚡'}
               </Text>
 
