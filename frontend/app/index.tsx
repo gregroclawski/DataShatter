@@ -575,6 +575,12 @@ export default function NinjaIdleGame() {
             onTouchEnd={() => {
               setIsManualControlActive(false);
               setMovementDirection({ x: 0, y: 0 });
+              
+              // MOBILE FIX: Resume combat when joystick is released
+              if (setManualControlActive) {
+                setManualControlActive(false);
+              }
+              
               console.log('🕹️ Joystick deactivated');
             }}
           >
