@@ -17,7 +17,8 @@ const CombatUI: React.FC = () => {
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 
   // Get equipped abilities from combat state
-  const equippedAbilities = combatState.abilityManager.getDeck();
+  const deck = combatState.abilityManager.getDeck();
+  const equippedAbilities = deck.slots.filter(slot => slot !== null);
 
   // Calculate cooldown percentage for ability
   const getCooldownPercentage = useCallback((ability: EquippedAbility): number => {
