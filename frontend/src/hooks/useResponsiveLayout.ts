@@ -71,6 +71,11 @@ export const useResponsiveLayout = (): ResponsiveLayout => {
     const enemySize = Math.max(25, 30 * scale);
     const iconSize = Math.max(18, 20 * scale);
     
+    // Mobile touch targets - platform-specific minimum sizes
+    const minTouchTarget = Platform.OS === 'ios' ? 44 : 48; // Apple/Android guidelines
+    const tabTouchTarget = Math.max(minTouchTarget, 56); // Tabs need extra height for icon + text
+    const buttonTouchTarget = Math.max(minTouchTarget, 40); // Standard buttons
+    
     // Responsive font sizes
     const titleFontSize = Math.max(12, 14 * scale);
     const bodyFontSize = Math.max(10, 12 * scale);
