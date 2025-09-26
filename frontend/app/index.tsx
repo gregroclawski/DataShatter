@@ -174,18 +174,18 @@ export default function NinjaIdleGame() {
       
       // Only move if there's significant input
       if (Math.abs(normalizedX) > 0.05 || Math.abs(normalizedY) > 0.05) {
-        // Calculate new ninja position with boundary constraints
+        // Calculate new ninja position with boundary constraints - MOBILE FIX: Using shared values
         const newX = Math.max(
           0,
           Math.min(
-            layout.screenWidth - layout.ninjaSize,
+            maxNinjaX.value, // Using shared value instead of layout.screenWidth - layout.ninjaSize
             translateX.value + (normalizedX * moveSpeed)
           )
         );
         const newY = Math.max(
           0,
           Math.min(
-            layout.gameAreaHeight - layout.ninjaSize,
+            maxNinjaY.value, // Using shared value instead of layout.gameAreaHeight - layout.ninjaSize
             translateY.value + (normalizedY * moveSpeed)
           )
         );
