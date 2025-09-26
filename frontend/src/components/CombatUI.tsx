@@ -22,6 +22,7 @@ interface Props {
 export default function CombatUI({ onAbilityPress }: Props) {
   const { combatState, getDeck } = useCombat();
   const deck = getDeck();
+  const { width: screenWidth } = useWindowDimensions();
 
   // Memoize combat status style to prevent inline object recreation
   const combatStatusStyle = useMemo(() => ({
