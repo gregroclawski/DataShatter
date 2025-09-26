@@ -47,6 +47,14 @@ export default function CombatUI({ onAbilityPress }: Props) {
     return seconds > 0 ? `${seconds}s` : '';
   };
 
+  // Dynamic styles that depend on screen width
+  const dynamicStyles = useMemo(() => ({
+    abilitySlot: {
+      ...styles.abilitySlot,
+      width: (screenWidth - 60 - 60) / 5, // Much smaller slots (50% reduction)
+    },
+  }), [screenWidth]);
+
   return (
     <View style={styles.container}>
       {/* Combat Status */}
