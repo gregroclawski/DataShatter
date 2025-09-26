@@ -204,8 +204,8 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose, onSt
             <Ionicons name="close" size={24} color="#e5e7eb" />
           </TouchableOpacity>
         </View>
-        <View style={[styles.content, { justifyContent: 'center', alignItems: 'center' }]}>
-          <Text style={{ color: '#e5e7eb', fontSize: 16 }}>Loading player data...</Text>
+        <View style={[styles.content, styles.loadingContent]}>
+          <Text style={styles.loadingText}>Loading player data...</Text>
         </View>
       </View>
     );
