@@ -87,8 +87,8 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = "Initializing a
     ]));
   }, [particleRefs]);
   
-  // Memoize animation functions
-  const startAnimations = useCallback(() => {
+  // Start animations in useEffect (FIXED - no useCallback dependency chain)
+  useEffect(() => {
     // Main fade in
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -176,9 +176,9 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = "Initializing a
     );
     
     // Particle animations
-    const particleAnimations = particleStyles.map((particle, i) => {
+    const particleAnimations = particleRefs.map((animValue, i) => {
       return Animated.loop(
-        Animated.timing(particle.animValue, {
+        Animated.timing(animValue, {
           toValue: 1,
           duration: 3000 + (i * 500),
           useNativeDriver: true,
@@ -194,7 +194,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = "Initializing a
     orbGlowLoop.start();
     particleAnimations.forEach(anim => anim.start());
     
-    // Return cleanup function
+    // Cleanup function
     return () => {
       rotateLoop.stop();
       pulseLoop.stop();
@@ -203,12 +203,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = "Initializing a
       orbGlowLoop.stop();
       particleAnimations.forEach(anim => anim.stop());
     };
-  }, [fadeAnim, rotateAnim, pulseAnim, glitchTranslate, gridPulse, orbGlow, particleStyles]);
-  
-  useEffect(() => {
-    const cleanup = startAnimations();
-    return cleanup;
-  }, [startAnimations]);
+  }, []); // Empty dependency array - run once on mount
   
   return (
     <LinearGradient
