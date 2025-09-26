@@ -540,7 +540,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const contextValue: CombatContextType = {
+  const contextValue: CombatContextType = React.useMemo(() => ({
     combatState,
     projectiles,
     startCombat,
@@ -558,7 +558,25 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     findClosestEnemy,
     updateNinjaPosition,
     lastExplosionTime,
-  };
+  }), [
+    combatState,
+    projectiles,
+    startCombat,
+    stopCombat,
+    equipAbility,
+    handleEnemyKill,
+    getDeck,
+    getAvailableAbilities,
+    upgradeAbility,
+    spawnEnemy,
+    spawnBoss,
+    clearAllEnemies,
+    clearSpecificEnemy,
+    triggerLevelUpExplosion,
+    findClosestEnemy,
+    updateNinjaPosition,
+    lastExplosionTime,
+  ]);
 
   return (
     <CombatContext.Provider value={contextValue}>
