@@ -10,293 +10,236 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useCombat } from '../contexts/CombatContext';
 import { EquippedAbility } from '../types/AbilityTypes';
-
 import { MythicTechColors } from '../theme/MythicTechTheme';
 
+const CombatUI: React.FC = () => {
+  const { combatState } = useCombat();
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 
+  // Get equipped abilities from combat state
+  const equippedAbilities = combatState.abilityManager.getDeck();
 
-interface Props {
-  onAbilityPress: (slotIndex: number) => void;
-}
-
-export default function CombatUI({ onAbilityPress }: Props) {
-  const { combatState, getDeck } = useCombat();
-  const deck = getDeck();
-  const { width: screenWidth } = useWindowDimensions();
-
-  // Memoize combat status style to prevent inline object recreation
-  const combatStatusStyle = useMemo(() => ({
-    color: combatState.isInCombat ? "#10b981" : "#6b7280"
-  }), [combatState.isInCombat]);
-
-  // Memoize cooldown overlay style calculation to prevent object recreation
+  // Calculate cooldown percentage for ability
   const getCooldownPercentage = useCallback((ability: EquippedAbility): number => {
-    if (!ability || typeof ability.currentCooldown !== 'number' || typeof ability.maxCooldown !== 'number') {
-      return 0;
-    }
-    if (ability.maxCooldown === 0) return 0;
-    return (ability.currentCooldown / ability.maxCooldown) * 100;
-  }, []);
+    if (!ability.lastUsed) return 0;
+    
+    const now = combatState.currentTick;
+    const elapsed = now - ability.lastUsed;
+    const cooldownTime = ability.cooldown * 1000; // Convert to milliseconds
+    
+    if (elapsed >= cooldownTime) return 0;
+    return Math.max(0, (cooldownTime - elapsed) / cooldownTime);
+  }, [combatState.currentTick]);
 
-  const getCooldownOverlayStyle = useCallback((ability: EquippedAbility) => ({
-    height: `${getCooldownPercentage(ability)}%`
-  }), [getCooldownPercentage]);
+  // Dynamic styles for responsive circular layout
+  const circularStyles = useMemo(() => {
+    // Position in bottom-left corner with proper spacing
+    const buttonSize = Math.min(screenWidth * 0.12, 60); // Responsive size
+    const spacing = buttonSize * 0.3; // Space between buttons
+    const bottomOffset = 120; // Above bottom navigation
+    const leftOffset = 20; // From left edge
 
-  const formatCooldown = (ticks: number): string => {
-    const seconds = Math.ceil(ticks / 10);
-    return seconds > 0 ? `${seconds}s` : '';
-  };
-
-  // Dynamic styles that depend on screen width
-  const dynamicStyles = useMemo(() => ({
-    abilitySlot: {
-      ...styles.abilitySlot,
-      // Mobile-optimized touch target: minimum 44px for iOS, 48px for Android
-      width: Math.max(44, (screenWidth - 60 - 60) / 5),
-      height: Platform.OS === 'ios' ? 44 : 48, // Platform-specific minimum touch targets
-    },
-  }), [screenWidth]);
+    return StyleSheet.create({
+      // Container for circular abilities in bottom-left
+      circularContainer: {
+        position: 'absolute',
+        bottom: bottomOffset,
+        left: leftOffset,
+        zIndex: 30, // Below game elements (ninja: 50, enemies: 45)
+      },
+      
+      // Top row (3 abilities)
+      topRow: {
+        flexDirection: 'row',
+        marginBottom: spacing,
+      },
+      
+      // Bottom row (2 abilities, centered)
+      bottomRow: {
+        flexDirection: 'row',
+        marginLeft: buttonSize * 0.5, // Center 2 buttons under 3 buttons
+      },
+      
+      // Individual circular ability button
+      abilityButton: {
+        width: buttonSize,
+        height: buttonSize,
+        borderRadius: buttonSize / 2, // Perfect circle
+        backgroundColor: MythicTechColors.shadowGrid,
+        borderWidth: 2,
+        borderColor: MythicTechColors.neonBlue + '88',
+        marginHorizontal: spacing / 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+        // Platform-specific shadows for depth
+        ...(Platform.OS === 'ios' ? {
+          shadowColor: MythicTechColors.neonBlue,
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.4,
+          shadowRadius: 4,
+        } : {
+          elevation: 4,
+        }),
+      },
+      
+      // Ability level indicator
+      abilityLevel: {
+        position: 'absolute',
+        top: 2,
+        right: 2,
+        backgroundColor: MythicTechColors.neonCyan,
+        borderRadius: 8,
+        paddingHorizontal: 4,
+        paddingVertical: 1,
+        minWidth: 16,
+        alignItems: 'center',
+      },
+      
+      // Level text
+      levelText: {
+        fontSize: 10,
+        fontWeight: 'bold',
+        color: MythicTechColors.deepVoid,
+      },
+      
+      // Cooldown overlay
+      cooldownOverlay: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: MythicTechColors.crimsonRed + '77',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      
+      // Combat status display (compact, top-left)
+      statusContainer: {
+        position: 'absolute',
+        top: screenHeight * 0.15,
+        left: 20,
+        backgroundColor: MythicTechColors.deepVoid + 'f0',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: MythicTechColors.neonBlue + '66',
+        zIndex: 25,
+      },
+      
+      statusText: {
+        color: MythicTechColors.neonCyan,
+        fontSize: 12,
+        fontWeight: '600',
+      },
+    });
+  }, [screenWidth, screenHeight]);
 
   return (
-    <View style={styles.container}>
-      {/* Combat Status */}
-      <View style={styles.statusBar}>
-        <View style={styles.statusItem}>
-          <Ionicons name="skull" size={16} color="#ef4444" />
-          <Text style={styles.statusText}>
-            Enemies: {combatState.enemies.length}
-          </Text>
-        </View>
-        
-        <View style={styles.statusItem}>
-          <Ionicons name={combatState.isInCombat ? "play" : "pause"} size={16} color={combatState.isInCombat ? "#10b981" : "#6b7280"} />
-          <Text style={[styles.statusText, combatStatusStyle]}>
-            {combatState.isInCombat ? "Combat" : "Paused"}
-          </Text>
-        </View>
+    <>
+      {/* Combat Status - Compact top-left display */}
+      <View style={circularStyles.statusContainer}>
+        <Text style={circularStyles.statusText}>
+          {combatState.isInCombat ? 'Combat' : 'Idle'}
+        </Text>
+        <Text style={circularStyles.statusText}>
+          Enemies: {combatState.enemies.length}
+        </Text>
       </View>
 
-      {/* Ability Slots */}
-      <View style={styles.abilityBar}>
-        {deck.slots.map((ability, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              dynamicStyles.abilitySlot,
-              !ability && styles.emptySlot,
-              ability?.currentCooldown > 0 && styles.onCooldownSlot,
-            ]}
-            onPress={() => onAbilityPress(index)}
-            disabled={!ability}
-          >
-            {ability ? (
-              <View style={styles.abilityContent}>
-                {/* Ability Icon */}
-                <Text style={styles.abilityIcon}>{ability.icon}</Text>
-                
-                {/* Ability Level */}
-                <Text style={styles.abilityLevel}>L{ability.level}</Text>
-                
-                {/* Cooldown Overlay */}
-                {ability.currentCooldown > 0 && (
-                  <>
-                    <View 
-                      style={[
-                        styles.cooldownOverlay,
-                        getCooldownOverlayStyle(ability)
-                      ]} 
-                    />
-                    <Text style={styles.cooldownText}>
-                      {formatCooldown(ability.currentCooldown)}
-                    </Text>
-                  </>
-                )}
-                
-                {/* Ready indicator */}
-                {ability.currentCooldown <= 0 && (
-                  <View style={styles.readyIndicator} />
-                )}
+      {/* Circular Abilities Layout - Bottom-left corner */}
+      <View style={circularStyles.circularContainer}>
+        {/* Top Row - 3 Abilities */}
+        <View style={circularStyles.topRow}>
+          {equippedAbilities.slice(0, 3).map((ability, index) => (
+            <TouchableOpacity
+              key={`ability-${index}`}
+              style={circularStyles.abilityButton}
+              onPress={() => {
+                // Trigger ability if not on cooldown
+                const cooldown = getCooldownPercentage(ability);
+                if (cooldown === 0) {
+                  console.log(`🔥 Ability ${ability.id} activated!`);
+                  // Add ability activation logic here
+                }
+              }}
+              activeOpacity={0.7}
+            >
+              {/* Ability Level Indicator */}
+              <View style={circularStyles.abilityLevel}>
+                <Text style={circularStyles.levelText}>
+                  {ability.level || 1}
+                </Text>
               </View>
-            ) : (
-              <View style={styles.emptySlotContent}>
-                <Ionicons name="add" size={24} color="#4b5563" />
-                <Text style={styles.emptySlotText}>Empty</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        ))}
-      </View>
 
-      {/* Active Synergies */}
-      {deck.activeSynergies.length > 0 && (
-        <View style={styles.synergiesContainer}>
-          <Text style={styles.synergiesTitle}>Active Synergies:</Text>
-          <View style={styles.synergiesList}>
-            {deck.activeSynergies.map((synergy, index) => (
-              <View key={synergy.id} style={styles.synergyChip}>
-                <Ionicons name="link" size={12} color="#8b5cf6" />
-                <Text style={styles.synergyText}>{synergy.name}</Text>
-              </View>
-            ))}
-          </View>
+              {/* Ability Icon */}
+              <Ionicons
+                name={ability.iconName || 'flash'}
+                size={24}
+                color={MythicTechColors.neonBlue}
+              />
+
+              {/* Cooldown Overlay */}
+              {(() => {
+                const cooldownPercent = getCooldownPercentage(ability);
+                return cooldownPercent > 0 ? (
+                  <View
+                    style={[
+                      circularStyles.cooldownOverlay,
+                      { height: `${cooldownPercent * 100}%` }
+                    ]}
+                  />
+                ) : null;
+              })()}
+            </TouchableOpacity>
+          ))}
         </View>
-      )}
-    </View>
+
+        {/* Bottom Row - 2 Abilities (centered) */}
+        <View style={circularStyles.bottomRow}>
+          {equippedAbilities.slice(3, 5).map((ability, index) => (
+            <TouchableOpacity
+              key={`ability-${index + 3}`}
+              style={circularStyles.abilityButton}
+              onPress={() => {
+                const cooldown = getCooldownPercentage(ability);
+                if (cooldown === 0) {
+                  console.log(`🔥 Ability ${ability.id} activated!`);
+                }
+              }}
+              activeOpacity={0.7}
+            >
+              <View style={circularStyles.abilityLevel}>
+                <Text style={circularStyles.levelText}>
+                  {ability.level || 1}
+                </Text>
+              </View>
+
+              <Ionicons
+                name={ability.iconName || 'flash'}
+                size={24}
+                color={MythicTechColors.neonBlue}
+              />
+
+              {(() => {
+                const cooldownPercent = getCooldownPercentage(ability);
+                return cooldownPercent > 0 ? (
+                  <View
+                    style={[
+                      circularStyles.cooldownOverlay,
+                      { height: `${cooldownPercent * 100}%` }
+                    ]}
+                  />
+                ) : null;
+              })()}
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    </>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    bottom: 100, // Position above bottom navigation tabs (90px height + 10px margin)
-    left: 8,
-    right: 8,
-    backgroundColor: MythicTechColors.deepVoid + 'f0', // Semi-transparent neon-dark
-    borderTopWidth: 1,
-    borderTopColor: MythicTechColors.neonBlue + '88',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    // Modern React Native shadow syntax
-    ...(Platform.OS === 'ios' ? {
-      shadowColor: MythicTechColors.neonBlue,
-      shadowOffset: { width: 0, height: -2 },
-      shadowOpacity: 0.3,
-      shadowRadius: 8,
-    } : {
-      elevation: 8,
-    }),
-    // Lower z-index so ninja (zIndex: 50) and enemies (zIndex: 45) appear above skill bar
-    zIndex: 30,
-  },
-  statusBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 4, // Reduced by 50% (was 8)
-  },
-  statusItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  statusText: {
-    color: '#d1d5db',
-    fontSize: 12,
-    marginLeft: 4,
-    fontWeight: '600',
-  },
-  abilityBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 2, // Reduced by 50% (was 4)
-  },
-  abilitySlot: {
-    // Height will be set dynamically in dynamicStyles based on platform
-    backgroundColor: MythicTechColors.shadowGrid,
-    borderRadius: 6, // Slightly larger border radius for better mobile touch feel
-    borderWidth: 1,
-    borderColor: MythicTechColors.neonBlue + '66',
-    position: 'relative',
-    overflow: 'hidden',
-    // Platform-specific shadows for better mobile performance
-    ...(Platform.OS === 'ios' ? {
-      shadowColor: MythicTechColors.neonBlue,
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.3,
-      shadowRadius: 4,
-    } : {
-      elevation: 2,
-    }),
-  },
-  emptySlot: {
-    borderColor: MythicTechColors.shadowGrid,
-    backgroundColor: MythicTechColors.darkSpace,
-  },
-  onCooldownSlot: {
-    borderColor: MythicTechColors.plasmaGlow,
-    shadowColor: MythicTechColors.plasmaGlow,
-  },
-  abilityContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  abilityIcon: {
-    fontSize: 16, // 50% smaller (was 20, originally 24)
-  },
-  abilityLevel: {
-    position: 'absolute',
-    top: 2,
-    right: 2,
-    fontSize: 10,
-    color: '#f59e0b',
-    fontWeight: 'bold',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    paddingHorizontal: 3,
-    borderRadius: 3,
-  },
-  cooldownOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(239, 68, 68, 0.7)',
-  },
-  cooldownText: {
-    position: 'absolute',
-    bottom: 2,
-    alignSelf: 'center',
-    fontSize: 10,
-    color: '#ffffff',
-    fontWeight: 'bold',
-  },
-  readyIndicator: {
-    position: 'absolute',
-    top: 2,
-    left: 2,
-    width: 8,
-    height: 8,
-    backgroundColor: '#10b981',
-    borderRadius: 4,
-  },
-  emptySlotContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptySlotText: {
-    fontSize: 8,
-    color: '#4b5563',
-    marginTop: 2,
-  },
-  synergiesContainer: {
-    marginTop: 2, // Reduced by 50% (was 4)
-  },
-  synergiesTitle: {
-    fontSize: 10,
-    color: '#8b5cf6',
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  synergiesList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-  },
-  synergyChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(139, 92, 246, 0.2)',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.4)',
-  },
-  synergyText: {
-    fontSize: 9,
-    color: '#8b5cf6',
-    marginLeft: 2,
-    fontWeight: '500',
-  },
-});
+export default CombatUI;
