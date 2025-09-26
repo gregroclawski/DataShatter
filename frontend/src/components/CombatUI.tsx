@@ -200,7 +200,7 @@ const CombatUI: React.FC = () => {
 
         {/* Bottom Row - 2 Abilities (centered) */}
         <View style={circularStyles.bottomRow}>
-          {equippedAbilities.slice(3, 5).map((ability, index) => (
+          {deck.slots.slice(3, 5).map((ability, index) => ability ? (
             <TouchableOpacity
               key={`ability-${index + 3}`}
               style={circularStyles.abilityButton}
