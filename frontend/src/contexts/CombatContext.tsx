@@ -26,6 +26,7 @@ interface CombatEnemy {
   abilities?: string[]; // Boss abilities
   isBoss?: boolean; // Mark as boss for special behavior
   element?: 'fire' | 'ice' | 'shadow' | 'earth'; // Boss element
+  movementDirection?: { x: number; y: number }; // For mobile enemy movement
 }
 
 interface CombatProjectile {
