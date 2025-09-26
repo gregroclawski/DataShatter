@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useCombat } from '../contexts/CombatContext';
 import { useBoss } from '../contexts/BossContext';
 import { useGame } from '../contexts/GameContext';
+import { useResponsiveLayout } from '../hooks/useResponsiveLayout';
 import { Boss, BossType, BossTier } from '../data/BossData';
 import { CombatEnemy } from '../engine/CombatEngine';
 
