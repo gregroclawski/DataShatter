@@ -526,29 +526,47 @@ export default function NinjaIdleGame() {
           </Text>
         </View>
 
-        {/* Ninja Character - Responsive with Touch & Drag Movement */}
-        <GestureDetector gesture={panGesture}>
-          <Animated.View style={[
-            styles.ninjaContainer, 
-            { 
-              width: layout.ninjaSize,
-              height: layout.ninjaSize 
-            },
-            animatedNinjaStyle
-          ]}>
-            <View style={[
-              styles.ninja, 
+        {/* Game Area Touch Surface for Joystick Control */}
+        <GestureDetector gesture={touchGesture}>
+          <View style={styles.touchSurface}>
+            {/* Ninja Character - Responsive with Joystick Movement */}
+            <Animated.View style={[
+              styles.ninjaContainer, 
               { 
-                width: layout.ninjaSize, 
-                height: layout.ninjaSize,
-                borderRadius: layout.ninjaSize / 2
+                width: layout.ninjaSize,
+                height: layout.ninjaSize 
               },
-              isAttacking && styles.ninjaAttacking, 
-              isLevelingUp && styles.ninjaLevelUp
+              animatedNinjaStyle
             ]}>
-              <Text style={[styles.ninjaEmoji, ninjaFontStyle]}>🥷</Text>
-            </View>
-          </Animated.View>
+              <View style={[
+                styles.ninja, 
+                { 
+                  width: layout.ninjaSize, 
+                  height: layout.ninjaSize,
+                  borderRadius: layout.ninjaSize / 2
+                },
+                isAttacking && styles.ninjaAttacking, 
+                isLevelingUp && styles.ninjaLevelUp
+              ]}>
+                <Text style={[styles.ninjaEmoji, ninjaFontStyle]}>🥷</Text>
+              </View>
+            </Animated.View>
+
+            {/* Soft Joystick - Shows when touching screen */}
+            {joystickVisible && (
+              <>
+                {/* Joystick Base */}
+                <Animated.View style={[styles.joystickBase, joystickBaseStyle]}>
+                  <View style={styles.joystickBaseInner} />
+                </Animated.View>
+                
+                {/* Joystick Knob */}
+                <Animated.View style={[styles.joystickKnob, joystickKnobStyle]}>
+                  <View style={styles.joystickKnobInner} />
+                </Animated.View>
+              </>
+            )}
+          </View>
         </GestureDetector>
 
         {/* Enemies - Responsive */}
