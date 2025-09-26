@@ -109,7 +109,7 @@ export default function NinjaIdleGame() {
 
   // MOBILE-SAFE Movement System - Uses simple touch events instead of complex gestures
   useEffect(() => {
-    if (!isAutoMovement && isManualControlActive && movementDirection.x !== 0 || movementDirection.y !== 0) {
+    if (!isAutoMovement && isManualControlActive && (movementDirection.x !== 0 || movementDirection.y !== 0)) {
       // Mobile-safe movement using simple state updates and setTimeout
       movementIntervalRef.current = setTimeout(() => {
         setNinjaPosition(prev => {
@@ -129,9 +129,7 @@ export default function NinjaIdleGame() {
             )
           );
           
-          const newPosition = { x: newX, y: newY };
-          updateNinjaPosition(newPosition); // Update combat context
-          return newPosition;
+          return { x: newX, y: newY };
         });
       }, 33); // 30fps for mobile stability
     }
@@ -141,7 +139,12 @@ export default function NinjaIdleGame() {
         clearTimeout(movementIntervalRef.current);
       }
     };
-  }, [isManualControlActive, movementDirection.x, movementDirection.y, isAutoMovement, layout, updateNinjaPosition]);
+  }, [isManualControlActive, movementDirection.x, movementDirection.y, isAutoMovement, layout]);
+
+  // MOBILE FIX: Update combat context position separately to prevent render-phase violations
+  useEffect(() => {
+    updateNinjaPosition(ninjaPosition);
+  }, [ninjaPosition, updateNinjaPosition]);
 
   // Toggle between auto and manual movement
   const toggleMovementMode = useCallback(() => {
