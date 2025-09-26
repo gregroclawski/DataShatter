@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, Animated, Dimensions, Platform } from 'react-native';
+import { View, Text, StyleSheet, Animated, useWindowDimensions, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MythicTechColors } from '../theme/MythicTechTheme';
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 interface LoadingScreenProps {
   message?: string;
 }
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = "Initializing authentication..." }) => {
+  // Use dynamic dimensions for mobile responsiveness 
+  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
+  
   // ALL animation refs must be at top level - no hooks inside other hooks!
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
@@ -26,8 +27,10 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = "Initializing a
   const particle4 = useRef(new Animated.Value(0)).current;
   const particle5 = useRef(new Animated.Value(0)).current;
   
-  // Array of particle refs (FIXED - no hooks inside useMemo!)
-  const particleRefs = [particle0, particle1, particle2, particle3, particle4, particle5];
+  // Memoize particle refs array to prevent recreation (FIXED - breaks infinite dependency loop!)
+  const particleRefs = useMemo(() => [
+    particle0, particle1, particle2, particle3, particle4, particle5
+  ], []); // Empty dependency - create once and never change
   
   // Memoize all dynamic styles to prevent inline object recreation
   const contentStyle = useMemo(() => ([
