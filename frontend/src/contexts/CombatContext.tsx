@@ -105,7 +105,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   });
 
   // Function to handle enemy kills - integrates with zone progression and awards XP/gold
-  const handleEnemyKill = (enemy: CombatEnemy) => {
+  const handleEnemyKill = useCallback((enemy: CombatEnemy) => {
     console.log(`🎯 Enemy killed! Max HP: ${enemy.maxHealth}`);
     
     // Award XP and gold directly using useGame hook
@@ -114,6 +114,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     
     console.log(`💰 Awarding ${xpReward} XP and ${goldReward} gold for kill`);
     
+    // BATCH all state updates to prevent cross-context cascade on mobile
+    // Use setTimeout to break the synchronous chain and prevent React Native bridge overload
     updateNinja((prev) => {
       console.log(`📊 XP before: ${prev.experience}, after: ${prev.experience + xpReward}`);
       return {
@@ -122,9 +124,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       };
     });
     
-    // COMPLETELY ISOLATE zone update using React.startTransition for safer state updates
-    // This ensures the state update happens outside the current render cycle
-    React.startTransition(() => {
+    // Defer zone update to next event loop to prevent cascade
+    setTimeout(() => {
       // Convert CombatEnemy to CurrentEnemy format for zone progression
       const zoneEnemy = {
         id: enemy.id,
@@ -139,8 +140,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       };
       
       recordEnemyKill(zoneEnemy);
-    });
-  };
+    }, 0); // 0ms delay to defer to next event loop
+  }, [updateNinja, recordEnemyKill]);
 
   // Combat tick handler
   const handleCombatTick = () => {
