@@ -122,10 +122,6 @@ export default function NinjaIdleGame() {
         const moveSpeed = 2; // Reduced speed for stability
         const maxDistance = 40; // Maximum joystick knob distance
         
-        // Normalize joystick input (0-1) - using current state values
-        const normalizedX = knobOffset.x / maxDistance;
-        const normalizedY = knobOffset.y / maxDistance;
-        
         // Use shared values for joystick offset to prevent race conditions
         const currentOffsetX = knobOffsetX.value;
         const currentOffsetY = knobOffsetY.value;
