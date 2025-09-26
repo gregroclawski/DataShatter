@@ -93,8 +93,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (storedEmail && storedPassword) {
         console.log('🔑 Found stored credentials - attempting auto-login...');
         
-        // Auto-login with stored credentials
-        const loginResult = await login(storedEmail, storedPassword);
+        // Auto-login with stored credentials with timeout
+        const loginPromise = login(storedEmail, storedPassword);
+        const loginResult = await Promise.race([loginPromise, timeoutPromise]);
         
         if (loginResult.success) {
           console.log('✅ Auto-login successful!');
