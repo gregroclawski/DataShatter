@@ -52,7 +52,7 @@ export default function CombatUI({ onAbilityPress }: Props) {
         
         <View style={styles.statusItem}>
           <Ionicons name={combatState.isInCombat ? "play" : "pause"} size={16} color={combatState.isInCombat ? "#10b981" : "#6b7280"} />
-          <Text style={[styles.statusText, { color: combatState.isInCombat ? "#10b981" : "#6b7280" }]}>
+          <Text style={[styles.statusText, combatStatusStyle]}>
             {combatState.isInCombat ? "Combat" : "Paused"}
           </Text>
         </View>
