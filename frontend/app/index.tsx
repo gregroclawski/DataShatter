@@ -113,7 +113,7 @@ export default function NinjaIdleGame() {
       // Mobile-safe movement using simple state updates and setTimeout
       movementIntervalRef.current = setTimeout(() => {
         setNinjaPosition(prev => {
-          const moveSpeed = 10; // 5x faster manual movement (was 2)
+          const moveSpeed = 6; // 3x faster manual movement (was 2)
           const newX = Math.max(
             0,
             Math.min(
