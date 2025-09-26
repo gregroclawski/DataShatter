@@ -189,9 +189,9 @@ const styles = StyleSheet.create({
     marginBottom: 2, // Reduced by 50% (was 4)
   },
   abilitySlot: {
-    height: 40, // Fixed height instead of aspect ratio for compactness
+    // Height will be set dynamically in dynamicStyles based on platform
     backgroundColor: MythicTechColors.shadowGrid,
-    borderRadius: 4, // Much smaller border radius
+    borderRadius: 6, // Slightly larger border radius for better mobile touch feel
     borderWidth: 1,
     borderColor: MythicTechColors.neonBlue + '66',
     position: 'relative',
