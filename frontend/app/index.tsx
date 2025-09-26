@@ -378,48 +378,29 @@ export default function NinjaIdleGame() {
           </Text>
         </View>
 
-        {/* Game Area Touch Surface for Joystick Control */}
-        <GestureDetector gesture={touchGesture}>
-          <View style={styles.touchSurface}>
-            {/* Ninja Character - Responsive with Joystick Movement */}
-            <Animated.View style={[
-              styles.ninjaContainer, 
-              { 
-                width: layout.ninjaSize,
-                height: layout.ninjaSize 
-              },
-              animatedNinjaStyle
-            ]}>
-              <View style={[
-                styles.ninja, 
-                { 
-                  width: layout.ninjaSize, 
-                  height: layout.ninjaSize,
-                  borderRadius: layout.ninjaSize / 2
-                },
-                isAttacking && styles.ninjaAttacking, 
-                isLevelingUp && styles.ninjaLevelUp
-              ]}>
-                <Text style={[styles.ninjaEmoji, ninjaFontStyle]}>🥷</Text>
-              </View>
-            </Animated.View>
-
-            {/* Soft Joystick - Shows when touching screen */}
-            {joystickVisible && (
-              <>
-                {/* Joystick Base */}
-                <Animated.View style={[styles.joystickBase, joystickBaseStyle]}>
-                  <View style={styles.joystickBaseInner} />
-                </Animated.View>
-                
-                {/* Joystick Knob */}
-                <Animated.View style={[styles.joystickKnob, joystickKnobStyle]}>
-                  <View style={styles.joystickKnobInner} />
-                </Animated.View>
-              </>
-            )}
+        {/* Ninja Character - Fixed Position */}
+        <View style={[
+          styles.ninjaContainer, 
+          { 
+            left: ninjaPosition.x,
+            top: ninjaPosition.y,
+            width: layout.ninjaSize,
+            height: layout.ninjaSize 
+          }
+        ]}>
+          <View style={[
+            styles.ninja, 
+            { 
+              width: layout.ninjaSize, 
+              height: layout.ninjaSize,
+              borderRadius: layout.ninjaSize / 2
+            },
+            isAttacking && styles.ninjaAttacking, 
+            isLevelingUp && styles.ninjaLevelUp
+          ]}>
+            <Text style={[styles.ninjaEmoji, ninjaFontStyle]}>🥷</Text>
           </View>
-        </GestureDetector>
+        </View>
 
         {/* Enemies - Responsive */}
         {(combatState.enemies || []).map(enemy => (
