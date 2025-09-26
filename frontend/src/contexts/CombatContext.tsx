@@ -404,13 +404,13 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     
     // Start the engine
     combatEngine.start();
-  };
+  }, [combatEngine, handleCombatTick]);
 
   // Stop combat
-  const stopCombat = () => {
+  const stopCombat = React.useCallback(() => {
     setCombatState(prev => ({ ...prev, isInCombat: false }));
     combatEngine.removeTickCallback(handleCombatTick);
-  };
+  }, [combatEngine, handleCombatTick]);
 
   // Equipment management
   const equipAbility = (abilityId: string, slotIndex: number): boolean => {
