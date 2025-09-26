@@ -27,10 +27,18 @@ export default function CombatUI({ onAbilityPress }: Props) {
     color: combatState.isInCombat ? "#10b981" : "#6b7280"
   }), [combatState.isInCombat]);
 
-  // Helper function to get cooldown overlay style (memoization handled per ability)
-  const getCooldownOverlayStyle = (ability: EquippedAbility) => ({
-    height: `${getCooldownPercentage(ability)}%` as const
-  });
+  // Memoize cooldown overlay style calculation to prevent object recreation
+  const getCooldownPercentage = useCallback((ability: EquippedAbility): number => {
+    if (!ability || typeof ability.currentCooldown !== 'number' || typeof ability.maxCooldown !== 'number') {
+      return 0;
+    }
+    if (ability.maxCooldown === 0) return 0;
+    return (ability.currentCooldown / ability.maxCooldown) * 100;
+  }, []);
+
+  const getCooldownOverlayStyle = useCallback((ability: EquippedAbility) => ({
+    height: `${getCooldownPercentage(ability)}%`
+  }), [getCooldownPercentage]);
 
   const formatCooldown = (ticks: number): string => {
     const seconds = Math.ceil(ticks / 10);
