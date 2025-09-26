@@ -112,6 +112,11 @@ export const useResponsiveLayout = (): ResponsiveLayout => {
       enemySize,
       iconSize,
       
+      // Mobile touch targets
+      minTouchTarget,
+      tabTouchTarget,
+      buttonTouchTarget,
+      
       // Font sizes
       titleFontSize,
       bodyFontSize,
