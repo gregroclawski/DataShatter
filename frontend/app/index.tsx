@@ -48,6 +48,15 @@ export default function NinjaIdleGame() {
   const { currentZone, currentZoneLevel, getZoneProgress, recordEnemyKill } = useZone();
   
   // All state hooks must be called unconditionally
+  
+  // Memoize dynamic styles to prevent inline object recreation causing infinite loops
+  const ninjaFontStyle = useMemo(() => ({
+    fontSize: layout.ninjaSize * 0.6
+  }), [layout.ninjaSize]);
+  
+  const enemyFontStyle = useMemo(() => ({
+    fontSize: layout.enemySize * 0.6
+  }), [layout.enemySize]);
   const [activeOverlay, setActiveOverlay] = useState<ActiveOverlay>(null);
   const [isLevelingUp, setIsLevelingUp] = useState(false);
   const [previousLevel, setPreviousLevel] = useState(1);
