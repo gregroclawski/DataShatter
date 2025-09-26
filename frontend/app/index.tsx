@@ -525,10 +525,15 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
     progressSection: {
       flex: 1,
       paddingRight: layout.paddingS,
-      // Ensure level display appears above zone info (which has zIndex: 2)
-      zIndex: 5,
-      // Mobile-optimized positioning
-      position: 'relative',
+      // Use absolute positioning with proper SafeAreaView integration for mobile
+      position: 'absolute',
+      top: layout.topInset + 5, // Add small offset from safe area
+      left: layout.paddingM,
+      right: layout.paddingM,
+      // Higher z-index to ensure header appears above all game elements
+      zIndex: 40,
+      // Mobile-optimized height
+      height: 60,
     },
     progressionTitle: {
       fontSize: layout.smallFontSize,
