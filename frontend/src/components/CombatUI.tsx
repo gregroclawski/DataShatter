@@ -80,7 +80,7 @@ export default function CombatUI({ onAbilityPress }: Props) {
           <TouchableOpacity
             key={index}
             style={[
-              styles.abilitySlot,
+              dynamicStyles.abilitySlot,
               !ability && styles.emptySlot,
               ability?.currentCooldown > 0 && styles.onCooldownSlot,
             ]}
