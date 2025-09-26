@@ -215,11 +215,9 @@ const CombatUI: React.FC = () => {
                 </Text>
               </View>
 
-              <Ionicons
-                name={ability.iconName || 'flash'}
-                size={24}
-                color={MythicTechColors.neonBlue}
-              />
+              <Text style={{ fontSize: 24 }}>
+                {ability.icon || '⚡'}
+              </Text>
 
               {(() => {
                 const cooldownPercent = getCooldownPercentage(ability);
