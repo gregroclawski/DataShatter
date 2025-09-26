@@ -540,6 +540,12 @@ export default function NinjaIdleGame() {
               setJoystickPosition({ x: touchX, y: touchY });
               setKnobPosition({ x: touchX, y: touchY });
               setIsManualControlActive(true);
+              
+              // MOBILE FIX: Pause combat to prevent stuttering during joystick movement
+              if (setManualControlActive) {
+                setManualControlActive(true);
+              }
+              
               console.log('🕹️ Joystick activated at:', { x: touchX, y: touchY });
             }}
             onTouchMove={(event) => {
