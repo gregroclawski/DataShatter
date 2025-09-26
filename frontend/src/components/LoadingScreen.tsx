@@ -228,7 +228,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = "Initializing a
         
         {/* Floating Particles */}
         {particleStyles.map((particle, i) => (
-          <Animated.View key={i} style={particle.style} />
+          <Animated.View key={i} style={particle} />
         ))}
         
         {/* Loading Text */}
