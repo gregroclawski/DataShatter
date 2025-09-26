@@ -148,11 +148,11 @@ export default function NinjaIdleGame() {
 
   // AUTO MOVEMENT SYSTEM - Missing implementation added
   useEffect(() => {
-    if (isAutoMovement) {
+    if (isAutoMovement && findClosestEnemy) { // Add safety check for function existence
       const autoMovementInterval = setInterval(() => {
         // Find closest enemy from combat context
         const closestEnemy = findClosestEnemy();
-        if (closestEnemy) {
+        if (closestEnemy && closestEnemy.position) {
           setNinjaPosition(prev => {
             const moveSpeed = 1.5; // Slower auto movement for mobile
             
