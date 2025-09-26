@@ -1,27 +1,26 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useBoss } from '../contexts/BossContext';
 import { useGame } from '../contexts/GameContext';
-import { Boss, BossType, BossTier } from '../data/BossData';
-import { RARITY_CONFIG } from '../data/EquipmentData';
+import { MythicTechColors } from '../theme/MythicTechTheme';
+import { Boss, BossTier } from '../data/BossData';
 
 interface BossOverlayProps {
   visible: boolean;
   onClose: () => void;
-  onStartBattle: (boss: Boss, tier: BossTier) => void;
+  onStartBossFight?: (bossId: number) => void;
 }
 
-export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose, onStartBattle }) => {
-  const { 
-    getAvailableBosses,
-    getBossProgress,
+export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose, onStartBossFight }) => {
+  const {
+    dailyBossState,
     canFightBoss,
     fightBoss,
+    getAvailableBosses,
+    getBossProgress,
+    hasTickets,
     getTicketsRemaining,
-    getTimeUntilTicketRegen,
-    addTestMaterials,
-    dailyBossState
   } = useBoss();
   
   const [selectedBoss, setSelectedBoss] = useState<Boss | null>(null);
@@ -46,36 +45,26 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose, onSt
   const { gameState } = useGame();
   const ninja = gameState.ninja;
 
+  if (!ninja) {
+    return (
+      <View style={styles.overlay}>
+        <View style={styles.modal}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Boss Battles</Text>
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+              <Ionicons name="close" size={24} color="#e5e7eb" />
+            </TouchableOpacity>
+          </View>
+        <View style={[styles.content, styles.loadingContent]}>
+          <Text style={styles.loadingText}>Loading player data...</Text>
+        </View>
+        </View>
+      </View>
+    );
+  }
+
   const availableBosses = getAvailableBosses();
-  const ticketsRemaining = getTicketsRemaining();
 
-  // Format time remaining for ticket regen
-  const formatTimeRemaining = (milliseconds: number): string => {
-    const hours = Math.floor(milliseconds / (1000 * 60 * 60));
-    const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
-    return `${hours}h ${minutes}m`;
-  };
-
-  // Handle boss fight - launch dedicated battle screen
-  const handleFightBoss = async (bossType: BossType, tier: number) => {
-    if (!canFightBoss(bossType, tier)) {
-      Alert.alert('Cannot Fight', 'Requirements not met or no tickets remaining');
-      return;
-    }
-
-    const boss = availableBosses.find(b => b.id === bossType);
-    const bossTier = boss?.tiers.find(t => t.tier === tier);
-    
-    if (!boss || !bossTier) {
-      Alert.alert('Error', 'Boss or tier not found');
-      return;
-    }
-
-    // Launch the boss battle at the main game level
-    onStartBattle(boss, bossTier);
-  };
-
-  // Render boss card
   const renderBossCard = (boss: Boss) => {
     const progress = getBossProgress(boss.id);
     const bossProgress = dailyBossState.bossProgress[boss.id];
@@ -97,270 +86,164 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose, onSt
         
         <View style={styles.bossStats}>
           <Text style={styles.bossProgress}>
-            Highest Tier: {progress.highestTier}/5
-          </Text>
-          <Text style={styles.bossProgress}>
-            Victories: {progress.totalVictories}
-          </Text>
-          <Text style={styles.bossProgress}>
-            Unlocked: {bossProgress.unlockedTiers.join(', ')}/5
+            Defeated: {bossProgress?.defeated || 0} times
           </Text>
         </View>
         
-        <Text style={styles.bossDescription}>{boss.description}</Text>
+        <Text style={styles.bossDescription}>
+          {boss.description}
+        </Text>
+        
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tiersContainer}>
+          {boss.tiers.map((tier, index) => {
+            const isUnlocked = ninja.level >= tier.requiredLevel;
+            const canFight = isUnlocked && hasTickets() && canFightBoss(boss.id, tier.tier);
+            
+            return (
+              <TouchableOpacity
+                key={`${boss.id}-${tier.tier}`}
+                style={[
+                  styles.tierCard,
+                  isUnlocked ? styles.tierCardUnlocked : styles.tierCardLocked,
+                  canFight ? styles.tierCardCanFight : null
+                ]}
+                onPress={() => isUnlocked && canFight ? handleFightBoss(boss.id, tier.tier) : null}
+                disabled={!canFight}
+              >
+                <Text style={styles.tierTitle}>Tier {tier.tier}</Text>
+                <Text style={styles.tierLevel}>Req. Level {tier.requiredLevel}</Text>
+                <Text style={styles.tierHealth}>HP: {tier.health.toLocaleString()}</Text>
+                <Text style={styles.tierAttack}>ATK: {tier.attack.toLocaleString()}</Text>
+                
+                <View style={styles.tierRewards}>
+                  <Text style={styles.tierRewardsTitle}>Rewards:</Text>
+                  <Text style={styles.tierReward}>XP: {tier.rewards.xp.toLocaleString()}</Text>
+                  <Text style={styles.tierReward}>Gold: {tier.rewards.gold.toLocaleString()}</Text>
+                  {tier.rewards.materials && (
+                    <Text style={styles.tierReward}>Materials: {tier.rewards.materials.amount}</Text>
+                  )}
+                </View>
+                
+                {!isUnlocked && (
+                  <View style={styles.lockedOverlay}>
+                    <Ionicons name="lock-closed" size={16} color="#6b7280" />
+                  </View>
+                )}
+                
+                {isUnlocked && !canFight && (
+                  <View style={styles.noTicketsOverlay}>
+                    <Text style={styles.noTicketsText}>No Tickets</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
       </TouchableOpacity>
     );
   };
 
-  // Render boss tier details
-  const renderBossTier = (boss: Boss, tier: BossTier) => {
-    const canFight = canFightBoss(boss.id, tier.tier);
-    const isUnlocked = dailyBossState.bossProgress[boss.id].unlockedTiers.includes(tier.tier);
-    
-    return (
-      <View key={tier.tier} style={[styles.tierCard, !isUnlocked && styles.lockedTier]}>
-        <View style={styles.tierHeader}>
-          <Text style={styles.tierName}>
-            Tier {tier.tier}: {tier.name}
-          </Text>
-          {!isUnlocked && <Ionicons name="lock-closed" size={16} color="#6b7280" />}
-        </View>
-        
-        <Text style={styles.tierRequirement}>
-          Required Level: {tier.requiredLevel}
-        </Text>
-        
-        <View style={styles.tierStats}>
-          <Text style={styles.statText}>HP: {tier.stats.hp.toLocaleString()}</Text>
-          <Text style={styles.statText}>ATK: {tier.stats.attack}</Text>
-          <Text style={styles.statText}>DEF: {tier.stats.defense}</Text>
-          <Text style={styles.statText}>Crit: {tier.stats.critChance}%</Text>
-        </View>
-        
-        <View style={styles.tierAbilities}>
-          <Text style={styles.abilitiesTitle}>Abilities:</Text>
-          <Text style={styles.abilitiesText}>{tier.stats.abilities.join(', ')}</Text>
-        </View>
-        
-        <View style={styles.tierRewards}>
-          <Text style={styles.rewardsTitle}>Rewards:</Text>
-          <Text style={styles.rewardText}>
-            💰 {tier.rewards.goldMin}-{tier.rewards.goldMax} Gold
-          </Text>
-          <Text style={styles.rewardText}>
-            ⭐ {tier.rewards.experienceMin}-{tier.rewards.experienceMax} XP
-          </Text>
-          <Text style={styles.rewardText}>⚔️ Guaranteed Equipment Drop</Text>
-          
-          {Object.entries(tier.rewards.materials).map(([material, range]) => (
-            <Text key={material} style={styles.materialReward}>
-              🔸 {range.min}-{range.max}x {material.replace('_', ' ')}
-            </Text>
-          ))}
-        </View>
-        
-        <TouchableOpacity
-          style={[
-            styles.fightButton,
-            !canFight && styles.fightButtonDisabled
-          ]}
-          onPress={() => isUnlocked && canFight ? handleFightBoss(boss.id, tier.tier) : null}
-          disabled={!canFight || isFighting}
-        >
-          <Text style={[styles.fightButtonText, !canFight && styles.fightButtonTextDisabled]}>
-            {isFighting ? 'Fighting...' : 
-             !isUnlocked ? 'Locked' :
-             !canFight ? 'Cannot Fight' : 
-             'Fight Boss'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
-  // Render tickets info
-  const renderTicketsInfo = () => (
-    <View style={styles.ticketsContainer}>
-      <View style={styles.ticketsHeader}>
-        <Ionicons name="ticket" size={24} color="#10b981" />
-        <Text style={styles.ticketsTitle}>Daily Boss Tickets</Text>
-      </View>
-      
-      <View style={styles.ticketsInfo}>
-        <Text style={styles.ticketsRemaining}>
-          {ticketsRemaining}/5 Remaining
-        </Text>
-        {ticketsRemaining < 5 && (
-          <Text style={styles.ticketsRegen}>
-            Next reset: {formatTimeRemaining(getTimeUntilTicketRegen())}
-          </Text>
-        )}
-      </View>
-      
-      <TouchableOpacity onPress={addTestMaterials} style={styles.testButton}>
-        <Text style={styles.testButtonText}>🧪 Add Test Materials</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-  // Don't render if not visible
-  if (!visible) {
-    return null;
-  }
-  
-  // Simple ninja check - just ensure basic data is available
-  if (!ninja) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Boss Battles</Text>
-          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Ionicons name="close" size={24} color="#e5e7eb" />
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.content, styles.loadingContent]}>
-          <Text style={styles.loadingText}>Loading player data...</Text>
-        </View>
-      </View>
-    );
-  }
+  if (!visible) return null;
 
   return (
     <>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>
-            {selectedBoss ? (selectedTier ? 'Boss Battle' : selectedBoss.name) : 'Boss Battles'}
-          </Text>
-          <TouchableOpacity 
-            onPress={() => {
-              if (selectedTier) {
-                setSelectedTier(null);
-              } else if (selectedBoss) {
-                setSelectedBoss(null);
-              } else {
-                onClose();
-              }
-            }} 
-            style={styles.closeButton}
-          >
-            <Ionicons name={selectedBoss || selectedTier ? "arrow-back" : "close"} size={24} color="#e5e7eb" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Tickets Info */}
-        {!selectedBoss && renderTicketsInfo()}
-
-        <ScrollView style={styles.content}>
-          {!selectedBoss ? (
-            // Boss selection view
-            <View style={styles.bossesContainer}>
-              {availableBosses.map(boss => renderBossCard(boss))}
+      <View style={styles.overlay}>
+        <View style={styles.modal}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Boss Battles</Text>
+            <View style={styles.headerInfo}>
+              <Ionicons name="ticket" size={16} color="#fbbf24" />
+              <Text style={styles.ticketsText}>
+                Tickets: {getTicketsRemaining()}/5
+              </Text>
             </View>
-          ) : (
-            // Boss details view
-            <View style={styles.bossDetails}>
-              <View style={styles.bossDetailHeader}>
-                <Text style={styles.bossDetailIcon}>{selectedBoss.icon}</Text>
-                <View style={styles.bossDetailInfo}>
-                  <Text style={styles.bossDetailName}>{selectedBoss.name}</Text>
-                  <Text style={styles.bossDetailLocation}>{selectedBoss.location}</Text>
-                  <Text style={styles.bossDetailElement}>{selectedBoss.element} Element</Text>
-                </View>
+            <TouchableOpacity
+              onPress={handleCloseDetails}
+              style={styles.closeButton}
+            >
+              <Ionicons name="close" size={24} color="#e5e7eb" />
+            </TouchableOpacity>
+          </View>
+          
+          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+            <Text style={styles.subtitle}>Challenge mighty bosses for epic rewards!</Text>
+            
+            {availableBosses.length > 0 ? (
+              availableBosses.map(renderBossCard)
+            ) : (
+              <View style={styles.noBossesContainer}>
+                <Text style={styles.noBossesText}>No bosses available at your current level.</Text>
+                <Text style={styles.noBossesSubtext}>Keep leveling up to unlock boss battles!</Text>
               </View>
-              
-              <Text style={styles.bossDetailDescription}>{selectedBoss.description}</Text>
-              
-              <Text style={styles.tiersTitle}>Boss Tiers</Text>
-              {selectedBoss.tiers.map(tier => renderBossTier(selectedBoss, tier))}
-            </View>
-          )}
-        </ScrollView>
+            )}
+          </ScrollView>
+        </View>
       </View>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  modal: {
     backgroundColor: '#1f2937',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 16,
-    maxHeight: '80%',
-    minHeight: '50%',
-    pointerEvents: 'auto',
+    borderRadius: 16,
+    width: '90%',
+    maxWidth: 400,
+    maxHeight: '85%',
+    borderWidth: 2,
+    borderColor: '#374151',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
-    paddingBottom: 12,
+    padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#374151',
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#e5e7eb',
+    color: '#f9fafb',
+  },
+  headerInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  ticketsText: {
+    fontSize: 14,
+    color: '#fbbf24',
+    fontWeight: '600',
   },
   closeButton: {
     padding: 4,
   },
-  ticketsContainer: {
-    backgroundColor: '#374151',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  ticketsHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  ticketsTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#10b981',
-    marginLeft: 8,
-  },
-  ticketsInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  ticketsRemaining: {
-    fontSize: 14,
-    color: '#e5e7eb',
-    fontWeight: '600',
-  },
-  ticketsRegen: {
-    fontSize: 12,
-    color: '#9ca3af',
-  },
-  testButton: {
-    marginTop: 8,
-    padding: 8,
-    backgroundColor: '#10b981',
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  testButtonText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
   content: {
-    flex: 1,
+    padding: 20,
   },
-  bossesContainer: {
-    gap: 12,
+  subtitle: {
+    fontSize: 14,
+    color: '#9ca3af',
+    marginBottom: 16,
+    textAlign: 'center',
   },
   bossCard: {
     backgroundColor: '#374151',
-    padding: 16,
     borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
     borderWidth: 1,
     borderColor: '#4b5563',
   },
@@ -379,7 +262,7 @@ const styles = StyleSheet.create({
   bossName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#e5e7eb',
+    color: '#f9fafb',
   },
   bossLocation: {
     fontSize: 14,
@@ -403,122 +286,114 @@ const styles = StyleSheet.create({
   bossDescription: {
     fontSize: 13,
     color: '#9ca3af',
-    fontStyle: 'italic',
+    marginBottom: 12,
+    lineHeight: 18,
   },
-  bossDetails: {
-    gap: 16,
-  },
-  bossDetailHeader: {
+  tiersContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  bossDetailIcon: {
-    fontSize: 48,
-    marginRight: 16,
-  },
-  bossDetailInfo: {
-    flex: 1,
-  },
-  bossDetailName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#e5e7eb',
-  },
-  bossDetailLocation: {
-    fontSize: 16,
-    color: '#10b981',
-    marginTop: 4,
-  },
-  bossDetailElement: {
-    fontSize: 14,
-    color: '#9ca3af',
-    marginTop: 2,
-  },
-  bossDetailDescription: {
-    fontSize: 14,
-    color: '#d1d5db',
-    fontStyle: 'italic',
-    lineHeight: 20,
-  },
-  tiersTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#e5e7eb',
-    marginTop: 8,
   },
   tierCard: {
     backgroundColor: '#4b5563',
-    padding: 14,
     borderRadius: 8,
-    marginBottom: 12,
+    padding: 12,
+    marginRight: 8,
+    minWidth: 120,
     borderWidth: 1,
     borderColor: '#6b7280',
   },
-  lockedTier: {
+  tierCardUnlocked: {
+    borderColor: '#10b981',
+  },
+  tierCardLocked: {
     opacity: 0.6,
-    backgroundColor: '#374151',
   },
-  tierHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+  tierCardCanFight: {
+    backgroundColor: '#065f46',
+    borderColor: '#10b981',
   },
-  tierName: {
-    fontSize: 16,
+  tierTitle: {
+    fontSize: 14,
     fontWeight: 'bold',
-    color: '#e5e7eb',
+    color: '#f9fafb',
+    marginBottom: 4,
   },
-  tierRequirement: {
-    fontSize: 12,
+  tierLevel: {
+    fontSize: 11,
+    color: '#9ca3af',
+    marginBottom: 6,
+  },
+  tierHealth: {
+    fontSize: 11,
+    color: '#ef4444',
+    marginBottom: 2,
+  },
+  tierAttack: {
+    fontSize: 11,
     color: '#f59e0b',
     marginBottom: 8,
   },
-  tierStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
+  tierRewards: {
+    borderTopWidth: 1,
+    borderTopColor: '#6b7280',
+    paddingTop: 6,
   },
-  statText: {
-    fontSize: 12,
+  tierRewardsTitle: {
+    fontSize: 10,
     color: '#d1d5db',
-  },
-  tierAbilities: {
-    marginBottom: 8,
-  },
-  abilitiesTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#e5e7eb',
+    fontWeight: '600',
     marginBottom: 2,
   },
-  abilitiesText: {
-    fontSize: 11,
-    color: '#9ca3af',
+  tierReward: {
+    fontSize: 10,
+    color: '#a3a3a3',
+    marginBottom: 1,
   },
-  tierRewards: {
-    marginBottom: 12,
+  lockedOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
   },
-  rewardsTitle: {
+  noTicketsOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(239, 68, 68, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+  noTicketsText: {
+    color: '#ffffff',
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#e5e7eb',
-    marginBottom: 4,
   },
-  rewardText: {
-    fontSize: 11,
-    color: '#10b981',
-    marginBottom: 1,
+  noBossesContainer: {
+    alignItems: 'center',
+    paddingVertical: 40,
   },
-  materialReward: {
-    fontSize: 11,
-    color: '#8b5cf6',
-    marginBottom: 1,
+  noBossesText: {
+    fontSize: 16,
+    color: '#9ca3af',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  noBossesSubtext: {
+    fontSize: 14,
+    color: '#6b7280',
+    textAlign: 'center',
   },
   fightButton: {
-    backgroundColor: '#ef4444',
-    padding: 10,
+    backgroundColor: '#10b981',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 6,
     alignItems: 'center',
   },
