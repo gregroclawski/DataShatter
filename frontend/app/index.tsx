@@ -684,7 +684,9 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       top: layout.paddingS,
       left: layout.paddingM,
       zIndex: 2,
-      backgroundColor: MythicTechColors.deepVoid + '88',
+      backgroundColor: MythicTechColors.deepVoid + 'cc', // Increased opacity for mobile visibility
+      borderWidth: 2,
+      borderColor: MythicTechColors.neonBlue,
       paddingHorizontal: layout.paddingS,
       paddingVertical: layout.paddingXS,
       borderRadius: layout.paddingS,
