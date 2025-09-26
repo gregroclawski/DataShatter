@@ -70,7 +70,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = "Initializing a
     },
   ]), [gridPulse]);
   
-  // Memoize particle styles (FIXED - no useRef calls inside!)
+  // Memoize particle styles using dynamic dimensions (FIXED - no circular dependencies!)
   const particleStyles = useMemo(() => {
     return particleRefs.map((animValue, i) => ([
       styles.particle,
@@ -88,7 +88,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = "Initializing a
         }),
       },
     ]));
-  }, [particleRefs]);
+  }, [SCREEN_WIDTH, SCREEN_HEIGHT]); // Only depend on dimensions, not particleRefs
   
   // Start animations in useEffect (FIXED - no useCallback dependency chain)
   useEffect(() => {
