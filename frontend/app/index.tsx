@@ -607,7 +607,8 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
     },
     ninjaContainer: {
       position: 'absolute',
-      zIndex: 10,
+      // Higher z-index to ensure ninja appears above skill bar (Combat UI has zIndex: 30)
+      zIndex: 50,
     },
     ninja: {
       justifyContent: 'center',
