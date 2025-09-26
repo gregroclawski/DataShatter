@@ -93,9 +93,20 @@ export default function NinjaIdleGame() {
   const [ninjaPosition, setNinjaPosition] = useState(initialNinjaPosition);
   const [isAttacking, setIsAttacking] = useState(false);
 
-  // Touch and drag movement system - mobile optimized
+  // Soft Joystick Movement System - Mobile Optimized
   const translateX = useSharedValue(ninjaPosition.x);
   const translateY = useSharedValue(ninjaPosition.y);
+  
+  // Joystick state
+  const [joystickVisible, setJoystickVisible] = useState(false);
+  const [joystickPosition, setJoystickPosition] = useState({ x: 0, y: 0 });
+  const [knobOffset, setKnobOffset] = useState({ x: 0, y: 0 });
+  
+  // Joystick movement values
+  const joystickBaseX = useSharedValue(0);
+  const joystickBaseY = useSharedValue(0);
+  const joystickKnobX = useSharedValue(0);
+  const joystickKnobY = useSharedValue(0);
 
   // Initialize animated values when layout changes
   useEffect(() => {
@@ -103,44 +114,103 @@ export default function NinjaIdleGame() {
     translateY.value = ninjaPosition.y;
   }, [ninjaPosition.x, ninjaPosition.y, translateX, translateY]);
 
-  // Create pan gesture for ninja movement - mobile optimized
-  const panGesture = Gesture.Pan()
-    .onStart(() => {
-      // Optional: Add visual feedback when drag starts
-      console.log('🥷 Ninja movement started');
+  // Movement animation loop using joystick input
+  useEffect(() => {
+    let animationFrame: NodeJS.Timeout;
+    
+    const moveNinja = () => {
+      if (joystickVisible) {
+        // Calculate movement based on joystick offset
+        const moveSpeed = 3; // Pixels per frame
+        const maxDistance = 40; // Maximum joystick knob distance
+        
+        // Normalize joystick input (0-1)
+        const normalizedX = knobOffset.x / maxDistance;
+        const normalizedY = knobOffset.y / maxDistance;
+        
+        // Calculate new position
+        const newX = Math.max(
+          0,
+          Math.min(
+            layout.screenWidth - layout.ninjaSize,
+            translateX.value + (normalizedX * moveSpeed)
+          )
+        );
+        const newY = Math.max(
+          0,
+          Math.min(
+            layout.gameAreaHeight - layout.ninjaSize,
+            translateY.value + (normalizedY * moveSpeed)
+          )
+        );
+        
+        translateX.value = newX;
+        translateY.value = newY;
+        
+        // Update ninja position in combat context periodically
+        if (Math.abs(normalizedX) > 0.1 || Math.abs(normalizedY) > 0.1) {
+          updateNinjaPosition({ x: newX, y: newY });
+        }
+      }
+      
+      animationFrame = setTimeout(moveNinja, 16); // ~60fps
+    };
+    
+    moveNinja();
+    
+    return () => {
+      if (animationFrame) clearTimeout(animationFrame);
+    };
+  }, [joystickVisible, knobOffset.x, knobOffset.y, layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, translateX, translateY, updateNinjaPosition]);
+
+  // Create touch gesture for joystick control
+  const touchGesture = Gesture.Pan()
+    .onStart((event) => {
+      // Show joystick at touch position
+      const touchX = event.x;
+      const touchY = event.y;
+      
+      setJoystickPosition({ x: touchX, y: touchY });
+      setJoystickVisible(true);
+      setKnobOffset({ x: 0, y: 0 });
+      
+      joystickBaseX.value = touchX;
+      joystickBaseY.value = touchY;
+      joystickKnobX.value = touchX;
+      joystickKnobY.value = touchY;
+      
+      console.log('🕹️ Joystick appeared at:', { x: touchX, y: touchY });
     })
     .onUpdate((event) => {
-      // Use translationX/Y for pan gesture - this is the correct approach for mobile
-      const newX = Math.max(
-        0, 
-        Math.min(
-          layout.screenWidth - layout.ninjaSize, 
-          ninjaPosition.x + event.translationX
-        )
-      );
-      const newY = Math.max(
-        0, 
-        Math.min(
-          layout.gameAreaHeight - layout.ninjaSize, 
-          ninjaPosition.y + event.translationY
-        )
-      );
+      // Update joystick knob position
+      const maxDistance = 40;
+      const deltaX = event.x - joystickPosition.x;
+      const deltaY = event.y - joystickPosition.y;
       
-      translateX.value = newX;
-      translateY.value = newY;
+      // Limit knob distance from base
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      const limitedDistance = Math.min(distance, maxDistance);
+      const angle = Math.atan2(deltaY, deltaX);
+      
+      const knobX = Math.cos(angle) * limitedDistance;
+      const knobY = Math.sin(angle) * limitedDistance;
+      
+      setKnobOffset({ x: knobX, y: knobY });
+      joystickKnobX.value = joystickPosition.x + knobX;
+      joystickKnobY.value = joystickPosition.y + knobY;
     })
     .onEnd(() => {
-      // Update the actual ninja position state and combat context
+      // Hide joystick and update final position
+      setJoystickVisible(false);
+      setKnobOffset({ x: 0, y: 0 });
+      
       const finalPosition = {
         x: translateX.value,
         y: translateY.value
       };
       
-      // Use runOnJS to update React state from worklet
       runOnJS(setNinjaPosition)(finalPosition);
-      runOnJS(updateNinjaPosition)(finalPosition);
-      
-      console.log('🥷 Ninja moved to:', finalPosition);
+      console.log('🕹️ Joystick hidden, ninja final position:', finalPosition);
     });
 
   // Animated style for ninja position
@@ -149,6 +219,26 @@ export default function NinjaIdleGame() {
       transform: [
         { translateX: translateX.value },
         { translateY: translateY.value }
+      ]
+    };
+  });
+
+  // Joystick base animated style
+  const joystickBaseStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: joystickBaseX.value - 40 },
+        { translateY: joystickBaseY.value - 40 }
+      ]
+    };
+  });
+
+  // Joystick knob animated style
+  const joystickKnobStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: joystickKnobX.value - 15 },
+        { translateY: joystickKnobY.value - 15 }
       ]
     };
   });
