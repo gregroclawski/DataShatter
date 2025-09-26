@@ -33,13 +33,15 @@ export default function AuthScreen() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const submitButtonRef = useRef<View>(null);
 
-  // Web-compatible button click handler
+  // Web-compatible button click handler - ONLY for web platform
   useEffect(() => {
-    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+    if (Platform.OS === 'web' && typeof window !== 'undefined' && typeof document !== 'undefined') {
+      console.log('🌐 Setting up web click listener');
       const handleGlobalClick = (event: Event) => {
         const target = event.target as HTMLElement;
-        if (target?.textContent?.includes('Login') || target?.textContent?.includes('Register')) {
-          console.log('🎯 Global click listener - Login/Register button detected');
+        // More specific check to avoid conflicts
+        if (target?.closest('[data-web-login-button]')) {
+          console.log('🎯 Web global click listener - Login/Register button detected');
           handleSubmit();
         }
       };
@@ -47,10 +49,13 @@ export default function AuthScreen() {
       document.addEventListener('click', handleGlobalClick);
       
       return () => {
+        console.log('🌐 Removing web click listener');
         document.removeEventListener('click', handleGlobalClick);
       };
+    } else {
+      console.log('📱 Mobile platform - using native Pressable only');
     }
-  }, []); // Remove dependencies to prevent infinite re-renders
+  }, [authMode]); // Add authMode dependency to ensure proper function binding
 
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
