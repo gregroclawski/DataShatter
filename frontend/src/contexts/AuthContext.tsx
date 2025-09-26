@@ -82,11 +82,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading(true);
       console.log('🔍 Checking for stored login credentials...');
       
-      // Add timeout to prevent infinite loading
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Authentication timeout')), 10000)
-      );
-      
       // Check for stored login credentials with web fallback
       let storedEmail = null;
       let storedPassword = null;
@@ -120,19 +115,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (storedEmail && storedPassword) {
         console.log('🔑 Found stored credentials - attempting auto-login...');
         
-        // Auto-login with stored credentials with timeout
-        const loginPromise = login(storedEmail, storedPassword);
-        const loginResult = await Promise.race([loginPromise, timeoutPromise]);
-        
-        if (loginResult.success) {
-          console.log('✅ Auto-login successful!');
-        } else {
-          console.log('❌ Auto-login failed:', loginResult.error);
-          // Clear invalid credentials
+        try {
+          // Auto-login with stored credentials with 15-second timeout (only for auto-login)
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Auto-login timeout')), 15000)
+          );
+          
+          const loginPromise = login(storedEmail, storedPassword);
+          const loginResult = await Promise.race([loginPromise, timeoutPromise]);
+          
+          if (loginResult.success) {
+            console.log('✅ Auto-login successful!');
+          } else {
+            console.log('❌ Auto-login failed:', loginResult.error);
+            // Clear invalid credentials
+            try {
+              await AsyncStorage.multiRemove(['login_email', 'login_password']);
+            } catch (e) {
+              // Fallback to localStorage clear
+              if (typeof window !== 'undefined' && window.localStorage) {
+                window.localStorage.removeItem('login_email');
+                window.localStorage.removeItem('login_password');
+              }
+            }
+          }
+        } catch (autoLoginError) {
+          console.log('❌ Auto-login timed out or failed:', autoLoginError.message);
+          // Clear credentials on timeout
           try {
             await AsyncStorage.multiRemove(['login_email', 'login_password']);
           } catch (e) {
-            // Fallback to localStorage clear
             if (typeof window !== 'undefined' && window.localStorage) {
               window.localStorage.removeItem('login_email');
               window.localStorage.removeItem('login_password');
@@ -144,17 +156,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error) {
       console.error('Error in credential check:', error);
-      if (error.message === 'Authentication timeout') {
-        console.log('❌ Authentication timed out - clearing stored credentials');
-        try {
-          await AsyncStorage.multiRemove(['login_email', 'login_password']);
-        } catch (e) {
-          if (typeof window !== 'undefined' && window.localStorage) {
-            window.localStorage.removeItem('login_email');
-            window.localStorage.removeItem('login_password');
-          }
-        }
-      }
     } finally {
       console.log('🏁 Credential check completed, setting isLoading to false');
       setIsLoading(false);
