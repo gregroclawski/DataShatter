@@ -639,8 +639,8 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       color: MythicTechColors.neonBlue,
     },
     xpContainer: {
-      flex: 1,
-      minWidth: layout.screenWidth * 0.3,
+      width: '100%',
+      maxWidth: layout.screenWidth * 0.4,
     },
     xpBarBackground: {
       height: Math.max(4, layout.paddingXS * 0.75),
