@@ -161,8 +161,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('Error in credential check:', error);
     } finally {
-      console.log('🏁 Credential check completed, setting isLoading to false');
-      setIsLoading(false);
+      // Ensure minimum loading duration for better UX
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = minLoadingDuration - elapsedTime;
+      
+      if (remainingTime > 0) {
+        console.log(`🕐 Ensuring loading screen shows for ${remainingTime}ms more`);
+        setTimeout(() => {
+          console.log('🏁 Credential check completed, setting isLoading to false');
+          setIsLoading(false);
+        }, remainingTime);
+      } else {
+        console.log('🏁 Credential check completed, setting isLoading to false');
+        setIsLoading(false);
+      }
     }
   };
 
