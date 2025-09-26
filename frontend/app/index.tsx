@@ -677,6 +677,7 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
     gameArea: {
       flex: 1,
       position: 'relative',
+      zIndex: 1, // Ensure proper stacking order
       backgroundColor: MythicTechColors.shadowGrid, // Changed from darkSpace for mobile visibility
     },
     zoneInfo: {
