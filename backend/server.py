@@ -713,6 +713,7 @@ app.add_middleware(
         "https://app.emergent.sh",
         "http://127.0.0.1:3000",
         "https://mythic-ninja-save.preview.emergentagent.com",
+        "https://mythic-ninja-save.ngrok.io",
     ],  # Specific origins instead of wildcard
     allow_methods=["*"],
     allow_headers=["*"],
