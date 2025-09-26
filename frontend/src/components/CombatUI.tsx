@@ -33,11 +33,11 @@ const CombatUI: React.FC = () => {
 
   // Dynamic styles for responsive circular layout
   const circularStyles = useMemo(() => {
-    // Position in bottom-left corner with proper spacing
-    const buttonSize = Math.min(screenWidth * 0.12, 60); // Responsive size
-    const spacing = buttonSize * 0.3; // Space between buttons
-    const bottomOffset = 120; // Above bottom navigation
-    const leftOffset = 20; // From left edge
+    // Position in bottom-left corner with proper spacing - 50% smaller and further bottom-left
+    const buttonSize = Math.min(screenWidth * 0.06, 30); // 50% smaller than original
+    const spacing = buttonSize * 0.4; // Slightly more spacing for better touch targets
+    const bottomOffset = 60; // Much closer to bottom navigation
+    const leftOffset = 10; // Closer to left edge
 
     return StyleSheet.create({
       // Container for circular abilities in bottom-left
