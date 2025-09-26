@@ -176,7 +176,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log('🏁 Auth check completed, setting isLoading to false');
       setIsLoading(false);
     }
-  }, [login]); // Add dependency for useCallback
+  }, []); // Remove login dependency to fix circular reference
 
   const checkSession = async (): Promise<boolean> => {
     try {
