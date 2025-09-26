@@ -114,5 +114,5 @@ export const useResponsiveLayout = (): ResponsiveLayout => {
       paddingL,
       paddingXL,
     };
-  }, [screenWidth, screenHeight, insets]);
+  }, [screenWidth, screenHeight, insets.top, insets.bottom, insets.left, insets.right]);
 };
