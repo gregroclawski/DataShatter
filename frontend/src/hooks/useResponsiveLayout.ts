@@ -25,6 +25,11 @@ export interface ResponsiveLayout {
   enemySize: number;
   iconSize: number;
   
+  // Mobile touch targets (platform-specific minimum sizes)
+  minTouchTarget: number;
+  tabTouchTarget: number;
+  buttonTouchTarget: number;
+  
   // Font sizes
   titleFontSize: number;
   bodyFontSize: number;
