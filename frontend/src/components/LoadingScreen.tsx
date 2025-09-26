@@ -10,13 +10,24 @@ interface LoadingScreenProps {
 }
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = "Initializing authentication..." }) => {
-  // Animation refs
+  // ALL animation refs must be at top level - no hooks inside other hooks!
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const glitchTranslate = useRef(new Animated.Value(0)).current;
   const gridPulse = useRef(new Animated.Value(0.3)).current;
   const orbGlow = useRef(new Animated.Value(0.5)).current;
+  
+  // Create particle animation refs at top level (FIXED - no useRef inside useMemo!)
+  const particle0 = useRef(new Animated.Value(0)).current;
+  const particle1 = useRef(new Animated.Value(0)).current;
+  const particle2 = useRef(new Animated.Value(0)).current;
+  const particle3 = useRef(new Animated.Value(0)).current;
+  const particle4 = useRef(new Animated.Value(0)).current;
+  const particle5 = useRef(new Animated.Value(0)).current;
+  
+  // Array of particle refs (FIXED - no hooks inside useMemo!)
+  const particleRefs = [particle0, particle1, particle2, particle3, particle4, particle5];
   
   // Memoize all dynamic styles to prevent inline object recreation
   const contentStyle = useMemo(() => ([
@@ -56,31 +67,25 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = "Initializing a
     },
   ]), [gridPulse]);
   
-  // Memoize particle styles to prevent recreation
+  // Memoize particle styles (FIXED - no useRef calls inside!)
   const particleStyles = useMemo(() => {
-    return Array.from({ length: 6 }, (_, i) => {
-      const animValue = useRef(new Animated.Value(0)).current;
-      return {
-        animValue,
-        style: [
-          styles.particle,
-          {
-            left: (i * SCREEN_WIDTH / 6) + (SCREEN_WIDTH / 12),
-            transform: [{
-              translateY: animValue.interpolate({
-                inputRange: [0, 1],
-                outputRange: [SCREEN_HEIGHT, -100],
-              }),
-            }],
-            opacity: animValue.interpolate({
-              inputRange: [0, 0.2, 0.8, 1],
-              outputRange: [0, 1, 1, 0],
-            }),
-          },
-        ],
-      };
-    });
-  }, []);
+    return particleRefs.map((animValue, i) => ([
+      styles.particle,
+      {
+        left: (i * SCREEN_WIDTH / 6) + (SCREEN_WIDTH / 12),
+        transform: [{
+          translateY: animValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: [SCREEN_HEIGHT, -100],
+          }),
+        }],
+        opacity: animValue.interpolate({
+          inputRange: [0, 0.2, 0.8, 1],
+          outputRange: [0, 1, 1, 0],
+        }),
+      },
+    ]));
+  }, [particleRefs]);
   
   // Memoize animation functions
   const startAnimations = useCallback(() => {
