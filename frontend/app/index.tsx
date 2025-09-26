@@ -975,19 +975,19 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       zIndex: 500,
       backgroundColor: MythicTechColors.darkSpace + 'cc',
     },
-    // Joystick Styles
+    // Mobile-Safe Joystick Styles
     joystickBase: {
       position: 'absolute',
       width: 80,
       height: 80,
-      zIndex: 100,
+      zIndex: 15,
       pointerEvents: 'none',
     },
     joystickBaseInner: {
       width: 80,
       height: 80,
       borderRadius: 40,
-      backgroundColor: MythicTechColors.neonBlue + '40', // Semi-transparent
+      backgroundColor: MythicTechColors.neonBlue + '30', // More transparent for mobile
       borderWidth: 2,
       borderColor: MythicTechColors.neonBlue + '80',
     },
@@ -995,7 +995,7 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       position: 'absolute',
       width: 30,
       height: 30,
-      zIndex: 101,
+      zIndex: 16,
       pointerEvents: 'none',
     },
     joystickKnobInner: {
@@ -1005,14 +1005,14 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       backgroundColor: MythicTechColors.neonBlue,
       borderWidth: 2,
       borderColor: MythicTechColors.white,
-      // Mobile-compatible shadow
+      // Mobile-optimized shadow
       ...(Platform.OS === 'ios' ? {
         shadowColor: MythicTechColors.neonBlue,
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 4,
+        shadowOpacity: 0.6,
+        shadowRadius: 3,
       } : {
-        elevation: 6,
+        elevation: 4,
       }),
     },
   });
