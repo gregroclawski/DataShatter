@@ -143,8 +143,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     }, 0); // 0ms delay to defer to next event loop
   }, [updateNinja, recordEnemyKill]);
 
-  // Combat tick handler
-  const handleCombatTick = () => {
+  // Combat tick handler - MEMOIZED to prevent infinite re-renders
+  const handleCombatTick = React.useCallback(() => {
     console.log('🔄 Combat tick running...');
     
     let enemiesToKill: CombatEnemy[] = []; // Track enemies to kill outside of setState
