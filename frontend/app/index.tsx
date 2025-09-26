@@ -107,19 +107,19 @@ export default function NinjaIdleGame() {
       console.log('🥷 Ninja movement started');
     })
     .onUpdate((event) => {
-      // Calculate new position within game area bounds using absoluteX/absoluteY
+      // Use translationX/Y for pan gesture - this is the correct approach for mobile
       const newX = Math.max(
         0, 
         Math.min(
           layout.screenWidth - layout.ninjaSize, 
-          event.absoluteX - layout.ninjaSize / 2
+          ninjaPosition.x + event.translationX
         )
       );
       const newY = Math.max(
         0, 
         Math.min(
           layout.gameAreaHeight - layout.ninjaSize, 
-          event.absoluteY - layout.ninjaSize / 2 - layout.topBarHeight
+          ninjaPosition.y + event.translationY
         )
       );
       
