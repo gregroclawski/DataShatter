@@ -678,14 +678,7 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       fontSize: layout.bodyFontSize,
       color: MythicTechColors.voidSilver,
     },
-    touchSurface: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      zIndex: 10, // Above game area but below UI elements
-    },
+    // MOBILE FIX: Removed joystick touch surface
     ninjaContainer: {
       position: 'absolute',
       // Higher z-index to ensure ninja appears above skill bar (Combat UI has zIndex: 30)
