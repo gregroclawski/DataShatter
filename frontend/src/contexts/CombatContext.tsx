@@ -213,11 +213,13 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         }
       });
 
-      // Auto-cast abilities
-      for (let i = 0; i < 5; i++) {
-        if (newState.abilityManager.isAbilityReady(i) && newState.enemies.length > 0) {
-          if (newState.abilityManager.useAbility(i, newTick)) {
-            castAbility(newState, i);
+      // Auto-cast abilities - MOBILE FIX: Pause during manual joystick control to prevent stuttering
+      if (!isManualControlActive) {
+        for (let i = 0; i < 5; i++) {
+          if (newState.abilityManager.isAbilityReady(i) && newState.enemies.length > 0) {
+            if (newState.abilityManager.useAbility(i, newTick)) {
+              castAbility(newState, i);
+            }
           }
         }
       }
