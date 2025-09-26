@@ -107,19 +107,19 @@ export default function NinjaIdleGame() {
       console.log('🥷 Ninja movement started');
     })
     .onUpdate((event) => {
-      // Calculate new position within game area bounds
+      // Calculate new position within game area bounds using absoluteX/absoluteY
       const newX = Math.max(
         0, 
         Math.min(
           layout.screenWidth - layout.ninjaSize, 
-          translateX.value + event.changeX
+          event.absoluteX - layout.ninjaSize / 2
         )
       );
       const newY = Math.max(
         0, 
         Math.min(
           layout.gameAreaHeight - layout.ninjaSize, 
-          translateY.value + event.changeY
+          event.absoluteY - layout.ninjaSize / 2 - layout.topBarHeight
         )
       );
       
