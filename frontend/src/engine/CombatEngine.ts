@@ -58,8 +58,8 @@ export class CombatEngine {
       this.lastTick = now;
     }
 
-    // Schedule next frame
-    requestAnimationFrame(() => this.gameLoop());
+    // Schedule next frame - Mobile compatible timing instead of requestAnimationFrame
+    setTimeout(() => this.gameLoop(), this.tickInterval);
   }
 
   // Get current tick timestamp for cooldown calculations
