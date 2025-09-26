@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useWindowDimensions } from 'react-native';
+import { useWindowDimensions, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export interface ResponsiveLayout {
