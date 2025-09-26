@@ -81,6 +81,9 @@ export default function NinjaIdleGame() {
   const [currentBossBattle, setCurrentBossBattle] = useState<{boss: Boss, tier: BossTier} | null>(null);
   const [previousOverlay, setPreviousOverlay] = useState<ActiveOverlay>(null);
   
+  // Mobile-compatible projectile animation system
+  const [animatedProjectiles, setAnimatedProjectiles] = useState<any[]>([]);
+  
   // Memoize ninja position calculation to prevent infinite re-renders on mobile
   const initialNinjaPosition = useMemo(() => ({
     x: layout.screenWidth * 0.1, // 10% from left
