@@ -91,12 +91,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const actualIsLoading = isLoading || !minLoadingComplete;
 
   const checkExistingSession = async () => {
-    // Ensure loading screen shows for minimum duration
-    const startTime = Date.now();
-    const minLoadingDuration = 8000; // 8 seconds
-    
     try {
-      setIsLoading(true);
       console.log('🔍 Checking for stored login credentials...');
       
       // Check for stored login credentials with web fallback
