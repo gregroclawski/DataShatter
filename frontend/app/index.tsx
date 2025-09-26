@@ -710,7 +710,7 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: MythicTechColors.neonBlue + '22',
-      borderWidth: 2,
+      borderWidth: 3, // Increased for mobile visibility
       borderColor: MythicTechColors.neonBlue,
     },
     ninjaAttacking: {
