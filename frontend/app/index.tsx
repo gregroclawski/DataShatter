@@ -97,18 +97,7 @@ export default function NinjaIdleGame() {
   const translateX = useSharedValue(ninjaPosition.x);
   const translateY = useSharedValue(ninjaPosition.y);
   
-  // Joystick state - FIXED: Use shared values to prevent race conditions + boundary values for worklets
-  const [joystickVisible, setJoystickVisible] = useState(false);
-  const joystickBaseX = useSharedValue(0);
-  const joystickBaseY = useSharedValue(0);
-  const joystickKnobX = useSharedValue(0);
-  const joystickKnobY = useSharedValue(0);
-  const knobOffsetX = useSharedValue(0);
-  const knobOffsetY = useSharedValue(0);
-  
-  // MOBILE FIX: Shared values for boundary calculations to prevent worklet threading violations
-  const maxNinjaX = useSharedValue(layout.screenWidth - layout.ninjaSize);
-  const maxNinjaY = useSharedValue(layout.gameAreaHeight - layout.ninjaSize);
+  // MOBILE FIX: Removed joystick movement system to debug crashes
 
   // Initialize animated values when layout changes
   useEffect(() => {
