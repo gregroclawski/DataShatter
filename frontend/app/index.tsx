@@ -146,6 +146,54 @@ export default function NinjaIdleGame() {
     updateNinjaPosition(ninjaPosition);
   }, [ninjaPosition, updateNinjaPosition]);
 
+  // AUTO MOVEMENT SYSTEM - Missing implementation added
+  useEffect(() => {
+    if (isAutoMovement) {
+      const autoMovementInterval = setInterval(() => {
+        // Find closest enemy from combat context
+        const closestEnemy = findClosestEnemy();
+        if (closestEnemy) {
+          setNinjaPosition(prev => {
+            const moveSpeed = 1.5; // Slower auto movement for mobile
+            
+            // Calculate direction to closest enemy
+            const deltaX = closestEnemy.position.x - prev.x;
+            const deltaY = closestEnemy.position.y - prev.y;
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            
+            // Don't move if very close to enemy (within attack range)
+            if (distance < 60) {
+              return prev;
+            }
+            
+            // Normalize direction and apply movement
+            const normalizedX = deltaX / distance;
+            const normalizedY = deltaY / distance;
+            
+            const newX = Math.max(
+              0,
+              Math.min(
+                layout.screenWidth - layout.ninjaSize,
+                prev.x + (normalizedX * moveSpeed)
+              )
+            );
+            const newY = Math.max(
+              0,
+              Math.min(
+                layout.gameAreaHeight - layout.ninjaSize,
+                prev.y + (normalizedY * moveSpeed)
+              )
+            );
+            
+            return { x: newX, y: newY };
+          });
+        }
+      }, 50); // 20fps for mobile-friendly auto movement
+      
+      return () => clearInterval(autoMovementInterval);
+    }
+  }, [isAutoMovement, layout, findClosestEnemy]);
+
   // Toggle between auto and manual movement
   const toggleMovementMode = useCallback(() => {
     setIsAutoMovement(prev => {
