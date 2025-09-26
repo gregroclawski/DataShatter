@@ -68,18 +68,42 @@ export default function NinjaIdleGame() {
   const [ninjaPosition, setNinjaPosition] = useState(initialNinjaPosition);
   const [isAttacking, setIsAttacking] = useState(false);
 
-  // Update ninja position when layout changes (debounced for mobile stability)
+  // Use useRef to track previous position and prevent infinite loops
+  const previousLayoutRef = useRef({
+    screenWidth: layout.screenWidth,
+    gameAreaHeight: layout.gameAreaHeight,
+    ninjaSize: layout.ninjaSize,
+    paddingXL: layout.paddingXL
+  });
+
+  // Update ninja position when layout changes (mobile-stable, no circular dependency)
   useEffect(() => {
     const newPosition = {
       x: layout.screenWidth * 0.1,
       y: layout.gameAreaHeight - layout.ninjaSize - layout.paddingXL
     };
     
-    // Only update if position actually changed significantly to prevent micro-adjustments
-    if (Math.abs(newPosition.x - ninjaPosition.x) > 5 || Math.abs(newPosition.y - ninjaPosition.y) > 5) {
+    // Check if layout actually changed to prevent unnecessary updates
+    const prevLayout = previousLayoutRef.current;
+    const layoutChanged = 
+      Math.abs(layout.screenWidth - prevLayout.screenWidth) > 5 ||
+      Math.abs(layout.gameAreaHeight - prevLayout.gameAreaHeight) > 5 ||
+      Math.abs(layout.ninjaSize - prevLayout.ninjaSize) > 2 ||
+      Math.abs(layout.paddingXL - prevLayout.paddingXL) > 2;
+    
+    if (layoutChanged) {
+      console.log('📱 Layout changed, updating ninja position');
       setNinjaPosition(newPosition);
+      
+      // Update ref to current layout values
+      previousLayoutRef.current = {
+        screenWidth: layout.screenWidth,
+        gameAreaHeight: layout.gameAreaHeight,
+        ninjaSize: layout.ninjaSize,
+        paddingXL: layout.paddingXL
+      };
     }
-  }, [layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, layout.paddingXL, ninjaPosition.x, ninjaPosition.y]);
+  }, [layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, layout.paddingXL]); // NO ninjaPosition dependencies!
 
   // Level up explosion handler
   const handleLevelUpExplosion = useCallback(() => {
