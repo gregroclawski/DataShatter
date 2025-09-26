@@ -90,6 +90,16 @@ export default function NinjaIdleGame() {
   const [ninjaPosition, setNinjaPosition] = useState(initialNinjaPosition);
   const [isAttacking, setIsAttacking] = useState(false);
 
+  // Touch and drag movement system - mobile optimized
+  const translateX = useSharedValue(ninjaPosition.x);
+  const translateY = useSharedValue(ninjaPosition.y);
+
+  // Initialize animated values when layout changes
+  useEffect(() => {
+    translateX.value = ninjaPosition.x;
+    translateY.value = ninjaPosition.y;
+  }, [ninjaPosition.x, ninjaPosition.y, translateX, translateY]);
+
   // Use useRef to track previous position and prevent infinite loops
   const previousLayoutRef = useRef({
     screenWidth: layout.screenWidth,
