@@ -88,7 +88,23 @@ export default function AuthScreen() {
   };
 
   const handleSubmit = async () => {
-    if (!validateForm()) return;
+    console.log('🚀 HANDLE SUBMIT CALLED!');
+    console.log('📋 Form validation starting with data:', {
+      email: formData.email,
+      password: formData.password ? 'PRESENT' : 'MISSING',
+      passwordLength: formData.password.length,
+      name: formData.name,
+      mode: authMode
+    });
+    
+    const isValid = validateForm();
+    console.log('✅ Form validation result:', isValid);
+    
+    if (!isValid) {
+      console.log('❌ VALIDATION FAILED - stopping submit');
+      console.log('📋 Current errors:', errors);
+      return;
+    }
 
     console.log('🔐 AUTH FORM SUBMIT - Starting authentication process...');
     console.log('  - Auth Mode:', authMode);
