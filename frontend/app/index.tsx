@@ -126,6 +126,12 @@ export default function NinjaIdleGame() {
         const normalizedX = knobOffset.x / maxDistance;
         const normalizedY = knobOffset.y / maxDistance;
         
+        // Use shared values for joystick offset to prevent race conditions
+        const currentOffsetX = knobOffsetX.value;
+        const currentOffsetY = knobOffsetY.value;
+        const normalizedX = currentOffsetX / maxDistance;
+        const normalizedY = currentOffsetY / maxDistance;
+        
         // Only move if there's significant input to prevent micro-movements
         if (Math.abs(normalizedX) > 0.05 || Math.abs(normalizedY) > 0.05) {
           // Calculate new position
