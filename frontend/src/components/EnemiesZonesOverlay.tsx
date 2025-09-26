@@ -192,7 +192,11 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
         <ScrollView style={styles.content}>
           {selectedZone ? renderZoneDetails(selectedZone) : (
             <View style={styles.zonesList}>
-              {availableZones.slice(0, 10).map((zone, index) => renderZoneCard(zone))} {/* Show first 10 zones for now */}
+              {availableZones.slice(0, 10).map((zone, index) => (
+                <View key={zone.id}>
+                  {renderZoneCard(zone)}
+                </View>
+              ))} {/* Show first 10 zones for now */}
             </View>
           )}
         </ScrollView>
