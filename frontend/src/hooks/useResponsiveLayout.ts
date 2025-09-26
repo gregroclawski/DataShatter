@@ -115,4 +115,17 @@ export const useResponsiveLayout = (): ResponsiveLayout => {
       paddingXL,
     };
   }, [screenWidth, screenHeight, insets.top, insets.bottom, insets.left, insets.right]);
+
+  // Debounce layout updates for mobile to prevent bridge timing issues
+  const [debouncedLayout, setDebouncedLayout] = useState(layout);
+  
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedLayout(layout);
+    }, Platform.OS === 'web' ? 0 : 100); // 100ms debounce on mobile
+    
+    return () => clearTimeout(timeoutId);
+  }, [layout]);
+
+  return Platform.OS === 'web' ? layout : debouncedLayout;
 };
