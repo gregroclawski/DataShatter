@@ -97,13 +97,13 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   
   const [projectiles, setProjectiles] = useState<CombatProjectile[]>([]);
   const [lastExplosionTime, setLastExplosionTime] = useState<number>(0);
-  // Initialize ninja position to match game's starting position (bottom left corner)
+  // Initialize ninja position to match game's starting position (center of map)
   const SCREEN_WIDTH = 390;
   const GAME_AREA_HEIGHT = 844 - 140; // Smaller top bar + compact abilities bar
   const NINJA_SIZE = 40;
   const [ninjaPosition, setNinjaPosition] = useState<{x: number, y: number}>({ 
-    x: 50, 
-    y: GAME_AREA_HEIGHT - NINJA_SIZE - 50 
+    x: (SCREEN_WIDTH - NINJA_SIZE) / 2, // Center horizontally
+    y: (GAME_AREA_HEIGHT - NINJA_SIZE) / 2 // Center vertically
   });
 
   // Function to handle enemy kills - integrates with zone progression and awards XP/gold
