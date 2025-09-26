@@ -327,10 +327,15 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 2,
     backgroundColor: MythicTechColors.neonCyan,
-    shadowColor: MythicTechColors.neonCyan,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 4,
+    // Use platform-specific shadows for better mobile performance
+    ...(Platform.OS === 'ios' ? {
+      shadowColor: MythicTechColors.neonCyan,
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.8,
+      shadowRadius: 4,
+    } : {
+      elevation: 4,
+    }),
   },
   textContainer: {
     alignItems: 'center',
