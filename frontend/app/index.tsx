@@ -59,20 +59,27 @@ export default function NinjaIdleGame() {
   const [currentBossBattle, setCurrentBossBattle] = useState<{boss: Boss, tier: BossTier} | null>(null);
   const [previousOverlay, setPreviousOverlay] = useState<ActiveOverlay>(null);
   
-  // Ninja position and movement state - responsive to screen size
-  const [ninjaPosition, setNinjaPosition] = useState({
+  // Memoize ninja position calculation to prevent infinite re-renders on mobile
+  const initialNinjaPosition = React.useMemo(() => ({
     x: layout.screenWidth * 0.1, // 10% from left
     y: layout.gameAreaHeight - layout.ninjaSize - layout.paddingXL
-  });
+  }), [layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, layout.paddingXL]);
+  
+  const [ninjaPosition, setNinjaPosition] = useState(initialNinjaPosition);
   const [isAttacking, setIsAttacking] = useState(false);
 
-  // Update ninja position when layout changes (screen rotation, etc.)
+  // Update ninja position when layout changes (debounced for mobile stability)
   useEffect(() => {
-    setNinjaPosition({
+    const newPosition = {
       x: layout.screenWidth * 0.1,
       y: layout.gameAreaHeight - layout.ninjaSize - layout.paddingXL
-    });
-  }, [layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, layout.paddingXL]);
+    };
+    
+    // Only update if position actually changed significantly to prevent micro-adjustments
+    if (Math.abs(newPosition.x - ninjaPosition.x) > 5 || Math.abs(newPosition.y - ninjaPosition.y) > 5) {
+      setNinjaPosition(newPosition);
+    }
+  }, [layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, layout.paddingXL, ninjaPosition.x, ninjaPosition.y]);
 
   // Level up explosion handler
   const handleLevelUpExplosion = useCallback(() => {
