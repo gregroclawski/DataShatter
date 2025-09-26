@@ -458,11 +458,8 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Server-Side Game Progression"
-    - "Authentication Flow Integration"
-  stuck_tasks:
-    - "Server-Side Game Progression"
-    - "Authentication Flow Integration"
+    - "UI Restoration and Main Game Interface"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
