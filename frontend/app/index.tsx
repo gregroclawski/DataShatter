@@ -369,7 +369,7 @@ export default function NinjaIdleGame() {
                   borderRadius: layout.enemySize / 2
                 }
               ]}>
-                <Text style={[styles.enemyEmoji, { fontSize: layout.enemySize * 0.6 }]}>👹</Text>
+                <Text style={[styles.enemyEmoji, enemyFontStyle]}>👹</Text>
               </View>
               <View style={[styles.enemyHealthBar, { width: layout.enemySize }]}>
                 <View 
