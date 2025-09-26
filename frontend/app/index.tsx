@@ -598,8 +598,8 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       flexDirection: 'row',
       alignItems: 'center',
       paddingHorizontal: layout.paddingM,
-      // Proper mobile SafeAreaView integration - use layout.topInset directly
-      paddingTop: Math.max(layout.topInset, layout.paddingM),
+      // No additional paddingTop since topBarHeight already includes safe area
+      paddingVertical: layout.paddingS,
       borderBottomWidth: 2,
       borderBottomColor: MythicTechColors.neonBlue + '44',
       // Ensure proper z-index for mobile
