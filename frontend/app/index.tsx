@@ -282,9 +282,11 @@ export default function NinjaIdleGame() {
       {/* Top Bar - Responsive */}
       <View style={styles.topBar}>
         <View style={styles.progressSection}>
-          <Text style={styles.progressionTitle}>{currentProgression.title}</Text>
+          <Text style={styles.progressionTitle}>
+            {currentProgression?.title || 'Digital Initiate'}
+          </Text>
           <View style={styles.levelContainer}>
-            <Text style={styles.levelText}>Level {testNinja.level}</Text>
+            <Text style={styles.levelText}>Level {testNinja?.level || 1}</Text>
             <View style={styles.xpContainer}>
               <View style={styles.xpBarBackground}>
                 <View 
