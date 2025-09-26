@@ -28,16 +28,20 @@ TEST_USER_EMAIL = f"ninja_master_{uuid.uuid4().hex[:8]}@example.com"
 TEST_USER_PASSWORD = "SecureNinja123!"
 TEST_USER_NAME = "Ninja Master Tester"
 
-class ProgressPersistenceTester:
+class ComprehensiveBackendTester:
     def __init__(self):
         self.session = requests.Session()
         self.access_token = None
         self.session_cookies = None
         self.test_user_id = None
+        self.test_user_email = f"ninja_master_{uuid.uuid4().hex[:8]}@example.com"
+        self.test_user_password = "SecureNinja123!"
+        self.test_user_name = "Ninja Master Tester"
         self.results = {
+            "health_check": {"passed": 0, "failed": 0, "details": []},
             "authentication": {"passed": 0, "failed": 0, "details": []},
             "game_progression": {"passed": 0, "failed": 0, "details": []},
-            "session_management": {"passed": 0, "failed": 0, "details": []},
+            "game_systems": {"passed": 0, "failed": 0, "details": []},
         }
 
     def log_result(self, category: str, test_name: str, passed: bool, details: str):
