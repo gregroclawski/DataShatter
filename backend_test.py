@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """
-Backend Authentication System Test Suite - CORS & Authentication Focus
-Tests CORS configuration and authentication endpoints to verify the CORS fix is working.
+Comprehensive Backend API Testing Suite
+Tests all critical endpoints for the Mythic-Tech Idle RPG backend after URL configuration and authentication fixes.
 
 FOCUS AREAS (as per review request):
-1. Health Check: Test GET /api/ endpoint
-2. Registration Flow: Test POST /api/auth/register with valid data 
-3. Login Flow: Test POST /api/auth/login with correct credentials
-4. CORS Verification: Ensure frontend origins are properly configured and authentication works
+1. API connectivity and CORS configuration
+2. Authentication flows (registration, login, session check)
+3. Game data persistence (save/load operations)
+4. All existing game systems functionality
 
-The issue before was CORS policy blocking authentication requests because backend was using 
-wildcard '*' with credentials:include mode. Backend has been updated to use specific frontend URLs.
+Previous issues resolved:
+- Fixed URL mismatch between frontend (.env) and backend CORS configuration
+- Updated authentication loading with timeout mechanism
+- Backend should now be fully functional with all endpoints working
 """
 
 import requests
@@ -20,8 +22,8 @@ import uuid
 from datetime import datetime
 from typing import Dict, Any, Optional
 
-# Configuration
-BASE_URL = "https://ninja-idle-fix.preview.emergentagent.com/api"
+# Configuration - Use correct URL from frontend/.env
+BASE_URL = "https://mythic-ninja-save.preview.emergentagent.com/api"
 TEST_USER_EMAIL = f"ninja_master_{uuid.uuid4().hex[:8]}@example.com"
 TEST_USER_PASSWORD = "SecureNinja123!"
 TEST_USER_NAME = "Ninja Master Tester"
