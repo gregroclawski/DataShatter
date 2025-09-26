@@ -282,6 +282,13 @@ export default function AuthScreen() {
                   style={styles.submitPressable}
                   onPress={() => {
                     console.log('🔥 PRESSABLE SUBMIT BUTTON PRESSED!');
+                    console.log('📋 FORM DATA BEFORE SUBMIT:', {
+                      email: formData.email,
+                      password: formData.password ? 'PRESENT' : 'MISSING',
+                      passwordLength: formData.password.length,
+                      name: formData.name,
+                      mode: authMode
+                    });
                     handleSubmit();
                   }}
                   disabled={isLoading}
