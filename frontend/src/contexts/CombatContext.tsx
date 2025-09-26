@@ -216,7 +216,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     enemiesToKill.forEach(enemy => {
       handleEnemyKill(enemy);
     });
-  };
+  }, [handleEnemyKill]); // Only depend on handleEnemyKill, not combatEngine
 
   // Find closest enemy to ninja - exposed for UI use
   const findClosestEnemyInternal = (enemies: CombatEnemy[]): CombatEnemy | null => {
