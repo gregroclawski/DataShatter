@@ -207,7 +207,7 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
     return ZONES.filter(zone => isZoneUnlockedLocal(zone.id));
   };
 
-  const contextValue: ZoneContextType = {
+  const contextValue: ZoneContextType = React.useMemo(() => ({
     currentZone,
     currentZoneLevel,
     zoneProgress,
@@ -218,7 +218,17 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
     recordEnemyKill,
     isZoneUnlocked: isZoneUnlockedLocal,
     getUnlockedZones,
-  };
+  }), [
+    currentZone,
+    currentZoneLevel,
+    zoneProgress,
+    selectZone,
+    getZoneProgress,
+    spawnZoneEnemy,
+    recordEnemyKill,
+    isZoneUnlockedLocal,
+    getUnlockedZones,
+  ]);
 
   return (
     <ZoneContext.Provider value={contextValue}>
