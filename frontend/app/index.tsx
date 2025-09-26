@@ -164,8 +164,8 @@ export default function NinjaIdleGame() {
   // Update ninja position when layout changes (mobile-stable, no circular dependency)
   useEffect(() => {
     const newPosition = {
-      x: layout.screenWidth * 0.1,
-      y: layout.gameAreaHeight - layout.ninjaSize - layout.paddingXL
+      x: (layout.screenWidth - layout.ninjaSize) / 2, // Center horizontally
+      y: (layout.gameAreaHeight - layout.ninjaSize) / 2 // Center vertically
     };
     
     // Check if layout actually changed to prevent unnecessary updates
