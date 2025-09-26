@@ -114,54 +114,57 @@ export default function NinjaIdleGame() {
     translateY.value = ninjaPosition.y;
   }, [ninjaPosition.x, ninjaPosition.y, translateX, translateY]);
 
-  // Movement animation loop using joystick input
+  // Movement animation loop using joystick input - FIXED: Removed knobOffset dependencies to prevent infinite loop
   useEffect(() => {
     let animationFrame: NodeJS.Timeout;
     
     const moveNinja = () => {
       if (joystickVisible) {
         // Calculate movement based on joystick offset
-        const moveSpeed = 3; // Pixels per frame
+        const moveSpeed = 2; // Reduced speed for stability
         const maxDistance = 40; // Maximum joystick knob distance
         
-        // Normalize joystick input (0-1)
+        // Normalize joystick input (0-1) - using current state values
         const normalizedX = knobOffset.x / maxDistance;
         const normalizedY = knobOffset.y / maxDistance;
         
-        // Calculate new position
-        const newX = Math.max(
-          0,
-          Math.min(
-            layout.screenWidth - layout.ninjaSize,
-            translateX.value + (normalizedX * moveSpeed)
-          )
-        );
-        const newY = Math.max(
-          0,
-          Math.min(
-            layout.gameAreaHeight - layout.ninjaSize,
-            translateY.value + (normalizedY * moveSpeed)
-          )
-        );
-        
-        translateX.value = newX;
-        translateY.value = newY;
-        
-        // Update ninja position in combat context periodically
-        if (Math.abs(normalizedX) > 0.1 || Math.abs(normalizedY) > 0.1) {
-          updateNinjaPosition({ x: newX, y: newY });
+        // Only move if there's significant input to prevent micro-movements
+        if (Math.abs(normalizedX) > 0.05 || Math.abs(normalizedY) > 0.05) {
+          // Calculate new position
+          const newX = Math.max(
+            0,
+            Math.min(
+              layout.screenWidth - layout.ninjaSize,
+              translateX.value + (normalizedX * moveSpeed)
+            )
+          );
+          const newY = Math.max(
+            0,
+            Math.min(
+              layout.gameAreaHeight - layout.ninjaSize,
+              translateY.value + (normalizedY * moveSpeed)
+            )
+          );
+          
+          translateX.value = newX;
+          translateY.value = newY;
         }
       }
       
-      animationFrame = setTimeout(moveNinja, 16); // ~60fps
+      // Continue animation loop only if joystick is still visible
+      if (joystickVisible) {
+        animationFrame = setTimeout(moveNinja, 33); // Reduced to 30fps for stability
+      }
     };
     
-    moveNinja();
+    if (joystickVisible) {
+      moveNinja();
+    }
     
     return () => {
       if (animationFrame) clearTimeout(animationFrame);
     };
-  }, [joystickVisible, knobOffset.x, knobOffset.y, layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, translateX, translateY, updateNinjaPosition]);
+  }, [joystickVisible]); // FIXED: Only depend on joystickVisible to prevent infinite loop
 
   // Create touch gesture for joystick control
   const touchGesture = Gesture.Pan()
