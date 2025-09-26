@@ -341,9 +341,8 @@ const styles = StyleSheet.create({
     color: MythicTechColors.neonCyan,
     textAlign: 'center',
     marginBottom: 8,
-    textShadowColor: MythicTechColors.neonCyan,
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
+    // Modern React Native textShadow syntax (replaces deprecated textShadow* properties)
+    textShadow: `0px 0px 10px ${MythicTechColors.neonCyan}`,
     letterSpacing: 3,
   },
   subtitle: {
