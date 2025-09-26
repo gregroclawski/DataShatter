@@ -23,7 +23,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 # Configuration - Use correct URL from frontend/.env
-BASE_URL = "https://idle-ninja-hooks.preview.emergentagent.com/api"
+BASE_URL = "https://idle-ninja.preview.emergentagent.com/api"
 
 class ComprehensiveBackendTester:
     def __init__(self):
@@ -92,7 +92,7 @@ class ComprehensiveBackendTester:
             # Include CORS headers to simulate frontend request
             headers = {
                 'Content-Type': 'application/json',
-                'Origin': 'https://idle-ninja-hooks.preview.emergentagent.com'
+                'Origin': 'https://idle-ninja.preview.emergentagent.com'
             }
             
             response = self.session.post(
@@ -172,7 +172,7 @@ class ComprehensiveBackendTester:
             # Include CORS headers to simulate frontend request
             headers = {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Origin': 'https://idle-ninja-hooks.preview.emergentagent.com'
+                'Origin': 'https://idle-ninja.preview.emergentagent.com'
             }
             
             response = self.session.post(
