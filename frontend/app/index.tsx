@@ -99,17 +99,7 @@ export default function NinjaIdleGame() {
   
   // MOBILE FIX: Removed joystick movement system to debug crashes
 
-  // Initialize animated values when layout changes
-  useEffect(() => {
-    translateX.value = ninjaPosition.x;
-    translateY.value = ninjaPosition.y;
-  }, [ninjaPosition.x, ninjaPosition.y, translateX, translateY]);
-
-  // MOBILE FIX: Update boundary shared values when layout changes to prevent worklet threading violations
-  useEffect(() => {
-    maxNinjaX.value = layout.screenWidth - layout.ninjaSize;
-    maxNinjaY.value = layout.gameAreaHeight - layout.ninjaSize;
-  }, [layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, maxNinjaX, maxNinjaY]);
+  // MOBILE FIX: Simplified ninja positioning without joystick
 
   // MOBILE FIX: Removed problematic useEffect animation loop that was accessing shared values from main thread
   // Movement now handled entirely within gesture worklets for proper React Native threading
