@@ -22,6 +22,11 @@ export default function CombatUI({ onAbilityPress }: Props) {
   const { combatState, getDeck } = useCombat();
   const deck = getDeck();
 
+  // Memoize combat status style to prevent inline object recreation
+  const combatStatusStyle = useMemo(() => ({
+    color: combatState.isInCombat ? "#10b981" : "#6b7280"
+  }), [combatState.isInCombat]);
+
   const formatCooldown = (ticks: number): string => {
     const seconds = Math.ceil(ticks / 10);
     return seconds > 0 ? `${seconds}s` : '';
