@@ -155,11 +155,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    shadowColor: MythicTechColors.neonBlue,
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 100, // High elevation to ensure it's above other elements
+    // Modern React Native shadow syntax
+    ...(Platform.OS === 'ios' ? {
+      shadowColor: MythicTechColors.neonBlue,
+      shadowOffset: { width: 0, height: -2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+    } : {
+      elevation: 8,
+    }),
     zIndex: 100,
   },
   statusBar: {
