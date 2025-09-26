@@ -26,7 +26,27 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE_URL = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+// Dynamically determine backend URL based on current hostname
+const getBackendUrl = () => {
+  if (typeof window !== 'undefined') {
+    const currentHost = window.location.hostname;
+    const currentProtocol = window.location.protocol;
+    
+    // If we're on ngrok (mobile Expo Go), use the same ngrok URL for backend
+    if (currentHost.includes('.ngrok.io')) {
+      return `${currentProtocol}//${currentHost}`;
+    }
+    // If we're on preview domain (web), use the preview domain for backend
+    if (currentHost.includes('.preview.emergentagent.com')) {
+      return `${currentProtocol}//${currentHost}`;
+    }
+  }
+  
+  // Fallback to environment variable or localhost
+  return Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+};
+
+const API_BASE_URL = getBackendUrl();
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
