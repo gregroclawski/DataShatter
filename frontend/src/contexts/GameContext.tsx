@@ -739,7 +739,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const saveGame = () => saveGameToServer();
   const loadGame = () => loadGameFromServer();
 
-  const value: GameContextType = {
+  const value: GameContextType = React.useMemo(() => ({
     gameState,
     isLoading,
     updateNinja,
@@ -761,7 +761,29 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     updateZoneProgress,
     saveOnEvent,
     saveOnMilestone,
-  };
+  }), [
+    gameState,
+    isLoading,
+    updateNinja,
+    addShuriken,
+    equipShuriken,
+    upgradeShuriken,
+    addPet,
+    setActivePet,
+    feedPet,
+    trainPet,
+    startRaid,
+    startAdventure,
+    completeAdventure,
+    reviveNinja,
+    trainSkill,
+    collectIdleRewards,
+    saveGame,
+    loadGame,
+    updateZoneProgress,
+    saveOnEvent,
+    saveOnMilestone,
+  ]);
 
   return (
     <GameContext.Provider value={value}>
