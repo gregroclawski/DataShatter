@@ -702,6 +702,9 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       position: 'absolute',
       // Higher z-index to ensure ninja appears above skill bar (Combat UI has zIndex: 30)
       zIndex: 50,
+      // Start position will be controlled by transform
+      left: 0,
+      top: 0,
     },
     ninja: {
       justifyContent: 'center',
