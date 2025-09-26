@@ -194,11 +194,15 @@ const styles = StyleSheet.create({
     borderColor: MythicTechColors.neonBlue + '66',
     position: 'relative',
     overflow: 'hidden',
-    shadowColor: MythicTechColors.neonBlue,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 2,
+    // Platform-specific shadows for better mobile performance
+    ...(Platform.OS === 'ios' ? {
+      shadowColor: MythicTechColors.neonBlue,
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.3,
+      shadowRadius: 4,
+    } : {
+      elevation: 2,
+    }),
   },
   emptySlot: {
     borderColor: MythicTechColors.shadowGrid,
