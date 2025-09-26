@@ -501,12 +501,14 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       
       console.log(`💥 Explosion killing ${enemyCount} enemies, awarding ${explosionXP} XP and ${explosionGold} gold`);
       
-      // Award XP using updateNinja if there are enemies to kill
+      // Award XP using updateNinja if there are enemies to kill - MOBILE FIX: defer to prevent render-phase violation
       if (explosionXP > 0) {
-        updateNinja((ninja) => ({
-          experience: ninja.experience + explosionXP,
-          gold: ninja.gold + explosionGold,
-        }));
+        setTimeout(() => {
+          updateNinja((ninja) => ({
+            experience: ninja.experience + explosionXP,
+            gold: ninja.gold + explosionGold,
+          }));
+        }, 0); // Defer to next event loop to prevent cross-context update during render
       }
       
       // Actually damage all enemies to 0 health instead of just clearing them
