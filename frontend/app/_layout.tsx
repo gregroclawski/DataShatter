@@ -14,15 +14,9 @@ export default function RootLayout() {
       <AuthProvider>
         <GameProvider>
           <ZoneProvider>
-            <MaterialsProvider>
-              <EquipmentProvider>
-                <BossProvider>
-                  <CombatProvider>
-                    <Slot />
-                  </CombatProvider>
-                </BossProvider>
-              </EquipmentProvider>
-            </MaterialsProvider>
+            <CombinedGameProvider>
+              <Slot />
+            </CombinedGameProvider>
           </ZoneProvider>
         </GameProvider>
       </AuthProvider>
