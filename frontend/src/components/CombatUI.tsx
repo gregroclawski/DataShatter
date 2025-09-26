@@ -51,7 +51,9 @@ export default function CombatUI({ onAbilityPress }: Props) {
   const dynamicStyles = useMemo(() => ({
     abilitySlot: {
       ...styles.abilitySlot,
-      width: (screenWidth - 60 - 60) / 5, // Much smaller slots (50% reduction)
+      // Mobile-optimized touch target: minimum 44px for iOS, 48px for Android
+      width: Math.max(44, (screenWidth - 60 - 60) / 5),
+      height: Platform.OS === 'ios' ? 44 : 48, // Platform-specific minimum touch targets
     },
   }), [screenWidth]);
 
