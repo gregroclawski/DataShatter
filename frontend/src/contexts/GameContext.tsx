@@ -491,10 +491,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       
       // AGGRESSIVE Event-driven saves - Save immediately on ANY important event
       if (isAuthenticated) {
-        // CRITICAL MILESTONE: Level up - Save immediately
+        // CRITICAL MILESTONE: Level up - Save deferred to prevent render-phase violations
         if (finalNinja.level > prev.ninja.level) {
-          console.log('🏆 CRITICAL MILESTONE: Level up - IMMEDIATE SAVE');
-          saveOnMilestone('level_up');
+          console.log('🏆 CRITICAL MILESTONE: Level up - DEFERRED SAVE');
+          setTimeout(() => saveOnMilestone('level_up'), 0); // Mobile fix: defer to next event loop
         }
         // MILESTONE: Every 10 XP gained - Frequent saves during combat
         else if (finalNinja.experience >= prev.ninja.experience + 10) {
