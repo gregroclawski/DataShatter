@@ -305,7 +305,7 @@ export const EquipmentProvider = ({ children }: { children: ReactNode }) => {
     total: inventory.maxInventorySize
   });
 
-  const contextValue: EquipmentContextType = {
+  const contextValue: EquipmentContextType = React.useMemo(() => ({
     inventory,
     totalStats,
     equipItem,
@@ -319,7 +319,21 @@ export const EquipmentProvider = ({ children }: { children: ReactNode }) => {
     getEquippedItem,
     findEquipmentById,
     getInventorySpace,
-  };
+  }), [
+    inventory,
+    totalStats,
+    equipItem,
+    unequipItem,
+    addToInventory,
+    removeFromInventory,
+    upgradeEquipment,
+    getEquipmentUpgradeCost,
+    canUpgrade,
+    generateRandomEquipment,
+    getEquippedItem,
+    findEquipmentById,
+    getInventorySpace,
+  ]);
 
   return (
     <EquipmentContext.Provider value={contextValue}>
