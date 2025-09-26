@@ -519,4 +519,12 @@ const styles = StyleSheet.create({
   fightButtonTextDisabled: {
     color: '#9ca3af',
   },
+  loadingContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    color: '#e5e7eb',
+    fontSize: 16,
+  },
 });
