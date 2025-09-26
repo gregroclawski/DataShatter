@@ -80,11 +80,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Set up minimum loading timer on app start
   useEffect(() => {
-    console.log('🕐 Starting 8-second loading timer...');
+    console.log('🕐 Starting 2-second loading timer...');
     const minLoadingTimer = setTimeout(() => {
-      console.log('⏰ 8-second loading timer complete');
+      console.log('⏰ 2-second loading timer complete');
       setMinLoadingComplete(true);
-    }, 8000);
+    }, 2000);
 
     return () => clearTimeout(minLoadingTimer);
   }, []);
