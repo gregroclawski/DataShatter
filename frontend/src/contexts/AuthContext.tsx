@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkExistingSession();
   }, []);
 
-  const checkExistingSession = async () => {
+  const checkExistingSession = React.useCallback(async () => {
     try {
       console.log('🔍 Checking for stored login credentials...');
       
