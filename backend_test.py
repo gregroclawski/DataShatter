@@ -65,20 +65,20 @@ class ComprehensiveBackendTester:
             
             if response.status_code == 200:
                 data = response.json()
-                if "message" in data and "API" in data["message"]:
-                    self.log_result("authentication", "Health Check", True, 
+                if "message" in data and "Ninja Master Mobile API" in data["message"]:
+                    self.log_result("health_check", "Health Check", True, 
                                   f"Health endpoint working: {data['message']}")
                     return True
                 else:
-                    self.log_result("authentication", "Health Check", False, 
+                    self.log_result("health_check", "Health Check", False, 
                                   f"Unexpected response format: {data}")
                     return False
             else:
-                self.log_result("authentication", "Health Check", False, 
+                self.log_result("health_check", "Health Check", False, 
                               f"Status: {response.status_code}, Response: {response.text}")
                 return False
         except Exception as e:
-            self.log_result("authentication", "Health Check", False, f"Exception: {str(e)}")
+            self.log_result("health_check", "Health Check", False, f"Exception: {str(e)}")
             return False
 
     def test_cors_configuration(self):
