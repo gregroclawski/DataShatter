@@ -95,7 +95,7 @@ export const BossOverlay: React.FC<BossOverlayProps> = ({ visible, onClose, onSt
         </Text>
         
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tiersContainer}>
-          {boss.tiers.map((tier, index) => {
+          {(boss.tiers || []).map((tier, index) => {
             const isUnlocked = ninja.level >= tier.requiredLevel;
             const canFight = isUnlocked && hasTickets() && canFightBoss(boss.id, tier.tier);
             
