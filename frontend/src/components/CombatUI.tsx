@@ -13,7 +13,7 @@ import { EquippedAbility } from '../types/AbilityTypes';
 import { MythicTechColors } from '../theme/MythicTechTheme';
 
 const CombatUI: React.FC = () => {
-  const { combatState } = useCombat();
+  const { combatState, useAbilityManually } = useCombat();
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 
   // Get equipped abilities from combat state
