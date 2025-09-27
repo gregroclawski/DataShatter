@@ -209,8 +209,21 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   // Auto-save system - MOBILE FIX: Add loading guard to prevent saving default data
   useEffect(() => {
+    console.log('🔍 Auto-save useEffect check:', {
+      isAuthenticated,
+      hasUser: !!user,
+      hasLoadedFromServer,
+      gameStateLevel: gameState.ninja.level,
+      gameStateXP: gameState.ninja.experience
+    });
+    
     // CRITICAL: Don't start auto-save until game data has loaded
     if (!isAuthenticated || !user || !hasLoadedFromServer) {
+      console.log('❌ Auto-save blocked - waiting for:', {
+        needsAuth: !isAuthenticated,
+        needsUser: !user,
+        needsLoadedFlag: !hasLoadedFromServer
+      });
       return;
     }
 
