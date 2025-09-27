@@ -652,12 +652,14 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     updateNinjaPosition,
     setManualControlActive,
     lastExplosionTime,
+    useAbilityManually, // MOBILE FIX: Add manual ability casting
   }), [
     // Only include primitive values and state to prevent infinite loop
     // Remove function dependencies that recreate and cause circular refs
     combatState,
     projectiles,
     lastExplosionTime,
+    useAbilityManually, // Add the callback to dependencies
   ]);
 
   return (
