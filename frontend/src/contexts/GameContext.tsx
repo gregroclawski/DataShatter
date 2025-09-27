@@ -736,6 +736,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         gems: gameState.ninja.gems - 5
       });
       setGameState(prev => ({ ...prev, isAlive: true }));
+      
+      // MOBILE FIX: Save gem purchase immediately
+      console.log('💎 GEM PURCHASE - Revive ninja (5 gems spent)');
+      saveOnEvent('gem_purchase_revive');
     }
   };
 
