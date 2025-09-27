@@ -499,7 +499,7 @@ frontend:
     status_history:
         - working: true
           agent: "main"
-          comment: "FEATURE ADDED: Added current player's username display in the top bar of main game screen. Implementation includes: 1) User info section with person icon and username, 2) Mobile-optimized responsive design with max width constraints, 3) Styled container with semi-transparent background, 4) Proper text truncation for long usernames, 5) Integrated seamlessly with existing progress section layout. User info appears in top-left with icon and username before progression title."
+          comment: "FIELD NAME MISMATCH FIXED: Troubleshoot agent identified the issue - UI was looking for user?.username but backend provides user?.name. FIXED: Changed display code from user?.username to user?.name to match backend User model field structure. Username should now display correctly instead of showing 'Player' fallback."
     status_history:
         - working: true
           agent: "main"
