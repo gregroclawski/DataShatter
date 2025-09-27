@@ -31,7 +31,7 @@ const CombatUI: React.FC = () => {
     });
   }, [deck.slots]);
 
-  // Calculate cooldown percentage for ability - FIXED: Use tick-based system consistently
+  // Calculate cooldown percentage for ability - FIXED: Use tick-based system consistently & optimized for mobile
   const getCooldownPercentage = useCallback((ability: EquippedAbility): number => {
     if (!ability.currentCooldown) return 0;
     
@@ -41,7 +41,7 @@ const CombatUI: React.FC = () => {
     
     if (remainingCooldown <= 0) return 0;
     return Math.max(0, remainingCooldown / totalCooldownTicks);
-  }, [combatState.currentTick]);
+  }, []); // MOBILE PERFORMANCE: Removed currentTick dependency to prevent excessive re-renders
 
   // Dynamic styles for responsive circular layout
   const circularStyles = useMemo(() => {
