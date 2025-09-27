@@ -114,24 +114,16 @@ export default function NinjaIdleGame() {
       movementIntervalRef.current = setTimeout(() => {
         setNinjaPosition(prev => {
           const moveSpeed = 6; // 3x faster manual movement (was 2)
-          const newX = Math.max(
-            0,
-            Math.min(
-              layout.screenWidth - layout.ninjaSize,
-              prev.x + (movementDirection.x * moveSpeed)
-            )
-          );
-          const newY = Math.max(
-            0,
-            Math.min(
-              layout.gameAreaHeight - layout.ninjaSize,
-              prev.y + (movementDirection.y * moveSpeed)
-            )
-          );
+          // Use cached layout values to prevent dependency cascade
+          const maxX = layout.screenWidth - layout.ninjaSize;
+          const maxY = layout.gameAreaHeight - layout.ninjaSize;
+          
+          const newX = Math.max(0, Math.min(maxX, prev.x + (movementDirection.x * moveSpeed)));
+          const newY = Math.max(0, Math.min(maxY, prev.y + (movementDirection.y * moveSpeed)));
           
           return { x: newX, y: newY };
         });
-      }, 16); // 60fps for smoother manual movement (was 33ms/30fps)
+      }, 33); // 30fps to reduce React Native bridge overhead
     }
     
     return () => {
