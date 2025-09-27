@@ -626,9 +626,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     combatEngine.start();
     
-    // Equip some default abilities for testing
-    combatState.abilityManager.equipAbility('basic_shuriken', 0);
-    combatState.abilityManager.equipAbility('fire_shuriken', 1);
+    // MOBILE FIX: Don't override default ability equipment - let AbilityManager constructor handle it
+    // The AbilityManager already equips all 5 abilities by default in its constructor
+    console.log('🎯 Combat engine started, using default ability equipment from AbilityManager');
     
     return () => {
       combatEngine.stop();
