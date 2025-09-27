@@ -162,25 +162,17 @@ export default function NinjaIdleGame() {
             const normalizedX = deltaX / distance;
             const normalizedY = deltaY / distance;
             
-            const newX = Math.max(
-              0,
-              Math.min(
-                layout.screenWidth - layout.ninjaSize,
-                prev.x + (normalizedX * moveSpeed)
-              )
-            );
-            const newY = Math.max(
-              0,
-              Math.min(
-                layout.gameAreaHeight - layout.ninjaSize,
-                prev.y + (normalizedY * moveSpeed)
-              )
-            );
+            // Use cached layout values to prevent dependency cascade
+            const maxX = layout.screenWidth - layout.ninjaSize;
+            const maxY = layout.gameAreaHeight - layout.ninjaSize;
+            
+            const newX = Math.max(0, Math.min(maxX, prev.x + (normalizedX * moveSpeed)));
+            const newY = Math.max(0, Math.min(maxY, prev.y + (normalizedY * moveSpeed)));
             
             return { x: newX, y: newY };
           });
         }
-      }, 16); // 60fps for smoother auto movement (was 50ms/20fps)
+      }, 33); // 30fps to reduce React Native bridge overhead
       
       return () => clearInterval(autoMovementInterval);
     }
