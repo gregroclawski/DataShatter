@@ -280,7 +280,10 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     });
     
     // HANDLE ENEMY KILLS OUTSIDE OF setCombatState TO AVOID CROSS-COMPONENT ISSUES
-    enemiesToKill.forEach(enemy => {
+    console.log(`⚔️ MOBILE DEBUG - Processing ${enemiesToKill.length} enemy kills outside setState`);
+    
+    enemiesToKill.forEach((enemy, index) => {
+      console.log(`💀 MOBILE DEBUG - Processing kill ${index + 1}/${enemiesToKill.length} for enemy ${enemy.id}`);
       handleEnemyKill(enemy);
     });
   }, [handleEnemyKill]); // Only depend on handleEnemyKill, not combatEngine
