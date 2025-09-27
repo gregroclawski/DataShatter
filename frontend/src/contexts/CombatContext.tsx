@@ -106,20 +106,24 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
   // Function to handle enemy kills - integrates with zone progression and awards XP/gold
   const handleEnemyKill = useCallback((enemy: CombatEnemy) => {
-    console.log(`🎯 Enemy killed! Max HP: ${enemy.maxHealth}`);
+    console.log(`🗡️  MOBILE DEBUG - handleEnemyKill CALLED for enemy:`, enemy.id);
     
     // Award XP and gold directly using useGame hook
     const xpReward = 20; // Base XP reward per kill
     const goldReward = 10;
     
-    console.log(`💰 Awarding ${xpReward} XP and ${goldReward} gold for kill`);
+    console.log(`💰 MOBILE DEBUG - Awarding ${xpReward} XP and ${goldReward} gold for kill`);
+    console.log(`📱 MOBILE DEBUG - Platform: ${Platform.OS}, Time: ${Date.now()}`);
     
     // MOBILE FIX: Defer ALL cross-context state updates to prevent render-phase violations
     // Use setTimeout to break the synchronous chain and prevent React Native bridge overload
     setTimeout(() => {
+      console.log(`🥷 MOBILE DEBUG - About to call updateNinja with rewards`);
+      
       // Award XP and gold using GameContext
       updateNinja((prev) => {
-        console.log(`📊 XP before: ${prev.experience}, after: ${prev.experience + xpReward}`);
+        console.log(`📊 MOBILE DEBUG - XP before: ${prev.experience}, after: ${prev.experience + xpReward}`);
+        console.log(`💰 MOBILE DEBUG - Gold before: ${prev.gold}, after: ${prev.gold + goldReward}`);
         return {
           experience: prev.experience + xpReward,
           gold: prev.gold + goldReward,
