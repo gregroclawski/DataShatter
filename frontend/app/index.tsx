@@ -425,7 +425,7 @@ export default function NinjaIdleGame() {
           <View style={styles.userInfo}>
             <Ionicons name="person-circle" size={layout.iconSize * 0.8} color={MythicTechColors.neonBlue} />
             <Text style={styles.usernameText} numberOfLines={1} ellipsizeMode="tail">
-              {user?.username || 'Player'}
+              {user?.name || 'Player'}
             </Text>
           </View>
           
