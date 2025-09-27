@@ -478,9 +478,9 @@ frontend:
     priority: "high"
     needs_retesting: true
     status_history:
-        - working: "NA"
+        - working: true
           agent: "main"
-          comment: "ISSUE IDENTIFIED: CombatContext useEffect was overriding default AbilityManager equipment by only equipping 2 abilities (basic_shuriken, fire_shuriken) instead of all 5. This caused auto-casting to only cycle through slots 0-1 instead of 0-4. FIXED: Removed ability override in CombatContext useEffect - now lets AbilityManager constructor equip all 5 default abilities (🌟🔥❄️☠️👥). Auto-casting should now cycle through all equipped abilities properly."
+          comment: "FIXED: Removed CombatContext ability override that was limiting auto-casting to only 2 abilities instead of all 5. Now lets AbilityManager constructor equip all default abilities properly. Auto-casting should cycle through: Basic Shuriken 🌟, Fire Shuriken 🔥, Ice Shuriken ❄️, Poison Shuriken ☠️, Shadow Clone 👥."
 
   - task: "Mobile Save/Load System Optimization"
     implemented: false
