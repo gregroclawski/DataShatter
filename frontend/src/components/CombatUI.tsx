@@ -211,7 +211,15 @@ const CombatUI: React.FC = () => {
               onPress={() => {
                 const cooldown = getCooldownPercentage(ability);
                 if (cooldown === 0) {
-                  console.log(`🔥 Ability ${ability.id} activated!`);
+                  const actualIndex = index + 3; // Bottom row starts at slot 3
+                  console.log(`🔥 Manual ability ${ability.name} (slot ${actualIndex}) activated!`);
+                  if (useAbilityManually) {
+                    useAbilityManually(actualIndex);
+                  } else {
+                    console.log(`⚡ No manual casting function available for ${ability.name}`);
+                  }
+                } else {
+                  console.log(`⏳ Ability ${ability.name} is on cooldown: ${(cooldown * 100).toFixed(1)}%`);
                 }
               }}
               activeOpacity={0.7}
