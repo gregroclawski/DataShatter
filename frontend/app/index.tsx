@@ -421,6 +421,14 @@ export default function NinjaIdleGame() {
       {/* Top Bar - Responsive */}
       <View style={styles.topBar}>
         <View style={styles.progressSection}>
+          {/* User Info - Mobile-Optimized */}
+          <View style={styles.userInfo}>
+            <Ionicons name="person-circle" size={layout.iconSize * 0.8} color={MythicTechColors.neonBlue} />
+            <Text style={styles.usernameText} numberOfLines={1} ellipsizeMode="tail">
+              {user?.username || 'Player'}
+            </Text>
+          </View>
+          
           <Text style={styles.progressionTitle}>
             {currentProgression?.title || 'Digital Initiate'}
           </Text>
