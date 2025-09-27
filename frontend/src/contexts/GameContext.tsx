@@ -555,17 +555,42 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateNinja = (updates: Partial<NinjaStats> | ((prev: NinjaStats) => Partial<NinjaStats>)) => {
+    // MOBILE DEBUG: Log all updateNinja calls to trace combat progress
+    console.log('🥷 MOBILE DEBUG - updateNinja CALLED:', {
+      updatesType: typeof updates,
+      timestamp: Date.now(),
+      platform: Platform.OS,
+      updates: typeof updates === 'function' ? 'FUNCTION' : updates
+    });
+    
     setGameState(prev => {
+      console.log('🥷 MOBILE DEBUG - BEFORE UPDATE:', {
+        currentLevel: prev.ninja.level,
+        currentXP: prev.ninja.experience,
+        currentGold: prev.ninja.gold,
+        currentGems: prev.ninja.gems
+      });
+      
       // Handle both object updates and function updates
       const actualUpdates = typeof updates === 'function' 
         ? updates(prev.ninja)
         : updates;
+        
+      console.log('🥷 MOBILE DEBUG - ACTUAL UPDATES:', actualUpdates);
         
       const updatedNinja = { ...prev.ninja, ...actualUpdates };
       
       // Check for level up with new system
       const levelUpUpdates = handleLevelUp(updatedNinja);
       const finalNinja = { ...updatedNinja, ...levelUpUpdates };
+      
+      console.log('🥷 MOBILE DEBUG - AFTER UPDATE:', {
+        finalLevel: finalNinja.level,
+        finalXP: finalNinja.experience,
+        finalGold: finalNinja.gold,
+        finalGems: finalNinja.gems,
+        hadLevelUp: Object.keys(levelUpUpdates).length > 0
+      });
       
       const newGameState = {
         ...prev,
