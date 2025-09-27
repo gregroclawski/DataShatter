@@ -176,7 +176,7 @@ export default function NinjaIdleGame() {
       
       return () => clearInterval(autoMovementInterval);
     }
-  }, [isAutoMovement, layout, findClosestEnemy]);
+  }, [isAutoMovement, findClosestEnemy]); // Removed layout dependency
 
   // Toggle between auto and manual movement
   const toggleMovementMode = useCallback(() => {
