@@ -235,8 +235,25 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       const deadEnemies = newState.enemies.filter(enemy => enemy.health <= 0);
       enemiesToKill = [...deadEnemies]; // Store for processing outside setState
       
+      // MOBILE DEBUG: Log enemy death processing
+      if (deadEnemies.length > 0) {
+        console.log(`💀 MOBILE DEBUG - Found ${deadEnemies.length} dead enemies:`, deadEnemies.map(e => `${e.id}(${e.health}hp)`));
+      }
+      
+      // Check if any enemies are close to death for debugging
+      const lowHealthEnemies = newState.enemies.filter(enemy => enemy.health <= 20 && enemy.health > 0);
+      if (lowHealthEnemies.length > 0) {
+        console.log(`🩸 MOBILE DEBUG - Low health enemies:`, lowHealthEnemies.map(e => `${e.id}(${e.health}/${e.maxHealth}hp)`));
+      }
+      
       // Remove dead enemies
+      const beforeCount = newState.enemies.length;
       newState.enemies = newState.enemies.filter(enemy => enemy.health > 0);
+      const afterCount = newState.enemies.length;
+      
+      if (beforeCount !== afterCount) {
+        console.log(`🗑️ MOBILE DEBUG - Removed ${beforeCount - afterCount} dead enemies from state`);
+      }
 
       // Maintain 10 enemies on screen with slower respawn to prevent chaos
       // BUT: Don't spawn new enemies if there's a boss present
