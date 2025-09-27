@@ -18,6 +18,18 @@ const CombatUI: React.FC = () => {
 
   // Get equipped abilities from combat state
   const deck = combatState.abilityManager.getDeck();
+  
+  // MOBILE DEBUG: Log equipped abilities to verify they're loading correctly
+  React.useEffect(() => {
+    console.log(`🎯 CombatUI - Equipped abilities check:`);
+    deck.slots.forEach((ability, index) => {
+      if (ability) {
+        console.log(`  Slot ${index}: ${ability.name} (${ability.icon}) - Cooldown: ${ability.currentCooldown} ticks`);
+      } else {
+        console.log(`  Slot ${index}: empty`);
+      }
+    });
+  }, [deck.slots]);
 
   // Calculate cooldown percentage for ability - FIXED: Use tick-based system consistently
   const getCooldownPercentage = useCallback((ability: EquippedAbility): number => {
