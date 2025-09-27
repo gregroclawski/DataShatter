@@ -313,16 +313,21 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     return updates;
   };
 
-  const saveGameToServer = async () => {
+  const saveGameToServer = async (forceEventSave = false) => {
     if (!isAuthenticated || !user?.id) {
       console.warn('🚫 Cannot save game: user not authenticated');
       return;
     }
 
     // MOBILE FIX: Prevent saving default data before real game data loads
-    if (!hasLoadedFromServer) {
+    // BUT allow event-driven saves (level-ups, purchases) to bypass this guard
+    if (!hasLoadedFromServer && !forceEventSave) {
       console.warn('🚫 Preventing premature save: game data not loaded yet from server');
       return;
+    }
+    
+    if (forceEventSave) {
+      console.log('🔥 FORCING EVENT-DRIVEN SAVE - bypassing loading guards');
     }
 
     // MOBILE OPTIMIZATION: Always save locally first for offline support
