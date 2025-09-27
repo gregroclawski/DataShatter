@@ -222,7 +222,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       console.log('⏰ Auto-save triggered - Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience, 'Auth:', isAuthenticated);
       saveGameToServer();
       collectIdleRewards();
-    }, Platform.OS === 'web' ? 3000 : 10000); // 10 seconds on mobile to prevent bridge congestion
+    }, Platform.OS === 'web' ? 10000 : 30000); // MOBILE OPTIMIZATION: 30 seconds on mobile to prevent performance issues
 
     return () => {
       console.log('🛑 Auto-save interval cleared');
