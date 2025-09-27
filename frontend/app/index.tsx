@@ -131,7 +131,7 @@ export default function NinjaIdleGame() {
         clearTimeout(movementIntervalRef.current);
       }
     };
-  }, [isManualControlActive, movementDirection.x, movementDirection.y, isAutoMovement, layout]);
+  }, [isManualControlActive, movementDirection.x, movementDirection.y, isAutoMovement]); // Removed layout dependency
 
   // MOBILE FIX: Update combat context position separately to prevent render-phase violations
   useEffect(() => {
