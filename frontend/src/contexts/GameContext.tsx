@@ -252,9 +252,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   // Critical milestone save - Save immediately on very important events
   const saveOnMilestone = useCallback((milestoneType: string) => {
     if (isAuthenticated) {
-      console.log(`🏆 MILESTONE SAVE triggered: ${milestoneType}`);
+      console.log(`🏆 MILESTONE SAVE TRIGGERED: ${milestoneType} - bypassing all loading guards`);
       // Save immediately without delay for critical milestones
-      saveGameToServer();
+      saveGameToServer(true); // Force save for milestones
     }
   }, [isAuthenticated]);
 
