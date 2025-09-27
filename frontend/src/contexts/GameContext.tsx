@@ -437,7 +437,32 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const loadLocalGameBackup = async () => {
+  const saveLocalGameBackup = async () => {
+    if (!user?.id) return;
+    
+    try {
+      const backupData = {
+        ...gameState,
+        lastSaveTime: Date.now()
+      };
+      
+      // MOBILE OPTIMIZATION: Use only AsyncStorage, remove localStorage fallback to prevent data conflicts
+      if (Platform.OS !== 'web') {
+        await AsyncStorage.setItem(`ninjaGameSave_${user.id}`, JSON.stringify(backupData));
+        console.log('💾 Local backup saved to AsyncStorage (mobile)');
+      } else {
+        // Web: Use localStorage
+        if (typeof window !== 'undefined' && window.localStorage) {
+          window.localStorage.setItem(`ninjaGameSave_${user.id}`, JSON.stringify(backupData));
+          console.log('💾 Local backup saved to localStorage (web)');
+        }
+      }
+      
+      lastSaveTimeRef.current = Date.now();
+    } catch (error) {
+      console.error('❌ Local backup save failed:', error);
+    }
+  };
     if (!user?.id) return;
     
     try {
