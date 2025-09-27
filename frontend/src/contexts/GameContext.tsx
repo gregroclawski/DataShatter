@@ -308,7 +308,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    // ALLOW ALL SAVES - Remove blocking logic temporarily to fix progress loss
+    // MOBILE OPTIMIZATION: Always save locally first for offline support
+    await saveLocalGameBackup();
+    
     console.log('✅ SAVE ALWAYS ALLOWED - Removing all blocking logic');
     console.log('💾 SAVING:', 'Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience, 'Gold:', gameState.ninja.gold, 'Gems:', gameState.ninja.gems);
 
@@ -340,9 +342,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
       const result = await response.json();
       lastSaveTimeRef.current = now;
-      console.log('✅ PROGRESS SAVED - Level:', result.ninja?.level, 'XP:', result.ninja?.experience);
+      console.log('✅ PROGRESS SAVED TO SERVER - Level:', result.ninja?.level, 'XP:', result.ninja?.experience);
     } catch (error) {
-      console.error('❌ Save failed:', error);
+      console.error('❌ Server save failed, but local backup completed:', error);
+      // Don't throw - local backup ensures progress isn't lost
     }
   };
 
