@@ -631,11 +631,110 @@ class ComprehensiveBackendTester:
         
         return all(test_results)
 
+def test_specific_load_game_debugging():
+    """Test load-game endpoint with specific user ID for mobile debugging"""
+    print("\n" + "="*80)
+    print("🔍 LOAD-GAME ENDPOINT DEBUGGING FOR MOBILE PROGRESS PERSISTENCE")
+    print("🎯 Focus: User ID c16cbf6f-c1f4-495f-8a58-c94f32653225")
+    print("="*80)
+    
+    # Specific user ID from review request
+    user_id = "c16cbf6f-c1f4-495f-8a58-c94f32653225"
+    
+    print(f"📥 Testing GET /api/load-game/{user_id}")
+    print(f"🌐 Backend URL: {BASE_URL}")
+    print(f"⏰ Test Time: {datetime.now()}")
+    
+    try:
+        session = requests.Session()
+        
+        # Test load-game endpoint with comprehensive logging
+        response = session.get(f"{BASE_URL}/load-game/{user_id}")
+        
+        print(f"\n📊 RESPONSE ANALYSIS:")
+        print(f"   Status Code: {response.status_code}")
+        print(f"   Response Headers: {dict(response.headers)}")
+        print(f"   Content-Type: {response.headers.get('content-type', 'N/A')}")
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                print(f"   Response Type: {type(data)}")
+                
+                if data is None:
+                    print(f"\n❌ CRITICAL FINDING: Load returned None")
+                    print(f"🔍 DIAGNOSIS: No saved data found for user {user_id}")
+                    print(f"📋 POSSIBLE CAUSES:")
+                    print(f"   1. User has never saved game data")
+                    print(f"   2. Database query is not finding the user's data")
+                    print(f"   3. User ID mismatch between save and load operations")
+                    print(f"   4. Database connection or query issues")
+                    print(f"\n📝 BACKEND LOGS SHOULD SHOW:")
+                    print(f"   - '📥 LOAD REQUEST - Player ID: {user_id}'")
+                    print(f"   - '❌ NO SAVE FOUND for player {user_id} - returning None'")
+                    
+                else:
+                    print(f"\n✅ LOAD DATA FOUND - User has saved progress")
+                    print(f"📊 SAVED DATA STRUCTURE:")
+                    print(f"   - Player ID: {data.get('playerId', 'MISSING')}")
+                    print(f"   - Ninja Level: {data.get('ninja', {}).get('level', 'MISSING')}")
+                    print(f"   - Ninja XP: {data.get('ninja', {}).get('experience', 'MISSING')}")
+                    print(f"   - Ninja Gold: {data.get('ninja', {}).get('gold', 'MISSING')}")
+                    print(f"   - Ninja Gems: {data.get('ninja', {}).get('gems', 'MISSING')}")
+                    print(f"   - Skill Points: {data.get('ninja', {}).get('skillPoints', 'MISSING')}")
+                    print(f"   - Last Save Time: {data.get('lastSaveTime', 'MISSING')}")
+                    print(f"   - Zone Progress: {data.get('zoneProgress', 'MISSING')}")
+                    print(f"   - Shurikens Count: {len(data.get('shurikens', []))}")
+                    print(f"   - Pets Count: {len(data.get('pets', []))}")
+                    print(f"   - Achievements Count: {len(data.get('achievements', []))}")
+                    
+                    print(f"\n📝 BACKEND LOGS SHOULD SHOW:")
+                    print(f"   - '📥 LOAD REQUEST - Player ID: {user_id}'")
+                    print(f"   - '📥 FOUND SAVE DATA for {user_id}:'")
+                    print(f"   - '   - Level: {data.get('ninja', {}).get('level', 'MISSING')}'")
+                    print(f"   - '   - XP: {data.get('ninja', {}).get('experience', 'MISSING')}'")
+                    print(f"   - '✅ LOAD COMPLETED - Returning saved data'")
+                
+                print(f"\n📄 FULL RESPONSE DATA:")
+                print(json.dumps(data, indent=2, default=str))
+                
+            except json.JSONDecodeError as e:
+                print(f"\n❌ JSON DECODE ERROR: {e}")
+                print(f"📄 Raw Response: {response.text}")
+                print(f"🔍 This indicates a server error or malformed response")
+                
+        else:
+            print(f"\n❌ LOAD REQUEST FAILED")
+            print(f"   Status Code: {response.status_code}")
+            print(f"   Error Response: {response.text}")
+            print(f"🔍 This indicates a server error or endpoint issue")
+            
+    except requests.exceptions.RequestException as e:
+        print(f"\n💥 REQUEST ERROR: {e}")
+        print(f"🔍 This indicates network connectivity or server availability issues")
+    
+    print(f"\n" + "="*80)
+    print("🎯 DEBUGGING COMPLETE")
+    print("📋 NEXT STEPS:")
+    print("   1. Check backend supervisor logs: tail -n 100 /var/log/supervisor/backend.*.log")
+    print("   2. Look for the load request logging entries shown above")
+    print("   3. Verify if database contains saved data for this user")
+    print("   4. Check if frontend is using correct user ID for save/load operations")
+    print("="*80)
+
 def main():
-    """Main test execution"""
+    """Main test execution - Focus on load-game debugging"""
+    print("🎯 BACKEND LOAD-GAME ENDPOINT DEBUGGING")
+    print("🎯 Focus: Mobile progress persistence issue diagnosis")
+    print("🎯 User ID: c16cbf6f-c1f4-495f-8a58-c94f32653225")
+    
+    # Run specific load-game debugging test
+    test_specific_load_game_debugging()
+    
+    # Also run basic health check to ensure backend is responsive
+    print("\n🏥 BASIC HEALTH CHECK:")
     tester = ComprehensiveBackendTester()
-    success = tester.run_all_tests()
-    exit(0 if success else 1)
+    tester.test_health_check()
 
 if __name__ == "__main__":
     main()
