@@ -335,6 +335,18 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     
     console.log('✅ SAVE ALWAYS ALLOWED - Removing all blocking logic');
     console.log('💾 SAVING:', 'Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience, 'Gold:', gameState.ninja.gold, 'Gems:', gameState.ninja.gems);
+    
+    // CRITICAL DEBUG: Compare what we're about to save vs what UI displays
+    console.log('🔍 CRITICAL STATE COMPARISON:');
+    console.log('  📊 GameContext ninja state (BEING SAVED):', {
+      level: gameState.ninja.level,
+      experience: gameState.ninja.experience, 
+      gold: gameState.ninja.gold,
+      gems: gameState.ninja.gems
+    });
+    
+    // Log the full gameState to verify structure
+    console.log('  🎯 Full gameState structure:', JSON.stringify(gameState, null, 2));
 
     try {
       const now = Date.now();
