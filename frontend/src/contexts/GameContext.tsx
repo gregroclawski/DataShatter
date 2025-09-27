@@ -228,7 +228,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       console.log('🛑 Auto-save interval cleared');
       clearInterval(interval);
     };
-  }, [isAuthenticated, user]); // Remove gameState.ninja.level to prevent interval resets on level up
+  }, [isAuthenticated, user, gameState]); // CRITICAL FIX: Add gameState to prevent stale closure bug
 
   // Event-driven saves - Save on important game events
   const saveOnEvent = useCallback((eventType: string) => {
