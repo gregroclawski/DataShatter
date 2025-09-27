@@ -584,6 +584,43 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       enemies: prev.enemies.filter(enemy => enemy.id !== enemyId)
     }));
   };
+
+  // MOBILE FIX: Manual ability casting for UI buttons - allows players to trigger abilities directly
+  const useAbilityManually = useCallback((slotIndex: number): boolean => {
+    console.log(`🎮 Manual cast attempt for slot ${slotIndex}`);
+    
+    // Check if ability is ready and cast it
+    const isReady = combatState.abilityManager.isAbilityReady(slotIndex);
+    if (!isReady) {
+      console.log(`⏳ Ability in slot ${slotIndex} is not ready (still on cooldown)`);
+      return false;
+    }
+    
+    // Check if there are enemies to target
+    if (combatState.enemies.length === 0) {
+      console.log(`🎯 No enemies to target for manual ability cast`);
+      return false;
+    }
+    
+    // Use the ability through the ability manager
+    const currentTick = combatEngine.getCurrentTick();
+    const success = combatState.abilityManager.useAbility(slotIndex, currentTick);
+    
+    if (success) {
+      // Cast the ability immediately using the same casting logic as auto-cast
+      setCombatState(prev => {
+        const newState = { ...prev };
+        castAbility(newState, slotIndex);
+        return newState;
+      });
+      
+      console.log(`✨ Manual ability cast successful for slot ${slotIndex}`);
+      return true;
+    } else {
+      console.log(`❌ Manual ability cast failed for slot ${slotIndex}`);
+      return false;
+    }
+  }, [combatState.abilityManager, combatState.enemies]);
   useEffect(() => {
     combatEngine.start();
     
