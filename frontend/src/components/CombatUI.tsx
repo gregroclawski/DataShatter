@@ -19,16 +19,16 @@ const CombatUI: React.FC = () => {
   // Get equipped abilities from combat state
   const deck = combatState.abilityManager.getDeck();
 
-  // Calculate cooldown percentage for ability
+  // Calculate cooldown percentage for ability - FIXED: Use tick-based system consistently
   const getCooldownPercentage = useCallback((ability: EquippedAbility): number => {
-    if (!ability.lastUsed) return 0;
+    if (!ability.currentCooldown) return 0;
     
-    const now = combatState.currentTick;
-    const elapsed = now - ability.lastUsed;
-    const cooldownTime = ability.cooldown * 1000; // Convert to milliseconds
+    // Convert ability cooldown from seconds to ticks (10 TPS)
+    const totalCooldownTicks = Math.ceil(ability.stats.cooldown * 10);
+    const remainingCooldown = ability.currentCooldown;
     
-    if (elapsed >= cooldownTime) return 0;
-    return Math.max(0, (cooldownTime - elapsed) / cooldownTime);
+    if (remainingCooldown <= 0) return 0;
+    return Math.max(0, remainingCooldown / totalCooldownTicks);
   }, [combatState.currentTick]);
 
   // Dynamic styles for responsive circular layout
