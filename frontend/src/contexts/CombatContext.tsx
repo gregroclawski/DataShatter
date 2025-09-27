@@ -661,6 +661,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     combatState,
     projectiles,
     lastExplosionTime,
+    // MOBILE PERFORMANCE FIX: Add missing dependencies for proper state synchronization
+    combatState.abilityManager,
+    combatState.enemies,
     useAbilityManually, // Add the callback to dependencies
   ]);
 
