@@ -1,72 +1,71 @@
 <analysis>
-The AI engineer's work primarily focused on stabilizing and fixing critical frontend issues for the Idle Ninja Online Expo mobile application. The trajectory details an iterative debugging process, addressing React 19 compatibility, hooks order violations, null/object rendering, infinite update loops, and cross-component state conflicts. Initial efforts involved package version adjustments and extensive cache clearing. A major challenge was the authentication flow, which required fixing CORS configuration in the backend () and correcting  in the frontend  file due to environment changes, coupled with implementing a robust DOM event listener fallback for React Native's / on web. After achieving successful login and initial UI rendering in the web preview, the focus shifted to mobile-specific UI/UX issues reported by the user on iPhone, specifically related to skill bar positioning and bottom tab functionality. The current task involves a comprehensive mobile optimization for varying screen sizes.
+The previous AI engineer's work focused on transforming the Idle Ninja Online Expo mobile app from a basic state, addressing numerous mobile-specific challenges. Initial efforts stabilized the app by resolving rendering issues () and authentication problems. The core development involved implementing a circular abilities layout and a player movement system. This journey was punctuated by persistent mobile layout inconsistencies, React render-phase violations, and threading issues with  (for the joystick). The AI engineer extensively utilized the troubleshoot agent to diagnose and resolve complex bugs, systematically migrating web-centric code patterns to mobile-compatible ones. Key areas of correction included: ability icon rendering, responsive layout calculations, header styling,  replacement, projectile animation, and especially refining the joystick implementation from  to simple touch events to overcome crashes, and finally, robust state management across contexts to prevent update conflicts and implement auto-movement and enemy tracking.
 </analysis>
 
 <product_requirements>
-The application is an Idle Ninja Online style mobile RPG. It features an auto-fighting character across 50 zones (5 levels each, 1000 enemy defeats). Progression includes XP to level 15000, 3 stat points per level, and level-up explosions. The UI has a battle arena with bottom tabs for Stats, Abilities, Pets, Skills, Store, Raids, and Equipment, appearing as overlays. A tick-based combat engine is foundational. Implemented features include a 50-zone system, 25-level gear progression with material upgrades, and a Boss Battle System with 4 bosses across 5 tiers, daily tickets, and specific drops. Boss battles feature unique backgrounds, element-specific attacks, WIN/DEFEAT popups, 3 player lives with a 5-second respawn, and dynamic boss sizing/difficulty. The UI adopted a Mythic-Tech theme with futuristic aesthetics, neon elements, and a compact top bar with vertically stacked resources. Enemies are cleared during boss fights, and bosses are 3x larger. The current development includes a comprehensive, secure server-side login and progression system to prevent client-side cheating, with an upcoming need for Companions and Idle/Offline Progression.
+The Idle Ninja Online is a mobile RPG featuring auto-fighting across 50 zones, character progression up to level 15000, stat points, and level-up animations. The UI includes a battle arena and bottom tabs for Stats, Abilities, Pets, Skills, Store, Raids, and Equipment, all themed Mythic-Tech. It incorporates a 50-zone system, 25-level gear progression with material upgrades, and a 5-tier Boss Battle System with daily tickets, unique attacks, and dynamic difficulty. Enemies are cleared during boss fights, and bosses are three times larger. A critical requirement is secure, server-side login and progression to prevent client-side cheating. The application uses Expo (frontend), FastAPI (backend), and MongoDB (database). So far, the application has stable loading, authentication, and core combat functionality with mobile-optimized UI, header, and overlay displays. Recent updates include a circular abilities layout, and a functional player movement system with both auto-movement and a mobile-safe virtual joystick, with enemies now tracking the player.
 </product_requirements>
 
 <key_technical_concepts>
-- Expo & Expo Router: Mobile app framework with file-based routing.
-- React Native: Core UI components, styling, keyboard handling, safe areas.
-- FastAPI: Python backend for APIs.
-- MongoDB: Database for persistent storage.
-- Zustand: State management for game contexts.
-- JWT Authentication: Secure token-based user authentication.
-- CORS: Cross-Origin Resource Sharing for API security.
-- AsyncStorage/localStorage: Client-side storage for session persistence.
+-   **Expo & Expo Router**: Mobile app framework with file-based routing.
+-   **React Native**: Core UI components, hooks (useState, useEffect, useMemo, useCallback, useRef), StyleSheet API, Animated API.
+-   **FastAPI**: Python backend for APIs.
+-   **MongoDB**: Database.
+-   **JWT Authentication**: Secure token-based user authentication.
+-   **CORS**: Cross-Origin Resource Sharing.
+-   **SafeAreaView / useSafeAreaInsets**: Handling device notches/safe areas.
+-   **react-native-reanimated / react-native-gesture-handler**: For animations and advanced touch interactions.
+-   **Zustand/Redux-Toolkit**: State management.
 </key_technical_concepts>
 
 <code_architecture>
 **Directory Structure:**
 
 
-- : Main FastAPI backend.
-    - **Importance**: Handles API routing, database, authentication, and game save/load.
-    - **Changes**: CORS  updated to include  to resolve authentication issues.
-- : Main game screen and entry point.
-    - **Importance**: Renders game, overlays, navigation. Controls app flow.
-    - **Changes**: Underwent extensive debugging for rendering issues, React hooks order, null/object access, and infinite loops. Debug logs were added to monitor authentication state. Combat auto-start was re-enabled. Styling adjustments were made to correctly position the  and improve bottom navigation for mobile.
-- : Root layout for Expo Router.
-    - **Importance**: Global navigation and context providers.
-    - **Changes**: Inspected, but no direct changes were made in the recent trajectory. The previous AI had configured Stack navigation and integrated context providers.
-- : Manages user authentication.
-    - **Importance**: Provides auth state, , ,  functions, session persistence.
-    - **Changes**: Was thoroughly reviewed to debug login issues; found to be logically correct, but issues stemmed from API URL configuration and button event handling. No direct code modifications were mentioned in this segment.
-- : Authentication/Registration UI.
-    - **Importance**: User login and registration interface.
-    - **Changes**: Debugging logs were added to  and button  events.  was replaced with . A hybrid solution using both React Native  and a DOM event listener fallback was implemented for the login button to ensure reliable functionality across web and mobile.
-- : Handles the in-game combat display.
-    - **Importance**: Displays health bars, abilities, and enemy information during combat.
-    - **Changes**: Initial  style causing incorrect positioning was identified. It was then repositioned correctly near the bottom, above the navigation tabs. The  prop was identified as missing in  when passing to .
-- : Frontend environment variables.
-    - **Importance**: Stores configuration like backend API URL.
-    - **Changes**:  was modified by the AI to match the correct frontend domain  to resolve API communication issues.
+-   : Main FastAPI backend, handles API, DB, auth. CORS  repeatedly updated for frontend preview/ngrok URLs.
+-   : Stores frontend configuration variables.  and  updated for ngrok tunnel/preview.
+-   : Main game screen, renders UI and overlays.
+    -   **Summary**: Central to game rendering. Debugged rendering, fixed header z-index/layout, projectile rendering. Initialized , / (later removed for simple touch events). Implemented circular ability layout logic (via ), touch-and-drag movement (initially , then simple touch with internal state to avoid crashes), and joystick visual elements. Resolved  duplicate declarations. Implemented auto-movement system to track closest enemy. Added auto-movement toggle and manual joystick control, with logic to pause/resume combat abilities during manual input. Adjusted player auto and manual movement speeds. Corrected  initialization to center the player. Implemented projectile animation system using animated positions and  property. Fixed layout change effect to prevent overriding joystick movement. Destructured  from .
+-   : Root layout for Expo Router.
+    -   **Summary**: Root layout for global navigation and context providers. Updated to use . Wrapped in  for , and  to ensure context availability.
+-   : Handles user login/registration.
+    -   **Summary**: Optimized  dependencies, added web checks, fixed web-specific event listener that interfered with mobile .
+-   : In-game combat display.
+    -   **Summary**: Initial  style fixed.  wrapped in . Deprecated shadow properties fixed. Mobile-optimized dimensions. Z-index set to 30. Modified for circular ability layout: used  (emoji strings) for icons, adjusted button size (50% smaller, increased touch target to 44px), position (bottom-left), and font size. Fixed  errors by ensuring proper filtering of null slots and re-working map logic.
+-   : Manages user authentication state.
+    -   **Summary**: Added timeout, minimum loading duration for . Memoized provider . Refactored loading logic. Enhanced  to detect  for mobile. Added enhanced error logging to login function. Authentication screen was blocking the game view.
+-   : Manages in-game combat logic.
+    -   **Summary**: , ,  wrapped in . Provider  wrapped in .  updated to batch state updates. Added , , ,  for Animated API (later some of these were refactored/removed as gesture handling moved to simple touch). Added random enemy movement logic within  and  property to the  type. Fixed multiple React render-phase violations by deferring  calls (within  and ) using . Removed duplicate  state, now accepts it as a prop from the main game component. Added  function to pause auto-cast abilities during manual player control. Enemy AI modified to track the closest player instead of random movement. Enemy movement speed adjusted.
+-   : (NEW FILE) Combines  and  to reduce context nesting.
+-   : Manages main game state and auto-save.
+    -   **Summary**:  dependency array fixed. Provider  wrapped in . Auto-save interval increased. Fixed React render-phase violation by deferring  call with .
+-   : Core combat logic.
+    -   **Summary**:  replaced with React Native compatible timing (e.g., ) to fix the combat tick system on mobile.
+-   : Provides responsive layout dimensions and safe area insets.
+    -   **Summary**: Destructured  values. Removed mobile-specific debouncing. Added mobile touch target constants (, ). Corrected  calculation to avoid double-subtracting insets.
+-   : Displays zone information and enemy types.
+    -   **Summary**: Added safety checks for  and progress text. Fixed array join operation to filter non-string values. Fixed  prop issue for mapped items and  function parameter structure.
+-   : Defines application-wide colors and theme.
+    -   **Summary**: Added missing , , , , ,  colors.  was changed to a lighter color to resolve the game area appearing black on mobile.
 </code_architecture>
 
 <pending_tasks>
-- **Backend Persistence**: Ensure all game systems (Companions, etc.) are properly integrated with server-side save/load mechanisms.
-- **Companions**: Implement battle and support pets with leveling and abilities.
-- **Idle/Offline Progression**: Simulate combat mathematically while offline for accumulated rewards, integrating with the new server-side progression.
-- **PlayFab Integration**: Evaluate and potentially integrate PlayFab as a game backend service.
-- **Frontend Expo Go Compatibility**: Fully resolve the 3 errors reported in Expo Go, potentially related to ,  import, and  issues.
-- **Progress Persistence Reliability**: Investigate and fix the recurring issue of user progress being overwritten by default Level 1 data.
-- **Comprehensive Mobile Optimization**: Optimize the entire project for mobile gaming across varying screen sizes and ensure correct layout in Expo Go.
+-   **Backend Persistence**: Ensure all game systems (Companions, etc.) are properly integrated with server-side save/load mechanisms.
+-   **Companions**: Implement battle and support pets with leveling and abilities.
+-   **Idle/Offline Progression**: Simulate combat mathematically while offline for accumulated rewards, integrating with the new server-side progression.
+-   **PlayFab Integration**: Evaluate and potentially integrate PlayFab as a game backend service.
 </pending_tasks>
 
 <current_work>
-Immediately prior to this summary, the AI engineer was engaged in a comprehensive mobile optimization effort for the application, specifically addressing layout inconsistencies observed when running the app on an iPhone via Expo Go. This follows a successful resolution of critical login and UI rendering issues in the web preview environment.
+Immediately prior to this summary, the AI engineer was addressing persistent stuttering issues with the manual joystick movement and confirming that enemies were not automatically tracking the player. The troubleshoot agent identified two critical root causes: the joystick stuttering was due to a high  and a  dependency in a  causing excessive re-renders. The enemy AI was still implementing random movement instead of tracking the player.
 
-The previous work involved:
-1.  **CORS Fix**: Correcting the  in  to include the correct frontend preview URL.
-2.  **Backend URL Mismatch**: Updating  in  to match the active frontend domain.
-3.  **Login Button Reliability**: Implementing a hybrid event listener approach in  (using React Native  with a DOM event listener fallback) to ensure the login button  event fired consistently across web platforms, ultimately resolving the inability to log in.
-4.  **Initial UI Rendering**: Debugging  to ensure the main game UI renders after successful authentication and game data loading, including re-enabling combat auto-start.
-5.  **Initial Mobile Layout Fixes**: Adjusting styling and component positioning in  and  to correct the skill bar placement (moved from top to bottom) and improve bottom navigation tab functionality and touch areas on iPhone.
+The AI engineer's last actions were to systematically fix these issues:
+1.  **Joystick Stuttering Fix**: The  was reduced, and the  dependency was removed from relevant  hooks controlling both joystick and auto-movement to prevent unnecessary re-renders in .
+2.  **Enemy AI Fix**: The enemy movement logic in  was modified to make enemies track toward the closest player instead of performing purely random movement. Player auto movement speed was set to 3x original and joystick movement speed to 3x original, while enemy movement speed was set to 2.5x original.
 
-Despite these fixes, the user reported that the layout in the Expo Go app on an iPhone was still messed up, with the skill bar and bottom tabs not functioning properly. The current work has just begun addressing this, starting with a comprehensive review of the layout system to move from fixed dimensions to responsive design, handle safe areas properly, and adjust for different screen sizes.
+The service was restarted after these changes. The goal of these changes was to eliminate the stuttering for a smoother manual control experience and to implement a more engaging enemy AI where enemies actively seek out the player, aligning with typical idle game combat mechanics.
 </current_work>
 
 <optional_next_step>
-Create a completely new, mobile-optimized layout system for the entire project.
+The last action was to restart the Expo service after implementing fixes for joystick stuttering and enemy tracking. The next logical step is to verify these changes on a mobile device.
 </optional_next_step>
