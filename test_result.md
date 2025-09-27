@@ -470,6 +470,29 @@ frontend:
         - working: false
           agent: "user"
           comment: "USER REPORT: Mobile game still only using main shuriken instead of cycling through all equipped abilities. Also save/load system needs mobile optimization - currently built for web."
+  - task: "Ability Cycling System Mobile Fix"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/contexts/CombatContext.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "ISSUE IDENTIFIED: CombatContext useEffect was overriding default AbilityManager equipment by only equipping 2 abilities (basic_shuriken, fire_shuriken) instead of all 5. This caused auto-casting to only cycle through slots 0-1 instead of 0-4. FIXED: Removed ability override in CombatContext useEffect - now lets AbilityManager constructor equip all 5 default abilities (🌟🔥❄️☠️👥). Auto-casting should now cycle through all equipped abilities properly."
+
+  - task: "Mobile Save/Load System Optimization"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/contexts/GameContext.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "ISSUE IDENTIFIED: Current save/load system has several mobile-specific issues: 1) AsyncStorage fallback to localStorage may cause data inconsistency, 2) Auto-save interval too frequent (3s web, 10s mobile) may cause performance issues, 3) No offline data persistence strategy for mobile app state, 4) Authentication-dependent saves may fail in poor network conditions. NEEDS: Mobile-optimized save strategy, better offline handling, reduced auto-save frequency, and mobile-specific storage patterns."
         - working: true
           agent: "testing"
           comment: "BACKEND REGRESSION TESTING COMPLETE: Performed comprehensive backend API testing after abilities bar mobile optimization changes. SUCCESS RATE: 100% (13/13 tests passed). ✅ HEALTH CHECK: GET /api/ endpoint responding correctly with 'Ninja Master Mobile API' message. ✅ AUTHENTICATION SYSTEM: Complete authentication flow working perfectly - Registration creates users with JWT tokens and session cookies, Login validates credentials correctly with proper form data handling, Session management validates user sessions with dual auth support, Invalid login attempts properly rejected with 401 status, Duplicate registration prevention working. ✅ GAME DATA PERSISTENCE: Save-game successfully stores Level 25 ninja data with complex progression (6250 XP, shurikens, pets, achievements, zone progress), Load-game retrieves complete data correctly maintaining data integrity, Extreme level progression (Level 999, 999999 XP) handled without issues. ✅ ALL GAME SYSTEMS OPERATIONAL: Shuriken generation (common Training Shuriken ATK:9), Pet generation (rare Wolf STR:25), Leaderboard (10 entries), Game events (2 events) all working correctly. CONCLUSION: Abilities bar mobile optimization changes have NOT affected backend functionality. All core backend APIs are responding correctly with proper JSON and status codes. Backend is stable and ready for frontend testing."
