@@ -158,11 +158,18 @@ const CombatUI: React.FC = () => {
               key={`ability-${index}`}
               style={circularStyles.abilityButton}
               onPress={() => {
-                // Trigger ability if not on cooldown
+                // Trigger ability manually if not on cooldown
                 const cooldown = getCooldownPercentage(ability);
                 if (cooldown === 0) {
-                  console.log(`🔥 Ability ${ability.id} activated!`);
-                  // Add ability activation logic here
+                  console.log(`🔥 Manual ability ${ability.name} (slot ${index}) activated!`);
+                  // Try to use manual ability casting if available, otherwise fallback
+                  if (useAbilityManually) {
+                    useAbilityManually(index);
+                  } else {
+                    console.log(`⚡ No manual casting function available for ${ability.name}`);
+                  }
+                } else {
+                  console.log(`⏳ Ability ${ability.name} is on cooldown: ${(cooldown * 100).toFixed(1)}%`);
                 }
               }}
               activeOpacity={0.7}
