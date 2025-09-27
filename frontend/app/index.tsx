@@ -803,6 +803,23 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       color: MythicTechColors.cosmicGold,
       marginBottom: layout.paddingXS * 0.5,
     },
+    userInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: layout.paddingXS * 0.5,
+      marginBottom: layout.paddingXS * 0.5,
+      paddingHorizontal: layout.paddingXS,
+      paddingVertical: layout.paddingXS * 0.25,
+      backgroundColor: MythicTechColors.darkSpace + '80',
+      borderRadius: layout.paddingXS,
+      maxWidth: layout.screenWidth * 0.35, // Responsive width for mobile
+    },
+    usernameText: {
+      fontSize: layout.smallFontSize * 0.85,
+      fontWeight: '600',
+      color: MythicTechColors.white,
+      flexShrink: 1, // Allow text to shrink on small screens
+    },
     levelContainer: {
       flexDirection: 'column',
       gap: layout.paddingXS,
