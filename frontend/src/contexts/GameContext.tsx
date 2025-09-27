@@ -207,16 +207,14 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isAuthenticated, user]);
 
-  // Auto-save when authenticated - VERY frequent saves to catch all progress
+  // Auto-save system - MOBILE FIX: Add loading guard to prevent saving default data
   useEffect(() => {
-    console.log('🔍 Auto-save useEffect - isAuthenticated:', isAuthenticated, 'user:', !!user);
-    
-    if (!isAuthenticated) {
-      console.log('❌ Auto-save NOT running - user not authenticated');
+    // CRITICAL: Don't start auto-save until game data has loaded
+    if (!isAuthenticated || !user || !hasLoadedFromServer) {
       return;
     }
 
-    console.log('✅ Starting auto-save interval for authenticated user');
+    console.log('⏰ Starting auto-save system - user authenticated and game data loaded');
     
     const interval = setInterval(() => {
       console.log('⏰ Auto-save triggered - Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience, 'Auth:', isAuthenticated);
@@ -228,7 +226,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       console.log('🛑 Auto-save interval cleared');
       clearInterval(interval);
     };
-  }, [isAuthenticated, user, gameState]); // CRITICAL FIX: Add gameState to prevent stale closure bug
+  }, [isAuthenticated, user, gameState, hasLoadedFromServer]); // CRITICAL FIX: Add hasLoadedFromServer to prevent stale closure bug AND premature auto-saves
 
   // Event-driven saves - Save on important game events
   const saveOnEvent = useCallback((eventType: string) => {
