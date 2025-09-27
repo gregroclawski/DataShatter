@@ -306,6 +306,12 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
+    // MOBILE FIX: Prevent saving default data before real game data loads
+    if (!hasLoadedFromServer) {
+      console.warn('🚫 Preventing premature save: game data not loaded yet from server');
+      return;
+    }
+
     // MOBILE OPTIMIZATION: Always save locally first for offline support
     await saveLocalGameBackup();
     
