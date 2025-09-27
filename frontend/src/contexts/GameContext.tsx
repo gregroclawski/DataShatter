@@ -244,8 +244,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   // Event-driven saves - Save on important game events
   const saveOnEvent = useCallback((eventType: string) => {
     if (isAuthenticated) {
-      console.log(`💾 Event-driven save triggered: ${eventType}`);
-      saveGameToServer();
+      console.log(`🔥 EVENT-DRIVEN SAVE TRIGGERED: ${eventType} - bypassing all loading guards`);
+      saveGameToServer(true); // Force save for events
     }
   }, [isAuthenticated]);
 
