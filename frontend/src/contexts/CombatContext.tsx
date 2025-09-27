@@ -60,6 +60,8 @@ interface CombatContextType {
   findClosestEnemy: () => CombatEnemy | null; // Expose closest enemy finding
   updateNinjaPosition: (position: {x: number, y: number}) => void; // Update ninja position for projectiles
   lastExplosionTime: number;
+  // Manual ability casting - MOBILE FIX
+  useAbilityManually: (slotIndex: number) => boolean; // Manual ability activation for UI buttons
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
