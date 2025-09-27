@@ -167,49 +167,48 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         }
       });
 
-      // MOBILE FIX: Add enemy movement logic - enemies were spawning but never moving!
+      // MOBILE FIX: Enemy AI - Track toward player for idle game combat engagement
       newState.enemies.forEach(enemy => {
         if (!enemy.isBoss) { // Only move regular enemies, not bosses
-          // Mobile-optimized enemy movement - 2.5x faster and smoother  
+          // Mobile-optimized enemy movement - 2.5x faster and player-tracking  
           const MOVEMENT_SPEED = 0.75; // 2.5x faster (was 0.3)
           const SCREEN_WIDTH = 390;
           const GAME_AREA_HEIGHT = 704; // 844 - 140 (top bar + bottom nav)
           const ENEMY_SIZE = 35;
           
-          // Simple AI: Move randomly with bounds checking
-          if (!enemy.movementDirection) {
-            // Initialize random movement direction
-            enemy.movementDirection = {
-              x: (Math.random() - 0.5) * 2, // -1 to 1
-              y: (Math.random() - 0.5) * 2
-            };
-          }
+          // IDLE GAME AI: Move toward player for combat engagement
+          const playerX = currentNinjaPosition.x;
+          const playerY = currentNinjaPosition.y;
           
-          // Update position
-          let newX = enemy.position.x + (enemy.movementDirection.x * MOVEMENT_SPEED);
-          let newY = enemy.position.y + (enemy.movementDirection.y * MOVEMENT_SPEED);
+          // Calculate direction to player
+          const deltaX = playerX - enemy.position.x;
+          const deltaY = playerY - enemy.position.y;
+          const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
           
-          // Bounce off boundaries and change direction
-          if (newX <= 0 || newX >= SCREEN_WIDTH - ENEMY_SIZE) {
-            enemy.movementDirection.x *= -1;
+          // Only move if not too close to player (maintain some distance for combat)
+          if (distance > 40) {
+            // Normalize direction toward player
+            const normalizedX = deltaX / distance;
+            const normalizedY = deltaY / distance;
+            
+            // Add slight randomness to movement to prevent perfect tracking
+            const randomFactor = 0.2; // 20% randomness
+            const finalX = normalizedX + (Math.random() - 0.5) * randomFactor;
+            const finalY = normalizedY + (Math.random() - 0.5) * randomFactor;
+            
+            // Calculate new position
+            let newX = enemy.position.x + (finalX * MOVEMENT_SPEED);
+            let newY = enemy.position.y + (finalY * MOVEMENT_SPEED);
+            
+            // Keep within bounds
             newX = Math.max(0, Math.min(SCREEN_WIDTH - ENEMY_SIZE, newX));
-          }
-          if (newY <= 0 || newY >= GAME_AREA_HEIGHT - ENEMY_SIZE) {
-            enemy.movementDirection.y *= -1;
             newY = Math.max(0, Math.min(GAME_AREA_HEIGHT - ENEMY_SIZE, newY));
+            
+            // Apply new position
+            enemy.position.x = newX;
+            enemy.position.y = newY;
           }
-          
-          // Apply new position
-          enemy.position.x = newX;
-          enemy.position.y = newY;
-          
-          // Occasionally change direction for more interesting movement
-          if (Math.random() < 0.02) { // 2% chance per tick
-            enemy.movementDirection = {
-              x: (Math.random() - 0.5) * 2,
-              y: (Math.random() - 0.5) * 2
-            };
-          }
+          // If too close to player, enemies stay put to allow combat
         }
       });
 
