@@ -296,11 +296,22 @@ async def save_game(save_request: SaveGameRequest):
 async def load_game(player_id: str):
     """Load player's game progress"""
     try:
+        print(f"📥 LOAD REQUEST - Player ID: {player_id}")
         save_data = await db.game_saves.find_one({"playerId": player_id})
+        
         if save_data:
+            print(f"📥 FOUND SAVE DATA for {player_id}:")
+            print(f"   - Level: {save_data.get('ninja', {}).get('level', 'MISSING')}")
+            print(f"   - XP: {save_data.get('ninja', {}).get('experience', 'MISSING')}")
+            print(f"   - Gold: {save_data.get('ninja', {}).get('gold', 'MISSING')}")
+            print(f"   - Gems: {save_data.get('ninja', {}).get('gems', 'MISSING')}")
+            print(f"✅ LOAD COMPLETED - Returning saved data")
             return GameSave(**save_data)
-        return None
+        else:
+            print(f"❌ NO SAVE FOUND for player {player_id} - returning None")
+            return None
     except Exception as e:
+        print(f"💥 LOAD ERROR for player {player_id}: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to load game: {str(e)}")
 
 @api_router.get("/leaderboard")
