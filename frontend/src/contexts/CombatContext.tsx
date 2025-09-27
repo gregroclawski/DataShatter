@@ -62,6 +62,8 @@ interface CombatContextType {
   lastExplosionTime: number;
   // Manual ability casting - MOBILE FIX
   useAbilityManually: (slotIndex: number) => boolean; // Manual ability activation for UI buttons
+  // Manual control management
+  setManualControlActive: (active: boolean) => void; // Pause/resume combat during manual joystick control
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
