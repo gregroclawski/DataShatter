@@ -459,6 +459,17 @@ frontend:
           agent: "main"
           comment: "FIXED: Implemented complete solution with 1) Bottom tabs z-index: 1000 (higher than overlays), 2) Overlays z-index: 500 (lower than tabs), 3) Overlay background pointerEvents: 'none' to allow clicks through to tabs, 4) Overlay content pointerEvents: 'auto' to maintain overlay functionality. Tested with automated screenshots - both Equipment and Zones tabs now support perfect dock-style behavior (click to open, click again to close) while keeping tabs visible and interactive."
 
+  - task: "Abilities Bar Mobile Optimization"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/CombatUI.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "USER ISSUE REPORTED: Abilities bar cooldown not displaying properly and abilities not cycling through all equipped abilities on mobile. FIXES IMPLEMENTED: 1) Fixed cooldown calculation to use consistent tick-based timing instead of milliseconds vs ticks mismatch, 2) Added manual ability casting functionality with useAbilityManually function in CombatContext, 3) Updated ability button handlers to trigger manual casting when pressed, 4) Added debugging to verify all 5 equipped abilities are being displayed properly (top row: slots 0-2, bottom row: slots 3-4), 5) Fixed cooldown percentage calculation to show accurate progress bars. Changes affect both CombatUI.tsx and CombatContext.tsx."
 test_plan:
   current_focus: []
   stuck_tasks: []
