@@ -184,9 +184,11 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
       <View style={styles.header}>
         <Text style={styles.title}>Equipment</Text>
         <View style={styles.headerButtons}>
-          <TouchableOpacity onPress={handleGenerateTestEquipment} style={styles.testButton}>
-            <Ionicons name="gift" size={20} color="#10b981" />
-          </TouchableOpacity>
+          {Platform.OS === 'web' && (
+            <TouchableOpacity onPress={handleGenerateTestEquipment} style={styles.testButton}>
+              <Ionicons name="gift" size={20} color="#10b981" />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <Ionicons name="close" size={24} color="#e5e7eb" />
           </TouchableOpacity>
