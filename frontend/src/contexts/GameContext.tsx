@@ -114,6 +114,8 @@ interface GameContextType {
   loadGame: () => void;
   updateZoneProgress: (zoneProgress: Record<number, any>) => void;
   updateEquipment: (equipment: {equipped: Record<string, any>; inventory: any[]; maxInventorySize: number}) => void; // For equipment saves
+  // EQUIPMENT INTEGRATION: Add effective stats calculation functions
+  getEffectiveStats: () => NinjaStats; // Get ninja stats with equipment bonuses applied
   saveOnEvent: (eventType: string) => void;
   saveOnMilestone: (milestoneType: string) => void;
 }
