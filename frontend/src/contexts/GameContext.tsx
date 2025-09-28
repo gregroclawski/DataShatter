@@ -254,7 +254,11 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const saveOnEvent = useCallback((eventType: string) => {
     if (isAuthenticated) {
       console.log(`🔥 EVENT-DRIVEN SAVE TRIGGERED: ${eventType} - bypassing all loading guards`);
-      saveGameToServer(true); // Force save for events
+      // CRITICAL FIX: Use state callback pattern to avoid stale closure
+      setGameState(currentState => {
+        saveGameToServerWithState(currentState, true); // Force save for events with current state
+        return currentState;
+      });
     }
   }, [isAuthenticated]);
 
@@ -262,8 +266,12 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const saveOnMilestone = useCallback((milestoneType: string) => {
     if (isAuthenticated) {
       console.log(`🏆 MILESTONE SAVE TRIGGERED: ${milestoneType} - bypassing all loading guards`);
-      // Save immediately without delay for critical milestones
-      saveGameToServer(true); // Force save for milestones
+      // CRITICAL FIX: Use state callback pattern to avoid stale closure
+      setGameState(currentState => {
+        console.log(`🏆 MILESTONE SAVE - Current state Level: ${currentState.ninja.level}, XP: ${currentState.ninja.experience}`);
+        saveGameToServerWithState(currentState, true); // Force save for milestones with current state
+        return currentState;
+      });
     }
   }, [isAuthenticated]);
 
