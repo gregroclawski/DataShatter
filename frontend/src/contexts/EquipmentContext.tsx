@@ -119,30 +119,33 @@ export const EquipmentProvider = ({ children }: { children: ReactNode }) => {
   }, [inventory.equipped]);
 
   // Equip an item to the appropriate slot
-  const equipItem = (equipment: Equipment): boolean => {
+  const equipItem = (equipment: Equipment, fromInventory: boolean = false): boolean => {
     const slot = equipment.slot;
     
     setInventory(prev => {
       const newInventory = { ...prev };
       
-      // If there's already an item equipped, move it to inventory
+      // Check if there's already equipment in that slot
       const currentEquipped = newInventory.equipped[slot];
+      
       if (currentEquipped) {
-        // Check if we have inventory space
-        if (newInventory.inventory.length >= newInventory.maxInventorySize) {
-          console.log('❌ Cannot equip: inventory full');
-          return prev; // No change
-        }
-        newInventory.inventory.push(currentEquipped);
+        // Add the currently equipped item to inventory
+        newInventory.inventory = [...newInventory.inventory, currentEquipped];
       }
       
       // Equip the new item
       newInventory.equipped[slot] = equipment;
       
-      // Remove from inventory if it was there
-      newInventory.inventory = newInventory.inventory.filter(item => item.id !== equipment.id);
+      // If the item came from inventory, remove it from there
+      if (fromInventory) {
+        newInventory.inventory = newInventory.inventory.filter(item => item.id !== equipment.id);
+      }
       
-      console.log(`⚔️ Equipped ${equipment.name} to ${slot} slot`);
+      console.log(`⚔️ Equipped ${equipment.name} in ${equipment.slot} slot`);
+      
+      // MOBILE FIX: Sync equipment changes to GameContext for saving
+      syncEquipmentToGameContext(newInventory);
+      
       return newInventory;
     });
     
