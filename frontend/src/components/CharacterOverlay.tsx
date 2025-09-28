@@ -710,6 +710,74 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginBottom: 4,
   },
+  resourceDisplay: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+    padding: 16,
+    backgroundColor: MythicTechColors.cosmicDark,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: MythicTechColors.neonBlue,
+  },
+  resourceDisplayItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  resourceDisplayText: {
+    fontSize: 16,
+    color: MythicTechColors.neonBlue,
+    fontWeight: '600',
+  },
+  quantitySelector: {
+    marginBottom: 16,
+  },
+  quantitySelectorTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: MythicTechColors.voidSilver,
+    marginBottom: 10,
+  },
+  quantityButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  quantityButton: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    backgroundColor: MythicTechColors.shadowGrid,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: MythicTechColors.deepVoid,
+    alignItems: 'center',
+  },
+  quantityButtonActive: {
+    backgroundColor: MythicTechColors.neonPurple,
+    borderColor: MythicTechColors.neonCyan,
+    shadowColor: MythicTechColors.neonPurple,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+  },
+  quantityButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: MythicTechColors.voidSilver,
+  },
+  quantityButtonTextActive: {
+    color: MythicTechColors.white,
+    textShadowColor: MythicTechColors.darkSpace,
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  quantityText: {
+    fontSize: 12,
+    color: MythicTechColors.voidSilver,
+    fontStyle: 'italic',
+    marginLeft: 6,
+  },
 });
 
 export default CharacterOverlay;
