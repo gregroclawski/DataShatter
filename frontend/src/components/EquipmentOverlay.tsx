@@ -46,7 +46,8 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
     if (isEquipped) {
       unequipItem(equipment.slot);
     } else {
-      equipItem(equipment);
+      // Fix: Pass fromInventory: true to properly remove item from inventory when equipping
+      equipItem(equipment, true);
     }
   };
 
