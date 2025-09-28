@@ -379,9 +379,6 @@ export default function NinjaIdleGame() {
     isAuthenticated 
   });
   
-  // EQUIPMENT INTEGRATION: Use effective stats (base + equipment bonuses) for display
-  const testNinja = useMemo(() => getEffectiveStats(), [getEffectiveStats]);
-  
   // Get current character progression based on level
   const getCharacterProgression = (level: number) => {
     if (level >= 15000) return CharacterProgressionNames[15000];
