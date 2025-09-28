@@ -514,6 +514,17 @@ frontend:
           comment: "CRITICAL MILESTONE SAVE BUG FIXED: Troubleshoot agent identified the exact remaining issue - saveOnMilestone() and saveOnEvent() functions (lines 257, 266) were still using old saveGameToServer(true) wrapper with stale gameState closure instead of state callback pattern. FIXED: Updated both functions to use setGameState(currentState => { saveGameToServerWithState(currentState, true); return currentState; }) pattern. This was the missing piece causing level-up saves to save stale Level 1 data instead of actual Level 5+ progress. Milestone saves should now persist correctly on mobile."
           agent: "main"
           comment: "FIELD NAME MISMATCH FIXED: Troubleshoot agent identified the issue - UI was looking for user?.username but backend provides user?.name. FIXED: Changed display code from user?.username to user?.name to match backend User model field structure. Username should now display correctly instead of showing 'Player' fallback."
+  - task: "Zone Progression Save Issue"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/contexts/GameContext.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "USER REPORT: Main save system now working properly (level, XP, gold persist), but zone kill counts reset every app start. Need to investigate zone progression tracking, saving, and loading system specifically."
     status_history:
         - working: false
           agent: "user"
