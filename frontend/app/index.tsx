@@ -27,9 +27,8 @@ import LoadingScreen from '../src/components/LoadingScreen';
 import AuthScreen from '../src/components/AuthScreen';
 
 // Import components for overlays
-import NinjaStatsOverlay from '../src/components/NinjaStatsOverlay';
+import CharacterOverlay from '../src/components/CharacterOverlay';
 import PetsOverlay from '../src/components/PetsOverlay';
-import SkillsOverlay from '../src/components/SkillsOverlay';
 import StoreOverlay from '../src/components/StoreOverlay';
 import { EnemiesZonesOverlay } from '../src/components/EnemiesZonesOverlay';
 import { EquipmentOverlay } from '../src/components/EquipmentOverlay';
