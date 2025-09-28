@@ -850,46 +850,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const collectIdleRewards = () => {
-    const now = Date.now();
-    const timeDiff = now - lastSaveTimeRef.current; // Use ref instead of gameState
-    const minutesAway = Math.floor(timeDiff / (1000 * 60));
-    
-    if (minutesAway > 0) {
-      // Calculate offline progress based on player level and stats
-      const playerLevel = gameState.ninja.level || 1;
-      const baseEnemiesPerMinute = Math.min(10 + Math.floor(playerLevel / 5), 50); // Cap at 50 enemies/min
-      
-      // Calculate total enemies defeated while offline (max 12 hours = 720 minutes)
-      const maxOfflineMinutes = 720; // 12 hours cap
-      const actualMinutes = Math.min(minutesAway, maxOfflineMinutes);
-      const enemiesDefeated = actualMinutes * baseEnemiesPerMinute;
-      
-      // Calculate rewards (diminishing returns after 4 hours)
-      const fourHours = 240; // 4 hours in minutes
-      const baseRewardMultiplier = actualMinutes <= fourHours ? 1.0 : 0.5; // 50% efficiency after 4 hours
-      
-      const goldPerEnemy = 5 + Math.floor(playerLevel / 10);
-      const expPerEnemy = 10 + Math.floor(playerLevel / 5);
-      
-      const totalGoldReward = Math.floor(enemiesDefeated * goldPerEnemy * baseRewardMultiplier);
-      const totalExpReward = Math.floor(enemiesDefeated * expPerEnemy * baseRewardMultiplier);
-      
-      console.log(`⏰ Offline for ${actualMinutes} minutes (${(actualMinutes/60).toFixed(1)} hours)`);
-      console.log(`🗡️ Defeated ${enemiesDefeated} enemies offline`);
-      console.log(`💰 Earned ${totalGoldReward} gold, ${totalExpReward} XP offline`);
-      
-      if (totalGoldReward > 0 || totalExpReward > 0) {
-        updateNinja({
-          gold: gameState.ninja.gold + totalGoldReward,
-          experience: gameState.ninja.experience + totalExpReward
-        });
-        
-        // Trigger event-driven save for offline rewards
-        saveOnEvent('offline_rewards');
-      }
-    }
-  };
+
 
   // Legacy functions for backward compatibility
   const saveGame = () => saveGameToServer();
