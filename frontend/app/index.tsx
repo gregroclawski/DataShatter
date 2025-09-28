@@ -22,6 +22,15 @@ import { useCombat } from '../src/contexts/CombatContext';
 import { useZone } from '../src/contexts/ZoneContext';
 import { useResponsiveLayout } from '../src/hooks/useResponsiveLayout';
 
+// Helper function for kill requirements (matches ZoneData.ts calculation)
+const calculateKillRequirement = (zoneId: number, level: number): number => {
+  if (zoneId <= 5) return 25 + (level * 5);      // Zones 1-5: 30-50 kills per level
+  if (zoneId <= 15) return 40 + (level * 10);     // Zones 6-15: 50-90 kills per level  
+  if (zoneId <= 30) return 60 + (level * 15);     // Zones 16-30: 75-135 kills per level
+  if (zoneId <= 45) return 100 + (level * 20);    // Zones 31-45: 120-200 kills per level
+  return 150 + (level * 25);                      // Zones 46-50: 175-275 kills per level (endgame)
+};
+
 // Import authentication components
 import LoadingScreen from '../src/components/LoadingScreen';
 import AuthScreen from '../src/components/AuthScreen';
