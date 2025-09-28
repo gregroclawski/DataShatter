@@ -482,24 +482,24 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const saveLocalGameBackup = async () => {
+  const saveLocalGameBackupWithState = async (currentState: GameState) => {
     if (!user?.id) return;
     
     try {
       const backupData = {
-        ...gameState,
+        ...currentState,
         lastSaveTime: Date.now()
       };
       
       // MOBILE OPTIMIZATION: Use only AsyncStorage, remove localStorage fallback to prevent data conflicts
       if (Platform.OS !== 'web') {
         await AsyncStorage.setItem(`ninjaGameSave_${user.id}`, JSON.stringify(backupData));
-        console.log('💾 Local backup saved to AsyncStorage (mobile)');
+        console.log('💾 Local backup saved to AsyncStorage (mobile) - Level:', currentState.ninja.level, 'XP:', currentState.ninja.experience);
       } else {
         // Web: Use localStorage
         if (typeof window !== 'undefined' && window.localStorage) {
           window.localStorage.setItem(`ninjaGameSave_${user.id}`, JSON.stringify(backupData));
-          console.log('💾 Local backup saved to localStorage (web)');
+          console.log('💾 Local backup saved to localStorage (web) - Level:', currentState.ninja.level, 'XP:', currentState.ninja.experience);
         }
       }
       
@@ -507,6 +507,19 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('❌ Local backup save failed:', error);
     }
+  };
+  
+  const saveLocalGameBackup = async () => {
+    return saveLocalGameBackupWithState(gameState);
+  };
+
+  const collectIdleRewardsWithState = (currentState: GameState) => {
+    // Simple placeholder for idle rewards - can be enhanced later
+    console.log('💰 Collecting idle rewards for state with Level:', currentState.ninja.level);
+  };
+
+  const collectIdleRewards = () => {
+    return collectIdleRewardsWithState(gameState);
   };
 
   const loadLocalGameBackup = async () => {
