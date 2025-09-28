@@ -71,7 +71,7 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
           <Text style={[styles.statText, !unlocked && styles.lockedText]}>
             Player Level: {zone.minPlayerLevel}-{zone.maxPlayerLevel}
           </Text>
-          {progress && (
+          {progress && progress.killsInLevel > 0 && (
             <Text style={styles.progressText}>
               Level {progress.currentLevel}/5 • {progress.killsInLevel}/1000 kills
             </Text>
