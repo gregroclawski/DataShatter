@@ -954,6 +954,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     loadGame,
     updateZoneProgress,
     updateEquipment,
+    getEffectiveStats,
     saveOnEvent,
     saveOnMilestone,
   }), [
@@ -977,6 +978,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     loadGame,
     updateZoneProgress,
     updateEquipment, // MOBILE FIX: Add equipment update function to dependencies
+    getEffectiveStats,
     saveOnEvent,
     saveOnMilestone,
   ]);
