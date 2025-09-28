@@ -412,7 +412,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Create projectile that will deal damage when it hits
-  const createProjectile = (targetEnemy: CombatEnemy, damage: number, ninjaPos?: {x: number, y: number}) => {
+  const createProjectile = (targetEnemy: CombatEnemy, damage: number, ninjaPos?: {x: number, y: number}, abilityInfo?: {id: string, name: string, icon: string}) => {
     const SCREEN_WIDTH = 390;
     const GAME_AREA_HEIGHT = 844 - 140; // Smaller top bar + compact abilities bar
     const NINJA_SIZE = 40;
@@ -432,6 +432,10 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       damage: damage,
       startTime: Date.now(),
       duration: 500, // 500ms travel time
+      // MOBILE ENHANCEMENT: Store ability information for visual representation
+      abilityId: abilityInfo?.id || 'basic_shuriken',
+      abilityName: abilityInfo?.name || 'Basic Shuriken',
+      abilityIcon: abilityInfo?.icon || '🌟', // Default to star if no ability info
     };
     
     console.log(`🔥 Creating projectile to enemy ${targetEnemy.id} for ${damage} damage`);
