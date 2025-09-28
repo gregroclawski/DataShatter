@@ -569,6 +569,17 @@ frontend:
         - working: true
           agent: "main"
           comment: "EQUIPMENT SAVE/LOAD SYSTEM FIXED: Root cause identified - EquipmentContext managed local state but never integrated with GameContext save system (same issue as ZoneContext had). IMPLEMENTED: 1) Added equipment field to GameState interface and save data, 2) Created updateEquipment() function in GameContext with milestone saves, 3) Connected EquipmentContext to GameContext via syncEquipmentToGameContext() helper, 4) Enhanced equipItem() and unequipItem() to trigger GameContext updates, 5) Added equipment loading from gameState on context initialization. Equipment changes now persist across mobile app restarts via server saves."
+  - task: "Equipment Overlay Mobile Layout Issue"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/components/EquipmentOverlay.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "USER REPORT: Equipment tab overlay does not reach the bottom of the screen on mobile, same issue as zones tab had. Need to apply same mobile layout fixes (safe area insets, platform-specific height constraints, full screen coverage)."
     status_history:
         - working: false
           agent: "user"
