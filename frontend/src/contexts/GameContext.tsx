@@ -432,6 +432,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         unlockedFeatures: currentState.unlockedFeatures,
         zoneProgress: currentState.zoneProgress || { 1: { zoneId: 1, currentLevel: 1, killsInLevel: 0, completed: false } },
         equipment: currentState.equipment || null, // Include equipment data
+        abilityData: currentState.abilityData || null, // Include ability data
       };
 
       const response = await fetch(`${API_BASE_URL}/api/save-game`, {
