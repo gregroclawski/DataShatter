@@ -119,22 +119,33 @@ export const EquipmentProvider = ({ children }: { children: ReactNode }) => {
   }, [inventory.equipped]);
 
   // CRITICAL FIX: Sync with GameContext when equipment data is loaded from server
+  const [lastSyncedEquipment, setLastSyncedEquipment] = useState<string>('');
+  
   useEffect(() => {
-    if (gameState?.equipment && gameState.equipment !== inventory) {
-      console.log('🔄 EQUIPMENT SYNC: GameContext equipment loaded, syncing to EquipmentContext');
-      console.log('  - Previous inventory:', inventory);
-      console.log('  - New gameState equipment:', gameState.equipment);
+    if (gameState?.equipment) {
+      // Use JSON comparison to detect actual equipment changes, not object reference changes
+      const currentEquipmentString = JSON.stringify(gameState.equipment);
+      const hasEquipmentChanged = currentEquipmentString !== lastSyncedEquipment;
       
-      setInventory({
-        equipped: gameState.equipment.equipped || {
-          [EquipmentSlot.HEAD]: null,
-          [EquipmentSlot.BODY]: null,
-          [EquipmentSlot.WEAPON]: null,
-          [EquipmentSlot.ACCESSORY]: null,
-        },
-        inventory: gameState.equipment.inventory || [],
-        maxInventorySize: gameState.equipment.maxInventorySize || 50,
-      });
+      if (hasEquipmentChanged && lastSyncedEquipment !== '') {
+        console.log('🔄 EQUIPMENT SYNC: GameContext equipment changed, syncing to EquipmentContext');
+        console.log('  - Previous inventory count:', inventory.inventory.length);
+        console.log('  - New equipment loaded from server');
+        
+        setInventory({
+          equipped: gameState.equipment.equipped || {
+            [EquipmentSlot.HEAD]: null,
+            [EquipmentSlot.BODY]: null,
+            [EquipmentSlot.WEAPON]: null,
+            [EquipmentSlot.ACCESSORY]: null,
+          },
+          inventory: gameState.equipment.inventory || [],
+          maxInventorySize: gameState.equipment.maxInventorySize || 50,
+        });
+      }
+      
+      // Always update the sync reference after checking
+      setLastSyncedEquipment(currentEquipmentString);
     }
   }, [gameState?.equipment]);
 
