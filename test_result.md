@@ -582,6 +582,17 @@ frontend:
           comment: "EQUIPMENT OVERLAY MOBILE LAYOUT FIXED: Applied same mobile optimization fixes as zones overlay. IMPLEMENTATION: 1) Added safe area insets import (useSafeAreaInsets from react-native-safe-area-context), 2) Added Platform import for mobile-specific styling, 3) Enhanced container with dynamic height styling (90-95% on mobile vs 50-80% web), 4) Added proper iOS safe area bottom padding, 5) Removed fixed maxHeight: '80%' constraint and added flex: 1 for full screen behavior. Equipment overlay now reaches bottom of screen on mobile devices."
     status_history:
         - working: false
+  - task: "React Hooks Order Violation Fix"
+    implemented: false
+    working: false
+    file: "/app/frontend/app/index.tsx"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "USER CRITICAL ERROR: React Hooks order violation in NinjaIdleGame component. Added useMemo hook in wrong position causing hooks to be called in different order. Must fix hook ordering to comply with Rules of Hooks."
           agent: "user"
           comment: "USER CRITICAL ESCALATION: ALL progress still lost on mobile despite comprehensive event-driven save fixes. Need deepest possible analysis - fundamental mobile data persistence failure."
         - working: true
