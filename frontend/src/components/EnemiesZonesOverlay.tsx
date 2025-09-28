@@ -144,15 +144,23 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
                 {progress && progress.currentLevel === levelNumber && progress.killsInLevel > 0 && (
                   <View style={styles.progressBar}>
                     <View style={styles.progressBarBg}>
-                      <View 
-                        style={[
-                          styles.progressBarFill, 
-                          { width: `${(progress.killsInLevel / 1000) * 100}%` }
-                        ]} 
-                      />
+                      {(() => {
+                        const requiredKills = zone.levels[progress.currentLevel - 1]?.requiredKills || 1000;
+                        return (
+                          <View 
+                            style={[
+                              styles.progressBarFill, 
+                              { width: `${(progress.killsInLevel / requiredKills) * 100}%` }
+                            ]} 
+                          />
+                        );
+                      })()}
                     </View>
                     <Text style={styles.progressText}>
-                      {progress?.killsInLevel || 0}/1000 kills ({Math.floor(((progress?.killsInLevel || 0) / 1000) * 100)}%)
+                      {(() => {
+                        const requiredKills = zone.levels[progress.currentLevel - 1]?.requiredKills || 1000;
+                        return `${progress?.killsInLevel || 0}/${requiredKills} kills (${Math.floor(((progress?.killsInLevel || 0) / requiredKills) * 100)}%)`;
+                      })()}
                     </Text>
                   </View>
                 )}
