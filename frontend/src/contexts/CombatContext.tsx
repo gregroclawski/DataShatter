@@ -714,6 +714,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     setManualControlActive,
     lastExplosionTime,
     useAbilityManually, // MOBILE FIX: Add manual ability casting
+    saveAbilityData, // Expose save function to UI components
   }), [
     // Only include primitive values and state to prevent infinite loop
     // Remove function dependencies that recreate and cause circular refs
@@ -724,6 +725,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     combatState.abilityManager,
     combatState.enemies,
     useAbilityManually, // Add the callback to dependencies
+    saveAbilityData, // Add saveAbilityData to dependencies
   ]);
 
   return (
