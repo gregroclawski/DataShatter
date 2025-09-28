@@ -191,6 +191,152 @@ Active(false);
     });
   }, []);
 
+  // MOBILE-SAFE Movement System - Uses simple touch events instead of complex gestures
+  useEffect(() => {
+    if (!isAutoMovement && isManualControlActive && (movementDirection.x !== 0 || movementDirection.y !== 0)) {
+      // Mobile-safe movement using simple state updates and setTimeout
+      movementIntervalRef.current = setTimeout(() => {
+        setNinjaPosition(prev => {
+          const moveSpeed = 6; // 3x faster manual movement (was 2)
+          // Use cached layout values to prevent dependency cascade
+          const maxX = layout.screenWidth - layout.ninjaSize;
+          const maxY = layout.gameAreaHeight - layout.ninjaSize;
+          
+          const newX = Math.max(0, Math.min(maxX, prev.x + (movementDirection.x * moveSpeed)));
+          const newY = Math.max(0, Math.min(maxY, prev.y + (movementDirection.y * moveSpeed)));
+          
+          return { x: newX, y: newY };
+        });
+      }, 33); // 30fps to reduce React Native bridge overhead
+    }
+    
+    return () => {
+      if (movementIntervalRef.current) {
+        clearTimeout(movementIntervalRef.current);
+      }
+    };
+  }, [isManualControlActive, movementDirection.x, movementDirection.y, isAutoMovement, layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize]);
+
+  // MOBILE FIX: Update combat context position separately to prevent render-phase violations
+  useEffect(() => {
+    updateNinjaPosition(ninjaPosition);
+  }, [ninjaPosition, updateNinjaPosition]);
+
+  // AUTO MOVEMENT SYSTEM - Missing implementation added
+  useEffect(() => {
+    if (isAutoMovement && findClosestEnemy) { // Add safety check for function existence
+      const autoMovementInterval = setInterval(() => {
+        // Find closest enemy from combat context
+        const closestEnemy = findClosestEnemy();
+        if (closestEnemy && closestEnemy.position) {
+          setNinjaPosition(prev => {
+            const moveSpeed = 4.5; // 3x faster auto movement (was 1.5)
+            
+            // Calculate direction to closest enemy
+            const deltaX = closestEnemy.position.x - prev.x;
+            const deltaY = closestEnemy.position.y - prev.y;
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            
+            // Don't move if very close to enemy (within attack range)
+            if (distance < 60) {
+              return prev;
+            }
+            
+            // Normalize direction and apply movement
+            const normalizedX = deltaX / distance;
+            const normalizedY = deltaY / distance;
+            
+            // Use cached layout values to prevent dependency cascade
+            const maxX = layout.screenWidth - layout.ninjaSize;
+            const maxY = layout.gameAreaHeight - layout.ninjaSize;
+            
+            const newX = Math.max(0, Math.min(maxX, prev.x + (normalizedX * moveSpeed)));
+            const newY = Math.max(0, Math.min(maxY, prev.y + (normalizedY * moveSpeed)));
+            
+            return { x: newX, y: newY };
+          });
+        }
+      }, 33); // 30fps to reduce React Native bridge overhead
+      
+      return () => clearInterval(autoMovementInterval);
+    }
+  }, [isAutoMovement, findClosestEnemy, layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize]);
+
+  // MOBILE FIX: Only reset position on significant layout changes, not during normal movement
+  useEffect(() => {
+    const newCenterPosition = {
+      x: (layout.screenWidth - layout.ninjaSize) / 2, // Center horizontally
+      y: (layout.gameAreaHeight - layout.ninjaSize) / 2 // Center vertically
+    };
+
+    // Only reset if this is the initial layout setup (ninja position is at 0,0) or major layout change
+    const isInitialSetup = ninjaPosition.x === 0 && ninjaPosition.y === 0;
+    const hasMajorLayoutChange = (
+      Math.abs(layout.screenWidth - (ninjaPosition.x + layout.ninjaSize)) < layout.ninjaSize ||
+      Math.abs(layout.gameAreaHeight - (ninjaPosition.y + layout.ninjaSize)) < layout.ninjaSize
+    );
+
+    if (isInitialSetup || hasMajorLayoutChange) {
+      console.log('📱 Major layout change or initial setup, centering ninja position');
+      setNinjaPosition(newCenterPosition);
+      updateNinjaPosition(newCenterPosition);
+    }
+  }, [layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, ninjaPosition.x, ninjaPosition.y, updateNinjaPosition]);
+
+  // Mobile-compatible projectile animation system - replaces web-specific requestAnimationFrame
+  useEffect(() => {
+    const animateProjectiles = () => {
+      setAnimatedProjectiles(currentProjectiles => {
+        return (projectiles || []).map(projectile => {
+          if (!projectile) return null;
+          
+          // Calculate projectile flight progress (0 to 1)
+          const startTime = projectile.startTime || Date.now();
+          const elapsedTime = Date.now() - startTime;
+          const flightDuration = projectile.duration || 500; // Use projectile's duration
+          const progress = Math.min(elapsedTime / flightDuration, 1);
+          
+          // Interpolate position from ninja to target
+          const currentX = projectile.x + (projectile.targetX - projectile.x) * progress;
+          const currentY = projectile.y + (projectile.targetY - projectile.y) * progress;
+          
+          return {
+            ...projectile,
+            currentX,
+            currentY,
+            progress
+          };
+        }).filter(Boolean);
+      });
+    };
+
+    // Mobile-compatible animation loop using setInterval instead of requestAnimationFrame
+    const projectileAnimationInterval = setInterval(animateProjectiles, 16); // ~60fps
+    
+    return () => clearInterval(projectileAnimationInterval);
+  }, [projectiles]);
+
+  // Start combat automatically when component mounts
+  useEffect(() => {
+    console.log('🎮 Starting combat on component mount');
+    startCombat();
+    
+    return () => {
+      console.log('🛑 Cleaning up combat on unmount');
+      stopCombat();
+    };
+  }, [startCombat, stopCombat]);
+  
+  // Level up detection - safe to use gameState.ninja with optional chaining
+  useEffect(() => {
+    const currentNinjaLevel = gameState?.ninja?.level;
+    if (currentNinjaLevel && currentNinjaLevel > previousLevel) {
+      console.log('🚀 Level up detected!', previousLevel, '->', currentNinjaLevel);
+      handleLevelUpExplosion();
+      setPreviousLevel(currentNinjaLevel);
+    }
+  }, [gameState?.ninja?.level, previousLevel, handleLevelUpExplosion]);
+
   // Soft Joystick Movement System - Mobile Optimized
   const translateX = useSharedValue(ninjaPosition.x);
   const translateY = useSharedValue(ninjaPosition.y);
