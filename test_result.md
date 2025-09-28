@@ -536,6 +536,17 @@ frontend:
         - working: true
           agent: "main"
           comment: "ZONE LOADING ISSUE FIXED: Root cause identified - ZoneContext initialized with default state instead of loading saved progress from GameContext on app restart. FIXED: 1) Modified ZoneContext useState initialization to check gameState.zoneProgress first, 2) Added useEffect to sync zone progress when GameContext data loads, 3) Added debugging logs to track zone progress loading. Should now load saved kill counts instead of resetting to defaults on restart."
+  - task: "Zones Overlay Mobile Layout Issue"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/components/EnemiesZonesOverlay.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "USER REPORT: Zones tab overlay doesn't reach to the bottom of the screen on mobile. Need to investigate mobile responsive design, safe area insets, and full screen coverage for zones overlay component."
     status_history:
         - working: false
           agent: "user"
