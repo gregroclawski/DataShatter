@@ -525,6 +525,17 @@ frontend:
         - working: true
           agent: "main"
           comment: "ZONE PROGRESSION SAVE ISSUE FIXED: Root cause identified - ZoneContext managed local zoneProgress state but never integrated with GameContext save system. Zone kill counts were being tracked correctly but never saved because ZoneContext didn't call GameContext's updateZoneProgress(). FIXED: 1) Added updateZoneProgress import to ZoneContext, 2) Modified recordEnemyKill() to call updateZoneProgress(newProgress) after zone state changes. Zone kill counts should now persist across mobile app restarts."
+  - task: "React setState-in-render Error Fix"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/contexts/ZoneContext.tsx"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "USER REPORT: React error 'Cannot update a component (GameProvider) while rendering a different component (ZoneProvider)'. Root cause: updateZoneProgress() call in recordEnemyKill() is causing cross-component state update during render phase. Need to defer with setTimeout to break synchronous chain."
     status_history:
         - working: false
           agent: "user"
