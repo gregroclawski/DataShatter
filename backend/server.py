@@ -261,6 +261,7 @@ async def save_game(save_request: SaveGameRequest):
         print(f"💾 SAVE REQUEST - Ninja Gems: {save_request.ninja.gems}")
         print(f"💾 SAVE REQUEST - Zone Progress: {save_request.zoneProgress}")
         print(f"💾 SAVE REQUEST - Equipment: {save_request.equipment}")  # Add equipment logging
+        print(f"💾 SAVE REQUEST - Ability Data: {save_request.abilityData}")  # Add ability data logging
         
         # Check if save exists
         existing_save = await db.game_saves.find_one({"playerId": save_request.playerId})
