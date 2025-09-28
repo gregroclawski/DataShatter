@@ -592,40 +592,56 @@ def test_specific_user_ability_data():
         print(f"❌ TEST FAILED: {str(e)}")
         return False
 
-    def test_duplicate_registration(self):
-        """Test duplicate email registration (should fail)"""
-        print("\n=== TESTING DUPLICATE REGISTRATION PREVENTION ===")
-        
-        try:
-            registration_data = {
-                "email": self.test_user_email,  # Same email as before
-                "password": "AnotherPassword123",
-                "name": "Another User"
-            }
-            
-            response = self.session.post(
-                f"{BASE_URL}/auth/register",
-                json=registration_data,
-                headers={"Content-Type": "application/json"}
-            )
-            
-            if response.status_code == 400:
-                data = response.json()
-                if "already registered" in data.get("detail", "").lower():
-                    self.log_result("authentication", "Duplicate Registration Prevention", True, 
-                                  "Correctly rejected duplicate email")
-                    return True
-                else:
-                    self.log_result("authentication", "Duplicate Registration Prevention", False, 
-                                  f"Wrong error message: {data}")
-                    return False
-            else:
-                self.log_result("authentication", "Duplicate Registration Prevention", False, 
-                              f"Should return 400, got {response.status_code}")
-                return False
-        except Exception as e:
-            self.log_result("authentication", "Duplicate Registration Prevention", False, f"Exception: {str(e)}")
-            return False
+def main():
+    """Run all ability persistence tests"""
+    print("🚀 STARTING ABILITY PERSISTENCE SYSTEM TESTING")
+    print("=" * 80)
+    
+    tests_passed = 0
+    total_tests = 4
+    
+    # Test 1: Complete ability persistence system
+    print("\n" + "🧪" * 20 + " TEST 1: COMPLETE ABILITY PERSISTENCE " + "🧪" * 20)
+    if test_ability_persistence_system():
+        tests_passed += 1
+    
+    # Test 2: Backend logging verification  
+    print("\n" + "🔍" * 20 + " TEST 2: BACKEND LOGGING VERIFICATION " + "🔍" * 20)
+    if test_backend_logging_verification():
+        tests_passed += 1
+    
+    # Test 3: Database storage verification
+    print("\n" + "🗄️" * 20 + " TEST 3: DATABASE STORAGE VERIFICATION " + "🗄️" * 20)
+    if test_database_verification():
+        tests_passed += 1
+    
+    # Test 4: Specific user ability data analysis
+    print("\n" + "👤" * 20 + " TEST 4: SPECIFIC USER ANALYSIS " + "👤" * 20)
+    if test_specific_user_ability_data():
+        tests_passed += 1
+    
+    print("\n" + "=" * 80)
+    print(f"🏁 TESTING COMPLETE: {tests_passed}/{total_tests} TESTS PASSED")
+    
+    if tests_passed == total_tests:
+        print("✅ ALL ABILITY PERSISTENCE TESTS SUCCESSFUL")
+        print("   - Ability data is being saved correctly")
+        print("   - Ability data is being loaded correctly") 
+        print("   - Database storage is working properly")
+        print("   - Backend logging shows ability data in save requests")
+        print("\n🎯 CONCLUSION:")
+        print("   The backend ability persistence system is WORKING CORRECTLY.")
+        print("   If abilities still reset on restart, the issue is in the FRONTEND:")
+        print("   1. AbilityManager not properly restoring loaded ability data")
+        print("   2. Frontend load sequence timing issues")
+        print("   3. AbilityManager initialization overriding loaded data")
+    else:
+        print("❌ SOME ABILITY PERSISTENCE TESTS FAILED")
+        print("   - Check backend logs for '💾 SAVE REQUEST - Ability Data:' messages")
+        print("   - Verify frontend is sending abilityData in save payload")
+        print("   - Check if restore logic is properly applying loaded ability data")
+    
+    return tests_passed == total_tests
 
     def test_user_login(self):
         """Test user login endpoint"""
