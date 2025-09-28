@@ -884,6 +884,55 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const saveGame = () => saveGameToServer();
   const loadGame = () => loadGameFromServer();
 
+  // EQUIPMENT INTEGRATION: Calculate effective stats with equipment bonuses
+  const getEffectiveStats = useCallback((): NinjaStats => {
+    const baseStats = gameState.ninja;
+    const equipment = gameState.equipment;
+    
+    // If no equipment, return base stats
+    if (!equipment || !equipment.equipped) {
+      return baseStats;
+    }
+    
+    // Calculate equipment bonuses
+    let bonuses = {
+      health: 0,
+      maxHealth: 0,
+      energy: 0,
+      maxEnergy: 0,
+      attack: 0,
+      defense: 0,
+      speed: 0,
+      luck: 0,
+    };
+    
+    // Apply bonuses from equipped items
+    Object.values(equipment.equipped).forEach(item => {
+      if (item && item.currentStats) {
+        // Map equipment stats to ninja stats
+        if (item.currentStats.hp) bonuses.maxHealth += item.currentStats.hp;
+        if (item.currentStats.attack) bonuses.attack += item.currentStats.attack;
+        if (item.currentStats.defense) bonuses.defense += item.currentStats.defense;
+        if (item.currentStats.speed) bonuses.speed += item.currentStats.speed;
+        if (item.currentStats.luck) bonuses.luck += item.currentStats.luck;
+        if (item.currentStats.energy) bonuses.maxEnergy += item.currentStats.energy;
+      }
+    });
+    
+    // Return ninja stats with equipment bonuses applied
+    return {
+      ...baseStats,
+      maxHealth: baseStats.maxHealth + bonuses.maxHealth,
+      health: Math.min(baseStats.health + bonuses.health, baseStats.maxHealth + bonuses.maxHealth),
+      maxEnergy: baseStats.maxEnergy + bonuses.maxEnergy,
+      energy: Math.min(baseStats.energy + bonuses.energy, baseStats.maxEnergy + bonuses.maxEnergy),
+      attack: baseStats.attack + bonuses.attack,
+      defense: baseStats.defense + bonuses.defense,
+      speed: baseStats.speed + bonuses.speed,
+      luck: baseStats.luck + bonuses.luck,
+    };
+  }, [gameState.ninja, gameState.equipment]);
+
   const value: GameContextType = React.useMemo(() => ({
     gameState,
     isLoading,
