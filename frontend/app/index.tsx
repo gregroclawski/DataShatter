@@ -40,7 +40,7 @@ import { Boss, BossTier } from '../src/data/BossData';
 
 import { MythicTechColors, CharacterProgressionNames } from '../src/theme/MythicTechTheme';
 
-type ActiveOverlay = 'stats' | 'pets' | 'skills' | 'store' | 'bosses' | 'zones' | 'equipment' | null;
+type ActiveOverlay = 'character' | 'pets' | 'store' | 'bosses' | 'zones' | 'equipment' | null;
 
 export default function NinjaIdleGame() {
   console.log('🔄 COMPONENT RENDER - NinjaIdleGame mounting/re-rendering');
