@@ -39,6 +39,10 @@ interface CombatProjectile {
   damage: number;
   startTime: number;
   duration: number;
+  // MOBILE ENHANCEMENT: Add ability information for visual representation
+  abilityId: string;
+  abilityName: string;
+  abilityIcon: string; // Emoji icon of the ability (🌟🔥❄️☠️👥)
 }
 
 interface CombatContextType {
