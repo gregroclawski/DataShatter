@@ -140,7 +140,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       console.log(`🥷 MOBILE DEBUG - About to call updateNinja with rewards`);
       
       // Award XP and gold using GameContext
-      updateNinja((prev) => {
+      game.updateNinja((prev) => {
         console.log(`📊 MOBILE DEBUG - XP before: ${prev.experience}, after: ${prev.experience + xpReward}`);
         console.log(`💰 MOBILE DEBUG - Gold before: ${prev.gold}, after: ${prev.gold + goldReward}`);
         return {
