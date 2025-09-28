@@ -460,6 +460,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           achievements: savedData.achievements || [],
           unlockedFeatures: savedData.unlockedFeatures || ['stats', 'shurikens'],
           zoneProgress: savedData.zoneProgress || { 1: { zoneId: 1, currentLevel: 1, killsInLevel: 0, completed: false } },
+          equipment: savedData.equipment || defaultGameState.equipment,
         };
         
         console.log('🎯 SETTING GAME STATE TO:');
