@@ -281,11 +281,11 @@ export const ZONES: Zone[] = [
     maxPlayerLevel: 3300,
     unlockRequirement: { previousZone: 10 },
     levels: [
-      { level: 1, enemyMultiplier: 8.0, xpMultiplier: 5.0, requiredKills: 1000, enemyTypes: ['sand_scorpion'] },
-      { level: 2, enemyMultiplier: 9.0, xpMultiplier: 5.5, requiredKills: 1000, enemyTypes: ['sand_scorpion', 'desert_bandit'] },
-      { level: 3, enemyMultiplier: 10.0, xpMultiplier: 6.0, requiredKills: 1000, enemyTypes: ['desert_bandit'] },
-      { level: 4, enemyMultiplier: 11.0, xpMultiplier: 6.5, requiredKills: 1000, enemyTypes: ['desert_bandit', 'fire_elemental'] },
-      { level: 5, enemyMultiplier: 12.0, xpMultiplier: 7.0, requiredKills: 1000, enemyTypes: ['fire_elemental'] }
+      { level: 1, enemyMultiplier: 8.0, xpMultiplier: 5.0, requiredKills: calculateKillRequirement(11, 1), enemyTypes: ['sand_scorpion'] },
+      { level: 2, enemyMultiplier: 9.0, xpMultiplier: 5.5, requiredKills: calculateKillRequirement(11, 2), enemyTypes: ['sand_scorpion', 'desert_bandit'] },
+      { level: 3, enemyMultiplier: 10.0, xpMultiplier: 6.0, requiredKills: calculateKillRequirement(11, 3), enemyTypes: ['desert_bandit'] },
+      { level: 4, enemyMultiplier: 11.0, xpMultiplier: 6.5, requiredKills: calculateKillRequirement(11, 4), enemyTypes: ['desert_bandit', 'fire_elemental'] },
+      { level: 5, enemyMultiplier: 12.0, xpMultiplier: 7.0, requiredKills: calculateKillRequirement(11, 5), enemyTypes: ['fire_elemental'] }
     ]
   },
   
