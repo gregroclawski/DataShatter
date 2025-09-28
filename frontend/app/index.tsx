@@ -720,6 +720,14 @@ export default function NinjaIdleGame() {
           <CharacterOverlay onClose={() => setActiveOverlay(null)} />
         </View>
       )}
+      {activeOverlay === 'abilities' && (
+        <View style={styles.overlayWrapper}>
+          <AbilityDeckOverlay 
+            visible={true}
+            onClose={() => setActiveOverlay(null)} 
+          />
+        </View>
+      )}
       {activeOverlay === 'equipment' && (
         <View style={styles.overlayWrapper}>
           <EquipmentOverlay 
