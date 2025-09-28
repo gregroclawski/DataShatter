@@ -56,6 +56,8 @@ export default function AbilityDeckOverlay({ visible, onClose }: Props) {
           onPress: () => {
             if (upgradeAbility(abilityId)) {
               Alert.alert('Success', 'Ability upgraded!');
+              // Save ability data after upgrading
+              saveAbilityData();
             } else {
               Alert.alert('Error', 'Cannot upgrade ability. Check requirements.');
             }
