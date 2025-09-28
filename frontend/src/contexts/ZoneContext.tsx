@@ -178,10 +178,14 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
       const progress = { ...newProgress[zoneId] };
       progress.killsInLevel += 1;
       
-      console.log(`📊 Zone ${zoneId} Level ${progress.currentLevel}: ${progress.killsInLevel}/1000 kills`);
+      // Get the required kills for current level from zone data
+      const currentZoneLevel = currentZone.levels[progress.currentLevel - 1];
+      const requiredKills = currentZoneLevel ? currentZoneLevel.requiredKills : 1000; // fallback to 1000
+      
+      console.log(`📊 Zone ${zoneId} Level ${progress.currentLevel}: ${progress.killsInLevel}/${requiredKills} kills`);
       
       // Check if level completed
-      if (progress.killsInLevel >= 1000) {
+      if (progress.killsInLevel >= requiredKills) {
         console.log(`🎉 Level ${progress.currentLevel} completed in ${currentZone.name}!`);
         
         // Advance to next level if available
