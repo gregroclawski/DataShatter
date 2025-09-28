@@ -185,6 +185,14 @@ async def process_emergent_session(session_id: str) -> Optional[SessionData]:
         return None
 
 # Game Models
+class StatPool(BaseModel):
+    attack: int = 0
+    defense: int = 0
+    speed: int = 0
+    luck: int = 0
+    maxHealth: int = 0
+    maxEnergy: int = 0
+
 class NinjaStats(BaseModel):
     level: int = 1
     experience: int = 0
@@ -200,6 +208,11 @@ class NinjaStats(BaseModel):
     gold: int = 100
     gems: int = 10
     skillPoints: int = 0
+    
+    # Separate stat pools for upgrades
+    baseStats: Optional[StatPool] = None
+    goldUpgrades: Optional[StatPool] = None
+    skillPointUpgrades: Optional[StatPool] = None
 
 class Shuriken(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
