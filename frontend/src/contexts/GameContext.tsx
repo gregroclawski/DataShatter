@@ -105,6 +105,11 @@ export interface GameState {
     inventory: any[]; // Array of unequipped equipment
     maxInventorySize: number;
   }; // Equipment and inventory data
+  abilityData?: {
+    equippedAbilities: any[]; // Array of 5 equipped ability slots
+    availableAbilities: Record<string, any>; // Map of ability ID to ability data with levels
+    activeSynergies: any[]; // Current active synergies
+  }; // Ability deck and progression data
 }
 
 interface GameContextType {
