@@ -101,6 +101,15 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
                 {equipment.name}
               </Text>
               <Text style={styles.equipmentLevel}>Lv.{equipment.level}</Text>
+              
+              {/* Equipment stats display for equipped items */}
+              <View style={styles.equippedItemStats}>
+                {Object.entries(equipment.currentStats).map(([key, value]) => (
+                  <Text key={key} style={styles.equippedStatText}>
+                    {key}: +{value}
+                  </Text>
+                ))}
+              </View>
             </View>
           ) : (
             <View style={styles.emptySlot}>
