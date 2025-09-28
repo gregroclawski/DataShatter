@@ -53,7 +53,7 @@ export const useZone = () => {
 };
 
 export const ZoneProvider = ({ children }: { children: ReactNode }) => {
-  const { gameState } = useGame();
+  const { gameState, updateZoneProgress } = useGame();
   
   // Zone State
   const [currentZone, setCurrentZone] = useState<Zone | null>(ZONES[0]);
