@@ -514,8 +514,28 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const collectIdleRewardsWithState = (currentState: GameState) => {
-    // Simple placeholder for idle rewards - can be enhanced later
-    console.log('💰 Collecting idle rewards for state with Level:', currentState.ninja.level);
+    const now = Date.now();
+    const timeDiff = now - lastSaveTimeRef.current; // Use ref instead of gameState
+    const minutesAway = Math.floor(timeDiff / (1000 * 60));
+    
+    if (minutesAway > 0) {
+      // Calculate offline progress based on player level and stats
+      const playerLevel = currentState.ninja.level || 1;
+      const offlineXP = Math.floor(minutesAway * playerLevel * 0.5); // Reduced offline rate
+      const offlineGold = Math.floor(minutesAway * playerLevel * 2);
+      
+      if (offlineXP > 0) {
+        console.log(`💰 Idle rewards - ${minutesAway} minutes: ${offlineXP} XP, ${offlineGold} gold`);
+        
+        // Award idle rewards using current state
+        updateNinja(prev => ({
+          experience: prev.experience + offlineXP,
+          gold: prev.gold + offlineGold,
+        }));
+        
+        lastSaveTimeRef.current = now;
+      }
+    }
   };
 
   const collectIdleRewards = () => {
