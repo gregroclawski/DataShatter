@@ -663,10 +663,9 @@ export default function NinjaIdleGame() {
       {/* Bottom Navigation - Fully Responsive */}
       <View style={styles.bottomNavigation}>
         {[
-          { key: 'stats', icon: 'stats-chart', label: 'Stats' },
+          { key: 'character', icon: 'person', label: 'Character' },
           { key: 'equipment', icon: 'shield', label: 'Equipment' },
           { key: 'pets', icon: 'paw', label: 'Pets' },
-          { key: 'skills', icon: 'flash', label: 'Skills' },
           { key: 'store', icon: 'storefront', label: 'Store' },
           { key: 'bosses', icon: 'skull', label: 'Bosses' },
           { key: 'zones', icon: 'map', label: 'Zones' },
