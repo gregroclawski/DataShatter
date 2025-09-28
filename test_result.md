@@ -509,9 +509,9 @@ frontend:
     priority: "critical"
     needs_retesting: true
     status_history:
-        - working: "NA"
-          agent: "main"
-          comment: "MOBILE ROOT CAUSE IDENTIFIED: Complete state isolation between UI display (experience: 40, gold: 120) and backend saves (XP: 0, Gold: 100). Combat generates progress locally but doesn't propagate to GameContext ninja state that gets saved. IMPLEMENTING: 1) Debug logging for combat updateNinja calls, 2) State synchronization verification between contexts, 3) Mobile-specific React state batching checks, 4) Combat integration verification."
+        - working: false
+          agent: "user"
+          comment: "USER TESTING UPDATE: Combat and XP are working fine on mobile during actual testing. The issue is specifically with ninja/GameContext state and server saving system breaking on mobile. Need triage agent analysis of GameContext save system mobile issues."
           agent: "main"
           comment: "FIELD NAME MISMATCH FIXED: Troubleshoot agent identified the issue - UI was looking for user?.username but backend provides user?.name. FIXED: Changed display code from user?.username to user?.name to match backend User model field structure. Username should now display correctly instead of showing 'Player' fallback."
     status_history:
