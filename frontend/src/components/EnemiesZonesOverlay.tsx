@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useZone } from '../contexts/ZoneContext';
 import { Zone, ZoneLevel } from '../data/ZoneData';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface EnemiesZonesOverlayProps {
   visible: boolean;
