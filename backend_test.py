@@ -397,30 +397,114 @@ def test_backend_logging_verification():
         print(f"\n❌ LOGGING TEST FAILED: {str(e)}")
         return False
 
-    def test_health_check(self):
-        """Test GET /api/ endpoint"""
-        print("\n=== TESTING HEALTH CHECK ENDPOINT ===")
+def test_database_verification():
+    """Test to verify ability data is actually stored in MongoDB"""
+    print("\n🗄️ TESTING DATABASE STORAGE VERIFICATION")
+    print("=" * 60)
+    
+    test_player_id = str(uuid.uuid4())
+    
+    # Create test data with ability data
+    ability_data = {
+        "equippedAbilities": [
+            {"id": "db_test_1", "level": 2, "currentCooldown": 0, "lastUsed": 0},
+            {"id": "db_test_2", "level": 1, "currentCooldown": 0, "lastUsed": 0}
+        ],
+        "availableAbilities": {
+            "db_test_1": {
+                "id": "db_test_1",
+                "level": 2,
+                "stats": {"baseDamage": 30, "cooldown": 2}
+            },
+            "db_test_2": {
+                "id": "db_test_2", 
+                "level": 1,
+                "stats": {"baseDamage": 15, "cooldown": 3}
+            }
+        },
+        "activeSynergies": []
+    }
+    
+    save_payload = {
+        "playerId": test_player_id,
+        "ninja": {
+            "level": 10,
+            "experience": 1000,
+            "experienceToNext": 1100,
+            "health": 120,
+            "maxHealth": 120,
+            "energy": 60,
+            "maxEnergy": 60,
+            "attack": 20,
+            "defense": 10,
+            "speed": 12,
+            "luck": 6,
+            "gold": 300,
+            "gems": 20,
+            "skillPoints": 10
+        },
+        "shurikens": [],
+        "pets": [],
+        "achievements": [],
+        "unlockedFeatures": ["stats"],
+        "zoneProgress": {},
+        "equipment": None,
+        "abilityData": ability_data
+    }
+    
+    print(f"🎯 Testing database storage with Player ID: {test_player_id}")
+    
+    # Save data
+    try:
+        save_response = requests.post(f"{BACKEND_URL}/save-game", json=save_payload, timeout=10)
+        if save_response.status_code != 200:
+            print(f"❌ SAVE FAILED: {save_response.status_code}")
+            return False
         
-        try:
-            response = self.session.get(f"{BASE_URL}/")
+        print("✅ SAVE TO DATABASE SUCCESSFUL")
+        
+        # Load data back
+        load_response = requests.get(f"{BACKEND_URL}/load-game/{test_player_id}", timeout=10)
+        if load_response.status_code != 200:
+            print(f"❌ LOAD FAILED: {load_response.status_code}")
+            return False
             
-            if response.status_code == 200:
-                data = response.json()
-                if "message" in data and "Ninja Master Mobile API" in data["message"]:
-                    self.log_result("health_check", "Health Check", True, 
-                                  f"Health endpoint working: {data['message']}")
+        loaded_data = load_response.json()
+        
+        if loaded_data and 'abilityData' in loaded_data:
+            loaded_ability_data = loaded_data['abilityData']
+            
+            # Verify the specific test data
+            equipped_abilities = loaded_ability_data.get('equippedAbilities', [])
+            if len(equipped_abilities) == 2:
+                
+                ability1 = equipped_abilities[0]
+                ability2 = equipped_abilities[1]
+                
+                if (ability1.get('id') == 'db_test_1' and ability1.get('level') == 2 and
+                    ability2.get('id') == 'db_test_2' and ability2.get('level') == 1):
+                    print("✅ DATABASE STORAGE VERIFIED")
+                    print("   - Ability data is correctly stored in MongoDB")
+                    print("   - Ability data is correctly retrieved from MongoDB")
+                    print(f"   - Ability 1: {ability1.get('id')} (Level {ability1.get('level')})")
+                    print(f"   - Ability 2: {ability2.get('id')} (Level {ability2.get('level')})")
                     return True
                 else:
-                    self.log_result("health_check", "Health Check", False, 
-                                  f"Unexpected response format: {data}")
+                    print("❌ DATABASE DATA CORRUPTION")
+                    print("   - Ability data stored but corrupted during save/load")
                     return False
             else:
-                self.log_result("health_check", "Health Check", False, 
-                              f"Status: {response.status_code}, Response: {response.text}")
+                print("❌ DATABASE STORAGE FAILED")
+                print("   - Ability data not properly stored in MongoDB")
                 return False
-        except Exception as e:
-            self.log_result("health_check", "Health Check", False, f"Exception: {str(e)}")
+        else:
+            print("❌ NO ABILITY DATA IN DATABASE")
+            print("   - Ability data field missing from stored document")
             return False
+            
+    except Exception as e:
+        print(f"❌ DATABASE TEST FAILED: {str(e)}")
+        return False
 
     def test_user_registration(self):
         """Test user registration endpoint"""
