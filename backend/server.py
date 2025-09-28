@@ -232,6 +232,7 @@ class GameSave(BaseModel):
     unlockedFeatures: List[str] = ["stats", "shurikens"]
     zoneProgress: Optional[Dict[str, Any]] = {}
     equipment: Optional[Dict[str, Any]] = None  # Equipment and inventory data
+    abilityData: Optional[Dict[str, Any]] = None  # Ability deck and progression data
 
 class SaveGameRequest(BaseModel):
     playerId: str
