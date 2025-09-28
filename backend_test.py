@@ -643,49 +643,8 @@ def main():
     
     return tests_passed == total_tests
 
-    def test_user_login(self):
-        """Test user login endpoint"""
-        print("\n=== TESTING USER LOGIN ===")
-        
-        try:
-            login_data = {
-                "username": self.test_user_email,  # OAuth2PasswordRequestForm uses 'username'
-                "password": self.test_user_password
-            }
-            
-            # Include CORS headers to simulate frontend request
-            headers = {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Origin': 'https://gear-master.preview.emergentagent.com'
-            }
-            
-            response = self.session.post(
-                f"{BASE_URL}/auth/login", 
-                data=login_data,
-                headers=headers
-            )
-            
-            if response.status_code == 200:
-                data = response.json()
-                if "access_token" in data and "user" in data:
-                    self.access_token = data["access_token"]
-                    self.session_cookies = response.cookies
-                    
-                    self.log_result("authentication", "User Login", True, 
-                                  f"Login successful for user: {data['user']['email']}")
-                    return True
-                else:
-                    self.log_result("authentication", "User Login", False, 
-                                  f"Missing required fields in response: {data}")
-                    return False
-            else:
-                error_text = response.text
-                self.log_result("authentication", "User Login", False, 
-                              f"Status: {response.status_code}, Response: {error_text}")
-                return False
-        except Exception as e:
-            self.log_result("authentication", "User Login", False, f"Exception: {str(e)}")
-            return False
+if __name__ == "__main__":
+    main()
 
     def test_invalid_login(self):
         """Test login with invalid credentials"""
