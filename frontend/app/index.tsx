@@ -677,6 +677,7 @@ export default function NinjaIdleGame() {
       <View style={styles.bottomNavigation}>
         {[
           { key: 'character', icon: 'person', label: 'Character' },
+          { key: 'abilities', icon: 'flash', label: 'Abilities' },
           { key: 'equipment', icon: 'shield', label: 'Equipment' },
           { key: 'pets', icon: 'paw', label: 'Pets' },
           { key: 'store', icon: 'storefront', label: 'Store' },
