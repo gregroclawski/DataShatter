@@ -408,9 +408,6 @@ export default function NinjaIdleGame() {
     );
   }
 
-  // Create responsive styles
-  const styles = createResponsiveStyles(layout);
-
   // MAIN GAME INTERFACE - Fully Responsive
   return (
     <SafeAreaView style={styles.container}>
