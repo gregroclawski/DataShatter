@@ -77,6 +77,33 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     baseXP: 20,
     resistances: { magic: 0.3 }
   },
+  'shadow_wolf': {
+    id: 'shadow_wolf',
+    name: 'Shadow Wolf',
+    icon: '🐺',
+    baseHP: 30,
+    baseAttack: 20,
+    baseXP: 25,
+    resistances: { magic: 0.2 }
+  },
+  'forest_troll': {
+    id: 'forest_troll',
+    name: 'Forest Troll',
+    icon: '👹',
+    baseHP: 60,
+    baseAttack: 25,
+    baseXP: 35,
+    resistances: { physical: 0.3 }
+  },
+  'ancient_ent': {
+    id: 'ancient_ent',
+    name: 'Ancient Ent',
+    icon: '🌲',
+    baseHP: 80,
+    baseAttack: 30,
+    baseXP: 45,
+    resistances: { physical: 0.4, fire: -0.3 }
+  },
 
   // Desert Kingdoms (Zones 11-20)  
   'sand_scorpion': {
