@@ -12,7 +12,12 @@ import { useCombat } from '../contexts/CombatContext';
 import { EquippedAbility } from '../types/AbilityTypes';
 import { MythicTechColors } from '../theme/MythicTechTheme';
 
-const CombatUI: React.FC = () => {
+interface CombatUIProps {
+  layout: any;
+  onAbilityPress: (slotIndex: number) => void;
+}
+
+const CombatUI: React.FC<CombatUIProps> = ({ layout, onAbilityPress }) => {
   const { combatState, useAbilityManually } = useCombat();
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 
