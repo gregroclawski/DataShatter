@@ -335,7 +335,8 @@ export default function NinjaIdleGame() {
     }
   }, [gameState?.ninja?.level, previousLevel, handleLevelUpExplosion]);
 
-  // Soft Joystick Movement System - Mobile Optimized
+  // CRITICAL: Move useSharedValue hooks to top level to fix mobile hooks order violation
+  // Soft Joystick Movement System - Mobile Optimized  
   const translateX = useSharedValue(ninjaPosition.x);
   const translateY = useSharedValue(ninjaPosition.y);
   
