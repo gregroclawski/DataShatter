@@ -21,6 +21,7 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
     isZoneUnlocked 
   } = useZone();
   
+  const insets = useSafeAreaInsets();
   const [selectedZone, setSelectedZone] = useState<Zone | null>(null);
 
   const handleZoneSelect = (zone: Zone) => {
