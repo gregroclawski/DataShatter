@@ -923,7 +923,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     saveGame,
     loadGame,
     updateZoneProgress,
-    updateEquipment,
+    updateEquipment, // MOBILE FIX: Add equipment update function to dependencies
     saveOnEvent,
     saveOnMilestone,
   ]);
