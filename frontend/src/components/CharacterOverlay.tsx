@@ -129,28 +129,52 @@ const CharacterOverlay = ({ onClose }: Props) => {
 
     console.log(`🚀 BULK ${type} UPGRADE: ${skillKey} x${quantity} for ${cost} ${type.toLowerCase()}`);
     
+    // Initialize separate stat pools if they don't exist (backward compatibility)
+    const baseStats = ninja.baseStats || {
+      attack: ninja.attack,
+      defense: ninja.defense,
+      speed: ninja.speed,
+      luck: ninja.luck,
+      maxHealth: ninja.maxHealth,
+      maxEnergy: ninja.maxEnergy,
+    };
+    
+    const goldUpgrades = ninja.goldUpgrades || {
+      attack: 0, defense: 0, speed: 0, luck: 0, maxHealth: 0, maxEnergy: 0,
+    };
+    
+    const skillPointUpgrades = ninja.skillPointUpgrades || {
+      attack: 0, defense: 0, speed: 0, luck: 0, maxHealth: 0, maxEnergy: 0,
+    };
+    
     if (skillUpgradeType === 'skillPoints') {
-      // Skill points upgrade
-      if (trainSkill) {
-        // Use existing trainSkill function multiple times
-        for (let i = 0; i < quantity; i++) {
-          trainSkill(skillKey);
-        }
-      } else {
-        // Manual update for skill points
-        const updatedNinja = {
-          ...ninja,
-          skillPoints: ninja.skillPoints - quantity,
-          [skillKey]: ninja[skillKey as keyof typeof ninja] + (quantity * (skillKey === 'maxHealth' || skillKey === 'maxEnergy' ? 5 : 1)),
-        };
-        updateNinja(updatedNinja);
-      }
+      // Update skill point upgrades pool
+      const upgrade = quantity * (skillKey === 'maxHealth' || skillKey === 'maxEnergy' ? 5 : 1);
+      
+      const updatedNinja = {
+        ...ninja,
+        skillPoints: ninja.skillPoints - quantity,
+        baseStats,
+        goldUpgrades,
+        skillPointUpgrades: {
+          ...skillPointUpgrades,
+          [skillKey]: skillPointUpgrades[skillKey as keyof typeof skillPointUpgrades] + upgrade,
+        },
+      };
+      updateNinja(updatedNinja);
     } else {
-      // Gold upgrade
+      // Update gold upgrades pool
+      const upgrade = quantity * (skillKey === 'maxHealth' || skillKey === 'maxEnergy' ? 10 : 1);
+      
       const updatedNinja = {
         ...ninja,
         gold: ninja.gold - cost,
-        [skillKey]: ninja[skillKey as keyof typeof ninja] + (quantity * (skillKey === 'maxHealth' || skillKey === 'maxEnergy' ? 10 : 1)),
+        baseStats,
+        skillPointUpgrades,
+        goldUpgrades: {
+          ...goldUpgrades,
+          [skillKey]: goldUpgrades[skillKey as keyof typeof goldUpgrades] + upgrade,
+        },
       };
       updateNinja(updatedNinja);
     }
