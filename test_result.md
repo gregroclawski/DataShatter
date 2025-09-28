@@ -544,9 +544,9 @@ frontend:
     priority: "medium"
     needs_retesting: true
     status_history:
-        - working: true
-          agent: "main"
-          comment: "REACT NATIVE TEXT RENDERING FIXED: Root cause identified - conditional rendering patterns could render numeric 0 values as bare text instead of wrapped in <Text> components. FIXES: 1) Enhanced conditional checks to use progress.killsInLevel > 0 instead of just progress truthy check, 2) Added safer conditional rendering with undefined checks, 3) Prevented 0 values from being rendered directly as text. All text content now properly wrapped in <Text> components for React Native compliance."
+        - working: false
+          agent: "user"
+          comment: "USER PERSISTENT ERROR: Text strings must be rendered within <Text> component error still appears when opening zones tab despite previous fixes. Need to find the exact remaining source of bare text rendering."
     status_history:
         - working: false
           agent: "user"
