@@ -339,6 +339,12 @@ export default function NinjaIdleGame() {
   // React Native Reanimated hooks are sensitive to execution order in Hermes engine
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
+  
+  // Update shared values when ninja position changes (Expo Go compatibility)
+  useEffect(() => {
+    translateX.value = ninjaPosition.x;
+    translateY.value = ninjaPosition.y;
+  }, [ninjaPosition.x, ninjaPosition.y, translateX, translateY]);
 
   // MOBILE FIX: Removed joystick movement system to debug crashes
 
