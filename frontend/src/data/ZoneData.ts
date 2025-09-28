@@ -223,6 +223,18 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
   }
 };
 
+// Helper function to calculate linear progression kill requirements
+const calculateKillRequirement = (zoneId: number, level: number): number => {
+  // Early zones: Very low kills to allow fast progression to better XP zones
+  // Later zones: More kills as players are stronger and want endgame content
+  
+  if (zoneId <= 5) return 25 + (level * 5);      // Zones 1-5: 30-50 kills per level
+  if (zoneId <= 15) return 40 + (level * 10);     // Zones 6-15: 50-90 kills per level  
+  if (zoneId <= 30) return 60 + (level * 15);     // Zones 16-30: 75-135 kills per level
+  if (zoneId <= 45) return 100 + (level * 20);    // Zones 31-45: 120-200 kills per level
+  return 150 + (level * 25);                      // Zones 46-50: 175-275 kills per level (endgame)
+};
+
 // Zone Database - 50 Zones with 5 levels each
 export const ZONES: Zone[] = [
   // Forest Realms (Zones 1-10)
