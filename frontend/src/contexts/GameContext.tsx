@@ -4,6 +4,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { useAuth } from './AuthContext';
 
+export interface StatPool {
+  attack: number;
+  defense: number;
+  speed: number;
+  luck: number;
+  maxHealth: number;
+  maxEnergy: number;
+}
+
 export interface NinjaStats {
   level: number;
   experience: number;
@@ -19,6 +28,11 @@ export interface NinjaStats {
   gold: number;
   gems: number;
   skillPoints: number;
+  
+  // Separate stat pools
+  baseStats: StatPool;        // Character's natural stats
+  goldUpgrades: StatPool;     // Stats bought with gold
+  skillPointUpgrades: StatPool; // Stats bought with skill points
 }
 
 export interface Shuriken {
