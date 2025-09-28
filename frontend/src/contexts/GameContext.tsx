@@ -681,6 +681,17 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateAbilityData = (abilityData: {equippedAbilities: any[]; availableAbilities: Record<string, any>; activeSynergies: any[]}) => {
+    setGameState(prev => ({
+      ...prev,
+      abilityData
+    }));
+    
+    // MILESTONE SAVE: Ability changes are critical - save immediately
+    console.log('✨ ABILITY DATA UPDATE - Triggering immediate save');
+    saveOnEvent('ability_change');
+  };
+
   const updateNinja = (updates: Partial<NinjaStats> | ((prev: NinjaStats) => Partial<NinjaStats>)) => {
     // MOBILE DEBUG: Log all updateNinja calls to trace combat progress
     console.log('🥷 MOBILE DEBUG - updateNinja CALLED:', {
