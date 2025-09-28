@@ -200,7 +200,11 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
             <View style={styles.currentProgress}>
               {getZoneProgress(currentZone.id) && getZoneProgress(currentZone.id)!.killsInLevel !== undefined && (
                 <Text style={styles.progressText}>
-                  {getZoneProgress(currentZone.id)!.killsInLevel}/1000 kills
+                  {(() => {
+                    const progress = getZoneProgress(currentZone.id)!;
+                    const requiredKills = currentZone.levels[progress.currentLevel - 1]?.requiredKills || 1000;
+                    return `${progress.killsInLevel}/${requiredKills} kills`;
+                  })()}
                 </Text>
               )}
             </View>
