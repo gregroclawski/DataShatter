@@ -488,4 +488,45 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 4,
   },
+  upgradeSection: {
+    flex: 1,
+  },
+  upgradeContainer: {
+    flexDirection: 'column',
+    gap: 8,
+  },
+  upgradeRequirements: {
+    backgroundColor: '#1f2937',
+    borderRadius: 8,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#374151',
+  },
+  upgradeRequirementsTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#f8fafc',
+    marginBottom: 8,
+  },
+  costContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  costText: {
+    fontSize: 11,
+    color: '#d1d5db',
+    marginLeft: 6,
+  },
+  upgradePreview: {
+    marginTop: 6,
+    paddingTop: 6,
+    borderTopWidth: 1,
+    borderTopColor: '#374151',
+  },
+  upgradePreviewText: {
+    fontSize: 10,
+    color: '#10b981',
+    fontWeight: '500',
+  },
 });
