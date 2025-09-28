@@ -30,6 +30,45 @@ const CharacterOverlay = ({ onClose }: Props) => {
     return Math.floor(100 + (currentLevel * currentLevel * 10));
   };
 
+  // Calculate bulk upgrade costs and quantities
+  const calculateUpgradeCost = (skill: any, quantity: 1 | 10 | 'max') => {
+    if (skillUpgradeType === 'skillPoints') {
+      if (quantity === 'max') {
+        return { cost: ninja.skillPoints, quantity: ninja.skillPoints, type: 'SP' };
+      }
+      const actualQuantity = Math.min(quantity, ninja.skillPoints);
+      return { cost: actualQuantity, quantity: actualQuantity, type: 'SP' };
+    } else {
+      // Gold upgrades with escalating costs
+      let totalCost = 0;
+      let currentLevel = skill.current;
+      let actualQuantity = 0;
+
+      if (quantity === 'max') {
+        // Calculate max affordable upgrades
+        while (totalCost + getSkillUpgradeCost(currentLevel) <= ninja.gold) {
+          totalCost += getSkillUpgradeCost(currentLevel);
+          currentLevel++;
+          actualQuantity++;
+        }
+      } else {
+        // Calculate cost for specific quantity
+        for (let i = 0; i < quantity; i++) {
+          const upgradeCost = getSkillUpgradeCost(currentLevel);
+          if (totalCost + upgradeCost <= ninja.gold) {
+            totalCost += upgradeCost;
+            currentLevel++;
+            actualQuantity++;
+          } else {
+            break;
+          }
+        }
+      }
+      
+      return { cost: totalCost, quantity: actualQuantity, type: 'Gold' };
+    }
+  };
+
   const skills = [
     {
       name: 'Attack Power',
