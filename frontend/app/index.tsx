@@ -95,6 +95,9 @@ export default function NinjaIdleGame() {
   // EQUIPMENT INTEGRATION: Use effective stats (base + equipment bonuses) for display
   const testNinja = useMemo(() => getEffectiveStats(), [getEffectiveStats]);
   
+  // Memoize responsive styles creation to prevent recreation and fix hooks order
+  const styles = useMemo(() => createResponsiveStyles(layout), [layout]);
+  
   // Memoize ninja position calculation to prevent infinite re-renders on mobile
   const initialNinjaPosition = useMemo(() => ({
     x: (layout.screenWidth - layout.ninjaSize) / 2, // Center horizontally
