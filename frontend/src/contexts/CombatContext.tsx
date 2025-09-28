@@ -686,8 +686,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  // Save ability data to game context when ability manager changes
-  useEffect(() => {
+  // Save ability data to game context when abilities are modified (not on every render)
+  const saveAbilityData = useCallback(() => {
     if (combatState.abilityManager) {
       const abilityData = combatState.abilityManager.getSaveData();
       console.log('💾 SAVING ABILITY DATA TO GAME CONTEXT:', abilityData);
@@ -696,6 +696,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       game.updateAbilityData(abilityData);
     }
   }, [combatState.abilityManager, game.updateAbilityData]);
+  
+  // Only save ability data when explicitly called, not automatically
+  // This prevents infinite loops while still allowing saves when needed
 
   const contextValue: CombatContextType = React.useMemo(() => ({
     combatState,
