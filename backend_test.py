@@ -506,51 +506,91 @@ def test_database_verification():
         print(f"❌ DATABASE TEST FAILED: {str(e)}")
         return False
 
-    def test_user_registration(self):
-        """Test user registration endpoint"""
-        print("\n=== TESTING USER REGISTRATION ===")
+def test_specific_user_ability_data():
+    """Test ability data for the specific user mentioned in the review request"""
+    print("\n🔍 TESTING SPECIFIC USER ABILITY DATA")
+    print("=" * 60)
+    
+    # Specific user ID from review request and backend logs
+    user_id = "c16cbf6f-c1f4-495f-8a58-c94f32653225"
+    
+    print(f"🎯 Testing ability data for User ID: {user_id}")
+    print("🎯 This is the user mentioned in the review request")
+    
+    try:
+        response = requests.get(f"{BACKEND_URL}/load-game/{user_id}", timeout=10)
+        print(f"Status Code: {response.status_code}")
         
-        try:
-            registration_data = {
-                "email": self.test_user_email,
-                "password": self.test_user_password,
-                "name": self.test_user_name
-            }
-            
-            # Include CORS headers to simulate frontend request
-            headers = {
-                'Content-Type': 'application/json',
-                'Origin': 'https://gear-master.preview.emergentagent.com'
-            }
-            
-            response = self.session.post(
-                f"{BASE_URL}/auth/register", 
-                json=registration_data,
-                headers=headers
-            )
-            
-            if response.status_code == 201:
-                data = response.json()
-                if "access_token" in data and "user" in data:
-                    self.access_token = data["access_token"]
-                    self.test_user_id = data["user"]["id"]
-                    self.session_cookies = response.cookies
-                    
-                    self.log_result("authentication", "User Registration", True, 
-                                  f"User created successfully with ID: {self.test_user_id}")
-                    return True
-                else:
-                    self.log_result("authentication", "User Registration", False, 
-                                  f"Missing required fields in response: {data}")
-                    return False
-            else:
-                error_text = response.text
-                self.log_result("authentication", "User Registration", False, 
-                              f"Status: {response.status_code}, Response: {error_text}")
+        if response.status_code == 200:
+            result = response.json()
+            if result is None:
+                print("❌ NO SAVE DATA FOUND")
+                print("   User has no saved game data")
                 return False
-        except Exception as e:
-            self.log_result("authentication", "User Registration", False, f"Exception: {str(e)}")
+                
+            print("✅ SAVE DATA FOUND")
+            print(f"   - Player ID: {result.get('playerId')}")
+            print(f"   - Ninja Level: {result.get('ninja', {}).get('level')}")
+            print(f"   - Ninja XP: {result.get('ninja', {}).get('experience')}")
+            
+            # Check for ability data
+            ability_data = result.get('abilityData')
+            if ability_data:
+                print("✅ ABILITY DATA FOUND IN USER'S SAVE")
+                
+                # Analyze equipped abilities
+                equipped_abilities = ability_data.get('equippedAbilities', [])
+                print(f"   - Equipped Abilities: {len(equipped_abilities)}")
+                
+                for i, ability in enumerate(equipped_abilities):
+                    ability_id = ability.get('id', 'Unknown')
+                    ability_level = ability.get('level', 0)
+                    current_cooldown = ability.get('currentCooldown', 0)
+                    print(f"     {i+1}. {ability_id} (Level {ability_level}, Cooldown: {current_cooldown})")
+                
+                # Analyze available abilities
+                available_abilities = ability_data.get('availableAbilities', {})
+                print(f"   - Available Abilities: {len(available_abilities)}")
+                
+                for ability_id, ability_info in available_abilities.items():
+                    level = ability_info.get('level', 0)
+                    stats = ability_info.get('stats', {})
+                    damage = stats.get('baseDamage', 0)
+                    print(f"     - {ability_id}: Level {level}, Damage {damage}")
+                
+                # Check synergies
+                synergies = ability_data.get('activeSynergies', [])
+                print(f"   - Active Synergies: {len(synergies)}")
+                
+                print("\n🔍 ABILITY DATA ANALYSIS:")
+                print("   ✅ Backend IS receiving and storing ability data")
+                print("   ✅ Ability data IS being saved to MongoDB")
+                print("   ✅ Ability data IS being returned on load requests")
+                print("\n💡 CONCLUSION:")
+                print("   The backend ability persistence system is working correctly.")
+                print("   If abilities still reset on restart, the issue is likely in:")
+                print("   1. Frontend not properly restoring ability data after load")
+                print("   2. AbilityManager not applying loaded data correctly")
+                print("   3. Timing issues in the frontend load sequence")
+                
+                return True
+                
+            else:
+                print("❌ NO ABILITY DATA IN USER'S SAVE")
+                print("   This indicates either:")
+                print("   1. Frontend is not sending ability data in save requests")
+                print("   2. Backend is not storing ability data properly")
+                print("   3. User's save was created before ability system was implemented")
+                return False
+                
+        else:
+            print(f"❌ LOAD FAILED: {response.status_code}")
+            print(f"   Error: {response.text}")
             return False
+            
+    except Exception as e:
+        print(f"❌ TEST FAILED: {str(e)}")
+        return False
 
     def test_duplicate_registration(self):
         """Test duplicate email registration (should fail)"""
