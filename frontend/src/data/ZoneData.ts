@@ -263,11 +263,11 @@ export const ZONES: Zone[] = [
     maxPlayerLevel: 600,
     unlockRequirement: { previousZone: 1 },
     levels: [
-      { level: 1, enemyMultiplier: 2.0, xpMultiplier: 1.5, requiredKills: 1000, enemyTypes: ['dark_sprite'] },
-      { level: 2, enemyMultiplier: 2.3, xpMultiplier: 1.6, requiredKills: 1000, enemyTypes: ['dark_sprite', 'wild_wolf'] },
-      { level: 3, enemyMultiplier: 2.6, xpMultiplier: 1.7, requiredKills: 1000, enemyTypes: ['tree_guardian', 'dark_sprite'] },
-      { level: 4, enemyMultiplier: 3.0, xpMultiplier: 1.8, requiredKills: 1000, enemyTypes: ['tree_guardian'] },
-      { level: 5, enemyMultiplier: 3.4, xpMultiplier: 1.9, requiredKills: 1000, enemyTypes: ['tree_guardian', 'dark_sprite'] }
+      { level: 1, enemyMultiplier: 2.0, xpMultiplier: 1.5, requiredKills: calculateKillRequirement(2, 1), enemyTypes: ['dark_sprite'] },
+      { level: 2, enemyMultiplier: 2.3, xpMultiplier: 1.6, requiredKills: calculateKillRequirement(2, 2), enemyTypes: ['dark_sprite', 'wild_wolf'] },
+      { level: 3, enemyMultiplier: 2.6, xpMultiplier: 1.7, requiredKills: calculateKillRequirement(2, 3), enemyTypes: ['tree_guardian', 'dark_sprite'] },
+      { level: 4, enemyMultiplier: 3.0, xpMultiplier: 1.8, requiredKills: calculateKillRequirement(2, 4), enemyTypes: ['tree_guardian'] },
+      { level: 5, enemyMultiplier: 3.4, xpMultiplier: 1.9, requiredKills: calculateKillRequirement(2, 5), enemyTypes: ['tree_guardian', 'dark_sprite'] }
     ]
   },
 
