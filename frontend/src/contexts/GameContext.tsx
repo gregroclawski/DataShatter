@@ -613,6 +613,19 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateEquipment = (equipment: {equipped: Record<string, any>; inventory: any[]; maxInventorySize: number}) => {
+    setGameState(prev => ({
+      ...prev,
+      equipment
+    }));
+    
+    // MILESTONE SAVE: Equipment changes are critical - save immediately
+    if (isAuthenticated) {
+      console.log('⚔️ MILESTONE: Equipment updated - IMMEDIATE SAVE');
+      saveOnMilestone('equipment_update');
+    }
+  };
+
   const updateNinja = (updates: Partial<NinjaStats> | ((prev: NinjaStats) => Partial<NinjaStats>)) => {
     // MOBILE DEBUG: Log all updateNinja calls to trace combat progress
     console.log('🥷 MOBILE DEBUG - updateNinja CALLED:', {
