@@ -563,7 +563,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       // Award XP using updateNinja if there are enemies to kill - MOBILE FIX: defer to prevent render-phase violation
       if (explosionXP > 0) {
         setTimeout(() => {
-          updateNinja((ninja) => ({
+          game.updateNinja((ninja) => ({
             experience: ninja.experience + explosionXP,
             gold: ninja.gold + explosionGold,
           }));
