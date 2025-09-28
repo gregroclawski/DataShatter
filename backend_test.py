@@ -1,29 +1,25 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend API Testing Suite
-Tests all critical endpoints for the Mythic-Tech Idle RPG backend after URL configuration and authentication fixes.
+Backend API Testing for Ability Persistence System
+Focus: Verify ability data is being saved and loaded correctly
 
-FOCUS AREAS (as per review request):
-1. API connectivity and CORS configuration
-2. Authentication flows (registration, login, session check)
-3. Game data persistence (save/load operations)
-4. All existing game systems functionality
+REVIEW REQUEST FOCUS:
+1. **Verify Backend Logging**: Check if ability data is actually being received and saved by the backend
+2. **Test Save Request**: Manually trigger a save and check the backend logs for ability data
+3. **Test Load Request**: Load game data and verify ability data is being returned
+4. **Database Verification**: Check if ability data is actually stored in MongoDB
 
-Previous issues resolved:
-- Fixed URL mismatch between frontend (.env) and backend CORS configuration
-- Updated authentication loading with timeout mechanism
-- Backend should now be fully functional with all endpoints working
+Expected: Backend logs should show `💾 SAVE REQUEST - Ability Data: {actual ability data}` when saves occur.
+If this is missing, the frontend isn't sending ability data. If it's present but abilities still reset, the restore logic has issues.
 """
 
 import requests
 import json
-import time
 import uuid
 from datetime import datetime
-from typing import Dict, Any, Optional
 
-# Configuration - Use correct URL from frontend/.env
-BASE_URL = "https://gear-master.preview.emergentagent.com/api"
+# Get backend URL from frontend env
+BACKEND_URL = "https://gear-master.preview.emergentagent.com/api"
 
 class ComprehensiveBackendTester:
     def __init__(self):
