@@ -400,4 +400,69 @@ export class AbilityManager {
 
     return true;
   }
+
+  // Save current state to data object
+  getSaveData() {
+    return {
+      equippedAbilities: this.deck.slots.map(slot => slot ? {
+        id: slot.id,
+        level: slot.level,
+        currentCooldown: slot.currentCooldown,
+        lastUsed: slot.lastUsed
+      } : null),
+      availableAbilities: Object.fromEntries(
+        Array.from(this.availableAbilities.entries()).map(([id, ability]) => [
+          id, {
+            id: ability.id,
+            level: ability.level,
+            stats: ability.stats
+          }
+        ])
+      ),
+      activeSynergies: this.deck.activeSynergies
+    };
+  }
+
+  // Restore state from save data
+  restoreFromSaveData(saveData: any) {
+    try {
+      console.log('🔄 RESTORING ABILITY MANAGER FROM SAVE DATA:', saveData);
+      
+      // Restore available abilities with their levels
+      if (saveData.availableAbilities) {
+        Object.entries(saveData.availableAbilities).forEach(([id, savedAbility]: [string, any]) => {
+          const baseAbility = this.availableAbilities.get(id);
+          if (baseAbility && savedAbility.level > 1) {
+            // Apply upgrades to reach saved level
+            for (let level = 1; level < savedAbility.level; level++) {
+              this.upgradeAbility(id);
+            }
+          }
+        });
+      }
+      
+      // Restore equipped abilities
+      if (saveData.equippedAbilities) {
+        saveData.equippedAbilities.forEach((savedSlot: any, index: number) => {
+          if (savedSlot && savedSlot.id) {
+            this.equipAbility(savedSlot.id, index);
+            // Restore cooldown state
+            if (this.deck.slots[index]) {
+              this.deck.slots[index]!.currentCooldown = savedSlot.currentCooldown || 0;
+              this.deck.slots[index]!.lastUsed = savedSlot.lastUsed || 0;
+            }
+          }
+        });
+      }
+      
+      // Restore synergies (will be recalculated based on equipped abilities)
+      this.updateSynergies();
+      
+      console.log('✅ ABILITY MANAGER RESTORATION COMPLETE');
+    } catch (error) {
+      console.error('❌ FAILED TO RESTORE ABILITY MANAGER:', error);
+      // Fall back to default state
+      this.initializeDefaults();
+    }
+  }
 }
