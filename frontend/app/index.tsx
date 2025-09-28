@@ -702,7 +702,7 @@ export default function NinjaIdleGame() {
       {/* Overlays - Responsive */}
       {activeOverlay === 'character' && (
         <View style={styles.overlayWrapper}>
-          <CharacterOverlay onClose={() => setActiveOverlay(null)} layout={layout} />
+          <CharacterOverlay onClose={() => setActiveOverlay(null)} />
         </View>
       )}
       {activeOverlay === 'equipment' && (
