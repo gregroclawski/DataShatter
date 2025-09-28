@@ -118,6 +118,26 @@ export const EquipmentProvider = ({ children }: { children: ReactNode }) => {
     console.log('📊 Equipment stats updated:', newTotalStats);
   }, [inventory.equipped]);
 
+  // CRITICAL FIX: Sync with GameContext when equipment data is loaded from server
+  useEffect(() => {
+    if (gameState?.equipment && gameState.equipment !== inventory) {
+      console.log('🔄 EQUIPMENT SYNC: GameContext equipment loaded, syncing to EquipmentContext');
+      console.log('  - Previous inventory:', inventory);
+      console.log('  - New gameState equipment:', gameState.equipment);
+      
+      setInventory({
+        equipped: gameState.equipment.equipped || {
+          [EquipmentSlot.HEAD]: null,
+          [EquipmentSlot.BODY]: null,
+          [EquipmentSlot.WEAPON]: null,
+          [EquipmentSlot.ACCESSORY]: null,
+        },
+        inventory: gameState.equipment.inventory || [],
+        maxInventorySize: gameState.equipment.maxInventorySize || 50,
+      });
+    }
+  }, [gameState?.equipment]);
+
   // Equip an item to the appropriate slot
   const equipItem = (equipment: Equipment, fromInventory: boolean = false): boolean => {
     const slot = equipment.slot;
