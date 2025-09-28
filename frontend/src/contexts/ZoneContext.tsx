@@ -2,6 +2,15 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { ZONES, ENEMY_TYPES, calculateEnemyStats, getZoneByLevel, isZoneUnlocked, Zone, ZoneLevel } from '../data/ZoneData';
 import { useGame } from './GameContext';
 
+// Helper function for fallback kill requirements (matches ZoneData.ts)
+const calculateKillRequirement = (zoneId: number, level: number): number => {
+  if (zoneId <= 5) return 25 + (level * 5);      // Zones 1-5: 30-50 kills per level
+  if (zoneId <= 15) return 40 + (level * 10);     // Zones 6-15: 50-90 kills per level  
+  if (zoneId <= 30) return 60 + (level * 15);     // Zones 16-30: 75-135 kills per level
+  if (zoneId <= 45) return 100 + (level * 20);    // Zones 31-45: 120-200 kills per level
+  return 150 + (level * 25);                      // Zones 46-50: 175-275 kills per level (endgame)
+};
+
 interface ZoneProgress {
   zoneId: number;
   currentLevel: number;
