@@ -85,21 +85,8 @@ let enemyCounter = 0; // Global counter for unique enemy IDs
 export const CombatProvider = ({ children }: { children: ReactNode }) => {
   const game = useGame();
   const { currentZone, currentZoneLevel, recordEnemyKill } = useZone();
-  const [combatState, setCombatState] = useState<CombatState>(() => {
-    // Initialize with saved ability data from game context
-    const initialState = { ...initialCombatState };
-    
-    // If we have saved ability data, restore it
-    if (game.gameState.abilityData) {
-      console.log('🔄 RESTORING ABILITY DATA FROM SAVE:', game.gameState.abilityData);
-      initialState.abilityManager = new AbilityManager();
-      initialState.abilityManager.restoreFromSaveData(game.gameState.abilityData);
-    }
-    
-    return initialState;
-  });
-
-  // Need to define initialCombatState since we're now using it
+  
+  // Define initialCombatState before using it
   const initialCombatState: CombatState = {
     isInCombat: false,
     currentTick: 0,
@@ -115,6 +102,20 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       critDamage: 150,
       cooldownReduction: 0,
     },
+  };
+  
+  const [combatState, setCombatState] = useState<CombatState>(() => {
+    // Initialize with saved ability data from game context
+    const initialState = { ...initialCombatState };
+    
+    // If we have saved ability data, restore it
+    if (game.gameState.abilityData) {
+      console.log('🔄 RESTORING ABILITY DATA FROM SAVE:', game.gameState.abilityData);
+      initialState.abilityManager = new AbilityManager();
+      initialState.abilityManager.restoreFromSaveData(game.gameState.abilityData);
+    }
+    
+    return initialState;
   });
   
   const [projectiles, setProjectiles] = useState<CombatProjectile[]>([]);
