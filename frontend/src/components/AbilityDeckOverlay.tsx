@@ -38,6 +38,11 @@ export default function AbilityDeckOverlay({ visible, onClose }: Props) {
   const handleEquipAbility = (abilityId: string, slotIndex: number) => {
     if (equipAbility(abilityId, slotIndex)) {
       Alert.alert('Success', 'Ability equipped successfully!');
+      // Save ability data after equipping
+      if (abilityManager) {
+        const abilityData = abilityManager.getSaveData();
+        game.updateAbilityData(abilityData);
+      }
     } else {
       Alert.alert('Error', 'Failed to equip ability.');
     }
