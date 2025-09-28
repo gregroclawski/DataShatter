@@ -163,7 +163,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       };
       recordEnemyKill(zoneEnemy);
     }, 0); // 0ms delay to defer to next event loop
-  }, [updateNinja, recordEnemyKill]);
+  }, [game.updateNinja, recordEnemyKill]);
 
   // Combat tick handler - MEMOIZED to prevent infinite re-renders
   const handleCombatTick = React.useCallback(() => {
