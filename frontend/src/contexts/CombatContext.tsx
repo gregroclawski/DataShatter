@@ -686,6 +686,20 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
+  // Save ability data to game context when ability manager changes
+  useEffect(() => {
+    if (combatState.abilityManager) {
+      const abilityData = combatState.abilityManager.getSaveData();
+      console.log('💾 SAVING ABILITY DATA TO GAME CONTEXT:', abilityData);
+      
+      // Update game state with ability data
+      game.updateGameState((prevState) => ({
+        ...prevState,
+        abilityData: abilityData
+      }));
+    }
+  }, [combatState.abilityManager, game.updateGameState]);
+
   const contextValue: CombatContextType = React.useMemo(() => ({
     combatState,
     projectiles,
