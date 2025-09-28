@@ -83,10 +83,24 @@ export const useCombat = (): CombatContextType => {
 let enemyCounter = 0; // Global counter for unique enemy IDs
 
 export const CombatProvider = ({ children }: { children: ReactNode }) => {
-  const { updateNinja } = useGame();
-  const { recordEnemyKill } = useZone();
-  
-  const [combatState, setCombatState] = useState<CombatState>({
+  const game = useGame();
+  const { currentZone, currentZoneLevel, recordEnemyKill } = useZone();
+  const [combatState, setCombatState] = useState<CombatState>(() => {
+    // Initialize with saved ability data from game context
+    const initialState = { ...initialCombatState };
+    
+    // If we have saved ability data, restore it
+    if (game.gameState.abilityData) {
+      console.log('🔄 RESTORING ABILITY DATA FROM SAVE:', game.gameState.abilityData);
+      initialState.abilityManager = new AbilityManager();
+      initialState.abilityManager.restoreFromSaveData(game.gameState.abilityData);
+    }
+    
+    return initialState;
+  });
+
+  // Need to define initialCombatState since we're now using it
+  const initialCombatState: CombatState = {
     isInCombat: false,
     currentTick: 0,
     enemies: [],
