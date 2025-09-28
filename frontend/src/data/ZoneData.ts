@@ -346,6 +346,86 @@ export const ZONES: Zone[] = [
       { level: 5, enemyMultiplier: 9.4, xpMultiplier: 4.8, requiredKills: calculateKillRequirement(5, 5), enemyTypes: ['ancient_ent'] }
     ]
   },
+  {
+    id: 6,
+    name: 'Misty Hollows',
+    theme: 'forest',
+    description: 'Mystical hollows shrouded in eternal mist.',
+    minPlayerLevel: 50,
+    maxPlayerLevel: 1800,
+    unlockRequirement: { previousZone: 5 },
+    levels: [
+      { level: 1, enemyMultiplier: 9.8, xpMultiplier: 5.0, requiredKills: calculateKillRequirement(6, 1), enemyTypes: ['dark_sprite', 'shadow_wolf'] },
+      { level: 2, enemyMultiplier: 10.2, xpMultiplier: 5.2, requiredKills: calculateKillRequirement(6, 2), enemyTypes: ['shadow_wolf', 'forest_troll'] },
+      { level: 3, enemyMultiplier: 10.6, xpMultiplier: 5.4, requiredKills: calculateKillRequirement(6, 3), enemyTypes: ['forest_troll', 'ancient_ent'] },
+      { level: 4, enemyMultiplier: 11.0, xpMultiplier: 5.6, requiredKills: calculateKillRequirement(6, 4), enemyTypes: ['ancient_ent'] },
+      { level: 5, enemyMultiplier: 11.4, xpMultiplier: 5.8, requiredKills: calculateKillRequirement(6, 5), enemyTypes: ['ancient_ent'] }
+    ]
+  },
+  {
+    id: 7,
+    name: 'Elderwood Sanctuary',
+    theme: 'forest',
+    description: 'Sacred groves where the oldest trees keep ancient secrets.',
+    minPlayerLevel: 65,
+    maxPlayerLevel: 2100,
+    unlockRequirement: { previousZone: 6 },
+    levels: [
+      { level: 1, enemyMultiplier: 11.8, xpMultiplier: 6.0, requiredKills: calculateKillRequirement(7, 1), enemyTypes: ['ancient_ent'] },
+      { level: 2, enemyMultiplier: 12.2, xpMultiplier: 6.2, requiredKills: calculateKillRequirement(7, 2), enemyTypes: ['ancient_ent', 'tree_guardian'] },
+      { level: 3, enemyMultiplier: 12.6, xpMultiplier: 6.4, requiredKills: calculateKillRequirement(7, 3), enemyTypes: ['tree_guardian', 'forest_troll'] },
+      { level: 4, enemyMultiplier: 13.0, xpMultiplier: 6.6, requiredKills: calculateKillRequirement(7, 4), enemyTypes: ['ancient_ent'] },
+      { level: 5, enemyMultiplier: 13.4, xpMultiplier: 6.8, requiredKills: calculateKillRequirement(7, 5), enemyTypes: ['ancient_ent'] }
+    ]
+  },
+  {
+    id: 8,
+    name: 'Cursed Woodlands',
+    theme: 'forest',
+    description: 'Dark woodlands where nature has been corrupted by ancient curses.',
+    minPlayerLevel: 80,
+    maxPlayerLevel: 2400,
+    unlockRequirement: { previousZone: 7 },
+    levels: [
+      { level: 1, enemyMultiplier: 13.8, xpMultiplier: 7.0, requiredKills: calculateKillRequirement(8, 1), enemyTypes: ['shadow_wolf', 'dark_sprite'] },
+      { level: 2, enemyMultiplier: 14.2, xpMultiplier: 7.2, requiredKills: calculateKillRequirement(8, 2), enemyTypes: ['dark_sprite', 'forest_troll'] },
+      { level: 3, enemyMultiplier: 14.6, xpMultiplier: 7.4, requiredKills: calculateKillRequirement(8, 3), enemyTypes: ['forest_troll', 'ancient_ent'] },
+      { level: 4, enemyMultiplier: 15.0, xpMultiplier: 7.6, requiredKills: calculateKillRequirement(8, 4), enemyTypes: ['ancient_ent'] },
+      { level: 5, enemyMultiplier: 15.4, xpMultiplier: 7.8, requiredKills: calculateKillRequirement(8, 5), enemyTypes: ['ancient_ent', 'shadow_wolf'] }
+    ]
+  },
+  {
+    id: 9,
+    name: 'Primal Grove',
+    theme: 'forest',
+    description: 'The most ancient part of the forest, where primal forces still reign.',
+    minPlayerLevel: 100,
+    maxPlayerLevel: 2700,
+    unlockRequirement: { previousZone: 8 },
+    levels: [
+      { level: 1, enemyMultiplier: 15.8, xpMultiplier: 8.0, requiredKills: calculateKillRequirement(9, 1), enemyTypes: ['ancient_ent'] },
+      { level: 2, enemyMultiplier: 16.2, xpMultiplier: 8.2, requiredKills: calculateKillRequirement(9, 2), enemyTypes: ['ancient_ent', 'forest_troll'] },
+      { level: 3, enemyMultiplier: 16.6, xpMultiplier: 8.4, requiredKills: calculateKillRequirement(9, 3), enemyTypes: ['forest_troll', 'shadow_wolf'] },
+      { level: 4, enemyMultiplier: 17.0, xpMultiplier: 8.6, requiredKills: calculateKillRequirement(9, 4), enemyTypes: ['ancient_ent'] },
+      { level: 5, enemyMultiplier: 17.4, xpMultiplier: 8.8, requiredKills: calculateKillRequirement(9, 5), enemyTypes: ['ancient_ent'] }
+    ]
+  },
+  {
+    id: 10,
+    name: 'World Tree Base',
+    theme: 'forest',
+    description: 'The massive roots of the World Tree, gateway to other realms.',
+    minPlayerLevel: 120,
+    maxPlayerLevel: 3000,
+    unlockRequirement: { previousZone: 9 },
+    levels: [
+      { level: 1, enemyMultiplier: 17.8, xpMultiplier: 9.0, requiredKills: calculateKillRequirement(10, 1), enemyTypes: ['ancient_ent'] },
+      { level: 2, enemyMultiplier: 18.2, xpMultiplier: 9.2, requiredKills: calculateKillRequirement(10, 2), enemyTypes: ['ancient_ent', 'tree_guardian'] },
+      { level: 3, enemyMultiplier: 18.6, xpMultiplier: 9.4, requiredKills: calculateKillRequirement(10, 3), enemyTypes: ['tree_guardian', 'ancient_ent'] },
+      { level: 4, enemyMultiplier: 19.0, xpMultiplier: 9.6, requiredKills: calculateKillRequirement(10, 4), enemyTypes: ['ancient_ent'] },
+      { level: 5, enemyMultiplier: 19.4, xpMultiplier: 9.8, requiredKills: calculateKillRequirement(10, 5), enemyTypes: ['ancient_ent'] }
+    ]
+  },
 
   // Desert Realms (Zones 11-20)
   {
