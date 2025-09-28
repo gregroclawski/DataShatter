@@ -878,20 +878,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-
-
-  const updateEquipment = (equipment: {equipped: Record<string, any>; inventory: any[]; maxInventorySize: number}) => {
-    setGameState(prev => ({
-      ...prev,
-      equipment
-    }));
-    
-    // MILESTONE SAVE: Equipment changes are critical - save immediately
-    if (isAuthenticated) {
-      console.log('⚔️ MILESTONE: Equipment updated - IMMEDIATE SAVE');
-      saveOnMilestone('equipment_update');
-    }
-  };
   const loadGame = () => loadGameFromServer();
 
   const value: GameContextType = React.useMemo(() => ({
