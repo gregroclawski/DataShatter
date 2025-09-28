@@ -649,7 +649,9 @@ export default function NinjaIdleGame() {
                 }
               ]}
             >
-              <Text style={[styles.projectileText, { fontSize: layout.smallFontSize }]}>⭐</Text>
+              <Text style={[styles.projectileText, { fontSize: layout.smallFontSize }]}>
+                {projectile.abilityIcon || '⭐'}
+              </Text>
             </View>
           ) : null
         ))}
