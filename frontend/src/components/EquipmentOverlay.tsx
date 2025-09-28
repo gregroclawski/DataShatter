@@ -235,7 +235,7 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
                 </Text>
               </View>
             ) : (
-              inventory.inventory.map(equipment => renderInventoryItem(equipment))
+              inventory.inventory.map((equipment, index) => renderInventoryItem(equipment, index))
             )}
           </View>
         )}
