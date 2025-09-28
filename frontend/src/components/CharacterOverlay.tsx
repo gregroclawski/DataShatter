@@ -120,72 +120,40 @@ const CharacterOverlay = ({ onClose }: Props) => {
     },
   ];
 
-  const handleGoldSkillUpgrade = (skillKey: string, cost: number) => {
-    if (ninja.gold < cost) {
-      Alert.alert('Insufficient Gold', `You need ${cost} gold to upgrade this skill.`);
-      return;
+  const handleBulkUpgrade = (skillKey: string, skill: any) => {
+    const { cost, quantity, type } = calculateUpgradeCost(skill, upgradeQuantity);
+    
+    if (quantity === 0) {
+      return; // Cannot afford any upgrades
     }
 
-    Alert.alert(
-      'Gold Upgrade',
-      `Spend ${cost} gold to permanently upgrade this skill?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Upgrade',
-          style: 'default',
-          onPress: () => {
-            console.log(`💰 GOLD SKILL UPGRADE: ${skillKey} for ${cost} gold`);
-            
-            // Deduct gold and increase skill
-            const updatedNinja = {
-              ...ninja,
-              gold: ninja.gold - cost,
-              [skillKey]: ninja[skillKey as keyof typeof ninja] + (skillKey === 'maxHealth' || skillKey === 'maxEnergy' ? 10 : 1),
-            };
-            
-            updateNinja(updatedNinja);
-            Alert.alert('Success!', `${skillKey} upgraded with gold!`);
-          },
-        },
-      ]
-    );
-  };
-
-  const handleSkillPointUpgrade = (skillKey: string) => {
-    if (ninja.skillPoints < 1) {
-      Alert.alert('Insufficient Skill Points', 'You need at least 1 skill point to upgrade.');
-      return;
+    console.log(`🚀 BULK ${type} UPGRADE: ${skillKey} x${quantity} for ${cost} ${type.toLowerCase()}`);
+    
+    if (skillUpgradeType === 'skillPoints') {
+      // Skill points upgrade
+      if (trainSkill) {
+        // Use existing trainSkill function multiple times
+        for (let i = 0; i < quantity; i++) {
+          trainSkill(skillKey);
+        }
+      } else {
+        // Manual update for skill points
+        const updatedNinja = {
+          ...ninja,
+          skillPoints: ninja.skillPoints - quantity,
+          [skillKey]: ninja[skillKey as keyof typeof ninja] + (quantity * (skillKey === 'maxHealth' || skillKey === 'maxEnergy' ? 5 : 1)),
+        };
+        updateNinja(updatedNinja);
+      }
+    } else {
+      // Gold upgrade
+      const updatedNinja = {
+        ...ninja,
+        gold: ninja.gold - cost,
+        [skillKey]: ninja[skillKey as keyof typeof ninja] + (quantity * (skillKey === 'maxHealth' || skillKey === 'maxEnergy' ? 10 : 1)),
+      };
+      updateNinja(updatedNinja);
     }
-
-    Alert.alert(
-      'Skill Point Upgrade',
-      'Spend 1 skill point to upgrade this skill?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Upgrade',
-          style: 'default',
-          onPress: () => {
-            console.log(`⚡ SKILL POINT UPGRADE: ${skillKey} for 1 skill point`);
-            
-            // Use trainSkill function if available, otherwise manual update
-            if (trainSkill) {
-              trainSkill(skillKey);
-            } else {
-              const updatedNinja = {
-                ...ninja,
-                skillPoints: ninja.skillPoints - 1,
-                [skillKey]: ninja[skillKey as keyof typeof ninja] + (skillKey === 'maxHealth' || skillKey === 'maxEnergy' ? 5 : 1),
-              };
-              updateNinja(updatedNinja);
-            }
-            
-            Alert.alert('Success!', `${skillKey} upgraded with skill points!`);
-          },
-        },
-      ]
-    );
   };
 
   const renderStatsTab = () => (
