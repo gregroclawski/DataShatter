@@ -107,6 +107,90 @@ export default function NinjaIdleGame() {
   const [ninjaPosition, setNinjaPosition] = useState(initialNinjaPosition);
   const [isAttacking, setIsAttacking] = useState(false);
 
+  // ALL useEffect AND useCallback HOOKS MUST BE HERE - BEFORE ANY CONDITIONAL LOGIC
+  
+  // Level up explosion handler
+  const handleLevelUpExplosion = useCallback(() => {
+    const now = Date.now();
+    const EXPLOSION_COOLDOWN = 5000;
+    
+    if (now - lastExplosionTime < EXPLOSION_COOLDOWN) {
+      console.log('💥 LEVEL UP EXPLOSION on cooldown, skipping...');
+      return;
+    }
+    
+    console.log('💥 LEVEL UP EXPLOSION!');
+    setIsLevelingUp(true);
+    setLastExplosionTime(now);
+    
+    triggerLevelUpExplosion();
+    
+    setTimeout(() => {
+      setIsLevelingUp(false);
+    }, 1000);
+  }, [lastExplosionTime, triggerLevelUpExplosion]);
+
+  const startBossBattle = useCallback((boss: Boss, tier: BossTier) => {
+    console.log('🐉 Starting boss battle:', boss.name, tier.name);
+    setPreviousOverlay(activeOverlay);
+    setActiveOverlay(null);
+    setCurrentBossBattle({ boss, tier });
+    setIsBossBattleActive(true);
+  }, [activeOverlay]);
+
+  const endBossBattle = useCallback(async (victory: boolean) => {
+    console.log('🏆 Boss battle ended:', victory ? 'Victory' : 'Defeat');
+    
+    if (!currentBossBattle) return;
+    
+    setIsBossBattleActive(false);
+    setCurrentBossBattle(null);
+    
+    if (previousOverlay === 'bosses') {
+      setActiveOverlay('bosses');
+    }
+    setPreviousOverlay(null);
+    
+    Alert.alert(
+      victory ? '🏆 Victory!' : '💀 Defeat',
+      victory 
+        ? `You defeated ${currentBossBattle.tier.name}! Check the boss overlay for rewards.`
+        : `${currentBossBattle.tier.name} was too powerful. Try again when stronger!`,
+      [{ text: 'OK' }]
+    );
+  }, [currentBossBattle, previousOverlay]);
+
+  const escapeBossBattle = useCallback(() => {
+    console.log('🏃 Escaping boss battle');
+    
+    setIsBossBattle
+
+Active(false);
+    setCurrentBossBattle(null);
+    
+    if (previousOverlay === 'bosses') {
+      setActiveOverlay('bosses');
+    }
+    setPreviousOverlay(null);
+  }, [previousOverlay]);
+
+  // Toggle between auto and manual movement
+  const toggleMovementMode = useCallback(() => {
+    setIsAutoMovement(prev => {
+      const newMode = !prev;
+      if (newMode) {
+        // Switching to auto movement - stop manual control
+        setIsManualControlActive(false);
+        setMovementDirection({ x: 0, y: 0 });
+        if (movementIntervalRef.current) {
+          clearTimeout(movementIntervalRef.current);
+        }
+      }
+      console.log(`🎮 Movement mode: ${newMode ? 'Auto' : 'Manual'}`);
+      return newMode;
+    });
+  }, []);
+
   // Soft Joystick Movement System - Mobile Optimized
   const translateX = useSharedValue(ninjaPosition.x);
   const translateY = useSharedValue(ninjaPosition.y);
