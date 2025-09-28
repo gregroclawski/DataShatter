@@ -444,6 +444,140 @@ export const ZONES: Zone[] = [
       { level: 5, enemyMultiplier: 12.0, xpMultiplier: 7.0, requiredKills: calculateKillRequirement(11, 5), enemyTypes: ['fire_elemental'] }
     ]
   },
+  {
+    id: 12,
+    name: 'Oasis of Mirages',
+    theme: 'desert',
+    description: 'Desert oases where reality bends in the heat.',
+    minPlayerLevel: 550,
+    maxPlayerLevel: 3600,
+    unlockRequirement: { previousZone: 11 },
+    levels: [
+      { level: 1, enemyMultiplier: 12.5, xpMultiplier: 7.5, requiredKills: calculateKillRequirement(12, 1), enemyTypes: ['fire_elemental'] },
+      { level: 2, enemyMultiplier: 13.0, xpMultiplier: 8.0, requiredKills: calculateKillRequirement(12, 2), enemyTypes: ['fire_elemental', 'desert_bandit'] },
+      { level: 3, enemyMultiplier: 13.5, xpMultiplier: 8.5, requiredKills: calculateKillRequirement(12, 3), enemyTypes: ['desert_bandit', 'crystal_golem'] },
+      { level: 4, enemyMultiplier: 14.0, xpMultiplier: 9.0, requiredKills: calculateKillRequirement(12, 4), enemyTypes: ['crystal_golem'] },
+      { level: 5, enemyMultiplier: 14.5, xpMultiplier: 9.5, requiredKills: calculateKillRequirement(12, 5), enemyTypes: ['crystal_golem', 'fire_elemental'] }
+    ]
+  },
+  {
+    id: 13,
+    name: 'Crystal Caverns',
+    theme: 'desert',
+    description: 'Underground crystal formations beneath the desert sands.',
+    minPlayerLevel: 600,
+    maxPlayerLevel: 3900,
+    unlockRequirement: { previousZone: 12 },
+    levels: [
+      { level: 1, enemyMultiplier: 15.0, xpMultiplier: 10.0, requiredKills: calculateKillRequirement(13, 1), enemyTypes: ['crystal_golem'] },
+      { level: 2, enemyMultiplier: 15.5, xpMultiplier: 10.5, requiredKills: calculateKillRequirement(13, 2), enemyTypes: ['crystal_golem', 'sand_scorpion'] },
+      { level: 3, enemyMultiplier: 16.0, xpMultiplier: 11.0, requiredKills: calculateKillRequirement(13, 3), enemyTypes: ['sand_scorpion', 'fire_elemental'] },
+      { level: 4, enemyMultiplier: 16.5, xpMultiplier: 11.5, requiredKills: calculateKillRequirement(13, 4), enemyTypes: ['fire_elemental'] },
+      { level: 5, enemyMultiplier: 17.0, xpMultiplier: 12.0, requiredKills: calculateKillRequirement(13, 5), enemyTypes: ['crystal_golem'] }
+    ]
+  },
+  {
+    id: 14,
+    name: 'Sandstorm Valley',
+    theme: 'desert',
+    description: 'A valley where eternal sandstorms rage with elemental fury.',
+    minPlayerLevel: 650,
+    maxPlayerLevel: 4200,
+    unlockRequirement: { previousZone: 13 },
+    levels: [
+      { level: 1, enemyMultiplier: 17.5, xpMultiplier: 12.5, requiredKills: calculateKillRequirement(14, 1), enemyTypes: ['fire_elemental', 'desert_bandit'] },
+      { level: 2, enemyMultiplier: 18.0, xpMultiplier: 13.0, requiredKills: calculateKillRequirement(14, 2), enemyTypes: ['desert_bandit', 'sand_scorpion'] },
+      { level: 3, enemyMultiplier: 18.5, xpMultiplier: 13.5, requiredKills: calculateKillRequirement(14, 3), enemyTypes: ['sand_scorpion', 'crystal_golem'] },
+      { level: 4, enemyMultiplier: 19.0, xpMultiplier: 14.0, requiredKills: calculateKillRequirement(14, 4), enemyTypes: ['crystal_golem'] },
+      { level: 5, enemyMultiplier: 19.5, xpMultiplier: 14.5, requiredKills: calculateKillRequirement(14, 5), enemyTypes: ['fire_elemental'] }
+    ]
+  },
+  {
+    id: 15,
+    name: 'Ember Dunes',
+    theme: 'desert',
+    description: 'Dunes that burn with inner fire, home to the fiercest elementals.',
+    minPlayerLevel: 700,
+    maxPlayerLevel: 4500,
+    unlockRequirement: { previousZone: 14 },
+    levels: [
+      { level: 1, enemyMultiplier: 20.0, xpMultiplier: 15.0, requiredKills: calculateKillRequirement(15, 1), enemyTypes: ['fire_elemental'] },
+      { level: 2, enemyMultiplier: 20.5, xpMultiplier: 15.5, requiredKills: calculateKillRequirement(15, 2), enemyTypes: ['fire_elemental', 'crystal_golem'] },
+      { level: 3, enemyMultiplier: 21.0, xpMultiplier: 16.0, requiredKills: calculateKillRequirement(15, 3), enemyTypes: ['crystal_golem', 'desert_bandit'] },
+      { level: 4, enemyMultiplier: 21.5, xpMultiplier: 16.5, requiredKills: calculateKillRequirement(15, 4), enemyTypes: ['fire_elemental'] },
+      { level: 5, enemyMultiplier: 22.0, xpMultiplier: 17.0, requiredKills: calculateKillRequirement(15, 5), enemyTypes: ['fire_elemental'] }
+    ]
+  },
+
+  // Mountain Peaks (Zones 16-30)
+  {
+    id: 16,
+    name: 'Foothills Pass',
+    theme: 'mountain',
+    description: 'Rocky passes leading into the treacherous mountain peaks.',
+    minPlayerLevel: 750,
+    maxPlayerLevel: 4800,
+    unlockRequirement: { previousZone: 15 },
+    levels: [
+      { level: 1, enemyMultiplier: 22.5, xpMultiplier: 17.5, requiredKills: calculateKillRequirement(16, 1), enemyTypes: ['mountain_orc'] },
+      { level: 2, enemyMultiplier: 23.0, xpMultiplier: 18.0, requiredKills: calculateKillRequirement(16, 2), enemyTypes: ['mountain_orc', 'wind_eagle'] },
+      { level: 3, enemyMultiplier: 23.5, xpMultiplier: 18.5, requiredKills: calculateKillRequirement(16, 3), enemyTypes: ['wind_eagle'] },
+      { level: 4, enemyMultiplier: 24.0, xpMultiplier: 19.0, requiredKills: calculateKillRequirement(16, 4), enemyTypes: ['wind_eagle', 'ice_troll'] },
+      { level: 5, enemyMultiplier: 24.5, xpMultiplier: 19.5, requiredKills: calculateKillRequirement(16, 5), enemyTypes: ['ice_troll'] }
+    ]
+  },
+  {
+    id: 17,
+    name: 'Frozen Peaks',
+    theme: 'mountain',
+    description: 'Ice-covered peaks where the cold can freeze the soul.',
+    minPlayerLevel: 800,
+    maxPlayerLevel: 5100,
+    unlockRequirement: { previousZone: 16 },
+    levels: [
+      { level: 1, enemyMultiplier: 25.0, xpMultiplier: 20.0, requiredKills: calculateKillRequirement(17, 1), enemyTypes: ['ice_troll'] },
+      { level: 2, enemyMultiplier: 25.5, xpMultiplier: 20.5, requiredKills: calculateKillRequirement(17, 2), enemyTypes: ['ice_troll', 'mountain_orc'] },
+      { level: 3, enemyMultiplier: 26.0, xpMultiplier: 21.0, requiredKills: calculateKillRequirement(17, 3), enemyTypes: ['mountain_orc', 'stone_giant'] },
+      { level: 4, enemyMultiplier: 26.5, xpMultiplier: 21.5, requiredKills: calculateKillRequirement(17, 4), enemyTypes: ['stone_giant'] },
+      { level: 5, enemyMultiplier: 27.0, xpMultiplier: 22.0, requiredKills: calculateKillRequirement(17, 5), enemyTypes: ['ice_troll'] }
+    ]
+  },
+
+  // Mountain Peaks (Zones 21-30) - Continue with existing zone 21 patterns
+  {
+    id: 21,
+    name: 'Summit of Winds',
+    theme: 'mountain',
+    description: 'The highest peaks where winds carry ancient secrets.',
+    minPlayerLevel: 1200,
+    maxPlayerLevel: 6000,
+    unlockRequirement: { previousZone: 20 },
+    levels: [
+      { level: 1, enemyMultiplier: 35.0, xpMultiplier: 25.0, requiredKills: calculateKillRequirement(21, 1), enemyTypes: ['wind_eagle', 'stone_giant'] },
+      { level: 2, enemyMultiplier: 36.0, xpMultiplier: 26.0, requiredKills: calculateKillRequirement(21, 2), enemyTypes: ['stone_giant', 'ice_troll'] },
+      { level: 3, enemyMultiplier: 37.0, xpMultiplier: 27.0, requiredKills: calculateKillRequirement(21, 3), enemyTypes: ['ice_troll', 'mountain_orc'] },
+      { level: 4, enemyMultiplier: 38.0, xpMultiplier: 28.0, requiredKills: calculateKillRequirement(21, 4), enemyTypes: ['stone_giant'] },
+      { level: 5, enemyMultiplier: 39.0, xpMultiplier: 29.0, requiredKills: calculateKillRequirement(21, 5), enemyTypes: ['wind_eagle'] }
+    ]
+  },
+
+  // Underground Depths (Zones 31-40)
+  {
+    id: 31,
+    name: 'Cavern Entrance',
+    theme: 'underground',
+    description: 'Dark caverns that delve deep beneath the earth.',
+    minPlayerLevel: 2000,
+    maxPlayerLevel: 8000,
+    unlockRequirement: { previousZone: 30 },
+    levels: [
+      { level: 1, enemyMultiplier: 50.0, xpMultiplier: 35.0, requiredKills: calculateKillRequirement(31, 1), enemyTypes: ['cave_spider'] },
+      { level: 2, enemyMultiplier: 52.0, xpMultiplier: 36.0, requiredKills: calculateKillRequirement(31, 2), enemyTypes: ['cave_spider', 'shadow_bat'] },
+      { level: 3, enemyMultiplier: 54.0, xpMultiplier: 37.0, requiredKills: calculateKillRequirement(31, 3), enemyTypes: ['shadow_bat'] },
+      { level: 4, enemyMultiplier: 56.0, xpMultiplier: 38.0, requiredKills: calculateKillRequirement(31, 4), enemyTypes: ['shadow_bat', 'lava_demon'] },
+      { level: 5, enemyMultiplier: 58.0, xpMultiplier: 39.0, requiredKills: calculateKillRequirement(31, 5), enemyTypes: ['lava_demon'] }
+    ]
+  },
   
   // Mystical Planes (Zone 50 as final example)
   {
