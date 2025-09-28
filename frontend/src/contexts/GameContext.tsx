@@ -878,6 +878,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Legacy functions for backward compatibility
+  const saveGame = () => saveGameToServer();
   const loadGame = () => loadGameFromServer();
 
   const value: GameContextType = React.useMemo(() => ({
