@@ -272,6 +272,7 @@ async def save_game(save_request: SaveGameRequest):
             "achievements": save_request.achievements,
             "unlockedFeatures": save_request.unlockedFeatures,
             "zoneProgress": save_request.zoneProgress or {},
+            "equipment": save_request.equipment,  # Add equipment data to save
             "lastSaveTime": datetime.utcnow(),
             "isAlive": True
         }
