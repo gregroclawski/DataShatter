@@ -113,10 +113,10 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
   };
 
   // Render inventory item
-  const renderInventoryItem = (equipment: Equipment) => {
+  const renderInventoryItem = (equipment: Equipment, index?: number) => {
     return (
       <TouchableOpacity
-        key={equipment.id}
+        key={`${equipment.id}_${index}`}
         style={[
           styles.inventoryItem,
           { borderColor: RARITY_CONFIG[equipment.rarity].color }
