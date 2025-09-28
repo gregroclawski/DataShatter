@@ -325,17 +325,77 @@ def test_ability_persistence_system():
     print("\n🎉 ALL ABILITY PERSISTENCE TESTS PASSED!")
     return True
 
-    def log_result(self, category: str, test_name: str, passed: bool, details: str):
-        """Log test result"""
-        if passed:
-            self.results[category]["passed"] += 1
-            status = "✅ PASS"
-        else:
-            self.results[category]["failed"] += 1
-            status = "❌ FAIL"
+def test_backend_logging_verification():
+    """Test to verify backend logging is working for ability data"""
+    print("\n🔍 TESTING BACKEND LOGGING FOR ABILITY DATA")
+    print("=" * 60)
+    
+    test_player_id = str(uuid.uuid4())
+    
+    # Simple ability data for logging test
+    simple_ability_data = {
+        "equippedAbilities": [
+            {"id": "test_ability", "level": 1, "currentCooldown": 0, "lastUsed": 0}
+        ],
+        "availableAbilities": {
+            "test_ability": {
+                "id": "test_ability",
+                "level": 1,
+                "stats": {"baseDamage": 10, "cooldown": 2}
+            }
+        },
+        "activeSynergies": []
+    }
+    
+    save_payload = {
+        "playerId": test_player_id,
+        "ninja": {
+            "level": 5,
+            "experience": 500,
+            "experienceToNext": 600,
+            "health": 100,
+            "maxHealth": 100,
+            "energy": 50,
+            "maxEnergy": 50,
+            "attack": 15,
+            "defense": 8,
+            "speed": 10,
+            "luck": 5,
+            "gold": 200,
+            "gems": 15,
+            "skillPoints": 5
+        },
+        "shurikens": [],
+        "pets": [],
+        "achievements": [],
+        "unlockedFeatures": ["stats"],
+        "zoneProgress": {},
+        "equipment": None,
+        "abilityData": simple_ability_data
+    }
+    
+    print(f"🎯 Testing logging with Player ID: {test_player_id}")
+    print(f"🎯 Ability Data: {simple_ability_data}")
+    print("\n📝 EXPECTED BACKEND LOG:")
+    print(f"   💾 SAVE REQUEST - Ability Data: {simple_ability_data}")
+    
+    try:
+        response = requests.post(f"{BACKEND_URL}/save-game", json=save_payload, timeout=10)
         
-        self.results[category]["details"].append(f"{status}: {test_name} - {details}")
-        print(f"{status}: {test_name} - {details}")
+        if response.status_code == 200:
+            print("\n✅ SAVE REQUEST SUCCESSFUL")
+            print("   Check backend logs for: '💾 SAVE REQUEST - Ability Data: {...}'")
+            print("   If this log is missing, frontend is not sending ability data")
+            print("   If this log is present but abilities still reset, restore logic has issues")
+            return True
+        else:
+            print(f"\n❌ SAVE REQUEST FAILED: {response.status_code}")
+            print(f"   Error: {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"\n❌ LOGGING TEST FAILED: {str(e)}")
+        return False
 
     def test_health_check(self):
         """Test GET /api/ endpoint"""
