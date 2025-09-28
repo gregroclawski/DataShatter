@@ -14,8 +14,9 @@ interface Props {
 }
 
 const NinjaStatsOverlay = ({ onClose }: Props) => {
-  const { gameState, updateNinja, trainSkill } = useGame();
-  const { ninja } = gameState;
+  const { gameState, updateNinja, trainSkill, getEffectiveStats } = useGame();
+  // Use effective stats which include equipment bonuses
+  const ninja = getEffectiveStats();
 
   const StatBar = ({ 
     label, 
