@@ -224,11 +224,37 @@ const CharacterOverlay = ({ onClose }: Props) => {
   const renderSkillsTab = () => (
     <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
       <Text style={styles.sectionTitle}>⚡ Skill Upgrades</Text>
-      <Text style={styles.sectionSubtitle}>Use gold to permanently increase your abilities</Text>
+      
+      {/* Upgrade Type Toggle */}
+      <View style={styles.upgradeToggle}>
+        <TouchableOpacity
+          style={[styles.toggleButton, skillUpgradeType === 'gold' && styles.toggleButtonActive]}
+          onPress={() => setSkillUpgradeType('gold')}
+        >
+          <Ionicons name="diamond" size={18} color={skillUpgradeType === 'gold' ? MythicTechColors.cosmicGold : MythicTechColors.voidSilver} />
+          <Text style={[styles.toggleText, skillUpgradeType === 'gold' && styles.toggleTextActive]}>Gold</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={[styles.toggleButton, skillUpgradeType === 'skillPoints' && styles.toggleButtonActive]}
+          onPress={() => setSkillUpgradeType('skillPoints')}
+        >
+          <Ionicons name="flash" size={18} color={skillUpgradeType === 'skillPoints' ? MythicTechColors.neonPurple : MythicTechColors.voidSilver} />
+          <Text style={[styles.toggleText, skillUpgradeType === 'skillPoints' && styles.toggleTextActive]}>Skill Points</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.sectionSubtitle}>
+        {skillUpgradeType === 'gold' 
+          ? 'Use gold for permanent stat increases (larger bonuses)'
+          : 'Use skill points for smaller but consistent upgrades (3 SP per level)'}
+      </Text>
       
       {skills.map((skill) => {
-        const upgradeCost = getSkillUpgradeCost(skill.current);
-        const canAfford = ninja.gold >= upgradeCost;
+        const upgradeCost = skillUpgradeType === 'gold' ? getSkillUpgradeCost(skill.current) : 1;
+        const canAfford = skillUpgradeType === 'gold' 
+          ? ninja.gold >= upgradeCost 
+          : ninja.skillPoints >= upgradeCost;
 
         return (
           <View key={skill.key} style={styles.skillItem}>
@@ -248,24 +274,43 @@ const CharacterOverlay = ({ onClose }: Props) => {
 
             <View style={styles.skillUpgrade}>
               <View style={styles.costInfo}>
-                <Ionicons name="diamond" size={16} color="#fbbf24" />
-                <Text style={[styles.costText, {color: canAfford ? '#10b981' : '#ef4444'}]}>
-                  {upgradeCost} gold
+                <Ionicons 
+                  name={skillUpgradeType === 'gold' ? 'diamond' : 'flash'} 
+                  size={16} 
+                  color={skillUpgradeType === 'gold' ? MythicTechColors.cosmicGold : MythicTechColors.neonPurple} 
+                />
+                <Text style={[styles.costText, {color: canAfford ? MythicTechColors.success : MythicTechColors.error}]}>
+                  {skillUpgradeType === 'gold' ? `${upgradeCost} gold` : `${upgradeCost} SP`}
                 </Text>
               </View>
 
               <TouchableOpacity
                 style={[styles.upgradeButton, {opacity: canAfford ? 1 : 0.5}]}
-                onPress={() => handleSkillUpgrade(skill.key, upgradeCost)}
+                onPress={() => skillUpgradeType === 'gold' 
+                  ? handleGoldSkillUpgrade(skill.key, upgradeCost)
+                  : handleSkillPointUpgrade(skill.key)}
                 disabled={!canAfford}
               >
-                <Ionicons name="arrow-up" size={16} color="white" />
-                <Text style={styles.upgradeButtonText}>Upgrade</Text>
+                <Ionicons name="arrow-up" size={16} color={MythicTechColors.white} />
+                <Text style={styles.upgradeButtonText}>
+                  {skillUpgradeType === 'gold' ? 'Gold Upgrade' : 'SP Upgrade'}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
         );
       })}
+
+      {/* Resource Info */}
+      <View style={styles.resourceInfo}>
+        <Text style={styles.resourceInfoTitle}>💡 Upgrade Types</Text>
+        <Text style={styles.resourceInfoText}>
+          <Text style={{color: MythicTechColors.cosmicGold, fontWeight: 'bold'}}>Gold Upgrades:</Text> Permanent, larger stat increases. Cost scales with level.
+        </Text>
+        <Text style={styles.resourceInfoText}>
+          <Text style={{color: MythicTechColors.neonPurple, fontWeight: 'bold'}}>Skill Point Upgrades:</Text> Smaller increases, fixed cost of 1 SP. Earned by leveling up (3 per level).
+        </Text>
+      </View>
     </ScrollView>
   );
 
