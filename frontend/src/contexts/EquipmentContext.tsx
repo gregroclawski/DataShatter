@@ -58,17 +58,49 @@ export const useEquipment = () => {
 export const EquipmentProvider = ({ children }: { children: ReactNode }) => {
   const { updateNinja, gameState, updateEquipment } = useGame();
   const { hasMaterials, removeMaterial } = useMaterials();
-  // Initialize empty equipment state
-  const [inventory, setInventory] = useState<EquipmentInventory>({
-    equipped: {
-      [EquipmentSlot.HEAD]: null,
-      [EquipmentSlot.BODY]: null,
-      [EquipmentSlot.WEAPON]: null,
-      [EquipmentSlot.ACCESSORY]: null,
-    },
-    inventory: [],
-    maxInventorySize: 50, // Start with 50 inventory slots
+  // Initialize empty equipment state with GameContext integration
+  const [inventory, setInventory] = useState<EquipmentInventory>(() => {
+    // MOBILE FIX: Initialize with saved equipment data if available
+    const savedEquipment = gameState?.equipment;
+    if (savedEquipment) {
+      console.log('⚔️ Loading saved equipment data:', savedEquipment);
+      return {
+        equipped: savedEquipment.equipped || {
+          [EquipmentSlot.HEAD]: null,
+          [EquipmentSlot.BODY]: null,
+          [EquipmentSlot.WEAPON]: null,
+          [EquipmentSlot.ACCESSORY]: null,
+        },
+        inventory: savedEquipment.inventory || [],
+        maxInventorySize: savedEquipment.maxInventorySize || 50,
+      };
+    } else {
+      console.log('⚔️ No saved equipment data, using defaults');
+      return {
+        equipped: {
+          [EquipmentSlot.HEAD]: null,
+          [EquipmentSlot.BODY]: null,
+          [EquipmentSlot.WEAPON]: null,
+          [EquipmentSlot.ACCESSORY]: null,
+        },
+        inventory: [],
+        maxInventorySize: 50, // Start with 50 inventory slots
+      };
+    }
   });
+
+  // MOBILE FIX: Helper function to sync equipment changes with GameContext
+  const syncEquipmentToGameContext = (newInventory: EquipmentInventory) => {
+    console.log('⚔️ Syncing equipment to GameContext for save:', newInventory);
+    // Defer the sync to prevent React render-phase violations (similar to zone progression fix)
+    setTimeout(() => {
+      updateEquipment({
+        equipped: newInventory.equipped,
+        inventory: newInventory.inventory,
+        maxInventorySize: newInventory.maxInventorySize
+      });
+    }, 0);
+  };
 
   // Calculate total stats from equipped items
   const [totalStats, setTotalStats] = useState<EquipmentStats>({
