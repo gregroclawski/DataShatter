@@ -80,32 +80,68 @@ const CharacterOverlay = ({ onClose }: Props) => {
     },
   ];
 
-  const handleSkillUpgrade = (skillKey: string, cost: number) => {
+  const handleGoldSkillUpgrade = (skillKey: string, cost: number) => {
     if (ninja.gold < cost) {
       Alert.alert('Insufficient Gold', `You need ${cost} gold to upgrade this skill.`);
       return;
     }
 
     Alert.alert(
-      'Upgrade Skill',
-      `Spend ${cost} gold to upgrade this skill?`,
+      'Gold Upgrade',
+      `Spend ${cost} gold to permanently upgrade this skill?`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Upgrade',
           style: 'default',
           onPress: () => {
-            console.log(`💰 SKILL UPGRADE: ${skillKey} for ${cost} gold`);
+            console.log(`💰 GOLD SKILL UPGRADE: ${skillKey} for ${cost} gold`);
             
             // Deduct gold and increase skill
             const updatedNinja = {
               ...ninja,
               gold: ninja.gold - cost,
-              [skillKey]: ninja[skillKey as keyof typeof ninja] + (skillKey === 'health' || skillKey === 'energy' ? 10 : 1),
+              [skillKey]: ninja[skillKey as keyof typeof ninja] + (skillKey === 'maxHealth' || skillKey === 'maxEnergy' ? 10 : 1),
             };
             
             updateNinja(updatedNinja);
-            Alert.alert('Success!', `${skillKey} upgraded!`);
+            Alert.alert('Success!', `${skillKey} upgraded with gold!`);
+          },
+        },
+      ]
+    );
+  };
+
+  const handleSkillPointUpgrade = (skillKey: string) => {
+    if (ninja.skillPoints < 1) {
+      Alert.alert('Insufficient Skill Points', 'You need at least 1 skill point to upgrade.');
+      return;
+    }
+
+    Alert.alert(
+      'Skill Point Upgrade',
+      'Spend 1 skill point to upgrade this skill?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Upgrade',
+          style: 'default',
+          onPress: () => {
+            console.log(`⚡ SKILL POINT UPGRADE: ${skillKey} for 1 skill point`);
+            
+            // Use trainSkill function if available, otherwise manual update
+            if (trainSkill) {
+              trainSkill(skillKey);
+            } else {
+              const updatedNinja = {
+                ...ninja,
+                skillPoints: ninja.skillPoints - 1,
+                [skillKey]: ninja[skillKey as keyof typeof ninja] + (skillKey === 'maxHealth' || skillKey === 'maxEnergy' ? 5 : 1),
+              };
+              updateNinja(updatedNinja);
+            }
+            
+            Alert.alert('Success!', `${skillKey} upgraded with skill points!`);
           },
         },
       ]
