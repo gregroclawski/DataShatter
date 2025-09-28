@@ -250,8 +250,11 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
-    maxHeight: '80%',
+    // MOBILE FIX: Remove fixed maxHeight, let dynamic styling handle it
+    // maxHeight: '80%', -- removed
     minHeight: '50%',
+    // MOBILE FIX: Better flex behavior for full screen coverage
+    flex: 1,
     pointerEvents: 'auto', // Ensure overlay content can receive clicks
   },
   header: {
