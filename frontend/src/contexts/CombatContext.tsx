@@ -693,12 +693,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       console.log('💾 SAVING ABILITY DATA TO GAME CONTEXT:', abilityData);
       
       // Update game state with ability data
-      game.updateGameState((prevState) => ({
-        ...prevState,
-        abilityData: abilityData
-      }));
+      game.updateAbilityData(abilityData);
     }
-  }, [combatState.abilityManager, game.updateGameState]);
+  }, [combatState.abilityManager, game.updateAbilityData]);
 
   const contextValue: CombatContextType = React.useMemo(() => ({
     combatState,
