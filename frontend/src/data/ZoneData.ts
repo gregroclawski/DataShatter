@@ -298,8 +298,6 @@ export const ZONES: Zone[] = [
     ]
   },
 
-  // Add more zones with the same pattern...
-  // Zones 3-10 (Forest Realms continuation)
   {
     id: 3,
     name: 'Shadow Woods',
@@ -316,8 +314,40 @@ export const ZONES: Zone[] = [
       { level: 5, enemyMultiplier: 5.4, xpMultiplier: 2.8, requiredKills: calculateKillRequirement(3, 5), enemyTypes: ['forest_troll', 'ancient_ent'] }
     ]
   },
+  {
+    id: 4,
+    name: 'Ancient Forest',
+    theme: 'forest',
+    description: 'The heart of the forest where ancient guardians protect their domain.',
+    minPlayerLevel: 25,
+    maxPlayerLevel: 1200,
+    unlockRequirement: { previousZone: 3 },
+    levels: [
+      { level: 1, enemyMultiplier: 5.8, xpMultiplier: 3.0, requiredKills: calculateKillRequirement(4, 1), enemyTypes: ['ancient_ent'] },
+      { level: 2, enemyMultiplier: 6.2, xpMultiplier: 3.2, requiredKills: calculateKillRequirement(4, 2), enemyTypes: ['ancient_ent', 'forest_troll'] },
+      { level: 3, enemyMultiplier: 6.6, xpMultiplier: 3.4, requiredKills: calculateKillRequirement(4, 3), enemyTypes: ['forest_troll', 'tree_guardian'] },
+      { level: 4, enemyMultiplier: 7.0, xpMultiplier: 3.6, requiredKills: calculateKillRequirement(4, 4), enemyTypes: ['ancient_ent'] },
+      { level: 5, enemyMultiplier: 7.4, xpMultiplier: 3.8, requiredKills: calculateKillRequirement(4, 5), enemyTypes: ['ancient_ent'] }
+    ]
+  },
+  {
+    id: 5,
+    name: 'Thornwood Thicket',
+    theme: 'forest',
+    description: 'Dense thickets where nature turns hostile.',
+    minPlayerLevel: 35,
+    maxPlayerLevel: 1500,
+    unlockRequirement: { previousZone: 4 },
+    levels: [
+      { level: 1, enemyMultiplier: 7.8, xpMultiplier: 4.0, requiredKills: calculateKillRequirement(5, 1), enemyTypes: ['tree_guardian', 'forest_troll'] },
+      { level: 2, enemyMultiplier: 8.2, xpMultiplier: 4.2, requiredKills: calculateKillRequirement(5, 2), enemyTypes: ['forest_troll', 'ancient_ent'] },
+      { level: 3, enemyMultiplier: 8.6, xpMultiplier: 4.4, requiredKills: calculateKillRequirement(5, 3), enemyTypes: ['ancient_ent'] },
+      { level: 4, enemyMultiplier: 9.0, xpMultiplier: 4.6, requiredKills: calculateKillRequirement(5, 4), enemyTypes: ['ancient_ent', 'shadow_wolf'] },
+      { level: 5, enemyMultiplier: 9.4, xpMultiplier: 4.8, requiredKills: calculateKillRequirement(5, 5), enemyTypes: ['ancient_ent'] }
+    ]
+  },
 
-  // Desert Realms (Zone 11)
+  // Desert Realms (Zones 11-20)
   {
     id: 11,
     name: 'Scorching Desert',
