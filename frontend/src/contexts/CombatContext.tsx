@@ -68,6 +68,8 @@ interface CombatContextType {
   useAbilityManually: (slotIndex: number) => boolean; // Manual ability activation for UI buttons
   // Manual control management
   setManualControlActive: (active: boolean) => void; // Pause/resume combat during manual joystick control
+  // Save ability data
+  saveAbilityData: () => void; // Save ability data to game context
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
