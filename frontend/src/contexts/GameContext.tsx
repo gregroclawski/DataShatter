@@ -322,7 +322,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     return updates;
   };
 
-  const saveGameToServer = async (forceEventSave = false) => {
+  const saveGameToServerWithState = async (currentState: GameState, forceEventSave = false) => {
     if (!isAuthenticated || !user?.id) {
       console.warn('🚫 Cannot save game: user not authenticated');
       return;
@@ -340,33 +340,30 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
 
     // MOBILE OPTIMIZATION: Always save locally first for offline support
-    await saveLocalGameBackup();
+    await saveLocalGameBackupWithState(currentState);
     
-    console.log('✅ SAVE ALWAYS ALLOWED - Removing all blocking logic');
-    console.log('💾 SAVING:', 'Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience, 'Gold:', gameState.ninja.gold, 'Gems:', gameState.ninja.gems);
+    console.log('✅ SAVE WITH CURRENT STATE - Removing stale closure');
+    console.log('💾 SAVING CURRENT STATE:', 'Level:', currentState.ninja.level, 'XP:', currentState.ninja.experience, 'Gold:', currentState.ninja.gold, 'Gems:', currentState.ninja.gems);
     
     // CRITICAL DEBUG: Compare what we're about to save vs what UI displays
     console.log('🔍 CRITICAL STATE COMPARISON:');
-    console.log('  📊 GameContext ninja state (BEING SAVED):', {
-      level: gameState.ninja.level,
-      experience: gameState.ninja.experience, 
-      gold: gameState.ninja.gold,
-      gems: gameState.ninja.gems
+    console.log('  📊 Current ninja state (BEING SAVED):', {
+      level: currentState.ninja.level,
+      experience: currentState.ninja.experience, 
+      gold: currentState.ninja.gold,
+      gems: currentState.ninja.gems
     });
-    
-    // Log the full gameState to verify structure
-    console.log('  🎯 Full gameState structure:', JSON.stringify(gameState, null, 2));
 
     try {
       const now = Date.now();
       const saveData = {
         playerId: user.id,
-        ninja: gameState.ninja,
-        shurikens: gameState.shurikens,
-        pets: gameState.pets,
-        achievements: gameState.achievements,
-        unlockedFeatures: gameState.unlockedFeatures,
-        zoneProgress: gameState.zoneProgress || { 1: { zoneId: 1, currentLevel: 1, killsInLevel: 0, completed: false } },
+        ninja: currentState.ninja,
+        shurikens: currentState.shurikens,
+        pets: currentState.pets,
+        achievements: currentState.achievements,
+        unlockedFeatures: currentState.unlockedFeatures,
+        zoneProgress: currentState.zoneProgress || { 1: { zoneId: 1, currentLevel: 1, killsInLevel: 0, completed: false } },
       };
 
       const response = await fetch(`${API_BASE_URL}/api/save-game`, {
@@ -390,6 +387,11 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       console.error('❌ Server save failed, but local backup completed:', error);
       // Don't throw - local backup ensures progress isn't lost
     }
+  };
+
+  const saveGameToServer = async (forceEventSave = false) => {
+    // Wrapper that uses current gameState (for backwards compatibility)
+    return saveGameToServerWithState(gameState, forceEventSave);
   };
 
   const loadGameFromServer = async () => {
