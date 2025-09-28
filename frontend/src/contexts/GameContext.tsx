@@ -1044,6 +1044,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     loadGame,
     updateZoneProgress,
     updateEquipment,
+    updateAbilityData,
     getEffectiveStats,
     saveOnEvent,
     saveOnMilestone,
