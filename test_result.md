@@ -544,9 +544,9 @@ frontend:
     priority: "medium"
     needs_retesting: true
     status_history:
-        - working: true
-          agent: "main"
-          comment: "ZONES OVERLAY MOBILE LAYOUT FIXED: Root cause identified - overlay had maxHeight: '80%' and overlayWrapper positioned with bottom margin, preventing full screen coverage. FIXES: 1) Added safe area insets import and usage, 2) Dynamic height styling based on platform (90-95% on mobile vs 50-80% on web), 3) Proper safe area bottom padding for iOS, 4) Removed fixed maxHeight constraint and added flex: 1 for full screen behavior, 5) Platform-specific styling for better mobile coverage. Zones overlay should now reach bottom of screen on mobile."
+        - working: false
+          agent: "user"
+          comment: "USER ERROR REPORT: Zones tab opens but shows React Native error 'Text strings must be rendered within a <Text> component.' Need to find and fix bare text strings not wrapped in proper <Text> components in zones overlay."
     status_history:
         - working: false
           agent: "user"
