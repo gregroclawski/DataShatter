@@ -23,6 +23,7 @@ const CharacterOverlay = ({ onClose }: Props) => {
   const insets = useSafeAreaInsets();
   const [selectedTab, setSelectedTab] = useState<'stats' | 'skills'>('stats');
   const [skillUpgradeType, setSkillUpgradeType] = useState<'gold' | 'skillPoints'>('gold');
+  const [upgradeQuantity, setUpgradeQuantity] = useState<1 | 10 | 'max'>(1);
 
   // Skill upgrade costs (gold-based progression)
   const getSkillUpgradeCost = (currentLevel: number) => {
