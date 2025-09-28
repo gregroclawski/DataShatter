@@ -69,11 +69,30 @@ const CharacterOverlay = ({ onClose }: Props) => {
     }
   };
 
+  // Calculate actual skill upgrade levels (separate from final combined stats)
+  const getSkillUpgradeLevel = (skillKey: string) => {
+    const goldUpgrades = ninja.goldUpgrades || { attack: 0, defense: 0, speed: 0, luck: 0, maxHealth: 0, maxEnergy: 0 };
+    const skillPointUpgrades = ninja.skillPointUpgrades || { attack: 0, defense: 0, speed: 0, luck: 0, maxHealth: 0, maxEnergy: 0 };
+    
+    // For health and energy, use maxHealth/maxEnergy keys
+    const actualKey = skillKey === 'health' ? 'maxHealth' : skillKey === 'energy' ? 'maxEnergy' : skillKey;
+    
+    // Total upgrade level = gold upgrades + skill point upgrades
+    const goldLevel = goldUpgrades[actualKey as keyof typeof goldUpgrades] || 0;
+    const spLevel = skillPointUpgrades[actualKey as keyof typeof skillPointUpgrades] || 0;
+    
+    // Convert stat points back to upgrade levels
+    const goldLevels = skillKey === 'health' || skillKey === 'energy' ? Math.floor(goldLevel / 10) : goldLevel;
+    const spLevels = skillKey === 'health' || skillKey === 'energy' ? Math.floor(spLevel / 5) : spLevel;
+    
+    return goldLevels + spLevels;
+  };
+
   const skills = [
     {
       name: 'Attack Power',
       key: 'attack',
-      current: ninja.attack,
+      current: getSkillUpgradeLevel('attack'),
       icon: 'flash' as keyof typeof Ionicons.glyphMap,
       color: '#ef4444',
       description: 'Increases damage dealt in combat',
@@ -81,23 +100,23 @@ const CharacterOverlay = ({ onClose }: Props) => {
     {
       name: 'Defense',
       key: 'defense', 
-      current: ninja.defense,
+      current: getSkillUpgradeLevel('defense'),
       icon: 'shield' as keyof typeof Ionicons.glyphMap,
       color: '#3b82f6',
       description: 'Reduces damage taken from enemies',
     },
     {
       name: 'Health',
-      key: 'health',
-      current: ninja.maxHealth,
+      key: 'maxHealth',
+      current: getSkillUpgradeLevel('health'),
       icon: 'heart' as keyof typeof Ionicons.glyphMap,
       color: '#10b981',
       description: 'Increases maximum health points',
     },
     {
       name: 'Energy',
-      key: 'energy',
-      current: ninja.maxEnergy,
+      key: 'maxEnergy',
+      current: getSkillUpgradeLevel('energy'),
       icon: 'battery-charging' as keyof typeof Ionicons.glyphMap,
       color: '#8b5cf6',
       description: 'Increases maximum energy for abilities',
@@ -105,7 +124,7 @@ const CharacterOverlay = ({ onClose }: Props) => {
     {
       name: 'Speed',
       key: 'speed',
-      current: ninja.speed,
+      current: getSkillUpgradeLevel('speed'),
       icon: 'speedometer' as keyof typeof Ionicons.glyphMap,
       color: '#f59e0b',
       description: 'Improves action speed and evasion',
@@ -113,7 +132,7 @@ const CharacterOverlay = ({ onClose }: Props) => {
     {
       name: 'Luck',
       key: 'luck',
-      current: ninja.luck,
+      current: getSkillUpgradeLevel('luck'),
       icon: 'star' as keyof typeof Ionicons.glyphMap,
       color: '#ec4899',
       description: 'Increases critical hit chance and rare drops',
