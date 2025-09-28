@@ -687,9 +687,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       abilityData
     }));
     
-    // MILESTONE SAVE: Ability changes are critical - save immediately
-    console.log('✨ ABILITY DATA UPDATE - Triggering immediate save');
-    saveOnEvent('ability_change');
+    // ABILITY SAVE: Use deferred save to prevent spam - abilities are saved with regular auto-save
+    console.log('✨ ABILITY DATA UPDATE - Data updated, will save with next auto-save');
   };
 
   const updateNinja = (updates: Partial<NinjaStats> | ((prev: NinjaStats) => Partial<NinjaStats>)) => {
