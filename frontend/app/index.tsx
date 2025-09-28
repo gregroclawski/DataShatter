@@ -163,9 +163,7 @@ export default function NinjaIdleGame() {
   const escapeBossBattle = useCallback(() => {
     console.log('🏃 Escaping boss battle');
     
-    setIsBossBattle
-
-Active(false);
+    setIsBossBattleActive(false);
     setCurrentBossBattle(null);
     
     if (previousOverlay === 'bosses') {
