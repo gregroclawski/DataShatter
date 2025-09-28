@@ -723,18 +723,22 @@ def test_specific_load_game_debugging():
     print("="*80)
 
 def main():
-    """Main test execution - Focus on load-game debugging"""
-    print("🎯 BACKEND LOAD-GAME ENDPOINT DEBUGGING")
-    print("🎯 Focus: Mobile progress persistence issue diagnosis")
-    print("🎯 User ID: c16cbf6f-c1f4-495f-8a58-c94f32653225")
+    """Main test execution - Comprehensive backend testing after zone progression system completion"""
+    print("🎯 BACKEND COMPREHENSIVE TESTING AFTER ZONE PROGRESSION SYSTEM COMPLETION")
+    print("🎯 Focus: Health Check, Authentication, Game Save/Load, Zone Data Processing")
+    print("🎯 Priority: Zone progression data handling in save/load operations")
     
-    # Run specific load-game debugging test
+    # Run comprehensive backend test suite
+    print("\n🚀 RUNNING COMPREHENSIVE BACKEND TEST SUITE:")
+    tester = ComprehensiveBackendTester()
+    success = tester.run_all_tests()
+    
+    # Also run specific load-game debugging test for the user mentioned in review
+    print("\n" + "="*80)
+    print("🔍 ADDITIONAL: Load-game debugging for specific user")
     test_specific_load_game_debugging()
     
-    # Also run basic health check to ensure backend is responsive
-    print("\n🏥 BASIC HEALTH CHECK:")
-    tester = ComprehensiveBackendTester()
-    tester.test_health_check()
+    return success
 
 if __name__ == "__main__":
     main()
