@@ -189,7 +189,7 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
       
       // Get the required kills for current level from zone data
       const currentZoneLevel = currentZone.levels[progress.currentLevel - 1];
-      const requiredKills = currentZoneLevel ? currentZoneLevel.requiredKills : 1000; // fallback to 1000
+      const requiredKills = currentZoneLevel ? currentZoneLevel.requiredKills : calculateKillRequirement(zoneId, progress.currentLevel);
       
       console.log(`📊 Zone ${zoneId} Level ${progress.currentLevel}: ${progress.killsInLevel}/${requiredKills} kills`);
       
