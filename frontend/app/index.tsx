@@ -51,7 +51,7 @@ export default function NinjaIdleGame() {
   
   // CRITICAL: ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
-  const { gameState, isLoading: gameLoading, updateNinja } = useGame();
+  const { gameState, isLoading: gameLoading, updateNinja, getEffectiveStats } = useGame();
   const { combatState, startCombat, stopCombat, triggerLevelUpExplosion, projectiles, updateNinjaPosition, findClosestEnemy, setManualControlActive } = useCombat();
   const { currentZone, currentZoneLevel, getZoneProgress, recordEnemyKill } = useZone();
   
