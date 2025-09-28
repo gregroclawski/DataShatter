@@ -21,7 +21,7 @@ export interface ZoneLevel {
   level: number;
   enemyMultiplier: number; // HP/Attack multiplier for this level
   xpMultiplier: number;
-  requiredKills: number; // Always 1000
+  requiredKills: number; // Scales with zone progression for linear gameplay
   enemyTypes: string[]; // Enemy IDs that spawn in this level
 }
 
