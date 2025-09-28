@@ -269,7 +269,7 @@ export const generateEquipment = (
   });
 
   return {
-    id: `${templateId}_${rarity}_${Date.now()}`,
+    id: `${templateId}_${rarity}_${Date.now()}_${Math.floor(Math.random() * 10000)}`,
     name: template.name,
     slot: template.slot,
     rarity,
