@@ -39,8 +39,8 @@ export default function AbilityDeckOverlay({ visible, onClose }: Props) {
     if (equipAbility(abilityId, slotIndex)) {
       Alert.alert('Success', 'Ability equipped successfully!');
       // Save ability data after equipping
-      if (abilityManager) {
-        const abilityData = abilityManager.getSaveData();
+      if (combatState.abilityManager) {
+        const abilityData = combatState.abilityManager.getSaveData();
         game.updateAbilityData(abilityData);
       }
     } else {
