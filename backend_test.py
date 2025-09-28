@@ -647,7 +647,6 @@ if __name__ == "__main__":
     main()
 
 # Old code removed - replaced with ability persistence tests
-        """Test login with invalid credentials"""
         print("\n=== TESTING INVALID LOGIN REJECTION ===")
         
         try:
