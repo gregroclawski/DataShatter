@@ -150,6 +150,32 @@ const defaultGameState: GameState = {
     gold: 100,
     gems: 10,
     skillPoints: 3, // Start with 3 skill points
+    
+    // Separate stat pools for clear progression tracking
+    baseStats: {
+      attack: 10,
+      defense: 5,
+      speed: 8,
+      luck: 3,
+      maxHealth: 100,
+      maxEnergy: 50,
+    },
+    goldUpgrades: {
+      attack: 0,
+      defense: 0,
+      speed: 0,
+      luck: 0,
+      maxHealth: 0,
+      maxEnergy: 0,
+    },
+    skillPointUpgrades: {
+      attack: 0,
+      defense: 0,
+      speed: 0,
+      luck: 0,
+      maxHealth: 0,
+      maxEnergy: 0,
+    },
   },
   shurikens: [
     {
