@@ -925,52 +925,78 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const saveGame = () => saveGameToServer();
   const loadGame = () => loadGameFromServer();
 
-  // EQUIPMENT INTEGRATION: Calculate effective stats with equipment bonuses
+  // SEPARATE STAT POOLS: Calculate effective stats combining all sources
   const getEffectiveStats = useCallback((): NinjaStats => {
-    const baseStats = gameState.ninja;
+    const ninja = gameState.ninja;
     const equipment = gameState.equipment;
     
-    // If no equipment, return base stats
-    if (!equipment || !equipment.equipped) {
-      return baseStats;
-    }
+    // Initialize with base stats or fallback to current values for existing saves
+    const baseStats = ninja.baseStats || {
+      attack: ninja.attack,
+      defense: ninja.defense,
+      speed: ninja.speed,
+      luck: ninja.luck,
+      maxHealth: ninja.maxHealth,
+      maxEnergy: ninja.maxEnergy,
+    };
+    
+    const goldUpgrades = ninja.goldUpgrades || {
+      attack: 0, defense: 0, speed: 0, luck: 0, maxHealth: 0, maxEnergy: 0,
+    };
+    
+    const skillPointUpgrades = ninja.skillPointUpgrades || {
+      attack: 0, defense: 0, speed: 0, luck: 0, maxHealth: 0, maxEnergy: 0,
+    };
     
     // Calculate equipment bonuses
-    let bonuses = {
-      health: 0,
-      maxHealth: 0,
-      energy: 0,
-      maxEnergy: 0,
+    let equipmentBonuses = {
       attack: 0,
       defense: 0,
       speed: 0,
       luck: 0,
+      maxHealth: 0,
+      maxEnergy: 0,
     };
-    
-    // Apply bonuses from equipped items
-    Object.values(equipment.equipped).forEach(item => {
-      if (item && item.currentStats) {
-        // Map equipment stats to ninja stats
-        if (item.currentStats.hp) bonuses.maxHealth += item.currentStats.hp;
-        if (item.currentStats.attack) bonuses.attack += item.currentStats.attack;
-        if (item.currentStats.defense) bonuses.defense += item.currentStats.defense;
-        if (item.currentStats.speed) bonuses.speed += item.currentStats.speed;
-        if (item.currentStats.luck) bonuses.luck += item.currentStats.luck;
-        if (item.currentStats.energy) bonuses.maxEnergy += item.currentStats.energy;
-      }
-    });
-    
-    // Return ninja stats with equipment bonuses applied
+
+    // Sum up bonuses from all equipped items
+    if (equipment && equipment.equipped) {
+      Object.values(equipment.equipped).forEach((item: any) => {
+        if (item && item.currentStats) {
+          Object.entries(item.currentStats).forEach(([key, value]: [string, any]) => {
+            // Map equipment stat names to ninja stat names
+            const statKey = key === 'hp' ? 'maxHealth' : key;
+            if (equipmentBonuses.hasOwnProperty(statKey)) {
+              equipmentBonuses[statKey as keyof typeof equipmentBonuses] += value;
+            }
+          });
+        }
+      });
+    }
+
+    // Combine all stat sources: Base + Gold Upgrades + Skill Point Upgrades + Equipment
+    const combinedStats = {
+      attack: baseStats.attack + goldUpgrades.attack + skillPointUpgrades.attack + equipmentBonuses.attack,
+      defense: baseStats.defense + goldUpgrades.defense + skillPointUpgrades.defense + equipmentBonuses.defense,
+      speed: baseStats.speed + goldUpgrades.speed + skillPointUpgrades.speed + equipmentBonuses.speed,
+      luck: baseStats.luck + goldUpgrades.luck + skillPointUpgrades.luck + equipmentBonuses.luck,
+      maxHealth: baseStats.maxHealth + goldUpgrades.maxHealth + skillPointUpgrades.maxHealth + equipmentBonuses.maxHealth,
+      maxEnergy: baseStats.maxEnergy + goldUpgrades.maxEnergy + skillPointUpgrades.maxEnergy + equipmentBonuses.maxEnergy,
+    };
+
+    // Return full ninja stats with combined values
     return {
-      ...baseStats,
-      maxHealth: baseStats.maxHealth + bonuses.maxHealth,
-      health: Math.min(baseStats.health + bonuses.health, baseStats.maxHealth + bonuses.maxHealth),
-      maxEnergy: baseStats.maxEnergy + bonuses.maxEnergy,
-      energy: Math.min(baseStats.energy + bonuses.energy, baseStats.maxEnergy + bonuses.maxEnergy),
-      attack: baseStats.attack + bonuses.attack,
-      defense: baseStats.defense + bonuses.defense,
-      speed: baseStats.speed + bonuses.speed,
-      luck: baseStats.luck + bonuses.luck,
+      ...ninja,
+      attack: combinedStats.attack,
+      defense: combinedStats.defense,
+      speed: combinedStats.speed,
+      luck: combinedStats.luck,
+      maxHealth: combinedStats.maxHealth,
+      maxEnergy: combinedStats.maxEnergy,
+      
+      // Add stat breakdown for debugging/display
+      baseStats,
+      goldUpgrades,
+      skillPointUpgrades,
     };
   }, [gameState.ninja, gameState.equipment]);
 
