@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Platform }
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEquipment } from '../contexts/EquipmentContext';
+import { useGame } from '../contexts/GameContext';
 import { Equipment, EquipmentSlot, RARITY_CONFIG } from '../data/EquipmentData';
 
 interface EquipmentOverlayProps {
