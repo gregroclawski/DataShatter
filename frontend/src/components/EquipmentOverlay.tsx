@@ -153,33 +153,44 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
   };
 
   // Render stats summary
-  const renderStatsPanel = () => (
-    <View style={styles.statsPanel}>
-      <Text style={styles.statsPanelTitle}>Equipment Stats</Text>
-      <View style={styles.statsGrid}>
-        <View style={styles.statItem}>
-          <Ionicons name="flash" size={16} color="#ef4444" />
-          <Text style={styles.statValue}>Attack: +{totalStats.attack || 0}</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Ionicons name="heart" size={16} color="#10b981" />
-          <Text style={styles.statValue}>HP: +{totalStats.hp || 0}</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Ionicons name="shield" size={16} color="#3b82f6" />
-          <Text style={styles.statValue}>Defense: +{totalStats.defense || 0}</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Ionicons name="star" size={16} color="#f59e0b" />
-          <Text style={styles.statValue}>Crit: +{totalStats.critChance || 0}%</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Ionicons name="time" size={16} color="#8b5cf6" />
-          <Text style={styles.statValue}>CDR: +{totalStats.cooldownReduction || 0}%</Text>
+  const renderStatsPanel = () => {
+    // Debug logging for stats panel
+    console.log('📊 Stats Panel Debug:', {
+      totalStats,
+      equippedItems: Object.entries(inventory.equipped).map(([slot, item]) => ({
+        slot,
+        item: item ? { name: item.name, currentStats: item.currentStats } : null
+      }))
+    });
+    
+    return (
+      <View style={styles.statsPanel}>
+        <Text style={styles.statsPanelTitle}>Equipment Stats</Text>
+        <View style={styles.statsGrid}>
+          <View style={styles.statItem}>
+            <Ionicons name="flash" size={16} color="#ef4444" />
+            <Text style={styles.statValue}>Attack: +{totalStats.attack || 0}</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Ionicons name="heart" size={16} color="#10b981" />
+            <Text style={styles.statValue}>HP: +{totalStats.hp || 0}</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Ionicons name="shield" size={16} color="#3b82f6" />
+            <Text style={styles.statValue}>Defense: +{totalStats.defense || 0}</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Ionicons name="star" size={16} color="#f59e0b" />
+            <Text style={styles.statValue}>Crit: +{totalStats.critChance || 0}%</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Ionicons name="time" size={16} color="#8b5cf6" />
+            <Text style={styles.statValue}>CDR: +{totalStats.cooldownReduction || 0}%</Text>
+          </View>
         </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return visible ? (
     <View style={[
