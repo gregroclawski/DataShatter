@@ -104,19 +104,18 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     },
   };
   
-  const [combatState, setCombatState] = useState<CombatState>(() => {
-    // Initialize with saved ability data from game context
-    const initialState = { ...initialCombatState };
-    
-    // If we have saved ability data, restore it
-    if (game.gameState.abilityData) {
-      console.log('🔄 RESTORING ABILITY DATA FROM SAVE:', game.gameState.abilityData);
-      initialState.abilityManager = new AbilityManager();
-      initialState.abilityManager.restoreFromSaveData(game.gameState.abilityData);
+  const [combatState, setCombatState] = useState<CombatState>(initialCombatState);
+  
+  // Watch for ability data to become available and restore abilities
+  useEffect(() => {
+    if (game.gameState.abilityData && combatState.abilityManager) {
+      console.log('🔄 RESTORING ABILITY DATA FROM SAVE (DELAYED):', game.gameState.abilityData);
+      combatState.abilityManager.restoreFromSaveData(game.gameState.abilityData);
+      
+      // Force re-render to update UI with restored abilities
+      setCombatState(prev => ({ ...prev }));
     }
-    
-    return initialState;
-  });
+  }, [game.gameState.abilityData, combatState.abilityManager]);
   
   const [projectiles, setProjectiles] = useState<CombatProjectile[]>([]);
   const [lastExplosionTime, setLastExplosionTime] = useState<number>(0);
