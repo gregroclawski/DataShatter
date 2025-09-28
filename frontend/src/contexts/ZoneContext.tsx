@@ -55,12 +55,28 @@ export const useZone = () => {
 export const ZoneProvider = ({ children }: { children: ReactNode }) => {
   const { gameState, updateZoneProgress } = useGame();
   
-  // Zone State
+  // Zone State - Initialize with GameContext data if available
   const [currentZone, setCurrentZone] = useState<Zone | null>(ZONES[0]);
   const [currentZoneLevel, setCurrentZoneLevel] = useState<ZoneLevel | null>(ZONES[0]?.levels[0] || null);
-  const [zoneProgress, setZoneProgress] = useState<Record<number, ZoneProgress>>({
-    1: { zoneId: 1, currentLevel: 1, killsInLevel: 0, completed: false }
+  const [zoneProgress, setZoneProgress] = useState<Record<number, ZoneProgress>>(() => {
+    // MOBILE FIX: Initialize with saved zone progress from GameContext instead of defaults
+    const savedProgress = gameState?.zoneProgress;
+    if (savedProgress && Object.keys(savedProgress).length > 0) {
+      console.log('🗺️ Loading saved zone progress:', savedProgress);
+      return savedProgress;
+    } else {
+      console.log('🗺️ No saved zone progress, using defaults');
+      return { 1: { zoneId: 1, currentLevel: 1, killsInLevel: 0, completed: false } };
+    }
   });
+
+  // MOBILE FIX: Update local zone progress when GameContext zone progress changes (on load)
+  useEffect(() => {
+    if (gameState?.zoneProgress && Object.keys(gameState.zoneProgress).length > 0) {
+      console.log('🔄 Syncing zone progress from GameContext:', gameState.zoneProgress);
+      setZoneProgress(gameState.zoneProgress);
+    }
+  }, [gameState?.zoneProgress]);
 
   // Initialize default zone based on player level
   useEffect(() => {
