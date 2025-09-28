@@ -206,15 +206,47 @@ export default function AbilityDeckOverlay({ visible, onClose }: Props) {
                       ))}
                     </View>
 
-                    {/* Upgrade button */}
+                    {/* Upgrade button and requirements */}
                     {ability.level < ability.maxLevel && (
-                      <TouchableOpacity
-                        style={styles.upgradeBtn}
-                        onPress={() => handleUpgradeAbility(ability.id)}
-                      >
-                        <Ionicons name="arrow-up" size={16} color="#ffffff" />
-                        <Text style={styles.upgradeBtnText}>Upgrade</Text>
-                      </TouchableOpacity>
+                      <View style={styles.upgradeSection}>
+                        {(() => {
+                          const nextUpgrade = ability.upgrades.find(u => u.level === ability.level + 1);
+                          if (!nextUpgrade) return null;
+                          
+                          return (
+                            <View style={styles.upgradeContainer}>
+                              <View style={styles.upgradeRequirements}>
+                                <Text style={styles.upgradeRequirementsTitle}>
+                                  Upgrade to Level {ability.level + 1}:
+                                </Text>
+                                <View style={styles.costContainer}>
+                                  <Ionicons name="logo-bitcoin" size={14} color="#f59e0b" />
+                                  <Text style={styles.costText}>{nextUpgrade.cost.gold.toLocaleString()} Gold</Text>
+                                </View>
+                                {nextUpgrade.cost.materials && Object.entries(nextUpgrade.cost.materials).map(([material, amount]) => (
+                                  <View key={material} style={styles.costContainer}>
+                                    <Ionicons name="diamond" size={14} color="#8b5cf6" />
+                                    <Text style={styles.costText}>{amount} {material}</Text>
+                                  </View>
+                                ))}
+                                <View style={styles.upgradePreview}>
+                                  <Text style={styles.upgradePreviewText}>
+                                    +{Math.round((nextUpgrade.damageMultiplier - 1) * 100)}% Damage, 
+                                    -{nextUpgrade.cooldownReduction}% Cooldown
+                                  </Text>
+                                </View>
+                              </View>
+                              <TouchableOpacity
+                                style={styles.upgradeBtn}
+                                onPress={() => handleUpgradeAbility(ability.id)}
+                              >
+                                <Ionicons name="arrow-up" size={16} color="#ffffff" />
+                                <Text style={styles.upgradeBtnText}>Upgrade</Text>
+                              </TouchableOpacity>
+                            </View>
+                          );
+                        })()}
+                      </View>
                     )}
                   </View>
                 </View>
