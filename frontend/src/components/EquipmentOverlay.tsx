@@ -24,6 +24,7 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
     canUpgrade
   } = useEquipment();
   
+  const insets = useSafeAreaInsets();
   const [selectedTab, setSelectedTab] = useState<'equipped' | 'inventory'>('equipped');
 
   // Test function to generate random equipment (for development)
