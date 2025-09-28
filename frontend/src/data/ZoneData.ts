@@ -1,5 +1,6 @@
-// Zone and Enemy Data for 50-Zone Progression System
-// Each zone has 5 levels, 1000 enemies per level = 250 total levels
+// Zone and Enemy Data for 50-Zone Progression System  
+// Linear progression: Early zones have fewer kills, later zones have more kills
+// Total progression designed for players to reach higher XP zones faster
 
 export interface EnemyType {
   id: string;
