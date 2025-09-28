@@ -180,23 +180,23 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
         <View style={styles.statsGrid}>
           <View style={styles.statItem}>
             <Ionicons name="flash" size={16} color="#ef4444" />
-            <Text style={styles.statValue}>Attack: +{totalStats.attack || 0}</Text>
+            <Text style={styles.statValue}>Attack: +{actualTotalStats.attack || 0}</Text>
           </View>
           <View style={styles.statItem}>
             <Ionicons name="heart" size={16} color="#10b981" />
-            <Text style={styles.statValue}>HP: +{totalStats.hp || 0}</Text>
+            <Text style={styles.statValue}>HP: +{actualTotalStats.hp || 0}</Text>
           </View>
           <View style={styles.statItem}>
             <Ionicons name="shield" size={16} color="#3b82f6" />
-            <Text style={styles.statValue}>Defense: +{totalStats.defense || 0}</Text>
+            <Text style={styles.statValue}>Defense: +{actualTotalStats.defense || 0}</Text>
           </View>
           <View style={styles.statItem}>
             <Ionicons name="star" size={16} color="#f59e0b" />
-            <Text style={styles.statValue}>Crit: +{totalStats.critChance || 0}%</Text>
+            <Text style={styles.statValue}>Crit: +{actualTotalStats.critChance || 0}%</Text>
           </View>
           <View style={styles.statItem}>
             <Ionicons name="time" size={16} color="#8b5cf6" />
-            <Text style={styles.statValue}>CDR: +{totalStats.cooldownReduction || 0}%</Text>
+            <Text style={styles.statValue}>CDR: +{actualTotalStats.cooldownReduction || 0}%</Text>
           </View>
         </View>
       </View>
