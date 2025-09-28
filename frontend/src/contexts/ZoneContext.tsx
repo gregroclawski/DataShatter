@@ -188,9 +188,11 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
       
       newProgress[zoneId] = progress;
       
-      // MOBILE FIX: Update GameContext with zone progress to save to server
-      console.log(`💾 Updating GameContext with zone progress:`, newProgress);
-      updateZoneProgress(newProgress);
+      // MOBILE FIX: Defer GameContext update to prevent cross-component render-phase violations
+      setTimeout(() => {
+        console.log(`💾 Updating GameContext with zone progress:`, newProgress);
+        updateZoneProgress(newProgress);
+      }, 0); // Defer to next event loop to prevent setState-in-render error
       
       return newProgress;
     });
