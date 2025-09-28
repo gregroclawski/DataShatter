@@ -127,7 +127,7 @@ export const EquipmentProvider = ({ children }: { children: ReactNode }) => {
       const currentEquipmentString = JSON.stringify(gameState.equipment);
       const hasEquipmentChanged = currentEquipmentString !== lastSyncedEquipment;
       
-      if (hasEquipmentChanged && lastSyncedEquipment !== '') {
+      if (hasEquipmentChanged) {
         console.log('🔄 EQUIPMENT SYNC: GameContext equipment changed, syncing to EquipmentContext');
         console.log('  - Previous inventory count:', inventory.inventory.length);
         console.log('  - New equipment loaded from server');
