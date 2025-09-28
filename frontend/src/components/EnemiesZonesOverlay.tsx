@@ -154,7 +154,7 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
                   <View style={styles.progressBar}>
                     <View style={styles.progressBarBg}>
                       {(() => {
-                        const requiredKills = zone.levels[progress.currentLevel - 1]?.requiredKills || 1000;
+                        const requiredKills = zone.levels[progress.currentLevel - 1]?.requiredKills || calculateKillRequirement(zone.id, progress.currentLevel);
                         return (
                           <View 
                             style={[
@@ -167,7 +167,7 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
                     </View>
                     <Text style={styles.progressText}>
                       {(() => {
-                        const requiredKills = zone.levels[progress.currentLevel - 1]?.requiredKills || 1000;
+                        const requiredKills = zone.levels[progress.currentLevel - 1]?.requiredKills || calculateKillRequirement(zone.id, progress.currentLevel);
                         return `${progress?.killsInLevel || 0}/${requiredKills} kills (${Math.floor(((progress?.killsInLevel || 0) / requiredKills) * 100)}%)`;
                       })()}
                     </Text>
