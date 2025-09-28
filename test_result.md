@@ -558,6 +558,17 @@ frontend:
         - working: true
           agent: "main"
           comment: "PROJECTILE VISUAL ENHANCEMENT COMPLETED: Enhanced projectile system to show ability-specific icons instead of all stars. IMPLEMENTATION: 1) Extended CombatProjectile interface to include abilityId, abilityName, and abilityIcon fields, 2) Updated createProjectile() function to accept and store ability information with defaults, 3) Modified castAbility() to pass ability data (id, name, icon) to projectile creation, 4) Updated main component projectile rendering to display projectile.abilityIcon instead of hardcoded ⭐. Now projectiles visually represent which ability was used: Basic Shuriken 🌟, Fire Shuriken 🔥, Ice Shuriken ❄️, Poison Shuriken ☠️, Shadow Clone 👥."
+  - task: "Equipment/Inventory Save/Load Issue"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/contexts/EquipmentContext.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "USER REPORT: Equipment and inventory not being saved and loaded on game restart. Need to investigate equipment context integration with main save system, similar to zone progression issue that was recently fixed."
     status_history:
         - working: false
           agent: "user"
