@@ -78,6 +78,23 @@ export default function NinjaIdleGame() {
   // Mobile-compatible projectile animation system
   const [animatedProjectiles, setAnimatedProjectiles] = useState<any[]>([]);
   
+  // Memoize dynamic styles to prevent inline object recreation causing infinite loops
+  const ninjaFontStyle = useMemo(() => ({
+    fontSize: layout.ninjaSize * 0.6
+  }), [layout.ninjaSize]);
+  
+  const enemyFontStyle = useMemo(() => ({
+    fontSize: layout.enemySize * 0.6
+  }), [layout.enemySize]);
+  
+  // Helper function to get enemy health bar width (memoized per enemy)
+  const getEnemyHealthWidth = useCallback((enemy: any) => ({
+    width: `${Math.max(0, Math.min(100, (enemy.health / enemy.maxHealth) * 100))}%`
+  }), []);
+
+  // EQUIPMENT INTEGRATION: Use effective stats (base + equipment bonuses) for display
+  const testNinja = useMemo(() => getEffectiveStats(), [getEffectiveStats]);
+  
   // Memoize ninja position calculation to prevent infinite re-renders on mobile
   const initialNinjaPosition = useMemo(() => ({
     x: (layout.screenWidth - layout.ninjaSize) / 2, // Center horizontally
