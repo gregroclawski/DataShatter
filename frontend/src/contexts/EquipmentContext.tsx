@@ -26,7 +26,7 @@ interface EquipmentContextType {
   totalStats: EquipmentStats;
   
   // Equipment Management
-  equipItem: (equipment: Equipment) => boolean;
+  equipItem: (equipment: Equipment, fromInventory?: boolean) => boolean;
   unequipItem: (slot: EquipmentSlot) => boolean;
   addToInventory: (equipment: Equipment) => boolean;
   removeFromInventory: (equipmentId: string) => boolean;
