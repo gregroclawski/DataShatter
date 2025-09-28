@@ -432,10 +432,12 @@ export class AbilityManager {
       if (saveData.availableAbilities) {
         Object.entries(saveData.availableAbilities).forEach(([id, savedAbility]: [string, any]) => {
           const baseAbility = this.availableAbilities.get(id);
-          if (baseAbility && savedAbility.level > 1) {
-            // Apply upgrades to reach saved level
-            for (let level = 1; level < savedAbility.level; level++) {
-              this.upgradeAbility(id);
+          if (baseAbility && savedAbility.level) {
+            console.log(`🔧 RESTORING ABILITY: ${id} to level ${savedAbility.level}`);
+            // Directly restore the level and stats without requiring resources
+            baseAbility.level = savedAbility.level;
+            if (savedAbility.stats) {
+              baseAbility.stats = { ...savedAbility.stats };
             }
           }
         });
