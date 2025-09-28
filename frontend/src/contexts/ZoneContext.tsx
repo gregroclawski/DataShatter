@@ -187,6 +187,11 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
       }
       
       newProgress[zoneId] = progress;
+      
+      // MOBILE FIX: Update GameContext with zone progress to save to server
+      console.log(`💾 Updating GameContext with zone progress:`, newProgress);
+      updateZoneProgress(newProgress);
+      
       return newProgress;
     });
   };
