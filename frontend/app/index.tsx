@@ -475,7 +475,10 @@ export default function NinjaIdleGame() {
         {/* Zone Info */}
         <View style={styles.zoneInfo}>
           <Text style={styles.zoneText}>
-            Zone {currentZone?.id || 1} - Level {currentZoneLevel?.levelNumber || 1}
+            Zone {currentZone?.id || 1} - Level {(() => {
+              const zoneProgress = getZoneProgress(currentZone?.id || 1);
+              return zoneProgress?.currentLevel || 1;
+            })()}
           </Text>
           <Text style={styles.killsText}>
             Kills: {(() => {
