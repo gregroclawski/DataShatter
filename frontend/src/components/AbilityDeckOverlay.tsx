@@ -20,6 +20,7 @@ interface Props {
 
 export default function AbilityDeckOverlay({ visible, onClose }: Props) {
   const { getDeck, getAvailableAbilities, equipAbility, upgradeAbility } = useCombat();
+  const game = useGame();
   const deck = getDeck();
   const availableAbilities = getAvailableAbilities();
 
