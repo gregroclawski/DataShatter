@@ -113,6 +113,7 @@ interface GameContextType {
   saveGame: () => void;
   loadGame: () => void;
   updateZoneProgress: (zoneProgress: Record<number, any>) => void;
+  updateEquipment: (equipment: {equipped: Record<string, any>; inventory: any[]; maxInventorySize: number}) => void; // For equipment saves
   saveOnEvent: (eventType: string) => void;
   saveOnMilestone: (milestoneType: string) => void;
 }
