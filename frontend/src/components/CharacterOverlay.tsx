@@ -233,6 +233,18 @@ const CharacterOverlay = ({ onClose }: Props) => {
     <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
       <Text style={styles.sectionTitle}>⚡ Skill Upgrades</Text>
       
+      {/* Current Resources Display */}
+      <View style={styles.resourceDisplay}>
+        <View style={styles.resourceDisplayItem}>
+          <Ionicons name="diamond" size={20} color={MythicTechColors.cosmicGold} />
+          <Text style={styles.resourceDisplayText}>Gold: {ninja.gold.toLocaleString()}</Text>
+        </View>
+        <View style={styles.resourceDisplayItem}>
+          <Ionicons name="flash" size={20} color={MythicTechColors.neonPurple} />
+          <Text style={styles.resourceDisplayText}>Skill Points: {ninja.skillPoints}</Text>
+        </View>
+      </View>
+      
       {/* Upgrade Type Toggle */}
       <View style={styles.upgradeToggle}>
         <TouchableOpacity
@@ -250,6 +262,24 @@ const CharacterOverlay = ({ onClose }: Props) => {
           <Ionicons name="flash" size={18} color={skillUpgradeType === 'skillPoints' ? MythicTechColors.neonPurple : MythicTechColors.voidSilver} />
           <Text style={[styles.toggleText, skillUpgradeType === 'skillPoints' && styles.toggleTextActive]}>Skill Points</Text>
         </TouchableOpacity>
+      </View>
+
+      {/* Quantity Selector */}
+      <View style={styles.quantitySelector}>
+        <Text style={styles.quantitySelectorTitle}>Upgrade Quantity:</Text>
+        <View style={styles.quantityButtons}>
+          {([1, 10, 'max'] as const).map((qty) => (
+            <TouchableOpacity
+              key={qty}
+              style={[styles.quantityButton, upgradeQuantity === qty && styles.quantityButtonActive]}
+              onPress={() => setUpgradeQuantity(qty)}
+            >
+              <Text style={[styles.quantityButtonText, upgradeQuantity === qty && styles.quantityButtonTextActive]}>
+                {qty === 'max' ? 'MAX' : `x${qty}`}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
 
       <Text style={styles.sectionSubtitle}>
