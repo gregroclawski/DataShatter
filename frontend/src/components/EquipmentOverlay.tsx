@@ -172,7 +172,15 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
   );
 
   return visible ? (
-    <View style={styles.container}>
+    <View style={[
+      styles.container,
+      {
+        // MOBILE FIX: Use full available height with proper safe area handling
+        paddingBottom: Platform.OS === 'ios' ? insets.bottom : 16,
+        minHeight: Platform.OS !== 'web' ? '90%' : '50%', // Increase mobile coverage
+        maxHeight: Platform.OS !== 'web' ? '95%' : '80%', // Allow more height on mobile
+      }
+    ]}>
       <View style={styles.header}>
         <Text style={styles.title}>Equipment</Text>
         <View style={styles.headerButtons}>
