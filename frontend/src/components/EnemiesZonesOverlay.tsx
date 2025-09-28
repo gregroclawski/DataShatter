@@ -141,7 +141,7 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
                   </Text>
                 </View>
                 
-                {progress && progress.currentLevel === levelNumber && (
+                {progress && progress.currentLevel === levelNumber && progress.killsInLevel > 0 && (
                   <View style={styles.progressBar}>
                     <View style={styles.progressBarBg}>
                       <View 
