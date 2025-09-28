@@ -21,21 +21,309 @@ from datetime import datetime
 # Get backend URL from frontend env
 BACKEND_URL = "https://gear-master.preview.emergentagent.com/api"
 
-class ComprehensiveBackendTester:
-    def __init__(self):
-        self.session = requests.Session()
-        self.access_token = None
-        self.session_cookies = None
-        self.test_user_id = None
-        self.test_user_email = f"ninja_master_{uuid.uuid4().hex[:8]}@example.com"
-        self.test_user_password = "SecureNinja123!"
-        self.test_user_name = "Ninja Master Tester"
-        self.results = {
-            "health_check": {"passed": 0, "failed": 0, "details": []},
-            "authentication": {"passed": 0, "failed": 0, "details": []},
-            "game_progression": {"passed": 0, "failed": 0, "details": []},
-            "game_systems": {"passed": 0, "failed": 0, "details": []},
-        }
+def test_ability_persistence_system():
+    """Test the complete ability persistence system"""
+    print("🧪 TESTING ABILITY PERSISTENCE SYSTEM")
+    print("=" * 60)
+    
+    # Test data with realistic ability data structure
+    test_player_id = str(uuid.uuid4())
+    
+    # Realistic ability data structure based on typical game systems
+    test_ability_data = {
+        "equippedAbilities": [
+            {
+                "id": "basic_shuriken",
+                "level": 3,
+                "currentCooldown": 0,
+                "lastUsed": 0
+            },
+            {
+                "id": "fire_shuriken", 
+                "level": 2,
+                "currentCooldown": 0,
+                "lastUsed": 0
+            },
+            {
+                "id": "ice_shuriken",
+                "level": 1,
+                "currentCooldown": 0,
+                "lastUsed": 0
+            },
+            {
+                "id": "whirlwind_strike",
+                "level": 2,
+                "currentCooldown": 0,
+                "lastUsed": 0
+            },
+            {
+                "id": "shadow_clone",
+                "level": 1,
+                "currentCooldown": 0,
+                "lastUsed": 0
+            }
+        ],
+        "availableAbilities": {
+            "basic_shuriken": {
+                "id": "basic_shuriken",
+                "level": 3,
+                "stats": {
+                    "baseDamage": 42,
+                    "cooldown": 1.71,
+                    "range": 150
+                }
+            },
+            "fire_shuriken": {
+                "id": "fire_shuriken",
+                "level": 2,
+                "stats": {
+                    "baseDamage": 30,
+                    "cooldown": 2.8,
+                    "range": 150,
+                    "duration": 5
+                }
+            },
+            "ice_shuriken": {
+                "id": "ice_shuriken",
+                "level": 1,
+                "stats": {
+                    "baseDamage": 18,
+                    "cooldown": 2.5,
+                    "range": 150,
+                    "duration": 3
+                }
+            },
+            "whirlwind_strike": {
+                "id": "whirlwind_strike",
+                "level": 2,
+                "stats": {
+                    "baseDamage": 56,
+                    "cooldown": 7.04,
+                    "aoeRadius": 500
+                }
+            },
+            "shadow_clone": {
+                "id": "shadow_clone",
+                "level": 1,
+                "stats": {
+                    "baseDamage": 0,
+                    "cooldown": 15,
+                    "duration": 30
+                }
+            }
+        },
+        "activeSynergies": []
+    }
+    
+    # Test ninja data
+    test_ninja_data = {
+        "level": 15,
+        "experience": 2250,
+        "experienceToNext": 1600,
+        "health": 150,
+        "maxHealth": 150,
+        "energy": 75,
+        "maxEnergy": 75,
+        "attack": 25,
+        "defense": 12,
+        "speed": 18,
+        "luck": 8,
+        "gold": 500,
+        "gems": 25,
+        "skillPoints": 15
+    }
+    
+    print(f"🎯 Testing with Player ID: {test_player_id}")
+    print(f"🎯 Ability Data Structure: {len(test_ability_data['equippedAbilities'])} equipped abilities")
+    print(f"🎯 Available Abilities: {len(test_ability_data['availableAbilities'])} total abilities")
+    
+    # Test 1: Save game with ability data
+    print("\n📤 TEST 1: SAVE GAME WITH ABILITY DATA")
+    print("-" * 40)
+    
+    save_payload = {
+        "playerId": test_player_id,
+        "ninja": test_ninja_data,
+        "shurikens": [],
+        "pets": [],
+        "achievements": ["first_kill", "level_10"],
+        "unlockedFeatures": ["stats", "shurikens", "abilities"],
+        "zoneProgress": {"currentZone": 3, "totalKills": 45},
+        "equipment": {"helmet": "Basic Helmet", "armor": "Leather Vest"},
+        "abilityData": test_ability_data
+    }
+    
+    try:
+        response = requests.post(f"{BACKEND_URL}/save-game", json=save_payload, timeout=10)
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            result = response.json()
+            print("✅ SAVE SUCCESS")
+            print(f"   - Saved Player ID: {result.get('playerId')}")
+            print(f"   - Ninja Level: {result.get('ninja', {}).get('level')}")
+            print(f"   - Ability Data Present: {'abilityData' in result}")
+            if 'abilityData' in result and result['abilityData']:
+                equipped_abilities = result['abilityData'].get('equippedAbilities', [])
+                available_abilities = result['abilityData'].get('availableAbilities', {})
+                print(f"   - Equipped Abilities Saved: {len(equipped_abilities)}")
+                print(f"   - Available Abilities Saved: {len(available_abilities)}")
+        else:
+            print(f"❌ SAVE FAILED: {response.status_code}")
+            print(f"   Error: {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ SAVE REQUEST FAILED: {str(e)}")
+        return False
+    
+    # Test 2: Load game and verify ability data
+    print("\n📥 TEST 2: LOAD GAME AND VERIFY ABILITY DATA")
+    print("-" * 40)
+    
+    try:
+        response = requests.get(f"{BACKEND_URL}/load-game/{test_player_id}", timeout=10)
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            result = response.json()
+            if result is None:
+                print("❌ LOAD FAILED: No save data found")
+                return False
+                
+            print("✅ LOAD SUCCESS")
+            print(f"   - Loaded Player ID: {result.get('playerId')}")
+            print(f"   - Ninja Level: {result.get('ninja', {}).get('level')}")
+            
+            # Verify ability data integrity
+            loaded_ability_data = result.get('abilityData')
+            if loaded_ability_data:
+                print("✅ ABILITY DATA FOUND IN LOADED GAME")
+                
+                # Check equipped abilities
+                equipped_abilities = loaded_ability_data.get('equippedAbilities', [])
+                print(f"   - Equipped Abilities Loaded: {len(equipped_abilities)}")
+                
+                # Check available abilities
+                available_abilities = loaded_ability_data.get('availableAbilities', {})
+                print(f"   - Available Abilities Loaded: {len(available_abilities)}")
+                
+                # Verify specific ability data
+                for i, ability in enumerate(equipped_abilities):
+                    ability_id = ability.get('id', 'Unknown')
+                    ability_level = ability.get('level', 0)
+                    print(f"   - Equipped {i+1}: {ability_id} (Level {ability_level})")
+                
+                # Compare with original data
+                original_equipped = test_ability_data['equippedAbilities']
+                if len(equipped_abilities) == len(original_equipped):
+                    print("✅ EQUIPPED ABILITY COUNT MATCHES")
+                    
+                    # Check each equipped ability
+                    data_matches = True
+                    for orig, loaded in zip(original_equipped, equipped_abilities):
+                        if (orig['id'] != loaded.get('id') or 
+                            orig['level'] != loaded.get('level')):
+                            print(f"❌ ABILITY DATA MISMATCH: {orig['id']}")
+                            data_matches = False
+                    
+                    if data_matches:
+                        print("✅ ALL EQUIPPED ABILITY DATA MATCHES ORIGINAL")
+                    else:
+                        print("❌ SOME EQUIPPED ABILITY DATA DOESN'T MATCH")
+                        return False
+                else:
+                    print(f"❌ EQUIPPED ABILITY COUNT MISMATCH: Expected {len(original_equipped)}, Got {len(equipped_abilities)}")
+                    return False
+                    
+            else:
+                print("❌ NO ABILITY DATA IN LOADED GAME")
+                print("   This indicates ability data is not being saved or loaded properly")
+                return False
+                
+        else:
+            print(f"❌ LOAD FAILED: {response.status_code}")
+            print(f"   Error: {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ LOAD REQUEST FAILED: {str(e)}")
+        return False
+    
+    # Test 3: Update ability data and verify persistence
+    print("\n🔄 TEST 3: UPDATE ABILITY DATA AND VERIFY PERSISTENCE")
+    print("-" * 40)
+    
+    # Modify ability data (level up abilities)
+    updated_ability_data = test_ability_data.copy()
+    updated_ability_data['equippedAbilities'][0]['level'] = 4  # Level up Basic Shuriken
+    updated_ability_data['equippedAbilities'][1]['level'] = 3  # Level up Fire Shuriken
+    updated_ability_data['availableAbilities']['basic_shuriken']['level'] = 4
+    updated_ability_data['availableAbilities']['basic_shuriken']['stats']['baseDamage'] = 56
+    updated_ability_data['availableAbilities']['fire_shuriken']['level'] = 3
+    updated_ability_data['availableAbilities']['fire_shuriken']['stats']['baseDamage'] = 40
+    
+    # Update ninja level too
+    updated_ninja_data = test_ninja_data.copy()
+    updated_ninja_data['level'] = 16
+    updated_ninja_data['experience'] = 2500
+    
+    update_payload = {
+        "playerId": test_player_id,
+        "ninja": updated_ninja_data,
+        "shurikens": [],
+        "pets": [],
+        "achievements": ["first_kill", "level_10", "level_15"],
+        "unlockedFeatures": ["stats", "shurikens", "abilities"],
+        "zoneProgress": {"currentZone": 4, "totalKills": 67},
+        "equipment": {"helmet": "Iron Helmet", "armor": "Chain Mail"},
+        "abilityData": updated_ability_data
+    }
+    
+    try:
+        # Save updated data
+        response = requests.post(f"{BACKEND_URL}/save-game", json=update_payload, timeout=10)
+        if response.status_code != 200:
+            print(f"❌ UPDATE SAVE FAILED: {response.status_code}")
+            return False
+        
+        print("✅ UPDATE SAVE SUCCESS")
+        
+        # Load and verify updated data
+        response = requests.get(f"{BACKEND_URL}/load-game/{test_player_id}", timeout=10)
+        if response.status_code != 200:
+            print(f"❌ UPDATE LOAD FAILED: {response.status_code}")
+            return False
+            
+        result = response.json()
+        loaded_ability_data = result.get('abilityData')
+        
+        if loaded_ability_data:
+            # Check if updates persisted
+            equipped_abilities = loaded_ability_data.get('equippedAbilities', [])
+            basic_shuriken = equipped_abilities[0] if equipped_abilities else {}
+            fire_shuriken = equipped_abilities[1] if len(equipped_abilities) > 1 else {}
+            
+            if (basic_shuriken.get('level') == 4 and 
+                fire_shuriken.get('level') == 3):
+                print("✅ ABILITY UPDATES PERSISTED CORRECTLY")
+                print(f"   - Basic Shuriken Level: {basic_shuriken.get('level')} (Expected: 4)")
+                print(f"   - Fire Shuriken Level: {fire_shuriken.get('level')} (Expected: 3)")
+            else:
+                print("❌ ABILITY UPDATES NOT PERSISTED")
+                print(f"   - Basic Shuriken Level: {basic_shuriken.get('level')} (Expected: 4)")
+                print(f"   - Fire Shuriken Level: {fire_shuriken.get('level')} (Expected: 3)")
+                return False
+        else:
+            print("❌ NO ABILITY DATA AFTER UPDATE")
+            return False
+            
+    except Exception as e:
+        print(f"❌ UPDATE TEST FAILED: {str(e)}")
+        return False
+    
+    print("\n🎉 ALL ABILITY PERSISTENCE TESTS PASSED!")
+    return True
 
     def log_result(self, category: str, test_name: str, passed: bool, details: str):
         """Log test result"""
