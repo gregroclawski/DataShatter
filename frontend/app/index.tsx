@@ -345,14 +345,6 @@ Active(false);
 
   // MOBILE FIX: Joystick system removed to debug crashes
 
-  // Use useRef to track previous position and prevent infinite loops
-  const previousLayoutRef = useRef({
-    screenWidth: layout.screenWidth,
-    gameAreaHeight: layout.gameAreaHeight,
-    ninjaSize: layout.ninjaSize,
-    paddingXL: layout.paddingXL
-  });
-
   // Authentication flow - AFTER all hooks are declared
   console.log('🔍 MAIN COMPONENT - Authentication Check:');
   console.log('  - authLoading:', authLoading);
