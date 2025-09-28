@@ -547,6 +547,17 @@ frontend:
         - working: true
           agent: "main"
           comment: "EXACT TEXT RENDERING ERROR FOUND & FIXED: Root cause identified - malformed JSX comment on line 209 was rendering comment text directly. Issue: ')} {/* Show first 10 zones for now */}' - the comment was outside JSX syntax, causing React Native to render comment text as bare text. FIXED: Moved JSX comment to proper line position. This was the exact source of 'Text strings must be rendered within <Text> component' error."
+  - task: "Projectile Visual Representation by Ability"
+    implemented: false
+    working: false
+    file: "/app/frontend/app/index.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "USER ENHANCEMENT REQUEST: Change projectile rendering to show which ability was used instead of all projectiles showing as stars. Need to investigate projectile creation, ability tracking, and visual rendering system to show ability-specific icons (🌟🔥❄️☠️👥)."
     status_history:
         - working: false
           agent: "user"
