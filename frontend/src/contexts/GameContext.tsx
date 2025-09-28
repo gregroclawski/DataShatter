@@ -219,6 +219,11 @@ const defaultGameState: GameState = {
   isAlive: true,
   achievements: [],
   unlockedFeatures: ['stats', 'shurikens'],
+  abilityData: {
+    equippedAbilities: [], // Empty - will be populated by AbilityManager defaults
+    availableAbilities: {}, // Empty - will be populated by AbilityManager defaults
+    activeSynergies: [], // No synergies initially
+  },
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
