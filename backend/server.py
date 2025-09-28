@@ -241,6 +241,7 @@ class SaveGameRequest(BaseModel):
     achievements: List[str] = []
     unlockedFeatures: List[str] = []
     zoneProgress: Optional[Dict[str, Any]] = {}
+    equipment: Optional[Dict[str, Any]] = None  # Equipment and inventory data
 
 # API Routes
 @api_router.get("/")
