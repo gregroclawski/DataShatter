@@ -25,6 +25,15 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
     canUpgrade
   } = useEquipment();
   
+  // CONTEXT SYNC FIX: Use GameContext for calculating totalStats to fix synchronization
+  const { gameState } = useGame();
+  const { calculateTotalStats } = require('../data/EquipmentData');
+  
+  // Calculate totalStats from GameContext equipment (single source of truth)
+  const actualTotalStats = gameState?.equipment?.equipped 
+    ? calculateTotalStats(gameState.equipment.equipped)
+    : totalStats;
+  
   const insets = useSafeAreaInsets();
   const [selectedTab, setSelectedTab] = useState<'equipped' | 'inventory'>('equipped');
 
