@@ -167,6 +167,7 @@ export const EquipmentOverlay: React.FC<EquipmentOverlayProps> = ({ visible, onC
     // Debug logging for stats panel
     console.log('📊 Stats Panel Debug:', {
       totalStats,
+      actualTotalStats,
       equippedItems: Object.entries(inventory.equipped).map(([slot, item]) => ({
         slot,
         item: item ? { name: item.name, currentStats: item.currentStats } : null
