@@ -289,10 +289,8 @@ const CharacterOverlay = ({ onClose }: Props) => {
       </Text>
       
       {skills.map((skill) => {
-        const upgradeCost = skillUpgradeType === 'gold' ? getSkillUpgradeCost(skill.current) : 1;
-        const canAfford = skillUpgradeType === 'gold' 
-          ? ninja.gold >= upgradeCost 
-          : ninja.skillPoints >= upgradeCost;
+        const { cost, quantity, type } = calculateUpgradeCost(skill, upgradeQuantity);
+        const canAfford = quantity > 0;
 
         return (
           <View key={skill.key} style={styles.skillItem}>
@@ -318,20 +316,23 @@ const CharacterOverlay = ({ onClose }: Props) => {
                   color={skillUpgradeType === 'gold' ? MythicTechColors.cosmicGold : MythicTechColors.neonPurple} 
                 />
                 <Text style={[styles.costText, {color: canAfford ? MythicTechColors.success : MythicTechColors.error}]}>
-                  {skillUpgradeType === 'gold' ? `${upgradeCost} gold` : `${upgradeCost} SP`}
+                  {cost.toLocaleString()} {type === 'SP' ? 'SP' : 'Gold'}
                 </Text>
+                {quantity !== (upgradeQuantity === 'max' ? quantity : upgradeQuantity) && (
+                  <Text style={styles.quantityText}>
+                    ({quantity}x available)
+                  </Text>
+                )}
               </View>
 
               <TouchableOpacity
                 style={[styles.upgradeButton, {opacity: canAfford ? 1 : 0.5}]}
-                onPress={() => skillUpgradeType === 'gold' 
-                  ? handleGoldSkillUpgrade(skill.key, upgradeCost)
-                  : handleSkillPointUpgrade(skill.key)}
+                onPress={() => handleBulkUpgrade(skill.key, skill)}
                 disabled={!canAfford}
               >
                 <Ionicons name="arrow-up" size={16} color={MythicTechColors.white} />
                 <Text style={styles.upgradeButtonText}>
-                  {skillUpgradeType === 'gold' ? 'Gold Upgrade' : 'SP Upgrade'}
+                  +{quantity}
                 </Text>
               </TouchableOpacity>
             </View>
