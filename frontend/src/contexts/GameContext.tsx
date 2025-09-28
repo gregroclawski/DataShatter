@@ -207,14 +207,12 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isAuthenticated, user]);
 
-  // Auto-save system - MOBILE FIX: Add loading guard to prevent saving default data
+  // Auto-save system - MOBILE FIX: Use state callback pattern to prevent stale closures
   useEffect(() => {
     console.log('🔍 Auto-save useEffect check:', {
       isAuthenticated,
       hasUser: !!user,
       hasLoadedFromServer,
-      gameStateLevel: gameState.ninja.level,
-      gameStateXP: gameState.ninja.experience
     });
     
     // CRITICAL: Don't start auto-save until game data has loaded
@@ -230,16 +228,27 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     console.log('⏰ Starting auto-save system - user authenticated and game data loaded');
     
     const interval = setInterval(() => {
-      console.log('⏰ Auto-save triggered - Level:', gameState.ninja.level, 'XP:', gameState.ninja.experience, 'Auth:', isAuthenticated);
-      saveGameToServer();
-      collectIdleRewards();
+      // MOBILE FIX: Use state callback to read current state at execution time, not closure creation time
+      setGameState(currentState => {
+        console.log('⏰ Auto-save triggered - Level:', currentState.ninja.level, 'XP:', currentState.ninja.experience);
+        
+        // Save the current state (not stale closure state)
+        if (isAuthenticated && user) {
+          // Pass current state to save function to avoid stale closure
+          saveGameToServerWithState(currentState);
+          collectIdleRewardsWithState(currentState);
+        }
+        
+        // Return state unchanged
+        return currentState;
+      });
     }, Platform.OS === 'web' ? 10000 : 30000); // MOBILE OPTIMIZATION: 30 seconds on mobile to prevent performance issues
 
     return () => {
       console.log('🛑 Auto-save interval cleared');
       clearInterval(interval);
     };
-  }, [isAuthenticated, user, gameState, hasLoadedFromServer]); // CRITICAL FIX: Add hasLoadedFromServer to prevent stale closure bug AND premature auto-saves
+  }, [isAuthenticated, user, hasLoadedFromServer]); // CRITICAL FIX: Remove gameState from deps to prevent interval recreation
 
   // Event-driven saves - Save on important game events
   const saveOnEvent = useCallback((eventType: string) => {
