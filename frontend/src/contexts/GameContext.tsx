@@ -1069,6 +1069,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     loadGame,
     updateZoneProgress,
     updateEquipment, // MOBILE FIX: Add equipment update function to dependencies
+    updateAbilityData,
     getEffectiveStats,
     saveOnEvent,
     saveOnMilestone,
