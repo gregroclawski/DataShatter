@@ -256,10 +256,10 @@ export const ZONES: Zone[] = [
   },
   {
     id: 2,
-    name: 'Darkwood Grove',
-    theme: 'Forest',
-    description: 'Shadows dance between ancient trees',
-    minPlayerLevel: 300,
+    name: 'Whispering Grove',
+    theme: 'forest',
+    description: 'Deeper into the forest where ancient spirits dwell.',
+    minPlayerLevel: 8,
     maxPlayerLevel: 600,
     unlockRequirement: { previousZone: 1 },
     levels: [
@@ -271,13 +271,32 @@ export const ZONES: Zone[] = [
     ]
   },
 
-  // Desert Kingdoms (Zones 11-12 as examples)
+  // Add more zones with the same pattern...
+  // Zones 3-10 (Forest Realms continuation)
+  {
+    id: 3,
+    name: 'Shadow Woods',
+    theme: 'forest',
+    description: 'Dark woods where shadows come alive.',
+    minPlayerLevel: 15,
+    maxPlayerLevel: 900,
+    unlockRequirement: { previousZone: 2 },
+    levels: [
+      { level: 1, enemyMultiplier: 3.8, xpMultiplier: 2.0, requiredKills: calculateKillRequirement(3, 1), enemyTypes: ['shadow_wolf', 'dark_sprite'] },
+      { level: 2, enemyMultiplier: 4.2, xpMultiplier: 2.2, requiredKills: calculateKillRequirement(3, 2), enemyTypes: ['shadow_wolf', 'tree_guardian'] },
+      { level: 3, enemyMultiplier: 4.6, xpMultiplier: 2.4, requiredKills: calculateKillRequirement(3, 3), enemyTypes: ['tree_guardian', 'forest_troll'] },
+      { level: 4, enemyMultiplier: 5.0, xpMultiplier: 2.6, requiredKills: calculateKillRequirement(3, 4), enemyTypes: ['forest_troll'] },
+      { level: 5, enemyMultiplier: 5.4, xpMultiplier: 2.8, requiredKills: calculateKillRequirement(3, 5), enemyTypes: ['forest_troll', 'ancient_ent'] }
+    ]
+  },
+
+  // Desert Realms (Zone 11)
   {
     id: 11,
-    name: 'Burning Sands',
-    theme: 'Desert',
-    description: 'Endless dunes hide deadly predators',
-    minPlayerLevel: 3000,
+    name: 'Scorching Desert',
+    theme: 'desert',
+    description: 'Vast dunes where fire elementals and desert predators roam.',
+    minPlayerLevel: 500,
     maxPlayerLevel: 3300,
     unlockRequirement: { previousZone: 10 },
     levels: [
