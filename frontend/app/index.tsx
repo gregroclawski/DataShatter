@@ -478,7 +478,12 @@ export default function NinjaIdleGame() {
             Zone {currentZone?.id || 1} - Level {currentZoneLevel?.levelNumber || 1}
           </Text>
           <Text style={styles.killsText}>
-            Kills: {getZoneProgress(currentZone?.id || 1)?.killsInLevel || 0}/1000
+            Kills: {(() => {
+              const zoneProgress = getZoneProgress(currentZone?.id || 1);
+              const currentLevel = zoneProgress?.currentLevel || 1;
+              const requiredKills = currentZoneLevel?.requiredKills || calculateKillRequirement(currentZone?.id || 1, currentLevel);
+              return `${zoneProgress?.killsInLevel || 0}/${requiredKills}`;
+            })()}
           </Text>
         </View>
 
