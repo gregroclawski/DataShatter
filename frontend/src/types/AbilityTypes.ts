@@ -192,7 +192,7 @@ export const BASE_ABILITIES: Ability[] = [
     stats: {
       baseDamage: 40,
       cooldown: 8.0,
-      aoeRadius: 100,
+      aoeRadius: 500, // Increased 5x from 100 to 500
     },
     upgrades: [
       { level: 2, damageMultiplier: 1.4, cooldownReduction: 12, cost: { gold: 2000 } },
