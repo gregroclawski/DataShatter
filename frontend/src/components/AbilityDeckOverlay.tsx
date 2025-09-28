@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCombat } from '../contexts/CombatContext';
+import { useGame } from '../contexts/GameContext';
 import { Ability, AbilityRarity } from '../types/AbilityTypes';
 
 interface Props {
