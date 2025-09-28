@@ -86,6 +86,11 @@ export interface GameState {
   achievements: string[];
   unlockedFeatures: string[];
   zoneProgress?: Record<number, any>; // Zone progression data
+  equipment?: {
+    equipped: Record<string, any>; // Equipment slot -> Equipment mapping
+    inventory: any[]; // Array of unequipped equipment
+    maxInventorySize: number;
+  }; // Equipment and inventory data
 }
 
 interface GameContextType {
