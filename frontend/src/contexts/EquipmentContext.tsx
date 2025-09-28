@@ -154,23 +154,30 @@ export const EquipmentProvider = ({ children }: { children: ReactNode }) => {
 
   // Unequip an item and move it to inventory
   const unequipItem = (slot: EquipmentSlot): boolean => {
+    const currentItem = inventory.equipped[slot];
+    if (!currentItem) return false;
+    
+    // Check inventory space
+    if (inventory.inventory.length >= inventory.maxInventorySize) {
+      console.log('❌ Cannot unequip: inventory full');
+      return false;
+    }
+    
     setInventory(prev => {
-      const currentEquipped = prev.equipped[slot];
-      if (!currentEquipped) {
-        return prev; // Nothing to unequip
-      }
+      const newInventory = {
+        ...prev,
+        equipped: {
+          ...prev.equipped,
+          [slot]: null
+        },
+        inventory: [...prev.inventory, currentItem]
+      };
       
-      // Check inventory space
-      if (prev.inventory.length >= prev.maxInventorySize) {
-        console.log('❌ Cannot unequip: inventory full');
-        return prev;
-      }
+      console.log(`⚔️ Unequipped ${currentItem.name} from ${slot} slot`);
       
-      const newInventory = { ...prev };
-      newInventory.equipped[slot] = null;
-      newInventory.inventory.push(currentEquipped);
+      // MOBILE FIX: Sync equipment changes to GameContext for saving
+      syncEquipmentToGameContext(newInventory);
       
-      console.log(`📦 Unequipped ${currentEquipped.name} from ${slot} slot`);
       return newInventory;
     });
     
