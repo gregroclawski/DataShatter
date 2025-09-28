@@ -455,4 +455,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 8,
   },
+  equippedItemStats: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginTop: 4,
+  },
+  equippedStatText: {
+    fontSize: 9,
+    color: '#10b981',
+    fontWeight: '500',
+  },
 });
