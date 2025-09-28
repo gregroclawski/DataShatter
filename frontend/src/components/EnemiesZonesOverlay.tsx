@@ -206,7 +206,8 @@ export const EnemiesZonesOverlay: React.FC<EnemiesZonesOverlayProps> = ({ visibl
                 <View key={zone.id}>
                   {renderZoneCard(zone)}
                 </View>
-              ))} {/* Show first 10 zones for now */}
+              ))}
+              {/* Show first 10 zones for now */}
             </View>
           )}
         </ScrollView>
