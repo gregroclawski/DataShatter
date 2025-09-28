@@ -299,11 +299,11 @@ export const ZONES: Zone[] = [
     maxPlayerLevel: 15000,
     unlockRequirement: { previousZone: 49, bossDefeated: true },
     levels: [
-      { level: 1, enemyMultiplier: 100.0, xpMultiplier: 50.0, requiredKills: 1000, enemyTypes: ['void_stalker'] },
-      { level: 2, enemyMultiplier: 120.0, xpMultiplier: 60.0, requiredKills: 1000, enemyTypes: ['void_stalker', 'celestial_guardian'] },
-      { level: 3, enemyMultiplier: 140.0, xpMultiplier: 70.0, requiredKills: 1000, enemyTypes: ['celestial_guardian', 'chaos_lord'] },
-      { level: 4, enemyMultiplier: 160.0, xpMultiplier: 80.0, requiredKills: 1000, enemyTypes: ['chaos_lord'] },
-      { level: 5, enemyMultiplier: 200.0, xpMultiplier: 100.0, requiredKills: 1000, enemyTypes: ['ancient_dragon'] }
+      { level: 1, enemyMultiplier: 100.0, xpMultiplier: 50.0, requiredKills: calculateKillRequirement(50, 1), enemyTypes: ['void_stalker'] },
+      { level: 2, enemyMultiplier: 120.0, xpMultiplier: 60.0, requiredKills: calculateKillRequirement(50, 2), enemyTypes: ['void_stalker', 'celestial_guardian'] },
+      { level: 3, enemyMultiplier: 140.0, xpMultiplier: 70.0, requiredKills: calculateKillRequirement(50, 3), enemyTypes: ['celestial_guardian', 'chaos_lord'] },
+      { level: 4, enemyMultiplier: 160.0, xpMultiplier: 80.0, requiredKills: calculateKillRequirement(50, 4), enemyTypes: ['chaos_lord'] },
+      { level: 5, enemyMultiplier: 200.0, xpMultiplier: 100.0, requiredKills: calculateKillRequirement(50, 5), enemyTypes: ['ancient_dragon'] }
     ]
   }
 ];
