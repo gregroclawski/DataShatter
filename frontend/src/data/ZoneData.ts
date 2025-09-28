@@ -247,11 +247,11 @@ export const ZONES: Zone[] = [
     maxPlayerLevel: 300,
     unlockRequirement: {},
     levels: [
-      { level: 1, enemyMultiplier: 1.0, xpMultiplier: 1.0, requiredKills: 1000, enemyTypes: ['forest_goblin'] },
-      { level: 2, enemyMultiplier: 1.2, xpMultiplier: 1.1, requiredKills: 1000, enemyTypes: ['forest_goblin', 'wild_wolf'] },
-      { level: 3, enemyMultiplier: 1.4, xpMultiplier: 1.2, requiredKills: 1000, enemyTypes: ['wild_wolf'] },
-      { level: 4, enemyMultiplier: 1.6, xpMultiplier: 1.3, requiredKills: 1000, enemyTypes: ['wild_wolf', 'tree_guardian'] },
-      { level: 5, enemyMultiplier: 1.8, xpMultiplier: 1.4, requiredKills: 1000, enemyTypes: ['tree_guardian'] }
+      { level: 1, enemyMultiplier: 1.0, xpMultiplier: 1.0, requiredKills: calculateKillRequirement(1, 1), enemyTypes: ['forest_goblin'] },
+      { level: 2, enemyMultiplier: 1.2, xpMultiplier: 1.1, requiredKills: calculateKillRequirement(1, 2), enemyTypes: ['forest_goblin', 'wild_wolf'] },
+      { level: 3, enemyMultiplier: 1.4, xpMultiplier: 1.2, requiredKills: calculateKillRequirement(1, 3), enemyTypes: ['wild_wolf'] },
+      { level: 4, enemyMultiplier: 1.6, xpMultiplier: 1.3, requiredKills: calculateKillRequirement(1, 4), enemyTypes: ['wild_wolf', 'tree_guardian'] },
+      { level: 5, enemyMultiplier: 1.8, xpMultiplier: 1.4, requiredKills: calculateKillRequirement(1, 5), enemyTypes: ['tree_guardian'] }
     ]
   },
   {
