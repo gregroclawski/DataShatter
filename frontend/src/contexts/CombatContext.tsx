@@ -146,7 +146,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     const dropMultiplier = game.gameState.subscriptionBenefits?.drop_multiplier || 1.0;
     
     const xpReward = Math.floor(baseXpReward * xpMultiplier);
-    const goldReward = Math.floor(10 * dropMultiplier);
+    const goldReward = Math.floor(1000 * dropMultiplier); // 100X GOLD BOOST (was 10, now 1000)
     
     console.log(`💰 MOBILE DEBUG - Awarding ${xpReward} XP and ${goldReward} gold for kill`);
     console.log(`🔍 SUBSCRIPTION DEBUG - XP Multiplier: ${xpMultiplier}, Drop Multiplier: ${dropMultiplier}`);
