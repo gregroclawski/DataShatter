@@ -13,6 +13,12 @@ interface CombatState {
   statusEffects: StatusEffectManager;
   playerStats: CombatStats;
   lastSpawnTime?: number;
+  shadowClone?: {
+    id: string;
+    remainingTicks: number;
+    position: { x: number; y: number };
+    damageMultiplier: number; // 0.7 for 70% damage
+  };
 }
 
 interface CombatEnemy {
