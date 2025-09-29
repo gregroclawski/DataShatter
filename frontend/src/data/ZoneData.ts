@@ -1,6 +1,6 @@
-// Zone and Enemy Data for 50-Zone Progression System  
-// Proper scaling for level 1-15,000 progression
-// Each zone provides meaningful advancement toward max level
+// Zone and Enemy Data for 10-Zone Aggressive Progression System  
+// Aggressive scaling for level 1-15,000 progression
+// Each zone covers 1,500 levels with exponential difficulty scaling
 
 export interface EnemyType {
   id: string;
