@@ -362,7 +362,10 @@ const CharacterOverlay = ({ onClose }: Props) => {
               </View>
               
               <View style={styles.skillLevel}>
-                <Text style={styles.skillLevelText}>Lv. {skill.current}</Text>
+                <Text style={styles.skillLevelText}>Total: Lv. {skill.current}</Text>
+                <Text style={styles.skillSubLevel}>
+                  💰{skill.goldLevels} + ⚡{skill.skillPointLevels}
+                </Text>
               </View>
             </View>
 
