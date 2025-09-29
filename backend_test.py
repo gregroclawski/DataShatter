@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend Testing for Projectile and XP System Diagnosis
-Tests backend functionality and diagnoses projectile/XP issues
+Backend API Testing Suite for Revival System Integration
+Tests all core functionality including the new reviveTickets field
 """
 
 import asyncio
@@ -10,12 +10,14 @@ import json
 import uuid
 from datetime import datetime
 import os
+from dotenv import load_dotenv
 
-# Get backend URL from environment
+# Load environment variables
+load_dotenv('/app/frontend/.env')
 BACKEND_URL = os.getenv('EXPO_PUBLIC_BACKEND_URL', 'https://rpg-rebalance.preview.emergentagent.com')
 API_BASE = f"{BACKEND_URL}/api"
 
-class ProjectileXPDiagnosisTester:
+class RevivalSystemTester:
     def __init__(self):
         self.session = None
         self.test_user_id = None
