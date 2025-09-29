@@ -150,6 +150,7 @@ interface GameContextType {
   getEffectiveStats: () => NinjaStats; // Get ninja stats with equipment bonuses applied
   saveOnEvent: (eventType: string) => void;
   saveOnMilestone: (milestoneType: string) => void;
+  loadSubscriptionBenefits: () => Promise<void>;
 }
 
 const defaultGameState: GameState = {
