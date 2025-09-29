@@ -140,7 +140,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     console.log(`🗡️  MOBILE DEBUG - handleEnemyKill CALLED for enemy:`, enemy.id);
     
     // Award XP and gold directly using useGame hook
-    const xpReward = 20; // Base XP reward per kill
+    const xpReward = 60; // TRIPLED Base XP reward per kill (was 20, now 60 for data recovery)
     const goldReward = 10;
     
     console.log(`💰 MOBILE DEBUG - Awarding ${xpReward} XP and ${goldReward} gold for kill`);
