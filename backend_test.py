@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
 """
-URGENT DATA RECOVERY CHECK - Backend API Testing
-Critical Issue: User reports Level 40 character data reset to default after event-driven saves
+Backend API Testing Suite for Subscription System
+Tests all subscription endpoints with authentication
 
-CRITICAL REVIEW REQUEST:
-1. Test /api/load-game endpoint for user ID: 4ccda8a0-4b37-47c2-9171-d2dfe8d9a4f4
-2. Check if database still contains Level 40 character with:
-   - skillPointUpgrades with attack: 75, speed: 30
-   - goldUpgrades data
-   - High level progression (Level 40+)
-   - Equipment data (Flame Sword)
-   - Ability data with Shadow Clone level 2
-3. Verify what the load-game endpoint returns
-4. Check if user's progress is still in database or actually lost
+REVIEW REQUEST:
+1. Test /api/subscriptions/active endpoint - should return empty list initially
+2. Test /api/subscriptions/benefits endpoint - should return default multipliers (1.0 for all)
+3. Test /api/subscriptions/purchase endpoint with both subscription types:
+   - xp_drop_boost subscription ($40, 30 days)
+   - zone_progression_boost subscription ($40, 30 days)
+4. After purchase, verify:
+   - /api/subscriptions/active shows the purchased subscription
+   - /api/subscriptions/benefits returns correct multipliers (2.0 for subscribed features)
+5. Test duplicate purchase prevention (should fail if already subscribed)
 
-This is a critical data recovery check to determine if user's progress exists.
+Focus on:
+- Authentication working correctly for all subscription endpoints
+- Proper server-time tracking of subscription start/end dates
+- Correct subscription benefits/multipliers being returned
+- Database persistence of subscription data
 """
 
 import requests
