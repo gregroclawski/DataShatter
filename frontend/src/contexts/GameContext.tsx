@@ -265,6 +265,14 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   const API_BASE_URL = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
 
+  // Debug API URL to help diagnose network issues
+  useEffect(() => {
+    console.log('🔧 GameContext API Configuration:');
+    console.log('  - Constants.expoConfig?.extra?.backendUrl:', Constants.expoConfig?.extra?.backendUrl);
+    console.log('  - process.env.EXPO_PUBLIC_BACKEND_URL:', process.env.EXPO_PUBLIC_BACKEND_URL);
+    console.log('  - Final API_BASE_URL:', API_BASE_URL);
+  }, [API_BASE_URL]);
+
   // Debug authentication state changes
   useEffect(() => {
     console.log('🔍 GAMECONTEXT AUTH STATE CHANGE:');
