@@ -472,27 +472,66 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     }, 500);
   };
 
-  // Spawn a test enemy
+  // Spawn a zone-based enemy using the selected zone
   const spawnTestEnemy = (state: CombatState) => {
-    // Get screen dimensions for proper positioning
-    const SCREEN_WIDTH = 390; // Mobile width
-    const GAME_AREA_HEIGHT = 844 - 140; // Smaller top bar + compact abilities bar // Screen height minus bottom tabs
+    console.log(`🎯 SPAWNING ENEMY: Attempting to spawn enemy from selected zone`);
+    
+    // Get zone enemy from ZoneContext
+    const zoneEnemy = spawnZoneEnemy();
+    if (!zoneEnemy) {
+      console.log(`❌ No zone enemy available - falling back to test enemy`);
+      // Fallback to basic test enemy if zone system fails
+      spawnBasicTestEnemy(state);
+      return;
+    }
+    
+    console.log(`🎯 ZONE ENEMY SPAWNED: ${zoneEnemy.name} (${zoneEnemy.typeId}) from Zone ${currentZone?.id} Level ${currentZoneLevel?.level}`);
+    
+    // Convert zone enemy to combat enemy format
+    const combatEnemy: CombatEnemy = {
+      id: zoneEnemy.id,
+      name: zoneEnemy.name,
+      health: zoneEnemy.hp,
+      maxHealth: zoneEnemy.maxHP,
+      stats: {
+        attack: zoneEnemy.attack,
+        defense: 10, // Default defense
+        health: zoneEnemy.hp,
+        maxHealth: zoneEnemy.maxHP,
+        critChance: 5,
+        critDamage: 120,
+        cooldownReduction: 0,
+      },
+      position: zoneEnemy.position,
+      lastDamaged: 0,
+      // Store zone info for kill tracking
+      zoneTypeId: zoneEnemy.typeId,
+      zoneXP: zoneEnemy.xp,
+    };
+    
+    console.log(`🐛 Added zone enemy: ${combatEnemy.name} with ${combatEnemy.health} HP at Zone ${currentZone?.id} Level ${currentZoneLevel?.level}`);
+    state.enemies.push(combatEnemy);
+  };
+  
+  // Fallback basic enemy spawner
+  const spawnBasicTestEnemy = (state: CombatState) => {
+    const SCREEN_WIDTH = 390;
+    const GAME_AREA_HEIGHT = 844 - 140;
     const ENEMY_SIZE = 35;
     
-    // Random position within game area bounds (like ninja positioning)
-    const x = Math.random() * (SCREEN_WIDTH - ENEMY_SIZE * 2) + ENEMY_SIZE; // Avoid edges
-    const y = Math.random() * (GAME_AREA_HEIGHT - ENEMY_SIZE * 2) + ENEMY_SIZE; // Avoid edges
+    const x = Math.random() * (SCREEN_WIDTH - ENEMY_SIZE * 2) + ENEMY_SIZE;
+    const y = Math.random() * (GAME_AREA_HEIGHT - ENEMY_SIZE * 2) + ENEMY_SIZE;
     
     const enemy: CombatEnemy = {
-      id: `enemy_${++enemyCounter}`,
-      name: 'Test Orc',
-      health: 100,
-      maxHealth: 100,
+      id: `fallback_enemy_${Date.now()}_${Math.random()}`,
+      name: `Test Orc ${Math.floor(Math.random() * 100)}`,
+      health: 50,
+      maxHealth: 50,
       stats: {
-        attack: 30,
+        attack: 15,
         defense: 10,
-        health: 100,
-        maxHealth: 100,
+        health: 50,
+        maxHealth: 50,
         critChance: 5,
         critDamage: 120,
         cooldownReduction: 0,
@@ -501,6 +540,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       lastDamaged: 0,
     };
     
+    console.log(`🐛 Fallback: Spawned ${enemy.name} at (${Math.round(x)}, ${Math.round(y)})`);
     state.enemies.push(enemy);
   };
 
