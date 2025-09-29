@@ -181,6 +181,7 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
     if (!currentZone || !currentZoneLevel) return;
 
     console.log(`💀 ${enemy.name} killed! +${enemy.xp} XP`);
+    console.log(`🎯 KILL TRACKING: Recording kill for SELECTED Zone ${currentZone.id} Level ${currentZoneLevel.level}`);
     
     setZoneProgress(prev => {
       const newProgress = { ...prev };
