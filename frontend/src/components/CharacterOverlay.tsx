@@ -182,8 +182,8 @@ const CharacterOverlay = ({ onClose }: Props) => {
     };
     
     if (skillUpgradeType === 'skillPoints') {
-      // Update skill point upgrades pool
-      const upgrade = quantity * (skillKey === 'maxHealth' || skillKey === 'maxEnergy' ? 5 : 1);
+      // Skill Point upgrades are MORE BENEFICIAL: 3x stat gain (15x for health/energy)
+      const upgrade = quantity * (skillKey === 'maxHealth' || skillKey === 'maxEnergy' ? 15 : 3);
       
       const updatedNinja = {
         ...ninja,
@@ -197,7 +197,7 @@ const CharacterOverlay = ({ onClose }: Props) => {
       };
       updateNinja(updatedNinja);
     } else {
-      // Update gold upgrades pool
+      // Gold upgrades are LESS BENEFICIAL: 1x stat gain (10x for health/energy)
       const upgrade = quantity * (skillKey === 'maxHealth' || skillKey === 'maxEnergy' ? 10 : 1);
       
       const updatedNinja = {
