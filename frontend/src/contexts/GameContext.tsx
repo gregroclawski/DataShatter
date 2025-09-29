@@ -526,6 +526,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           zoneProgress: savedData.zoneProgress || { 1: { zoneId: 1, currentLevel: 1, killsInLevel: 0, completed: false } },
           equipment: savedData.equipment || defaultGameState.equipment,
           abilityData: savedData.abilityData || defaultGameState.abilityData,
+          subscriptionBenefits: savedData.subscriptionBenefits || defaultGameState.subscriptionBenefits,
         };
         
         console.log('🎯 SETTING GAME STATE TO:');
