@@ -112,7 +112,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🧌',
     baseHP: 50,
     baseAttack: 22,
-    baseXP: 90, // TRIPLED from 30 to 90
+    baseXP: 180, // 6X from original 30 (tripled to 90, now doubled to 180)
   },
   'stone_giant': {
     id: 'stone_giant',
@@ -120,7 +120,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🗿',
     baseHP: 80,
     baseAttack: 28,
-    baseXP: 120, // TRIPLED from 40 to 120
+    baseXP: 240, // 6X from original 40 (tripled to 120, now doubled to 240)
   },
   'fire_drake': {
     id: 'fire_drake',
@@ -128,7 +128,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐉',
     baseHP: 60,
     baseAttack: 35,
-    baseXP: 150, // TRIPLED from 50 to 150
+    baseXP: 300, // 6X from original 50 (tripled to 150, now doubled to 300)
     resistances: { fire: 0.8, ice: -0.5 }
   },
   'rock_golem': {
@@ -137,7 +137,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🪨',
     baseHP: 100,
     baseAttack: 30,
-    baseXP: 135, // TRIPLED from 45 to 135
+    baseXP: 270, // 6X from original 45 (tripled to 135, now doubled to 270)
     resistances: { physical: 0.4 }
   },
 
@@ -148,7 +148,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🦂',
     baseHP: 45,
     baseAttack: 45,
-    baseXP: 180, // TRIPLED from 60 to 180
+    baseXP: 360, // 6X from original 60 (tripled to 180, now doubled to 360)
   },
   'ice_wraith': {
     id: 'ice_wraith',
@@ -156,7 +156,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👻',
     baseHP: 55,
     baseAttack: 40,
-    baseXP: 210, // TRIPLED from 70 to 210
+    baseXP: 420, // 6X from original 70 (tripled to 210, now doubled to 420)
     resistances: { ice: 0.6, fire: -0.3 }
   },
   'crystal_spider': {
@@ -165,7 +165,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🕷️',
     baseHP: 65,
     baseAttack: 55,
-    baseXP: 195, // TRIPLED from 65 to 195
+    baseXP: 390, // 6X from original 65 (tripled to 195, now doubled to 390)
   },
   'desert_basilisk': {
     id: 'desert_basilisk',
@@ -173,7 +173,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐍',
     baseHP: 70,
     baseAttack: 50,
-    baseXP: 240, // TRIPLED from 80 to 240
+    baseXP: 480, // 6X from original 80 (tripled to 240, now doubled to 480)
     resistances: { physical: 0.5 }
   },
 
@@ -184,7 +184,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🔥',
     baseHP: 80,
     baseAttack: 60,
-    baseXP: 255, // TRIPLED from 85 to 255
+    baseXP: 510, // 6X from original 85 (tripled to 255, now doubled to 510)
   },
   'lava_beast': {
     id: 'lava_beast',
@@ -192,7 +192,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🦏',
     baseHP: 90,
     baseAttack: 70,
-    baseXP: 270, // TRIPLED from 90 to 270
+    baseXP: 540, // 6X from original 90 (tripled to 270, now doubled to 540)
   },
   'inferno_dragon': {
     id: 'inferno_dragon',
@@ -200,7 +200,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐲',
     baseHP: 120,
     baseAttack: 75,
-    baseXP: 300, // TRIPLED from 100 to 300
+    baseXP: 600, // 6X from original 100 (tripled to 300, now doubled to 600)
     resistances: { fire: 0.7 }
   },
   'phoenix_guardian': {
@@ -209,7 +209,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🔥🦅',
     baseHP: 100,
     baseAttack: 80,
-    baseXP: 330, // TRIPLED from 110 to 330
+    baseXP: 660, // 6X from original 110 (tripled to 330, now doubled to 660)
     resistances: { magic: 0.4 }
   },
 
@@ -220,7 +220,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👹',
     baseHP: 150,
     baseAttack: 100,
-    baseXP: 450, // TRIPLED from 150 to 450
+    baseXP: 900, // 6X from original 150 (tripled to 450, now doubled to 900)
   },
   'void_stalker': {
     id: 'void_stalker',
@@ -228,7 +228,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👤',
     baseHP: 180,
     baseAttack: 120,
-    baseXP: 540, // TRIPLED from 180 to 540
+    baseXP: 1080, // 6X from original 180 (tripled to 540, now doubled to 1080)
     resistances: { magic: 0.6 }
   },
   'nightmare_lord': {
@@ -237,7 +237,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '💀',
     baseHP: 200,
     baseAttack: 150,
-    baseXP: 600, // TRIPLED from 200 to 600
+    baseXP: 1200, // 6X from original 200 (tripled to 600, now doubled to 1200)
   },
   'chaos_titan': {
     id: 'chaos_titan',
@@ -245,7 +245,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '⚡',
     baseHP: 300,
     baseAttack: 200,
-    baseXP: 900, // TRIPLED from 300 to 900
+    baseXP: 1800, // 6X from original 300 (tripled to 900, now doubled to 1800)
     resistances: { fire: 0.8, physical: 0.3 }
   },
 
