@@ -447,7 +447,7 @@ class ProjectileXPDiagnosisTester:
 
 async def main():
     """Main test runner"""
-    tester = XPProgressionTester()
+    tester = ProjectileXPDiagnosisTester()
     await tester.run_all_tests()
 
 if __name__ == "__main__":
