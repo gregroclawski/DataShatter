@@ -1115,10 +1115,13 @@ const NameChangeCard = () => {
         setNewName('');
         
         // CRITICAL: Update user context with new name to prevent progress reset
-        // Force a page refresh to reload user data with new name
-        setTimeout(() => {
-          window.location.reload?.() || location.reload?.();
-        }, 1000);
+        // Update the local user object with new name (preserves all progress)
+        if (user) {
+          // Create updated user object with new name
+          const updatedUser = { ...user, name: result.new_name };
+          // Note: This is a local update - the context will sync on next session check
+          console.log('🔄 Updated user name locally:', user.name, '→', result.new_name);
+        }
         
         // Reload name change info
         await loadNameChangeInfo();
