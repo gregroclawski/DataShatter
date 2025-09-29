@@ -10,6 +10,7 @@ import os
 import logging
 from pathlib import Path
 from typing import List, Optional, Dict, Any
+from enum import Enum
 import uuid
 from datetime import datetime, timedelta, timezone
 import secrets
