@@ -66,9 +66,18 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
   const { gameState, updateZoneProgress } = useGame();
   
   // Zone State - Separate "progression" from "currently selected" zones
-  const [currentZone, setCurrentZone] = useState<Zone | null>(ZONES[0]); // Currently selected zone for gameplay
-  const [currentZoneLevel, setCurrentZoneLevel] = useState<ZoneLevel | null>(ZONES[0]?.levels[0] || null);
-  const [progressionZone, setProgressionZone] = useState<Zone | null>(ZONES[0]); // Highest unlocked zone for progression
+  const [currentZone, setCurrentZone] = useState<Zone | null>(() => {
+    console.log('🎯 ZONE INIT: Initializing currentZone (selected zone) to Zone 1 Level 1');
+    return ZONES[0];
+  }); // Currently selected zone for gameplay
+  const [currentZoneLevel, setCurrentZoneLevel] = useState<ZoneLevel | null>(() => {
+    console.log('🎯 ZONE INIT: Initializing currentZoneLevel to Zone 1 Level 1');
+    return ZONES[0]?.levels[0] || null;
+  });
+  const [progressionZone, setProgressionZone] = useState<Zone | null>(() => {
+    console.log('🎯 ZONE INIT: Initializing progressionZone (unlock progress) to Zone 1');
+    return ZONES[0];
+  }); // Highest unlocked zone for progression
   const [zoneProgress, setZoneProgress] = useState<Record<number, ZoneProgress>>(() => {
     // MOBILE FIX: Initialize with saved zone progress from GameContext instead of defaults
     const savedProgress = gameState?.zoneProgress;
