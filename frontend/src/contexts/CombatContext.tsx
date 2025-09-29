@@ -295,7 +295,33 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         }
       });
 
-      // Update Shadow Clone - handle duration, movement, and attacks
+      // Sync player stats from game state with EFFECTIVE stats (including upgrades)
+      if (newState.playerStats && game.gameState.ninja) {
+        const effectiveStats = game.getEffectiveStats();
+        
+        // Only update if different to prevent unnecessary state changes
+        if (newState.playerStats.attack !== effectiveStats.attack ||
+            newState.playerStats.defense !== effectiveStats.defense ||
+            newState.playerStats.maxHealth !== effectiveStats.health) {
+          
+          // Maintain current health ratio when max health changes
+          const healthRatio = newState.playerStats.maxHealth > 0 ? 
+            newState.playerStats.health / newState.playerStats.maxHealth : 1;
+          
+          console.log(`🔧 PLAYER STATS UPDATE: Attack ${newState.playerStats.attack} → ${effectiveStats.attack}, Defense ${newState.playerStats.defense} → ${effectiveStats.defense}, MaxHP ${newState.playerStats.maxHealth} → ${effectiveStats.health}`);
+          
+          newState.playerStats = {
+            ...newState.playerStats,
+            attack: effectiveStats.attack,
+            defense: effectiveStats.defense,
+            maxHealth: effectiveStats.health,
+            health: Math.floor(effectiveStats.health * healthRatio), // Maintain health ratio
+            critChance: effectiveStats.critChance || newState.playerStats.critChance,
+            critDamage: effectiveStats.critDamage || newState.playerStats.critDamage,
+            cooldownReduction: effectiveStats.cooldownReduction || newState.playerStats.cooldownReduction,
+          };
+        }
+      }
       if (newState.shadowClone) {
         // Update clone duration
         newState.shadowClone.remainingTicks--;
