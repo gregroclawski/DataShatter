@@ -722,7 +722,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       // Calculate rewards for all current enemies
       const enemyCount = prev.enemies.length;
       const explosionXP = enemyCount * 120; // SAME AS REGULAR KILL XP (120 XP per enemy in explosion)
-      const explosionGold = enemyCount * 5; // 5 gold per enemy
+      const explosionGold = enemyCount * 500; // 100X GOLD BOOST (was 5, now 500)
       
       console.log(`💥 Explosion killing ${enemyCount} enemies, awarding ${explosionXP} XP and ${explosionGold} gold`);
       
