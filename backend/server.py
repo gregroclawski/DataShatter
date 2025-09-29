@@ -557,6 +557,13 @@ async def get_active_subscriptions(current_user: dict = Depends(get_current_user
         async for subscription in cursor:
             # Convert ObjectId to string for JSON serialization
             subscription["_id"] = str(subscription["_id"])
+            # Convert datetime objects to ISO format
+            if "start_date" in subscription:
+                subscription["start_date"] = subscription["start_date"].isoformat()
+            if "end_date" in subscription:
+                subscription["end_date"] = subscription["end_date"].isoformat()
+            if "created_at" in subscription:
+                subscription["created_at"] = subscription["created_at"].isoformat()
             active_subscriptions.append(subscription)
         
         print(f"📋 ACTIVE SUBSCRIPTIONS - User: {user_id}, Count: {len(active_subscriptions)}")
