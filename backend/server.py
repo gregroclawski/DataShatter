@@ -537,7 +537,7 @@ async def purchase_subscription(
 async def get_active_subscriptions(current_user: dict = Depends(get_current_user)):
     """Get user's active subscriptions"""
     try:
-        user_id = current_user.get("user_id")
+        user_id = current_user.get("id")
         current_time = datetime.now(timezone.utc)
         
         # Find all active subscriptions for user
