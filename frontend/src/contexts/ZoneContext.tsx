@@ -264,8 +264,9 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const contextValue: ZoneContextType = React.useMemo(() => ({
-    currentZone,
+    currentZone, // Currently selected zone for gameplay
     currentZoneLevel,
+    progressionZone, // Highest unlocked zone for progression
     zoneProgress,
     availableZones: ZONES,
     selectZone,
