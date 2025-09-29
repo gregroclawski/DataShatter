@@ -237,6 +237,12 @@ const defaultGameState: GameState = {
     availableAbilities: {}, // Empty - will be populated by AbilityManager defaults
     activeSynergies: [], // No synergies initially
   },
+  subscriptionBenefits: {
+    xp_multiplier: 1.0,
+    drop_multiplier: 1.0,
+    zone_kill_multiplier: 1.0,
+    active_subscriptions: [],
+  },
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
