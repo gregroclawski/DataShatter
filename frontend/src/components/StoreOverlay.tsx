@@ -7,9 +7,11 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useGame } from '../contexts/GameContext';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Props {
   onClose: () => void;
@@ -27,13 +29,60 @@ interface GemPackage {
   bestValue?: boolean;
 }
 
+interface SubscriptionPackage {
+  id: string;
+  name: string;
+  description: string;
+  features: string[];
+  price: string;
+  duration: string;
+  subscriptionType: 'xp_drop_boost' | 'zone_progression_boost';
+  popular?: boolean;
+}
+
+type TabType = 'items' | 'subscriptions' | 'gems';
+
 const StoreOverlay = ({ onClose }: Props) => {
   const { gameState, updateNinja, saveOnEvent } = useGame();
+  const { user } = useAuth();
   const { ninja } = gameState;
+  
+  const [activeTab, setActiveTab] = useState<TabType>('items');
   const [purchasing, setPurchasing] = useState<string | null>(null);
-  const [storeAvailable, setStoreAvailable] = useState(true);
-  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState<GemPackage | null>(null);
+  const [subscriptions, setSubscriptions] = useState<any[]>([]);
+  const [loadingSubscriptions, setLoadingSubscriptions] = useState(true);
+
+  const subscriptionPackages: SubscriptionPackage[] = [
+    {
+      id: 'xp_drop_boost',
+      name: 'XP & Drop Booster',
+      description: 'Double your progression speed',
+      features: [
+        '2x Experience Points',
+        '2x Drop Rate',
+        'Stack with other bonuses',
+        'Server-side tracking'
+      ],
+      price: '$40.00',
+      duration: '30 Days',
+      subscriptionType: 'xp_drop_boost',
+      popular: true
+    },
+    {
+      id: 'zone_progression_boost',
+      name: 'Zone Rush Boost',
+      description: 'Accelerate zone progression',
+      features: [
+        '2x Zone Kill Progress',
+        'Unlock zones faster',
+        'Perfect for advancement',
+        'Server-side tracking'
+      ],
+      price: '$40.00',
+      duration: '30 Days',
+      subscriptionType: 'zone_progression_boost'
+    }
+  ];
 
   const gemPackages: GemPackage[] = [
     {
@@ -52,305 +101,420 @@ const StoreOverlay = ({ onClose }: Props) => {
     },
     {
       id: 'com.ninjaidle.gems_medium',
-      name: 'Medium Gem Chest',
-      gems: 600,
+      name: 'Medium Gem Bag',
+      gems: 500,
       price: '$4.99',
-      bonus: 100,
+      bonus: 75,
       featured: true,
     },
     {
       id: 'com.ninjaidle.gems_large',
-      name: 'Large Gem Vault',
-      gems: 1300,
+      name: 'Large Gem Bag',
+      gems: 1000,
       price: '$9.99',
-      originalPrice: '$12.99',
-      discount: 23,
-      bonus: 300,
+      bonus: 200,
       bestValue: true,
     },
     {
       id: 'com.ninjaidle.gems_mega',
-      name: 'Mega Gem Treasure',
-      gems: 2800,
+      name: 'Mega Gem Bag',
+      gems: 2500,
       price: '$19.99',
-      bonus: 700,
+      bonus: 750,
+      originalPrice: '$24.99',
+      discount: 20,
     },
     {
       id: 'com.ninjaidle.gems_ultimate',
-      name: 'Ultimate Collection',
-      gems: 6500,
-      price: '$49.99',
-      bonus: 1500,
+      name: 'Ultimate Gem Vault',
+      gems: 5000,
+      price: '$39.99',
+      bonus: 2000,
+      originalPrice: '$49.99',
+      discount: 20,
       featured: true,
     },
   ];
 
   useEffect(() => {
-    // Initialize in-app purchase system
-    initializePurchases();
+    loadActiveSubscriptions();
   }, []);
 
-  const initializePurchases = async () => {
+  const loadActiveSubscriptions = async () => {
     try {
-      // This would integrate with react-native-purchases or react-native-iap
-      // For demonstration, we'll simulate the initialization
-      console.log('Initializing in-app purchase system...');
-      setStoreAvailable(true);
+      const response = await fetch(`${process.env.EXPO_BACKEND_URL}/api/subscriptions/active`, {
+        headers: {
+          'Authorization': `Bearer ${user?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSubscriptions(data.subscriptions || []);
+      }
     } catch (error) {
-      console.error('Failed to initialize purchases:', error);
-      setStoreAvailable(false);
-      Alert.alert(
-        'Store Unavailable',
-        'The app store is currently unavailable. Please try again later.',
-        [{ text: 'OK' }]
-      );
+      console.error('Failed to load subscriptions:', error);
+    } finally {
+      setLoadingSubscriptions(false);
     }
   };
 
-  const handlePurchase = async (gemPackage: GemPackage) => {
-    if (!storeAvailable) {
-      return;
-    }
-
-    if (purchasing !== null) {
-      return; // Prevent multiple purchases
-    }
-
-    // Start processing immediately
-    setPurchasing(gemPackage.id);
-    console.log('🛒 Starting purchase for:', gemPackage.name);
-
+  const purchaseSubscription = async (subscriptionPackage: SubscriptionPackage) => {
     try {
-      // Simulate authentication and purchase processing
-      console.log('💳 Processing purchase with Face ID authentication...');
-      
-      // Simulate processing time
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      setPurchasing(subscriptionPackage.id);
 
-      // Calculate total gems
-      const totalGems = gemPackage.gems + (gemPackage.bonus || 0);
-      
-      // Update gems immediately and force save
-      updateNinja({
-        gems: ninja.gems + totalGems,
-      });
+      // Check if user already has this subscription type
+      const hasActiveSubscription = subscriptions.some(
+        sub => sub.subscription_type === subscriptionPackage.subscriptionType
+      );
 
-      // FORCE SAVE after gem purchase
-      console.log('💎 Gem purchase complete - forcing immediate save');
-      if (saveOnEvent) {
-        saveOnEvent('gem_purchase');
+      if (hasActiveSubscription) {
+        Alert.alert(
+          'Already Subscribed',
+          'You already have an active subscription of this type. Wait for it to expire before purchasing again.'
+        );
+        return;
       }
 
-      console.log(`🛒 Purchase completed: ${gemPackage.name} (+${totalGems} gems)`);
-      console.log(`💎 New gem balance: ${ninja.gems + totalGems}`);
+      const response = await fetch(`${process.env.EXPO_BACKEND_URL}/api/subscriptions/purchase`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${user?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          subscription_type: subscriptionPackage.subscriptionType,
+          payment_method: 'demo'
+        }),
+      });
 
-      // Show simple success alert
-      setTimeout(() => {
+      if (response.ok) {
+        const data = await response.json();
+        
         Alert.alert(
-          '🎉 Purchase Successful!',
-          `${gemPackage.name} purchased!\n\nGems Added: +${totalGems.toLocaleString()}\nNew Balance: ${(ninja.gems + totalGems).toLocaleString()} gems`,
+          '🎉 Subscription Activated!',
+          `${subscriptionPackage.name} is now active for 30 days!\n\nEnjoy your enhanced progression!`,
           [{ text: 'Awesome!' }]
         );
-      }, 100);
 
+        // Reload subscriptions
+        await loadActiveSubscriptions();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Purchase failed');
+      }
     } catch (error) {
-      console.error('Purchase error:', error);
+      console.error('Subscription purchase error:', error);
+      Alert.alert('Purchase Failed', 'Unable to complete subscription purchase. Please try again.');
     } finally {
       setPurchasing(null);
     }
   };
 
-  const getPackageColor = (gemPackage: GemPackage) => {
-    if (gemPackage.bestValue) return '#f59e0b';
-    if (gemPackage.featured) return '#8b5cf6';
-    return '#374151';
-  };
+  const purchaseGems = async (gemPackage: GemPackage) => {
+    try {
+      setPurchasing(gemPackage.id);
 
-  const getPackageBorderColor = (gemPackage: GemPackage) => {
-    if (gemPackage.bestValue) return '#f59e0b';
-    if (gemPackage.featured) return '#8b5cf6';
-    return '#4b5563';
-  };
+      // Simulate purchase delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-  const formatGemCount = (count: number) => {
-    if (count >= 1000) {
-      return `${(count / 1000).toFixed(1)}K`;
+      // Calculate total gems (base + bonus)
+      const totalGems = gemPackage.gems + (gemPackage.bonus || 0);
+
+      // Update ninja gems
+      updateNinja(prev => ({
+        ...prev,
+        gems: prev.gems + totalGems
+      }));
+
+      // Trigger save
+      setTimeout(() => {
+        saveOnEvent('gem_purchase');
+      }, 100);
+
+      Alert.alert(
+        '🎉 Purchase Successful!',
+        `${gemPackage.name} purchased!\n\nGems Added: +${totalGems.toLocaleString()}\nNew Balance: ${(ninja.gems + totalGems).toLocaleString()} gems`,
+        [{ text: 'Awesome!' }]
+      );
+
+    } catch (error) {
+      console.error('Gem purchase error:', error);
+      Alert.alert('Purchase Failed', 'Unable to complete gem purchase. Please try again.');
+    } finally {
+      setPurchasing(null);
     }
-    return count.toString();
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Gem Store</Text>
-        <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-          <Ionicons name="close" size={24} color="#f8fafc" />
-        </TouchableOpacity>
+  const renderTabButton = (tab: TabType, icon: string, label: string) => {
+    const isActive = activeTab === tab;
+    return (
+      <TouchableOpacity
+        style={[styles.tabButton, isActive && styles.activeTabButton]}
+        onPress={() => setActiveTab(tab)}
+      >
+        <Ionicons 
+          name={icon as any} 
+          size={20} 
+          color={isActive ? '#ffffff' : '#94a3b8'} 
+        />
+        <Text style={[styles.tabLabel, isActive && styles.activeTabLabel]}>
+          {label}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderItemsTab = () => (
+    <View style={styles.tabContent}>
+      <Text style={styles.emptyStateTitle}>Items Coming Soon</Text>
+      <Text style={styles.emptyStateDescription}>
+        Premium items and upgrades will be available here soon!
+      </Text>
+      <View style={styles.emptyStateIcon}>
+        <Ionicons name="construct" size={64} color="#64748b" />
       </View>
+    </View>
+  );
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Current Balance */}
-        <View style={styles.balanceCard}>
-          <View style={styles.balanceHeader}>
-            <Ionicons name="diamond" size={32} color="#3b82f6" />
-            <View style={styles.balanceInfo}>
-              <Text style={styles.balanceLabel}>Current Balance</Text>
-              <Text style={styles.balanceValue}>{ninja.gems.toLocaleString()} Gems</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Store Notice */}
-        <View style={styles.noticeCard}>
-          <Ionicons name="information-circle" size={20} color="#8b5cf6" />
-          <Text style={styles.noticeText}>
-            **DEMO MODE**: Purchases are simulated for testing. No real money will be charged.
-          </Text>
-        </View>
-
-        {/* Store Benefits */}
-        <View style={styles.noticeCard}>
-          <Ionicons name="diamond" size={20} color="#10b981" />
-          <Text style={styles.noticeText}>
-            Gems are used to purchase upgrades, boost your progress, and unlock special features!
-          </Text>
-        </View>
-
-        {/* Gem Packages */}
+  const renderSubscriptionsTab = () => (
+    <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
+      {/* Active Subscriptions */}
+      {!loadingSubscriptions && subscriptions.length > 0 && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Gem Packages</Text>
-          <Text style={styles.sectionSubtitle}>Power up your ninja with premium gems</Text>
-          
-          {gemPackages.map((gemPackage) => (
-            <View 
-              key={gemPackage.id} 
-              style={[
-                styles.packageCard,
-                { 
-                  backgroundColor: getPackageColor(gemPackage),
-                  borderColor: getPackageBorderColor(gemPackage),
-                }
-              ]}
-            >
-              {/* Package badges */}
-              <View style={styles.badgeContainer}>
-                {gemPackage.bestValue && (
-                  <View style={[styles.badge, styles.bestValueBadge]}>
-                    <Ionicons name="trophy" size={12} color="#ffffff" />
-                    <Text style={styles.badgeText}>BEST VALUE</Text>
-                  </View>
-                )}
-                {gemPackage.featured && !gemPackage.bestValue && (
-                  <View style={[styles.badge, styles.featuredBadge]}>
-                    <Ionicons name="star" size={12} color="#ffffff" />
-                    <Text style={styles.badgeText}>POPULAR</Text>
-                  </View>
-                )}
-                {gemPackage.discount && (
-                  <View style={[styles.badge, styles.discountBadge]}>
-                    <Text style={styles.badgeText}>{gemPackage.discount}% OFF</Text>
-                  </View>
-                )}
-              </View>
-
-              <View style={styles.packageContent}>
-                {/* Package info */}
-                <View style={styles.packageInfo}>
-                  <Text style={styles.packageName}>{gemPackage.name}</Text>
-                  
-                  <View style={styles.gemInfo}>
-                    <Ionicons name="diamond" size={20} color="#3b82f6" />
-                    <Text style={styles.gemCount}>
-                      {formatGemCount(gemPackage.gems)}
-                    </Text>
-                    {gemPackage.bonus && (
-                      <>
-                        <Text style={styles.plusText}>+</Text>
-                        <Text style={styles.bonusCount}>{formatGemCount(gemPackage.bonus)}</Text>
-                        <Text style={styles.bonusLabel}>bonus</Text>
-                      </>
-                    )}
-                  </View>
-                  
-                  <View style={styles.totalGems}>
-                    <Text style={styles.totalLabel}>Total: </Text>
-                    <Text style={styles.totalValue}>
-                      {formatGemCount(gemPackage.gems + (gemPackage.bonus || 0))} gems
-                    </Text>
-                  </View>
-                </View>
-
-                {/* Price and button */}
-                <View style={styles.priceSection}>
-                  {gemPackage.originalPrice && (
-                    <Text style={styles.originalPrice}>{gemPackage.originalPrice}</Text>
-                  )}
-                  <Text style={styles.price}>{gemPackage.price}</Text>
-                  
-                  <TouchableOpacity
-                    style={[
-                      styles.purchaseButton,
-                      purchasing === gemPackage.id && styles.purchasingButton,
-                      !storeAvailable && styles.disabledButton,
-                    ]}
-                    onPress={() => handlePurchase(gemPackage)}
-                    disabled={purchasing !== null || !storeAvailable}
-                  >
-                    {purchasing === gemPackage.id ? (
-                      <View style={styles.purchaseButtonContent}>
-                        <ActivityIndicator size="small" color="#ffffff" />
-                        <Text style={styles.purchaseButtonText}>Processing...</Text>
-                      </View>
-                    ) : (
-                      <View style={styles.purchaseButtonContent}>
-                        <Ionicons name="card" size={16} color="#ffffff" />
-                        <Text style={styles.purchaseButtonText}>Purchase</Text>
-                      </View>
-                    )}
-                  </TouchableOpacity>
+          <Text style={styles.sectionTitle}>Active Subscriptions</Text>
+          {subscriptions.map((sub, index) => (
+            <View key={index} style={styles.activeSubscriptionCard}>
+              <View style={styles.activeSubscriptionHeader}>
+                <Ionicons name="checkmark-circle" size={24} color="#10b981" />
+                <View style={styles.activeSubscriptionInfo}>
+                  <Text style={styles.activeSubscriptionName}>
+                    {sub.subscription_type === 'xp_drop_boost' ? 'XP & Drop Booster' : 'Zone Rush Boost'}
+                  </Text>
+                  <Text style={styles.activeSubscriptionExpiry}>
+                    Expires: {new Date(sub.end_date).toLocaleDateString()}
+                  </Text>
                 </View>
               </View>
             </View>
           ))}
         </View>
+      )}
 
-        {/* Store features */}
-        <View style={styles.featuresSection}>
-          <Text style={styles.featuresTitle}>Why Purchase Gems?</Text>
-          
-          <View style={styles.featuresList}>
-            <View style={styles.featureItem}>
-              <Ionicons name="flash" size={20} color="#f59e0b" />
-              <Text style={styles.featureText}>Skip waiting times and progress faster</Text>
+      {/* Available Subscriptions */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Premium Subscriptions</Text>
+        <Text style={styles.sectionSubtitle}>Boost your ninja's potential</Text>
+        
+        {subscriptionPackages.map((subscriptionPackage) => {
+          const hasActiveSubscription = subscriptions.some(
+            sub => sub.subscription_type === subscriptionPackage.subscriptionType
+          );
+
+          return (
+            <View 
+              key={subscriptionPackage.id} 
+              style={[
+                styles.subscriptionCard,
+                hasActiveSubscription && styles.subscriptionCardDisabled
+              ]}
+            >
+              {/* Popular Badge */}
+              {subscriptionPackage.popular && !hasActiveSubscription && (
+                <View style={styles.popularBadge}>
+                  <Ionicons name="star" size={12} color="#ffffff" />
+                  <Text style={styles.badgeText}>POPULAR</Text>
+                </View>
+              )}
+
+              <View style={styles.subscriptionHeader}>
+                <Text style={styles.subscriptionName}>{subscriptionPackage.name}</Text>
+                <Text style={styles.subscriptionDescription}>{subscriptionPackage.description}</Text>
+              </View>
+
+              <View style={styles.subscriptionFeatures}>
+                {subscriptionPackage.features.map((feature, index) => (
+                  <View key={index} style={styles.featureRow}>
+                    <Ionicons name="checkmark" size={16} color="#10b981" />
+                    <Text style={styles.featureText}>{feature}</Text>
+                  </View>
+                ))}
+              </View>
+
+              <View style={styles.subscriptionFooter}>
+                <View style={styles.subscriptionPricing}>
+                  <Text style={styles.subscriptionPrice}>{subscriptionPackage.price}</Text>
+                  <Text style={styles.subscriptionDuration}>for {subscriptionPackage.duration}</Text>
+                </View>
+
+                <TouchableOpacity
+                  style={[
+                    styles.subscriptionButton,
+                    hasActiveSubscription && styles.subscriptionButtonDisabled
+                  ]}
+                  onPress={() => purchaseSubscription(subscriptionPackage)}
+                  disabled={purchasing === subscriptionPackage.id || hasActiveSubscription}
+                >
+                  {purchasing === subscriptionPackage.id ? (
+                    <ActivityIndicator size="small" color="#ffffff" />
+                  ) : (
+                    <Text style={[
+                      styles.subscriptionButtonText,
+                      hasActiveSubscription && styles.subscriptionButtonTextDisabled
+                    ]}>
+                      {hasActiveSubscription ? 'ACTIVE' : 'SUBSCRIBE'}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </View>
             </View>
-            
-            <View style={styles.featureItem}>
-              <Ionicons name="star" size={20} color="#8b5cf6" />
-              <Text style={styles.featureText}>Unlock exclusive upgrades and abilities</Text>
-            </View>
-            
-            <View style={styles.featureItem}>
-              <Ionicons name="trophy" size={20} color="#10b981" />
-              <Text style={styles.featureText}>Dominate leaderboards with premium gear</Text>
-            </View>
-            
-            <View style={styles.featureItem}>
-              <Ionicons name="shield" size={20} color="#3b82f6" />
-              <Text style={styles.featureText}>Secure transactions protected by app stores</Text>
-            </View>
+          );
+        })}
+      </View>
+
+      {/* Demo Notice */}
+      <View style={styles.noticeCard}>
+        <Ionicons name="information-circle" size={20} color="#8b5cf6" />
+        <Text style={styles.noticeText}>
+          **DEMO MODE**: Subscriptions are simulated for testing. No real money will be charged.
+        </Text>
+      </View>
+    </ScrollView>
+  );
+
+  const renderGemsTab = () => (
+    <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
+      {/* Current Balance */}
+      <View style={styles.balanceCard}>
+        <View style={styles.balanceHeader}>
+          <Ionicons name="diamond" size={32} color="#3b82f6" />
+          <View style={styles.balanceInfo}>
+            <Text style={styles.balanceLabel}>Current Balance</Text>
+            <Text style={styles.balanceValue}>{ninja.gems.toLocaleString()} Gems</Text>
           </View>
         </View>
+      </View>
 
-        {!storeAvailable && (
-          <View style={styles.unavailableSection}>
-            <Ionicons name="alert-circle" size={32} color="#ef4444" />
-            <Text style={styles.unavailableTitle}>Store Temporarily Unavailable</Text>
-            <Text style={styles.unavailableText}>
-              We're experiencing technical difficulties. Please try again later.
-            </Text>
+      {/* Gem Packages */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Gem Packages</Text>
+        <Text style={styles.sectionSubtitle}>Power up your ninja with premium gems</Text>
+        
+        {gemPackages.map((gemPackage) => (
+          <View 
+            key={gemPackage.id} 
+            style={[
+              styles.gemPackageCard,
+              gemPackage.bestValue && styles.bestValueCard,
+              gemPackage.featured && !gemPackage.bestValue && styles.featuredCard
+            ]}
+          >
+            {/* Package badges */}
+            <View style={styles.badgeContainer}>
+              {gemPackage.bestValue && (
+                <View style={[styles.badge, styles.bestValueBadge]}>
+                  <Ionicons name="trophy" size={12} color="#ffffff" />
+                  <Text style={styles.badgeText}>BEST VALUE</Text>
+                </View>
+              )}
+              {gemPackage.featured && !gemPackage.bestValue && (
+                <View style={[styles.badge, styles.featuredBadge]}>
+                  <Ionicons name="star" size={12} color="#ffffff" />
+                  <Text style={styles.badgeText}>POPULAR</Text>
+                </View>
+              )}
+              {gemPackage.discount && (
+                <View style={[styles.badge, styles.discountBadge]}>
+                  <Text style={styles.badgeText}>-{gemPackage.discount}%</Text>
+                </View>
+              )}
+            </View>
+
+            <View style={styles.gemPackageContent}>
+              {/* Gem Icon */}
+              <View style={styles.gemIcon}>
+                <Ionicons name="diamond" size={32} color="#3b82f6" />
+              </View>
+
+              {/* Package Info */}
+              <View style={styles.gemPackageInfo}>
+                <Text style={styles.gemPackageName}>{gemPackage.name}</Text>
+                <View style={styles.gemPackageDetails}>
+                  <Text style={styles.gemCount}>
+                    {(gemPackage.gems + (gemPackage.bonus || 0)).toLocaleString()} Gems
+                  </Text>
+                  {gemPackage.bonus && (
+                    <Text style={styles.bonusText}>
+                      +{gemPackage.bonus} Bonus!
+                    </Text>
+                  )}
+                </View>
+              </View>
+
+              {/* Pricing */}
+              <View style={styles.gemPricing}>
+                {gemPackage.originalPrice && (
+                  <Text style={styles.originalPrice}>{gemPackage.originalPrice}</Text>
+                )}
+                <Text style={styles.gemPrice}>{gemPackage.price}</Text>
+              </View>
+
+              {/* Purchase Button */}
+              <TouchableOpacity
+                style={styles.gemPurchaseButton}
+                onPress={() => purchaseGems(gemPackage)}
+                disabled={purchasing === gemPackage.id}
+              >
+                {purchasing === gemPackage.id ? (
+                  <ActivityIndicator size="small" color="#ffffff" />
+                ) : (
+                  <Text style={styles.gemPurchaseButtonText}>BUY</Text>
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
-        )}
-      </ScrollView>
+        ))}
+      </View>
+
+      {/* Demo Notice */}
+      <View style={styles.noticeCard}>
+        <Ionicons name="information-circle" size={20} color="#8b5cf6" />
+        <Text style={styles.noticeText}>
+          **DEMO MODE**: Purchases are simulated for testing. No real money will be charged.
+        </Text>
+      </View>
+
+      {/* Gem Benefits */}
+      <View style={styles.noticeCard}>
+        <Ionicons name="diamond" size={20} color="#10b981" />
+        <Text style={styles.noticeText}>
+          Gems are used to purchase upgrades, boost your progress, and unlock special features!
+        </Text>
+      </View>
+    </ScrollView>
+  );
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Store</Text>
+        <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
+          <Ionicons name="close" size={24} color="#f8fafc" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Tab Navigation */}
+      <View style={styles.tabContainer}>
+        {renderTabButton('items', 'bag', 'Items')}
+        {renderTabButton('subscriptions', 'star', 'Subscriptions')}
+        {renderTabButton('gems', 'diamond', 'Gems')}
+      </View>
+
+      {/* Tab Content */}
+      {activeTab === 'items' && renderItemsTab()}
+      {activeTab === 'subscriptions' && renderSubscriptionsTab()}
+      {activeTab === 'gems' && renderGemsTab()}
     </View>
   );
 };
@@ -358,33 +522,103 @@ const StoreOverlay = ({ onClose }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#0f172a',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: Platform.OS === 'ios' ? 50 : 40,
+    paddingBottom: 16,
+    backgroundColor: '#1e293b',
     borderBottomWidth: 1,
-    borderBottomColor: '#374151',
+    borderBottomColor: '#334155',
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 24,
+    fontWeight: '700',
     color: '#f8fafc',
   },
   closeBtn: {
-    padding: 4,
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: '#334155',
   },
-  content: {
+  tabContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#1e293b',
+    paddingHorizontal: 20,
+    paddingBottom: 16,
+  },
+  tabButton: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginHorizontal: 4,
+    borderRadius: 12,
+    backgroundColor: '#334155',
+  },
+  activeTabButton: {
+    backgroundColor: '#8b5cf6',
+  },
+  tabLabel: {
+    marginLeft: 8,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#94a3b8',
+  },
+  activeTabLabel: {
+    color: '#ffffff',
+  },
+  tabContent: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  emptyStateTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#f8fafc',
+    textAlign: 'center',
+    marginTop: 60,
+    marginBottom: 12,
+  },
+  emptyStateDescription: {
+    fontSize: 16,
+    color: '#94a3b8',
+    textAlign: 'center',
+    marginBottom: 40,
+    lineHeight: 24,
+  },
+  emptyStateIcon: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  section: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#f8fafc',
+    marginBottom: 4,
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    color: '#94a3b8',
+    marginBottom: 16,
   },
   balanceCard: {
-    backgroundColor: '#374151',
-    margin: 20,
+    backgroundColor: '#1e293b',
+    borderRadius: 16,
     padding: 20,
-    borderRadius: 12,
+    marginTop: 20,
     borderWidth: 1,
-    borderColor: '#4b5563',
+    borderColor: '#334155',
   },
   balanceHeader: {
     flexDirection: 'row',
@@ -395,67 +629,155 @@ const styles = StyleSheet.create({
   },
   balanceLabel: {
     fontSize: 14,
-    color: '#9ca3af',
+    color: '#94a3b8',
     marginBottom: 4,
   },
   balanceValue: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#f8fafc',
+    fontWeight: '700',
+    color: '#3b82f6',
   },
-  noticeCard: {
+  subscriptionCard: {
+    backgroundColor: '#1e293b',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#334155',
+    position: 'relative',
+  },
+  subscriptionCardDisabled: {
+    opacity: 0.6,
+  },
+  popularBadge: {
+    position: 'absolute',
+    top: -8,
+    right: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
-    marginHorizontal: 20,
-    marginBottom: 20,
-    padding: 16,
+    backgroundColor: '#f59e0b',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    zIndex: 1,
   },
-  noticeText: {
-    flex: 1,
-    fontSize: 12,
-    color: '#d1d5db',
-    marginLeft: 12,
-    lineHeight: 18,
+  subscriptionHeader: {
+    marginBottom: 16,
   },
-  section: {
-    padding: 20,
-    paddingTop: 0,
-  },
-  sectionTitle: {
+  subscriptionName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: '#f8fafc',
     marginBottom: 4,
   },
-  sectionSubtitle: {
-    fontSize: 12,
-    color: '#9ca3af',
+  subscriptionDescription: {
+    fontSize: 14,
+    color: '#94a3b8',
+  },
+  subscriptionFeatures: {
     marginBottom: 20,
   },
-  packageCard: {
+  featureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  featureText: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: '#e2e8f0',
+  },
+  subscriptionFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  subscriptionPricing: {
+    flex: 1,
+  },
+  subscriptionPrice: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#f8fafc',
+  },
+  subscriptionDuration: {
+    fontSize: 14,
+    color: '#94a3b8',
+  },
+  subscriptionButton: {
+    backgroundColor: '#8b5cf6',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
     borderRadius: 12,
-    marginBottom: 16,
-    borderWidth: 2,
-    overflow: 'hidden',
+    minWidth: 100,
+    alignItems: 'center',
+  },
+  subscriptionButtonDisabled: {
+    backgroundColor: '#64748b',
+  },
+  subscriptionButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#ffffff',
+  },
+  subscriptionButtonTextDisabled: {
+    color: '#cbd5e1',
+  },
+  activeSubscriptionCard: {
+    backgroundColor: '#064e3b',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#10b981',
+  },
+  activeSubscriptionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  activeSubscriptionInfo: {
+    marginLeft: 12,
+  },
+  activeSubscriptionName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#f8fafc',
+  },
+  activeSubscriptionExpiry: {
+    fontSize: 14,
+    color: '#6ee7b7',
+  },
+  gemPackageCard: {
+    backgroundColor: '#1e293b',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#334155',
     position: 'relative',
+  },
+  bestValueCard: {
+    borderColor: '#f59e0b',
+    backgroundColor: '#451a03',
+  },
+  featuredCard: {
+    borderColor: '#8b5cf6',
+    backgroundColor: '#3c1361',
   },
   badgeContainer: {
     position: 'absolute',
-    top: 0,
-    right: 0,
-    zIndex: 1,
+    top: -8,
+    right: 16,
     flexDirection: 'row',
+    zIndex: 1,
   },
   badge: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderBottomLeftRadius: 8,
+    borderRadius: 8,
+    marginLeft: 4,
   },
   bestValueBadge: {
     backgroundColor: '#f59e0b',
@@ -467,142 +789,85 @@ const styles = StyleSheet.create({
     backgroundColor: '#ef4444',
   },
   badgeText: {
-    color: '#ffffff',
     fontSize: 10,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    color: '#ffffff',
     marginLeft: 4,
   },
-  packageContent: {
-    padding: 16,
+  gemPackageContent: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  packageInfo: {
+  gemIcon: {
+    marginRight: 16,
+  },
+  gemPackageInfo: {
     flex: 1,
   },
-  packageName: {
+  gemPackageName: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: '#f8fafc',
-    marginBottom: 8,
-  },
-  gemInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 4,
   },
-  gemCount: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#3b82f6',
-    marginLeft: 6,
-  },
-  plusText: {
-    fontSize: 14,
-    color: '#9ca3af',
-    marginHorizontal: 6,
-  },
-  bonusCount: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#10b981',
-  },
-  bonusLabel: {
-    fontSize: 12,
-    color: '#10b981',
-    marginLeft: 4,
-  },
-  totalGems: {
+  gemPackageDetails: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  totalLabel: {
-    fontSize: 12,
-    color: '#9ca3af',
+  gemCount: {
+    fontSize: 14,
+    color: '#3b82f6',
+    fontWeight: '600',
   },
-  totalValue: {
+  bonusText: {
     fontSize: 12,
-    fontWeight: 'bold',
-    color: '#f8fafc',
+    color: '#10b981',
+    fontWeight: '600',
+    marginLeft: 8,
   },
-  priceSection: {
+  gemPricing: {
     alignItems: 'flex-end',
+    marginRight: 16,
   },
   originalPrice: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: '#64748b',
     textDecorationLine: 'line-through',
-    marginBottom: 2,
   },
-  price: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  gemPrice: {
+    fontSize: 16,
+    fontWeight: '700',
     color: '#f8fafc',
-    marginBottom: 8,
   },
-  purchaseButton: {
-    backgroundColor: '#8b5cf6',
+  gemPurchaseButton: {
+    backgroundColor: '#3b82f6',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
-    minWidth: 100,
-  },
-  purchasingButton: {
-    backgroundColor: '#6b46c1',
-  },
-  disabledButton: {
-    backgroundColor: '#4b5563',
-    opacity: 0.5,
-  },
-  purchaseButtonContent: {
-    flexDirection: 'row',
+    minWidth: 60,
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  purchaseButtonText: {
+  gemPurchaseButtonText: {
+    fontSize: 12,
+    fontWeight: '700',
     color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '600',
-    marginLeft: 6,
   },
-  featuresSection: {
-    padding: 20,
-    paddingTop: 0,
-  },
-  featuresTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#f8fafc',
-    marginBottom: 16,
-  },
-  featuresList: {
-    gap: 12,
-  },
-  featureItem: {
+  noticeCard: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#1e293b',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#334155',
   },
-  featureText: {
-    fontSize: 14,
-    color: '#d1d5db',
+  noticeText: {
     marginLeft: 12,
+    fontSize: 14,
+    color: '#94a3b8',
     flex: 1,
-  },
-  unavailableSection: {
-    alignItems: 'center',
-    padding: 40,
-  },
-  unavailableTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#ef4444',
-    marginTop: 12,
-    marginBottom: 8,
-  },
-  unavailableText: {
-    fontSize: 12,
-    color: '#9ca3af',
-    textAlign: 'center',
+    lineHeight: 20,
   },
 });
 
