@@ -893,4 +893,195 @@ const styles = StyleSheet.create({
   },
 });
 
+const NameChangeCard = () => {
+  const { user, token } = useAuth();
+  const [nameChangeInfo, setNameChangeInfo] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [changing, setChanging] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [newName, setNewName] = useState('');
+
+  // Use same API base URL configuration as other components
+  const API_BASE_URL = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+
+  useEffect(() => {
+    loadNameChangeInfo();
+  }, []);
+
+  const loadNameChangeInfo = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/user/name-change-info`, {
+        headers: {
+          'Authorization': `Bearer ${user?.access_token || token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const info = await response.json();
+        setNameChangeInfo(info);
+      }
+    } catch (error) {
+      console.error('Failed to load name change info:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleNameChange = async () => {
+    if (!newName.trim()) {
+      Alert.alert('Invalid Name', 'Please enter a valid name');
+      return;
+    }
+
+    if (newName.trim().length < 1 || newName.trim().length > 100) {
+      Alert.alert('Invalid Name', 'Name must be between 1 and 100 characters');
+      return;
+    }
+
+    try {
+      setChanging(true);
+
+      const response = await fetch(`${API_BASE_URL}/api/user/change-name`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${user?.access_token || token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          new_name: newName.trim(),
+          payment_method: 'demo'
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        
+        Alert.alert(
+          '🎉 Name Changed!',
+          result.message,
+          [{ text: 'Great!' }]
+        );
+
+        setShowModal(false);
+        setNewName('');
+        
+        // Reload name change info
+        await loadNameChangeInfo();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Name change failed');
+      }
+    } catch (error) {
+      console.error('Name change error:', error);
+      Alert.alert('Name Change Failed', error.message || 'Unable to change name. Please try again.');
+    } finally {
+      setChanging(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.nameChangeCard}>
+        <ActivityIndicator size="small" color="#8b5cf6" />
+        <Text style={styles.nameChangeLoading}>Loading name change info...</Text>
+      </View>
+    );
+  }
+
+  const isFree = nameChangeInfo?.next_change_free || false;
+  const cost = nameChangeInfo?.next_change_cost || 6.99;
+
+  return (
+    <>
+      <View style={styles.nameChangeCard}>
+        <View style={styles.nameChangeHeader}>
+          <Ionicons name="person" size={24} color="#8b5cf6" />
+          <View style={styles.nameChangeInfo}>
+            <Text style={styles.nameChangeTitle}>Change Username</Text>
+            <Text style={styles.nameChangeCurrentName}>
+              Current: {nameChangeInfo?.current_name || user?.name || 'Unknown'}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.nameChangeDetails}>
+          <Text style={styles.nameChangePrice}>
+            {isFree ? 'FREE' : `$${cost.toFixed(2)}`}
+          </Text>
+          {!isFree && (
+            <Text style={styles.nameChangeSubtext}>
+              (1st change was free)
+            </Text>
+          )}
+        </View>
+
+        <TouchableOpacity
+          style={styles.nameChangeButton}
+          onPress={() => setShowModal(true)}
+        >
+          <Text style={styles.nameChangeButtonText}>
+            {isFree ? 'CHANGE NAME (FREE)' : `CHANGE NAME ($${cost.toFixed(2)})`}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Name Change Modal */}
+      {showModal && (
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Change Username</Text>
+              <TouchableOpacity onPress={() => setShowModal(false)}>
+                <Ionicons name="close" size={24} color="#f8fafc" />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.modalDescription}>
+              Choose a new username. {isFree ? 'This change is free!' : `This will cost $${cost.toFixed(2)}.`}
+            </Text>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>New Username</Text>
+              <TextInput
+                style={styles.textInput}
+                value={newName}
+                onChangeText={setNewName}
+                placeholder="Enter new username"
+                placeholderTextColor="#64748b"
+                maxLength={100}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+            </View>
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity 
+                style={styles.cancelButton} 
+                onPress={() => setShowModal(false)}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.confirmButton} 
+                onPress={handleNameChange}
+                disabled={changing || !newName.trim()}
+              >
+                {changing ? (
+                  <ActivityIndicator size="small" color="#ffffff" />
+                ) : (
+                  <Text style={styles.confirmButtonText}>
+                    {isFree ? 'Change (Free)' : `Pay $${cost.toFixed(2)}`}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
+    </>
+  );
+};
+
 export default StoreOverlay;
