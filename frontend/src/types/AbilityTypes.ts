@@ -190,7 +190,7 @@ export const BASE_ABILITIES: Ability[] = [
     maxLevel: 8,
     effects: ['AoE'],
     stats: {
-      baseDamage: 40,
+      baseDamage: 80, // Doubled from 40 to 80
       cooldown: 8.0,
       aoeRadius: 500, // Increased 5x from 100 to 500
     },
