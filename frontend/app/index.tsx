@@ -479,12 +479,24 @@ export default function NinjaIdleGame() {
           </Text>
           <Text style={styles.killsText}>
             Kills: {(() => {
+              const requiredKills = currentZoneLevel?.requiredKills || calculateKillRequirement(currentZone?.id || 1, currentZoneLevel?.level || 1);
+              
+              // Get kills for the SELECTED zone level, not progression zone
               const zoneProgress = getZoneProgress(currentZone?.id || 1);
-              const currentLevel = zoneProgress?.currentLevel || 1;
-              const requiredKills = currentZoneLevel?.requiredKills || calculateKillRequirement(currentZone?.id || 1, currentLevel);
-              const currentKills = zoneProgress?.killsInLevel || 0;
+              let selectedLevelKills = 0;
+              
+              // If we're on the current progression level, use killsInLevel
+              if (zoneProgress && zoneProgress.currentLevel === (currentZoneLevel?.level || 1)) {
+                selectedLevelKills = zoneProgress.killsInLevel || 0;
+              }
+              // If we're on a completed level, it should show as completed (max kills)
+              else if (zoneProgress && (currentZoneLevel?.level || 1) < zoneProgress.currentLevel) {
+                selectedLevelKills = requiredKills; // Completed level
+              }
+              // Otherwise it's 0 (not started or reset)
+              
               // Cap displayed kills at required amount to prevent showing 45/40
-              const displayKills = Math.min(currentKills, requiredKills);
+              const displayKills = Math.min(selectedLevelKills, requiredKills);
               return `${displayKills}/${requiredKills}`;
             })()}
           </Text>
