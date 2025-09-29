@@ -171,6 +171,7 @@ const defaultGameState: GameState = {
     gems: 10,
     skillPoints: 3, // Start with 3 skill points
     reviveTickets: 3, // Start with 3 revival tickets
+    reviveTickets: 3, // Start with 3 revival tickets
     
     // Separate stat pools for clear progression tracking
     baseStats: {
