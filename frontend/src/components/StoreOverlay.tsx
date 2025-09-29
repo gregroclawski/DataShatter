@@ -244,29 +244,62 @@ const StoreOverlay = ({ onClose }: Props) => {
       // Simulate purchase delay
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Calculate total gems (base + bonus)
-      const totalGems = gemPackage.gems + (gemPackage.bonus || 0);
+      // Check if this is a revive tickets purchase
+      if (gemPackage.type === 'revive_tickets') {
+        const ticketQuantity = gemPackage.gems; // 50 tickets
+        const gemsCost = gemPackage.bonus; // 1000 gems
+        
+        // Check if player has enough gems
+        if (ninja.gems < gemsCost) {
+          Alert.alert(
+            'Insufficient Gems',
+            `You need ${gemsCost.toLocaleString()} gems to purchase this item.\n\nCurrent balance: ${ninja.gems.toLocaleString()} gems`
+          );
+          return;
+        }
 
-      // Update ninja gems
-      updateNinja(prev => ({
-        ...prev,
-        gems: prev.gems + totalGems
-      }));
+        // Purchase revive tickets with gems
+        updateNinja(prev => ({
+          ...prev,
+          gems: prev.gems - gemsCost,
+          reviveTickets: prev.reviveTickets + ticketQuantity
+        }));
 
-      // Trigger save
-      setTimeout(() => {
-        saveOnEvent('gem_purchase');
-      }, 100);
+        // Trigger save
+        setTimeout(() => {
+          saveOnEvent('revive_ticket_purchase');
+        }, 100);
 
-      Alert.alert(
-        '🎉 Purchase Successful!',
-        `${gemPackage.name} purchased!\n\nGems Added: +${totalGems.toLocaleString()}\nNew Balance: ${(ninja.gems + totalGems).toLocaleString()} gems`,
-        [{ text: 'Awesome!' }]
-      );
+        Alert.alert(
+          '🎉 Purchase Successful!',
+          `${gemPackage.name} purchased!\n\nRevive Tickets Added: +${ticketQuantity}\nGems Spent: ${gemsCost.toLocaleString()}\n\nNew Ticket Balance: ${ninja.reviveTickets + ticketQuantity}`,
+          [{ text: 'Awesome!' }]
+        );
+      } else {
+        // Regular gem purchase
+        const totalGems = gemPackage.gems + (gemPackage.bonus || 0);
+
+        // Update ninja gems
+        updateNinja(prev => ({
+          ...prev,
+          gems: prev.gems + totalGems
+        }));
+
+        // Trigger save
+        setTimeout(() => {
+          saveOnEvent('gem_purchase');
+        }, 100);
+
+        Alert.alert(
+          '🎉 Purchase Successful!',
+          `${gemPackage.name} purchased!\n\nGems Added: +${totalGems.toLocaleString()}\nNew Balance: ${(ninja.gems + totalGems).toLocaleString()} gems`,
+          [{ text: 'Awesome!' }]
+        );
+      }
 
     } catch (error) {
-      console.error('Gem purchase error:', error);
-      Alert.alert('Purchase Failed', 'Unable to complete gem purchase. Please try again.');
+      console.error('Purchase error:', error);
+      Alert.alert('Purchase Failed', 'Unable to complete purchase. Please try again.');
     } finally {
       setPurchasing(null);
     }
