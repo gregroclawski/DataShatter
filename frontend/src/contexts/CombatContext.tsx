@@ -854,6 +854,69 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
+  // CRITICAL FIX: Handle projectile impacts separately from animation loop
+  useEffect(() => {
+    const processProjectileImpacts = () => {
+      setProjectiles(currentProjectiles => {
+        return currentProjectiles.map(projectile => {
+          if (!projectile) return null;
+
+          // Calculate progress
+          const currentTime = Date.now();
+          const startTime = projectile.startTime || currentTime;
+          const elapsedTime = currentTime - startTime;
+          const progress = Math.min(elapsedTime / (projectile.duration || 500), 1);
+
+          // Apply damage when projectile completes
+          if (progress >= 1 && !projectile.hasHit) {
+            projectile.hasHit = true;
+            
+            console.log(`💥 PROJECTILE IMPACT: ${projectile.abilityName} hit enemy ${projectile.targetEnemyId} for ${projectile.damage} damage`);
+            
+            // Apply damage directly without setTimeout (not during render)
+            setCombatState(prev => {
+              const newState = { ...prev };
+              const enemyIndex = newState.enemies.findIndex(e => e.id === projectile.targetEnemyId);
+              
+              if (enemyIndex >= 0 && newState.enemies[enemyIndex].health > 0) {
+                newState.enemies = [...newState.enemies];
+                const enemy = newState.enemies[enemyIndex];
+                const newHealth = Math.max(0, enemy.health - projectile.damage);
+                
+                newState.enemies[enemyIndex] = {
+                  ...enemy,
+                  health: newHealth,
+                  lastDamaged: combatEngine.getCurrentTick()
+                };
+                
+                console.log(`🎯 DAMAGE APPLIED: ${enemy.name} health: ${newHealth}/${enemy.maxHealth}`);
+                
+                // Award XP when enemy dies
+                if (newHealth <= 0 && enemy.health > 0) {
+                  console.log(`💀 PROJECTILE KILL: ${enemy.name} killed by ${projectile.abilityName}!`);
+                  setTimeout(() => handleEnemyKill(enemy), 0);
+                }
+              }
+              
+              return newState;
+            });
+          }
+
+          // Clean up completed projectiles
+          if (progress >= 1.5) {
+            return null;
+          }
+
+          return projectile;
+        }).filter(Boolean);
+      });
+    };
+
+    // Process impacts independently from visual animation at 30fps
+    const impactInterval = setInterval(processProjectileImpacts, 33);
+    return () => clearInterval(impactInterval);
+  }, [handleEnemyKill]);
+
   // CRITICAL FIX: Handle projectile impact - deals damage to specific enemy (ASYNC)
   const handleProjectileImpact = useCallback((targetEnemyId: string, damage: number, abilityName: string) => {
     console.log(`💥 PROJECTILE IMPACT QUEUED: ${abilityName} targeting enemy ${targetEnemyId} for ${damage} damage`);
