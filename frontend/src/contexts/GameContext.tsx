@@ -143,6 +143,7 @@ interface GameContextType {
   revivePlayer: () => boolean;
   freeRespawn: () => void;
   purchaseReviveTickets: (quantity: number) => boolean;
+  updateGameState: (updates: Partial<GameState>) => void; // Add updateGameState function
   trainSkill: (skill: string) => void;
   collectIdleRewards: () => void;
   saveGame: () => void;
