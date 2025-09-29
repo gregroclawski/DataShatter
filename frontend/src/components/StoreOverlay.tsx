@@ -46,7 +46,7 @@ type TabType = 'items' | 'subscriptions' | 'gems';
 
 const StoreOverlay = ({ onClose }: Props) => {
   const { gameState, updateNinja, saveOnEvent } = useGame();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const { ninja } = gameState;
   
   const [activeTab, setActiveTab] = useState<TabType>('items');
