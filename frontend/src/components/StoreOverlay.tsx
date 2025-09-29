@@ -277,15 +277,26 @@ const StoreOverlay = ({ onClose }: Props) => {
   };
 
   const renderItemsTab = () => (
-    <View style={styles.tabContent}>
-      <Text style={styles.emptyStateTitle}>Items Coming Soon</Text>
-      <Text style={styles.emptyStateDescription}>
-        Premium items and upgrades will be available here soon!
-      </Text>
-      <View style={styles.emptyStateIcon}>
-        <Ionicons name="construct" size={64} color="#64748b" />
+    <ScrollView style={styles.tabContent} showsVerticalScrollIndicator={false}>
+      {/* Account Services Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Account Services</Text>
+        <Text style={styles.sectionSubtitle}>Customize your ninja identity</Text>
+        
+        <NameChangeCard />
       </View>
-    </View>
+
+      {/* Coming Soon Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Premium Items</Text>
+        <Text style={styles.emptyStateDescription}>
+          Premium items and upgrades will be available here soon!
+        </Text>
+        <View style={styles.emptyStateIcon}>
+          <Ionicons name="construct" size={48} color="#64748b" />
+        </View>
+      </View>
+    </ScrollView>
   );
 
   const renderSubscriptionsTab = () => (
