@@ -688,19 +688,32 @@ async def change_name(
                 )
         
         # Update user's name and increment change counter
-        update_result = await db.users.update_one(
-            {"id": user_id},
-            {
-                "$set": {
-                    "name": name_request.new_name,
-                    "name_changes_used": name_changes_used + 1,
-                    "updated_at": datetime.now(timezone.utc)
+        try:
+            update_result = await db.users.update_one(
+                {"id": user_id},
+                {
+                    "$set": {
+                        "name": name_request.new_name,
+                        "name_changes_used": name_changes_used + 1,
+                        "updated_at": datetime.now(timezone.utc)
+                    }
                 }
-            }
-        )
-        
-        if update_result.modified_count == 0:
-            raise HTTPException(status_code=500, detail="Failed to update name")
+            )
+            
+            if update_result.modified_count == 0:
+                raise HTTPException(status_code=500, detail="Failed to update name")
+                
+        except Exception as db_error:
+            # Handle MongoDB duplicate key error (race condition case)
+            if "E11000" in str(db_error) or "duplicate key error" in str(db_error).lower():
+                print(f"❌ NAME CHANGE RACE CONDITION DETECTED - User: {user_id}, Name: '{name_request.new_name}'")
+                raise HTTPException(
+                    status_code=400,
+                    detail="Username already taken (taken by another user just now)"
+                )
+            else:
+                print(f"❌ Database error during name change: {str(db_error)}")
+                raise HTTPException(status_code=500, detail="Failed to update name")
         
         print(f"✅ NAME CHANGE COMPLETED - User: {user_id}, New Name: '{name_request.new_name}'")
         
