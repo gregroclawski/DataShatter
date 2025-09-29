@@ -1,71 +1,60 @@
 <analysis>
-The previous AI engineer's work focused on transforming the Idle Ninja Online Expo mobile app from a basic state, addressing numerous mobile-specific challenges. Initial efforts stabilized the app by resolving rendering issues () and authentication problems. The core development involved implementing a circular abilities layout and a player movement system. This journey was punctuated by persistent mobile layout inconsistencies, React render-phase violations, and threading issues with  (for the joystick). The AI engineer extensively utilized the troubleshoot agent to diagnose and resolve complex bugs, systematically migrating web-centric code patterns to mobile-compatible ones. Key areas of correction included: ability icon rendering, responsive layout calculations, header styling,  replacement, projectile animation, and especially refining the joystick implementation from  to simple touch events to overcome crashes, and finally, robust state management across contexts to prevent update conflicts and implement auto-movement and enemy tracking.
+The AI engineer's work was highly iterative, primarily focused on fixing critical bugs and implementing new features for an Expo mobile application. Initial efforts included resolving React Hooks order violations, overhauling the equipment system, and enhancing character progression UI (combining stats/skills, dual upgrades, neon theme). A significant portion of the trajectory involved meticulously debugging and fixing persistent issues with the zone progression system's display and kill tracking, often requiring multiple troubleshooting rounds with the  to identify hardcoded values and synchronization problems across UI and context logic. Subsequently, the focus shifted to implementing ability persistence, including backend model updates and frontend context integration, which also required several iterations to resolve  errors and ensure proper save/load. The current task involves addressing the Shadow Clone ability functionality.
 </analysis>
 
 <product_requirements>
-The Idle Ninja Online is a mobile RPG featuring auto-fighting across 50 zones, character progression up to level 15000, stat points, and level-up animations. The UI includes a battle arena and bottom tabs for Stats, Abilities, Pets, Skills, Store, Raids, and Equipment, all themed Mythic-Tech. It incorporates a 50-zone system, 25-level gear progression with material upgrades, and a 5-tier Boss Battle System with daily tickets, unique attacks, and dynamic difficulty. Enemies are cleared during boss fights, and bosses are three times larger. A critical requirement is secure, server-side login and progression to prevent client-side cheating. The application uses Expo (frontend), FastAPI (backend), and MongoDB (database). So far, the application has stable loading, authentication, and core combat functionality with mobile-optimized UI, header, and overlay displays. Recent updates include a circular abilities layout, and a functional player movement system with both auto-movement and a mobile-safe virtual joystick, with enemies now tracking the player.
+Idle Ninja Online is a mobile RPG featuring auto-fighting across 50 zones, character progression (up to level 15000), stat points, and level-up animations. The UI includes a battle arena and bottom tabs for Stats, Abilities, Pets, Skills, Store, Raids, and Equipment, all utilizing a Mythic-Tech theme. Core mechanics include a 50-zone system, 25-level gear progression with material upgrades, and a 5-tier Boss Battle System. Secure, server-side login and progression are paramount, using Expo (frontend), FastAPI (backend), and MongoDB.
+
+Recent developments addressed: React Hooks issues, equipment system bugs (key duplication, touch events, persistence), combined Stats/Skills into a Character tab with dual (gold/skill point) bulk upgrades, reactive skill displays, and optimized zone progression (linear kill requirements). Subsequent work fixed zone progress display (top bar and overlay), ability tab disappearance, implemented Whirlwind AOE damage, and began Shadow Clone ability implementation.
 </product_requirements>
 
 <key_technical_concepts>
--   **Expo & Expo Router**: Mobile app framework with file-based routing.
--   **React Native**: Core UI components, hooks (useState, useEffect, useMemo, useCallback, useRef), StyleSheet API, Animated API.
--   **FastAPI**: Python backend for APIs.
--   **MongoDB**: Database.
--   **JWT Authentication**: Secure token-based user authentication.
--   **CORS**: Cross-Origin Resource Sharing.
--   **SafeAreaView / useSafeAreaInsets**: Handling device notches/safe areas.
--   **react-native-reanimated / react-native-gesture-handler**: For animations and advanced touch interactions.
--   **Zustand/Redux-Toolkit**: State management.
+- **Expo & Expo Router**: Mobile app framework with file-based routing.
+- **React Native**: Core UI components, Hooks, StyleSheet, Animated API.
+- **FastAPI**: Python backend, MongoDB for database.
+- **JWT Authentication**: Secure token-based user authentication.
+- **Zustand/React Context**: State management for various game systems.
+- **react-native-reanimated**: For animations and advanced touch.
 </key_technical_concepts>
 
 <code_architecture>
 **Directory Structure:**
 
 
--   : Main FastAPI backend, handles API, DB, auth. CORS  repeatedly updated for frontend preview/ngrok URLs.
--   : Stores frontend configuration variables.  and  updated for ngrok tunnel/preview.
--   : Main game screen, renders UI and overlays.
-    -   **Summary**: Central to game rendering. Debugged rendering, fixed header z-index/layout, projectile rendering. Initialized , / (later removed for simple touch events). Implemented circular ability layout logic (via ), touch-and-drag movement (initially , then simple touch with internal state to avoid crashes), and joystick visual elements. Resolved  duplicate declarations. Implemented auto-movement system to track closest enemy. Added auto-movement toggle and manual joystick control, with logic to pause/resume combat abilities during manual input. Adjusted player auto and manual movement speeds. Corrected  initialization to center the player. Implemented projectile animation system using animated positions and  property. Fixed layout change effect to prevent overriding joystick movement. Destructured  from .
--   : Root layout for Expo Router.
-    -   **Summary**: Root layout for global navigation and context providers. Updated to use . Wrapped in  for , and  to ensure context availability.
--   : Handles user login/registration.
-    -   **Summary**: Optimized  dependencies, added web checks, fixed web-specific event listener that interfered with mobile .
--   : In-game combat display.
-    -   **Summary**: Initial  style fixed.  wrapped in . Deprecated shadow properties fixed. Mobile-optimized dimensions. Z-index set to 30. Modified for circular ability layout: used  (emoji strings) for icons, adjusted button size (50% smaller, increased touch target to 44px), position (bottom-left), and font size. Fixed  errors by ensuring proper filtering of null slots and re-working map logic.
--   : Manages user authentication state.
-    -   **Summary**: Added timeout, minimum loading duration for . Memoized provider . Refactored loading logic. Enhanced  to detect  for mobile. Added enhanced error logging to login function. Authentication screen was blocking the game view.
--   : Manages in-game combat logic.
-    -   **Summary**: , ,  wrapped in . Provider  wrapped in .  updated to batch state updates. Added , , ,  for Animated API (later some of these were refactored/removed as gesture handling moved to simple touch). Added random enemy movement logic within  and  property to the  type. Fixed multiple React render-phase violations by deferring  calls (within  and ) using . Removed duplicate  state, now accepts it as a prop from the main game component. Added  function to pause auto-cast abilities during manual player control. Enemy AI modified to track the closest player instead of random movement. Enemy movement speed adjusted.
--   : (NEW FILE) Combines  and  to reduce context nesting.
--   : Manages main game state and auto-save.
-    -   **Summary**:  dependency array fixed. Provider  wrapped in . Auto-save interval increased. Fixed React render-phase violation by deferring  call with .
--   : Core combat logic.
-    -   **Summary**:  replaced with React Native compatible timing (e.g., ) to fix the combat tick system on mobile.
--   : Provides responsive layout dimensions and safe area insets.
-    -   **Summary**: Destructured  values. Removed mobile-specific debouncing. Added mobile touch target constants (, ). Corrected  calculation to avoid double-subtracting insets.
--   : Displays zone information and enemy types.
-    -   **Summary**: Added safety checks for  and progress text. Fixed array join operation to filter non-string values. Fixed  prop issue for mapped items and  function parameter structure.
--   : Defines application-wide colors and theme.
-    -   **Summary**: Added missing , , , , ,  colors.  was changed to a lighter color to resolve the game area appearing black on mobile.
+-   : FastAPI backend.
+    -   **Changes**:  and  models updated to include , , , and  for persistence. Save endpoint now logs and handles  and stat upgrade fields.
+-   : Main game screen.
+    -   **Changes**: Multiple React Hooks order fixes. Overlay rendering logic adjusted.  type expanded.  props updated. Zone progression top bar display fixed to use  and  data, removing hardcoded values. Abilities tab re-added to navigation and overlay rendering.
+-   : Abilities display and upgrade.
+    -   **Changes**: Integrated  context. Ability upgrade logic now calls  for persistence. Display now shows upgrade requirements.
+-   : Displays zone/enemy info.
+    -   **Changes**: Removed , added  and . Hardcoded 1000 kill requirements replaced with dynamic . Zone selection logic updated to call  from context.  updated to correctly use context's .
+-   : Manages combat logic.
+    -   **Changes**: Enemy movement, player/enemy speeds adjusted.  and  added.  and  added to . Integrated  and  for persistence.  dependencies updated to prevent infinite loops.  now includes AOE logic, identifying multiple enemies within .  now uses .  now stores  data.
+-   : Manages game state, auto-save, persistence.
+    -   **Changes**:  added to   dependency array. Mobile-optimized save/load (local backups, ,  parameter). , , ,  added to  interface. , ,  functions added. Ninja interface updated to , , .  updated to include default .  updated to send , , .
+-   : Manages zone progression.
+    -   **Changes**: Uses  context. Calls . Initializes  from . , ,  functions added.  updated to track kills for .  function introduced for linear progression.  for  initialization now uses  to run only once, preventing auto-reversion. Duplicate  removed.  uses  and .
+-   : Defines equipment types.
+    -   **Changes**: uid=0(root) gid=0(root) groups=0(root) generation updated to include  for uniqueness.
+-   : Defines zones and enemy data.
+    -   **Changes**:  values updated using  for linear progression (all 50 zones).
+-   : Defines ability types and .
+    -   **Changes**:  interface added.  now includes  and  for persistence. Whirlwind Strike  increased to 500. Whirlwind Strike  doubled to 56. Shadow Clone (, , ). Added , ,  to CombatContextType.
 </code_architecture>
 
 <pending_tasks>
--   **Backend Persistence**: Ensure all game systems (Companions, etc.) are properly integrated with server-side save/load mechanisms.
--   **Companions**: Implement battle and support pets with leveling and abilities.
--   **Idle/Offline Progression**: Simulate combat mathematically while offline for accumulated rewards, integrating with the new server-side progression.
--   **PlayFab Integration**: Evaluate and potentially integrate PlayFab as a game backend service.
+- **Backend Persistence**: Ensure all game systems (Companions) are properly integrated with server-side save/load mechanisms.
+- **Companions**: Implement battle and support pets with leveling and abilities.
+- **Idle/Offline Progression**: Simulate combat mathematically while offline.
+- **PlayFab Integration**: Evaluate and potentially integrate PlayFab.
 </pending_tasks>
 
 <current_work>
-Immediately prior to this summary, the AI engineer was addressing persistent stuttering issues with the manual joystick movement and confirming that enemies were not automatically tracking the player. The troubleshoot agent identified two critical root causes: the joystick stuttering was due to a high  and a  dependency in a  causing excessive re-renders. The enemy AI was still implementing random movement instead of tracking the player.
-
-The AI engineer's last actions were to systematically fix these issues:
-1.  **Joystick Stuttering Fix**: The  was reduced, and the  dependency was removed from relevant  hooks controlling both joystick and auto-movement to prevent unnecessary re-renders in .
-2.  **Enemy AI Fix**: The enemy movement logic in  was modified to make enemies track toward the closest player instead of performing purely random movement. Player auto movement speed was set to 3x original and joystick movement speed to 3x original, while enemy movement speed was set to 2.5x original.
-
-The service was restarted after these changes. The goal of these changes was to eliminate the stuttering for a smoother manual control experience and to implement a more engaging enemy AI where enemies actively seek out the player, aligning with typical idle game combat mechanics.
+Immediately prior to this summary, the AI engineer was implementing the Shadow Clone ability. The user requested to double the base damage of the Whirlwind ability and to investigate why the Shadow Clone ability doesn't create a shadow of the player that casts duplicate attacks at 70% damage. The Whirlwind damage increase was completed. The engineer found that the  defines Shadow Clone with , , and , but the  lacked any logic to handle 'Buff' effects or to create visual clones. The engineer has identified that the Shadow Clone system requires adding state to the , creating a visual clone entity, making the clone cast duplicate attacks at 70% damage, and managing its 30-second duration. The first step of adding shadow clone state and logic to the  has just been initiated.
 </current_work>
 
 <optional_next_step>
-The last action was to restart the Expo service after implementing fixes for joystick stuttering and enemy tracking. The next logical step is to verify these changes on a mobile device.
+Implement the shadow clone logic within the  function in .
 </optional_next_step>
+

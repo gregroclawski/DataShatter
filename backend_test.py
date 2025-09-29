@@ -19,7 +19,7 @@ import uuid
 from datetime import datetime
 
 # Get backend URL from frontend env
-BACKEND_URL = "https://gear-master.preview.emergentagent.com/api"
+BACKEND_URL = "https://idle-ninja-fix.preview.emergentagent.com/api"
 
 def test_ability_persistence_system():
     """Test the complete ability persistence system"""
