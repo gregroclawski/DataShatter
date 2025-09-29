@@ -330,7 +330,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
               // Update enemy attack cooldown
               enemy.lastAttackTick = newState.currentTick;
               
-              // TODO: Handle player death if health reaches 0
+              // Handle player death if health reaches 0
               if (newPlayerHealth <= 0) {
                 console.log('💀 PLAYER DEFEATED! Triggering revival system...');
                 // Set player as dead and trigger revival modal
