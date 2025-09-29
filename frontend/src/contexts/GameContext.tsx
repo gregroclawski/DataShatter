@@ -957,13 +957,16 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   // Revival system functions
   const revivePlayer = useCallback(() => {
     if (gameState.ninja.reviveTickets > 0) {
-      console.log('💖 PLAYER REVIVED using ticket!');
+      console.log('💖 PLAYER REVIVED using ticket! Granting 5 seconds of invincibility...');
       
       const effectiveStats = getEffectiveStats();
+      const invincibilityEndTime = Date.now() + 5000; // 5 seconds from now
       
       setGameState(prevState => ({
         ...prevState,
         isAlive: true,
+        isInvincible: true, // Grant invincibility
+        invincibilityEndTime, // Set end time
         ninja: {
           ...prevState.ninja,
           health: effectiveStats.maxHealth, // FIXED: Full health restore to MAX health
@@ -971,25 +974,48 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         }
       }));
       
+      // Remove invincibility after 5 seconds
+      setTimeout(() => {
+        console.log('🛡️ Invincibility expired!');
+        setGameState(prev => ({
+          ...prev,
+          isInvincible: false,
+          invincibilityEndTime: undefined
+        }));
+      }, 5000);
+      
       return true; // Successfully revived
     }
     return false; // No tickets available
   }, [gameState.ninja.reviveTickets, getEffectiveStats]);
 
   const freeRespawn = useCallback(() => {
-    console.log('♻️ PLAYER FREE RESPAWN!');
+    console.log('♻️ PLAYER FREE RESPAWN! Granting 5 seconds of invincibility...');
     
     const effectiveStats = getEffectiveStats();
+    const invincibilityEndTime = Date.now() + 5000; // 5 seconds from now
     
     setGameState(prevState => ({
       ...prevState,
       isAlive: true,
+      isInvincible: true, // Grant invincibility
+      invincibilityEndTime, // Set end time
       ninja: {
         ...prevState.ninja,
         health: effectiveStats.maxHealth, // FIXED: Full health restore to MAX health
         // No ticket cost for free respawn
       }
     }));
+    
+    // Remove invincibility after 5 seconds
+    setTimeout(() => {
+      console.log('🛡️ Invincibility expired!');
+      setGameState(prev => ({
+        ...prev,
+        isInvincible: false,
+        invincibilityEndTime: undefined
+      }));
+    }, 5000);
   }, [getEffectiveStats]);
 
   // Function to purchase revive tickets with gems
