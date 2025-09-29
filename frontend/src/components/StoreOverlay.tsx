@@ -1121,8 +1121,8 @@ const NameChangeCard = () => {
         throw new Error(errorData.detail || 'Name change failed');
       }
     } catch (error) {
-      console.error('Name change error:', error);
-      Alert.alert('Name Change Failed', error.message || 'Unable to change name. Please try again.');
+      console.log('Name change error:', error); // Log for debugging but don't show to user
+      Alert.alert('Name Change Failed', 'Unable to change name. Please try again.');
     } finally {
       setChanging(false);
     }
