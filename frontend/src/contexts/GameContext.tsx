@@ -88,6 +88,17 @@ export interface Adventure {
   startTime?: number;
 }
 
+export interface SubscriptionBenefits {
+  xp_multiplier: number;
+  drop_multiplier: number;
+  zone_kill_multiplier: number;
+  active_subscriptions: Array<{
+    type: string;
+    end_date: string;
+    days_remaining: number;
+  }>;
+}
+
 export interface GameState {
   ninja: NinjaStats;
   shurikens: Shuriken[];
@@ -110,6 +121,7 @@ export interface GameState {
     availableAbilities: Record<string, any>; // Map of ability ID to ability data with levels
     activeSynergies: any[]; // Current active synergies
   }; // Ability deck and progression data
+  subscriptionBenefits: SubscriptionBenefits;
 }
 
 interface GameContextType {
