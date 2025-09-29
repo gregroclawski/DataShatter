@@ -150,6 +150,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     console.log(`💰 MOBILE DEBUG - Awarding ${xpReward} XP and ${goldReward} gold for kill`);
     console.log(`🔍 SUBSCRIPTION DEBUG - XP Multiplier: ${xpMultiplier}, Drop Multiplier: ${dropMultiplier}`);
     console.log(`🔍 SUBSCRIPTION DEBUG - Base XP: ${baseXpReward}, Final XP: ${xpReward}`);
+    console.log(`🔍 SUBSCRIPTION DEBUG - Full benefits:`, JSON.stringify(game.gameState.subscriptionBenefits));
     console.log(`📱 MOBILE DEBUG - Platform: ${Platform.OS}, Time: ${Date.now()}`);
     
     // MOBILE FIX: Defer ALL cross-context state updates to prevent render-phase violations
