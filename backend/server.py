@@ -126,6 +126,9 @@ def verify_token(token: str) -> Optional[dict]:
 async def get_user_by_email(email: str) -> Optional[dict]:
     return await db.users.find_one({"email": email})
 
+async def get_user_by_name(name: str) -> Optional[dict]:
+    return await db.users.find_one({"name": name})
+
 async def get_user_by_id(user_id: str) -> Optional[dict]:
     return await db.users.find_one({"id": user_id})
 
