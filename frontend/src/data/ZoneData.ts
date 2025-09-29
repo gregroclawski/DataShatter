@@ -313,10 +313,10 @@ const generateZones = (): Zone[] => {
     // AGGRESSIVE SCALING: Each zone gets exponentially harder
     const zoneMultiplier = Math.pow(2, config.id - 1); // Zone 1: 1x, Zone 2: 2x, Zone 3: 4x, etc.
     
-    // Generate 10 levels per zone (each covering ~150 character levels)
+    // Generate 5 levels per zone (each covering 300 character levels)
     const levels: ZoneLevel[] = [];
-    for (let level = 1; level <= 10; level++) {
-      // Each zone level covers ~150 character levels
+    for (let level = 1; level <= 5; level++) {
+      // Each zone level covers 300 character levels (1500 ÷ 5 = 300)
       const levelMultiplier = zoneMultiplier * (1 + (level - 1) * 0.5); // Exponential within zone
       
       levels.push({
@@ -324,7 +324,7 @@ const generateZones = (): Zone[] => {
         enemyMultiplier: levelMultiplier,
         xpMultiplier: levelMultiplier,
         // AGGRESSIVE KILL REQUIREMENTS: Scale with zone and level
-        requiredKills: Math.floor(50 + (config.id * 50) + (level * 25)), // Zone 1 L1: 125, Zone 10 L10: 800
+        requiredKills: Math.floor(50 + (config.id * 50) + (level * 25)), // Zone 1 L1: 125, Zone 10 L5: 675
         enemyTypes: config.enemies
       });
     }
