@@ -487,7 +487,7 @@ async def purchase_subscription(
         # Check if user already has active subscription of this type
         existing_subscription = await db.subscriptions.find_one({
             "user_id": user_id,
-            "subscription_type": subscription_request.subscription_type.value,  # Use enum value
+            "subscription_type": subscription_request.subscription_type,
             "is_active": True,
             "end_date": {"$gt": datetime.now(timezone.utc)}
         })
