@@ -999,6 +999,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const effectiveStats = getEffectiveStats();
     const invincibilityEndTime = Date.now() + 5000; // 5 seconds from now
     
+    console.log(`🔍 FREE RESPAWN DEBUG: Current health=${gameState.ninja.health}, Max health=${effectiveStats.maxHealth}`);
+    
     setGameState(prevState => ({
       ...prevState,
       isAlive: true,
@@ -1011,6 +1013,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       }
     }));
     
+    console.log(`✅ FREE RESPAWN COMPLETE: Set health to ${effectiveStats.maxHealth}`);
+    
     // Remove invincibility after 5 seconds
     setTimeout(() => {
       console.log('🛡️ Invincibility expired!');
@@ -1020,7 +1024,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         invincibilityEndTime: undefined
       }));
     }, 5000);
-  }, [getEffectiveStats]);
+  }, [getEffectiveStats, gameState.ninja.health]);
 
   // Function to purchase revive tickets with gems
   const purchaseReviveTickets = useCallback((quantity: number) => {
