@@ -277,8 +277,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   // Load game data when user authenticates
   useEffect(() => {
     if (isAuthenticated && user) {
+      console.log('🎮 LOADING GAME DATA AND SUBSCRIPTION BENEFITS...');
       loadGameFromServer().then(() => {
         // Load subscription benefits after game data
+        console.log('🔄 GAME DATA LOADED, NOW LOADING SUBSCRIPTION BENEFITS...');
         loadSubscriptionBenefits();
       });
     } else {
