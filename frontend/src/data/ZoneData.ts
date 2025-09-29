@@ -343,7 +343,7 @@ const generateZones = (): Zone[] => {
   return zones;
 };
 
-// Generate all 50 zones with proper scaling
+// Generate all 10 zones with aggressive scaling
 export const ZONES: Zone[] = generateZones();
 
 // Utility Functions
