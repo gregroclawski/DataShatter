@@ -331,15 +331,18 @@ export default function NinjaIdleGame() {
         
         // Apply damage for completed projectiles using CombatContext function
         if (completedProjectiles.length > 0) {
-          completedProjectiles.forEach(projectileId => {
-            const projectile = projectiles?.find(p => p?.id === projectileId);
-            if (projectile) {
-              // Use the handleProjectileImpact function from CombatContext (we'll add this)
-              if (handleProjectileImpact) {
-                handleProjectileImpact(projectile.targetEnemyId, projectile.damage, projectile.abilityName);
+          // CRITICAL FIX: Defer state updates to prevent render-phase violations
+          setTimeout(() => {
+            completedProjectiles.forEach(projectileId => {
+              const projectile = projectiles?.find(p => p?.id === projectileId);
+              if (projectile) {
+                // Use the handleProjectileImpact function from CombatContext
+                if (handleProjectileImpact) {
+                  handleProjectileImpact(projectile.targetEnemyId, projectile.damage, projectile.abilityName);
+                }
               }
-            }
-          });
+            });
+          }, 0); // Defer to next event loop to prevent setState-in-render error
         }
         
         return updatedProjectiles;
