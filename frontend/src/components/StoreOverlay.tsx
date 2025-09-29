@@ -97,6 +97,17 @@ const StoreOverlay = ({ onClose }: Props) => {
       price: '$0.99',
       bonus: 10,
     },
+    // Revive Tickets
+    {
+      id: 'revive_tickets_50',
+      name: 'Revive Tickets Bundle',
+      description: 'Get 50 revive tickets to avoid death and keep your progress',
+      icon: '🎫💖',
+      type: 'revive_tickets',
+      gems: 50,
+      price: '$0.99',
+      bonus: 1000, // Cost in gems (1000 gems for 50 tickets)
+    },
     {
       id: 'com.ninjaidle.gems_small',
       name: 'Small Gem Bag',
