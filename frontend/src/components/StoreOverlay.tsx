@@ -186,8 +186,9 @@ const StoreOverlay = ({ onClose }: Props) => {
         return;
       }
 
-      const response = await fetch(`${process.env.EXPO_BACKEND_URL}/api/subscriptions/purchase`, {
+      const response = await fetch(`${API_BASE_URL}/api/subscriptions/purchase`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${user?.access_token}`,
           'Content-Type': 'application/json',
