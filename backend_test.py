@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Ability Persistence System
-Focus: Verify ability data is being saved and loaded correctly
+Backend API Testing for Event-Driven Character Upgrades
+Focus: Test goldUpgrades and skillPointUpgrades persistence in save/load system
 
 REVIEW REQUEST FOCUS:
-1. **Verify Backend Logging**: Check if ability data is actually being received and saved by the backend
-2. **Test Save Request**: Manually trigger a save and check the backend logs for ability data
-3. **Test Load Request**: Load game data and verify ability data is being returned
-4. **Database Verification**: Check if ability data is actually stored in MongoDB
+1. Test all core authentication endpoints
+2. Test save-game endpoint with ninja data that includes goldUpgrades and skillPointUpgrades
+3. Test load-game endpoint to verify goldUpgrades and skillPointUpgrades are preserved
+4. Verify backend logs show the upgrade data being saved and loaded correctly
+5. Test that no regressions occurred in any backend functionality
 
-Expected: Backend logs should show `💾 SAVE REQUEST - Ability Data: {actual ability data}` when saves occur.
-If this is missing, the frontend isn't sending ability data. If it's present but abilities still reset, the restore logic has issues.
+This will help verify that character tab upgrades (gold points and skill points) are being persisted correctly on the backend side.
 """
 
 import requests
 import json
 import uuid
 from datetime import datetime
+import time
 
-# Get backend URL from frontend env
+# Backend URL from frontend/.env
 BACKEND_URL = "https://idle-ninja-fix.preview.emergentagent.com/api"
 
 def test_ability_persistence_system():
