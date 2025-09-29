@@ -424,8 +424,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       console.log('🔥 FORCING EVENT-DRIVEN SAVE - bypassing loading guards');
     }
 
-    // MOBILE OPTIMIZATION: Always save locally first for offline support
-    await saveLocalGameBackupWithState(currentState);
+    // SECURITY: Server-only saves, no local storage to prevent save file editing
     
     console.log('✅ SAVE WITH CURRENT STATE - Removing stale closure');
     console.log('💾 SAVING CURRENT STATE:', 'Level:', currentState.ninja.level, 'XP:', currentState.ninja.experience, 'Gold:', currentState.ninja.gold, 'Gems:', currentState.ninja.gems);
