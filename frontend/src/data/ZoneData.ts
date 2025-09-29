@@ -350,9 +350,13 @@ export const ZONES: Zone[] = generateZones();
 export const calculateEnemyStats = (enemyType: EnemyType, zoneLevel: ZoneLevel, zoneId: number) => {
   const scalingFactor = Math.pow(1.15, (zoneId - 1) * 5 + zoneLevel.level);
   
+  // CRITICAL FIX: Scale down massive HP and attack values for balanced gameplay
+  const baseHP = Math.floor(enemyType.baseHP * zoneLevel.enemyMultiplier * scalingFactor / 1000); // Scale down by 1000x
+  const baseAttack = Math.floor(enemyType.baseAttack * zoneLevel.enemyMultiplier * scalingFactor / 100); // Scale down by 100x
+  
   return {
-    hp: Math.floor(enemyType.baseHP * zoneLevel.enemyMultiplier * scalingFactor),
-    attack: Math.floor(enemyType.baseAttack * zoneLevel.enemyMultiplier * scalingFactor),
+    hp: Math.max(1, baseHP), // Minimum 1 HP
+    attack: Math.max(1, baseAttack), // Minimum 1 attack
     xp: Math.floor(enemyType.baseXP * zoneLevel.xpMultiplier * scalingFactor),
     resistances: enemyType.resistances
   };
