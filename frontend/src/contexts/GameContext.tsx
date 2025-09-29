@@ -804,6 +804,32 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
+  // Load subscription benefits from server
+  const loadSubscriptionBenefits = useCallback(async () => {
+    if (!isAuthenticated || !user?.access_token) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/subscriptions/benefits`, {
+        headers: {
+          'Authorization': `Bearer ${user.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const benefits = await response.json();
+        console.log('📊 LOADED SUBSCRIPTION BENEFITS:', benefits);
+        
+        setGameState(prev => ({
+          ...prev,
+          subscriptionBenefits: benefits
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to load subscription benefits:', error);
+    }
+  }, [isAuthenticated, user?.access_token]);
+
   const equipShuriken = (id: string) => {
     setGameState(prev => ({
       ...prev,
