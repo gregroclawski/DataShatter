@@ -485,7 +485,10 @@ export default function NinjaIdleGame() {
               const zoneProgress = getZoneProgress(currentZone?.id || 1);
               const currentLevel = zoneProgress?.currentLevel || 1;
               const requiredKills = currentZoneLevel?.requiredKills || calculateKillRequirement(currentZone?.id || 1, currentLevel);
-              return `${zoneProgress?.killsInLevel || 0}/${requiredKills}`;
+              const currentKills = zoneProgress?.killsInLevel || 0;
+              // Cap displayed kills at required amount to prevent showing 45/40
+              const displayKills = Math.min(currentKills, requiredKills);
+              return `${displayKills}/${requiredKills}`;
             })()}
           </Text>
         </View>
