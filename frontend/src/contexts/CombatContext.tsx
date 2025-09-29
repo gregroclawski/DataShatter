@@ -234,30 +234,63 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
           const deltaY = playerY - enemy.position.y;
           const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
           
-          // Only move if not too close to player (maintain some distance for combat)
-          if (distance > 40) {
-            // Normalize direction toward player
-            const normalizedX = deltaX / distance;
-            const normalizedY = deltaY / distance;
+          // CRITICAL FIX: Enemy attacks when close to player
+          const ATTACK_RANGE = 50; // Enemy attack range
+          const ATTACK_COOLDOWN = 30; // Attack every 3 seconds (30 ticks at 10 TPS)
+          
+          if (distance <= ATTACK_RANGE) {
+            // Enemy is close enough to attack player
+            if (!enemy.lastAttackTick) enemy.lastAttackTick = 0;
             
-            // Add slight randomness to movement to prevent perfect tracking
-            const randomFactor = 0.2; // 20% randomness
-            const finalX = normalizedX + (Math.random() - 0.5) * randomFactor;
-            const finalY = normalizedY + (Math.random() - 0.5) * randomFactor;
-            
-            // Calculate new position
-            let newX = enemy.position.x + (finalX * MOVEMENT_SPEED);
-            let newY = enemy.position.y + (finalY * MOVEMENT_SPEED);
-            
-            // Keep within bounds
-            newX = Math.max(0, Math.min(SCREEN_WIDTH - ENEMY_SIZE, newX));
-            newY = Math.max(0, Math.min(GAME_AREA_HEIGHT - ENEMY_SIZE, newY));
-            
-            // Apply new position
-            enemy.position.x = newX;
-            enemy.position.y = newY;
+            if (newState.currentTick - enemy.lastAttackTick >= ATTACK_COOLDOWN) {
+              // Enemy attacks player
+              const attackDamage = Math.floor(enemy.stats.attack * (0.8 + Math.random() * 0.4)); // 80-120% of base damage
+              const playerDefense = newState.playerStats.defense;
+              const finalDamage = Math.max(1, attackDamage - Math.floor(playerDefense * 0.5)); // Defense reduces damage by 50%
+              
+              console.log(`🗡️ ENEMY ATTACK: ${enemy.name} attacks player for ${finalDamage} damage (${attackDamage} - ${Math.floor(playerDefense * 0.5)} defense)`);
+              
+              // Apply damage to player
+              const newPlayerHealth = Math.max(0, newState.playerStats.health - finalDamage);
+              newState.playerStats.health = newPlayerHealth;
+              
+              console.log(`❤️ PLAYER HEALTH: ${newState.playerStats.health}/${newState.playerStats.maxHealth} (took ${finalDamage} damage)`);
+              
+              // Update enemy attack cooldown
+              enemy.lastAttackTick = newState.currentTick;
+              
+              // TODO: Handle player death if health reaches 0
+              if (newPlayerHealth <= 0) {
+                console.log('💀 PLAYER DEFEATED! Game over logic needed here');
+              }
+            }
+          } else {
+            // Move toward player if not in attack range
+            // Only move if not too close to player (maintain some distance for combat)
+            if (distance > 40) {
+              // Normalize direction toward player
+              const normalizedX = deltaX / distance;
+              const normalizedY = deltaY / distance;
+              
+              // Add slight randomness to movement to prevent perfect tracking
+              const randomFactor = 0.2; // 20% randomness
+              const finalX = normalizedX + (Math.random() - 0.5) * randomFactor;
+              const finalY = normalizedY + (Math.random() - 0.5) * randomFactor;
+              
+              // Calculate new position
+              let newX = enemy.position.x + (finalX * MOVEMENT_SPEED);
+              let newY = enemy.position.y + (finalY * MOVEMENT_SPEED);
+              
+              // Keep within bounds
+              newX = Math.max(0, Math.min(SCREEN_WIDTH - ENEMY_SIZE, newX));
+              newY = Math.max(0, Math.min(GAME_AREA_HEIGHT - ENEMY_SIZE, newY));
+              
+              // Apply new position
+              enemy.position.x = newX;
+              enemy.position.y = newY;
+            }
+            // If too close to player, enemies stay put to allow combat
           }
-          // If too close to player, enemies stay put to allow combat
         }
       });
 
