@@ -27,38 +27,18 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const getBackendUrl = (): string => {
-  // Get the backend URL from environment variable first
+  // SIMPLIFIED: Always use environment variable first, then fallback to localhost
   const envBackendUrl = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL;
   
-  console.log('🔧 BACKEND URL DETECTION:');
-  console.log('  - Platform.OS:', Platform.OS);
-  console.log('  - Constants.appOwnership:', Constants.appOwnership);
+  console.log('🔧 BACKEND URL DETECTION (SIMPLIFIED):');
   console.log('  - ENV EXPO_PUBLIC_BACKEND_URL:', process.env.EXPO_PUBLIC_BACKEND_URL);
   console.log('  - expoConfig.extra.backendUrl:', Constants.expoConfig?.extra?.backendUrl);
   
-  // For Expo Go mobile, use the environment variable directly
-  if (Platform.OS !== 'web' && envBackendUrl) {
-    console.log('  - Using mobile/expo backend URL:', envBackendUrl);
-    return envBackendUrl;
-  }
+  // Use environment variable if set, otherwise fallback to localhost
+  const backendUrl = envBackendUrl || 'http://localhost:8001';
+  console.log('  - Selected backend URL:', backendUrl);
   
-  // For web, try to detect current domain
-  if (Platform.OS === 'web' && typeof window !== 'undefined') {
-    const currentProtocol = window.location.protocol;
-    const currentHost = window.location.host;
-    console.log('  - Web detected - Protocol:', currentProtocol, 'Host:', currentHost);
-    
-    if (currentHost.includes('.preview.emergentagent.com')) {
-      const webUrl = `${currentProtocol}//${currentHost}`;
-      console.log('  - Using web backend URL:', webUrl);
-      return webUrl;
-    }
-  }
-  
-  // Final fallback
-  const fallbackUrl = envBackendUrl || 'http://localhost:8001';
-  console.log('  - Using fallback URL:', fallbackUrl);
-  return fallbackUrl;
+  return backendUrl;
 };
 
 const API_BASE_URL = getBackendUrl();
