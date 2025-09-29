@@ -90,11 +90,34 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
     }
   });
 
-  // MOBILE FIX: Update local zone progress when GameContext zone progress changes (on load)
+  // Initialize with game context data when it becomes available
   useEffect(() => {
-    if (gameState?.zoneProgress && Object.keys(gameState.zoneProgress).length > 0) {
-      console.log('🔄 Syncing zone progress from GameContext:', gameState.zoneProgress);
+    if (gameState?.zoneProgress) {
+      console.log('🔄 ZONE CONTEXT - Loading zone progress from GameContext:', gameState.zoneProgress);
       setZoneProgress(gameState.zoneProgress);
+      
+      // Find the highest unlocked zone for progression tracking
+      const progressEntries = Object.values(gameState.zoneProgress || {});
+      let highestZone = ZONES[0];
+      let highestLevel = ZONES[0]?.levels[0];
+      
+      for (const progress of progressEntries) {
+        if (progress && progress.zoneId) {
+          const zone = ZONES.find(z => z.id === progress.zoneId);
+          if (zone) {
+            highestZone = zone;
+            highestLevel = zone.levels[(progress.currentLevel || 1) - 1];
+          }
+        }
+      }
+      
+      console.log(`🎯 PROGRESSION ZONE SET: Zone ${highestZone.id} Level ${highestLevel?.level || 1} (highest unlocked)`);
+      setProgressionZone(highestZone);
+      
+      // Set current selected zone to progression zone initially  
+      console.log(`🎯 SELECTED ZONE INITIALIZED: Zone ${highestZone.id} Level ${highestLevel?.level || 1} (matching progression)`);
+      setCurrentZone(highestZone);
+      setCurrentZoneLevel(highestLevel || ZONES[0]?.levels[0]);
     }
   }, [gameState?.zoneProgress]);
 
