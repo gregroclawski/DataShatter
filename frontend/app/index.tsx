@@ -293,7 +293,9 @@ export default function NinjaIdleGame() {
   useEffect(() => {
     const animateProjectiles = () => {
       setAnimatedProjectiles(currentProjectiles => {
-        return (projectiles || []).map(projectile => {
+        const projectilesToImpact: Array<{targetEnemyId: string, damage: number, abilityName: string}> = [];
+        
+        const updatedProjectiles = (projectiles || []).map(projectile => {
           if (!projectile) return null;
           
           // Calculate projectile flight progress (0 to 1)
@@ -302,15 +304,17 @@ export default function NinjaIdleGame() {
           const flightDuration = projectile.duration || 500; // Use projectile's duration
           const progress = Math.min(elapsedTime / flightDuration, 1);
           
-          // CRITICAL FIX: Apply damage when projectile reaches target (moved from CombatContext)
+          // CRITICAL FIX: Track projectiles that need to apply damage (defer actual state update)
           if (progress >= 1 && !projectile.hasHit) {
             projectile.hasHit = true;
             console.log(`💥 Projectile ${projectile.id} hit enemy ${projectile.targetEnemyId} for ${projectile.damage} damage`);
             
-            // Apply damage using the CombatContext function
-            if (handleProjectileImpact) {
-              handleProjectileImpact(projectile.targetEnemyId, projectile.damage, projectile.abilityName);
-            }
+            // Queue for damage application outside render cycle
+            projectilesToImpact.push({
+              targetEnemyId: projectile.targetEnemyId,
+              damage: projectile.damage,
+              abilityName: projectile.abilityName
+            });
           }
           
           // Remove projectiles that have completed their visual flight
@@ -329,6 +333,19 @@ export default function NinjaIdleGame() {
             progress
           };
         }).filter(Boolean);
+        
+        // CRITICAL FIX: Apply damage after render cycle completes
+        if (projectilesToImpact.length > 0) {
+          setTimeout(() => {
+            projectilesToImpact.forEach(impact => {
+              if (handleProjectileImpact) {
+                handleProjectileImpact(impact.targetEnemyId, impact.damage, impact.abilityName);
+              }
+            });
+          }, 0); // Defer to next event loop tick
+        }
+        
+        return updatedProjectiles;
       });
     };
 
