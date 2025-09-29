@@ -165,6 +165,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         xp: enemy.zoneXP || 20, // Use zone XP if available, fallback to base reward
         position: enemy.position
       };
+      
+      console.log(`🎯 ENEMY KILLED: ${zoneEnemy.name} (${zoneEnemy.typeId}) - Recording kill for selected zone`);
       recordEnemyKill(zoneEnemy);
     }, 0); // 0ms delay to defer to next event loop
   }, [game.updateNinja, recordEnemyKill]);
