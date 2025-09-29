@@ -68,6 +68,26 @@ class SessionData(BaseModel):
     picture: Optional[str] = None
     session_token: str
 
+# Subscription Models
+class SubscriptionType(str, Enum):
+    XP_DROP_BOOST = "xp_drop_boost"
+    ZONE_PROGRESSION_BOOST = "zone_progression_boost"
+
+class Subscription(BaseModel):
+    id: str
+    user_id: str
+    subscription_type: SubscriptionType
+    price: float
+    duration_days: int
+    start_date: datetime
+    end_date: datetime
+    is_active: bool = True
+    created_at: datetime
+
+class PurchaseSubscriptionRequest(BaseModel):
+    subscription_type: SubscriptionType
+    payment_method: str = "demo"  # For demo purposes
+
 # Password validation
 def validate_password(password: str) -> bool:
     """Validate password requirements: 8-64 characters"""
