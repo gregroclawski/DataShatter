@@ -526,6 +526,34 @@ export default function NinjaIdleGame() {
           </View>
         </View>
 
+        {/* Shadow Clone - Semi-transparent clone that follows player */}
+        {shadowClone && (
+          <View style={[
+            styles.ninjaContainer, 
+            { 
+              left: shadowClone.position.x,
+              top: shadowClone.position.y,
+              width: layout.ninjaSize,
+              height: layout.ninjaSize,
+              opacity: 0.6 // Semi-transparent as requested
+            }
+          ]}>
+            <View style={[
+              styles.ninja, 
+              { 
+                width: layout.ninjaSize, 
+                height: layout.ninjaSize,
+                borderRadius: layout.ninjaSize / 2,
+                backgroundColor: MythicTechColors.energyPurple + '80' // Semi-transparent purple
+              },
+              isAttacking && styles.ninjaAttacking, 
+              isLevelingUp && styles.ninjaLevelUp
+            ]}>
+              <Text style={[styles.ninjaEmoji, ninjaFontStyle, { opacity: 0.8 }]}>👥</Text>
+            </View>
+          </View>
+        )}
+
         {/* Movement Mode Toggle Button - Mobile Optimized */}
         <TouchableOpacity
           style={[styles.movementToggle, { 
