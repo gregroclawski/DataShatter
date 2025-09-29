@@ -251,6 +251,44 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         }
       });
 
+      // Update Shadow Clone - handle duration, movement, and attacks
+      if (newState.shadowClone) {
+        // Update clone duration
+        newState.shadowClone.remainingTicks--;
+        
+        // Make clone follow player (positioned slightly behind and to the right)
+        const cloneOffset = 50; // Follow at 50 pixels offset
+        newState.shadowClone.position.x = currentNinjaPosition.x + cloneOffset;
+        newState.shadowClone.position.y = currentNinjaPosition.y + 10;
+        
+        // Remove clone when duration expires
+        if (newState.shadowClone.remainingTicks <= 0) {
+          console.log('👥 SHADOW CLONE: Duration expired, removing clone');
+          newState.shadowClone = undefined;
+        } else {
+          // Clone attacks with player (70% damage)
+          // Clone attacks every 2 seconds (20 ticks at 10 TPS)
+          const CLONE_ATTACK_INTERVAL = 20;
+          if (newState.currentTick % CLONE_ATTACK_INTERVAL === 0 && newState.enemies.length > 0) {
+            console.log('👥 SHADOW CLONE: Casting duplicate attack at 70% damage');
+            
+            // Find closest enemy for clone attack
+            const target = findClosestEnemyInternal(newState.enemies);
+            if (target) {
+              // Calculate clone damage (70% of player base attack)
+              const cloneDamage = Math.floor(newState.playerStats.attack * 0.7);
+              
+              // Create clone projectile
+              createProjectile(target, cloneDamage, newState.shadowClone.position, {
+                id: 'shadow_clone_attack',
+                name: 'Shadow Clone Attack',
+                icon: '👥'
+              });
+            }
+          }
+        }
+      }
+
       // Auto-cast abilities - MOBILE FIX: Pause during manual joystick control to prevent stuttering
       if (!isManualControlActive) {
         for (let i = 0; i < 5; i++) {
