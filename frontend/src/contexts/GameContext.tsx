@@ -277,13 +277,16 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   // Load game data when user authenticates
   useEffect(() => {
     if (isAuthenticated && user) {
-      loadGameFromServer();
+      loadGameFromServer().then(() => {
+        // Load subscription benefits after game data
+        loadSubscriptionBenefits();
+      });
     } else {
       // No authenticated user - set loading to false immediately
       console.log('🔍 No authenticated user - setting game loading to false');
       setIsLoading(false);
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, loadSubscriptionBenefits]);
 
   // Auto-save system - MOBILE FIX: Use state callback pattern to prevent stale closures
   useEffect(() => {
