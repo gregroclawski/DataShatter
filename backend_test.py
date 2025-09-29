@@ -26,6 +26,9 @@ import time
 # Backend URL from frontend/.env
 BACKEND_URL = "https://idle-ninja-fix.preview.emergentagent.com/api"
 
+# Critical user ID for data recovery check
+CRITICAL_USER_ID = "4ccda8a0-4b37-47c2-9171-d2dfe8d9a4f4"
+
 class BackendTester:
     def __init__(self):
         self.session = requests.Session()
