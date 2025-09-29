@@ -156,13 +156,13 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       // Convert CombatEnemy to CurrentEnemy format for zone progression
       const zoneEnemy = {
         id: enemy.id,
-        typeId: 'test_orc', // Default type for test enemies
+        typeId: enemy.zoneTypeId || 'test_orc', // Use zone type ID if available, fallback to test
         name: enemy.name,
         icon: '🧌', // Default icon for test enemies
         hp: 0, // Dead enemy
         maxHP: enemy.maxHealth,
         attack: enemy.stats.attack,
-        xp: 20, // Base XP reward
+        xp: enemy.zoneXP || 20, // Use zone XP if available, fallback to base reward
         position: enemy.position
       };
       recordEnemyKill(zoneEnemy);
