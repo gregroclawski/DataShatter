@@ -109,6 +109,8 @@ export interface GameState {
   currentAdventure?: Adventure;
   lastSaveTime: number;
   isAlive: boolean;
+  isInvincible?: boolean; // Invincibility state after revival
+  invincibilityEndTime?: number; // Timestamp when invincibility ends
   achievements: string[];
   unlockedFeatures: string[];
   zoneProgress?: Record<number, any>; // Zone progression data
