@@ -27,6 +27,9 @@ interface CombatEnemy {
   isBoss?: boolean; // Mark as boss for special behavior
   element?: 'fire' | 'ice' | 'shadow' | 'earth'; // Boss element
   movementDirection?: { x: number; y: number }; // For mobile enemy movement
+  // Zone integration fields
+  zoneTypeId?: string; // Zone enemy type ID for kill tracking
+  zoneXP?: number; // XP reward from zone system
 }
 
 interface CombatProjectile {
