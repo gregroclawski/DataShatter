@@ -521,9 +521,15 @@ async def purchase_subscription(
         
         print(f"💳 SUBSCRIPTION PURCHASED - User: {user_id}, Type: {subscription_request.subscription_type}")
         
+        # Convert datetime objects to ISO format for JSON response
+        response_subscription = subscription_data.copy()
+        response_subscription["start_date"] = response_subscription["start_date"].isoformat()
+        response_subscription["end_date"] = response_subscription["end_date"].isoformat()
+        response_subscription["created_at"] = response_subscription["created_at"].isoformat()
+        
         return {
             "success": True,
-            "subscription": subscription_data,
+            "subscription": response_subscription,
             "message": f"Successfully purchased {subscription_request.subscription_type} subscription for 30 days!"
         }
         
