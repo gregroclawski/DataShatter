@@ -146,7 +146,12 @@ const StoreOverlay = ({ onClose }: Props) => {
 
   const loadActiveSubscriptions = async () => {
     try {
-      const response = await fetch(`${process.env.EXPO_BACKEND_URL}/api/subscriptions/active`, {
+      console.log('🏪 LOADING SUBSCRIPTIONS - API_BASE_URL:', API_BASE_URL);
+      console.log('🔐 Using access token:', user?.access_token?.substring(0, 10) + '...');
+      
+      const response = await fetch(`${API_BASE_URL}/api/subscriptions/active`, {
+        method: 'GET',
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${user?.access_token}`,
           'Content-Type': 'application/json',
