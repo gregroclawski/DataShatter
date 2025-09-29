@@ -671,6 +671,13 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
   },
+  skillSubLevel: {
+    fontSize: 11,
+    color: MythicTechColors.voidSilver,
+    fontWeight: '500',
+    marginTop: 2,
+    opacity: 0.8,
+  },
   skillUpgrade: {
     flexDirection: 'row',
     justifyContent: 'space-between',
