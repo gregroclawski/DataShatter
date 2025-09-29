@@ -1090,6 +1090,12 @@ const NameChangeCard = () => {
     try {
       setChanging(true);
 
+      console.log('🔄 Name change request:', {
+        url: `${API_BASE_URL}/api/user/change-name`,
+        token: user?.access_token || token ? '***TOKEN_EXISTS***' : 'NO_TOKEN',
+        newName: newName.trim()
+      });
+
       const response = await fetch(`${API_BASE_URL}/api/user/change-name`, {
         method: 'POST',
         headers: {
@@ -1101,6 +1107,8 @@ const NameChangeCard = () => {
           payment_method: 'demo'
         }),
       });
+
+      console.log('📤 Name change response status:', response.status);
 
       if (response.ok) {
         const result = await response.json();
