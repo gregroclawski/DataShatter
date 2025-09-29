@@ -302,6 +302,30 @@ export default function NinjaIdleGame() {
           const flightDuration = projectile.duration || 500; // Use projectile's duration
           const progress = Math.min(elapsedTime / flightDuration, 1);
           
+          // CRITICAL FIX: Apply damage when projectile reaches target
+          if (progress >= 1 && !projectile.hasHit) {
+            // Mark projectile as having hit to prevent multiple damage applications
+            projectile.hasHit = true;
+            
+            // Apply damage to the target enemy
+            setCombatState(prevState => {
+              const targetEnemy = prevState.enemies.find(enemy => enemy.id === projectile.targetEnemyId);
+              if (targetEnemy && targetEnemy.health > 0) {
+                // Apply damage
+                targetEnemy.health = Math.max(0, targetEnemy.health - projectile.damage);
+                targetEnemy.lastDamaged = combatEngine.getCurrentTick();
+                
+                console.log(`💥 PROJECTILE HIT: ${projectile.abilityName} hit ${targetEnemy.name} for ${projectile.damage} damage (${targetEnemy.health}/${targetEnemy.maxHealth} HP remaining)`);
+              }
+              return { ...prevState };
+            });
+          }
+          
+          // Only keep projectiles that haven't completed their flight
+          if (progress >= 1) {
+            return null; // Remove completed projectiles
+          }
+          
           // Interpolate position from ninja to target
           const currentX = projectile.x + (projectile.targetX - projectile.x) * progress;
           const currentY = projectile.y + (projectile.targetY - projectile.y) * progress;
@@ -320,7 +344,7 @@ export default function NinjaIdleGame() {
     const projectileAnimationInterval = setInterval(animateProjectiles, 16); // ~60fps
     
     return () => clearInterval(projectileAnimationInterval);
-  }, [projectiles]);
+  }, [projectiles, setCombatState]);
 
   // Start combat automatically when component mounts
   useEffect(() => {
