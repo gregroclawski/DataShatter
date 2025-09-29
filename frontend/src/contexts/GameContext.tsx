@@ -760,7 +760,13 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         // MILESTONE: Skill point spending - Save character development
         else if (finalNinja.skillPoints < prev.ninja.skillPoints) {
           console.log('📈 MILESTONE: Skill points spent - SAVE');
-          saveOnMilestone('skill_upgrade');
+          setTimeout(() => saveOnMilestone('skill_upgrade'), 0);
+        }
+        // MILESTONE: Gold/Skill Point upgrades - Save character tab upgrades immediately
+        else if (JSON.stringify(finalNinja.goldUpgrades) !== JSON.stringify(prev.ninja.goldUpgrades) ||
+                 JSON.stringify(finalNinja.skillPointUpgrades) !== JSON.stringify(prev.ninja.skillPointUpgrades)) {
+          console.log('🔧 MILESTONE: Character upgrades applied - SAVE');
+          setTimeout(() => saveOnMilestone('character_upgrades'), 0);
         }
         // MILESTONE: Health/stats changes - Save character upgrades
         else if (finalNinja.maxHealth !== prev.ninja.maxHealth || finalNinja.attack !== prev.ninja.attack) {
