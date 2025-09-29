@@ -288,110 +288,57 @@ const calculateKillRequirement = (zoneId: number, level: number): number => {
   return 100 + (level * 25);                      // Zones 41-50: 125-225 kills per level (endgame)
 };
 
-// Generate all 50 zones with proper level scaling (1-15,000)
+// Generate zones dynamically with aggressive scaling for 10 zones covering levels 1-15,000
 const generateZones = (): Zone[] => {
   const zones: Zone[] = [];
   
-  // Calculate level ranges for each zone (distributed across 15,000 levels)
-  for (let zoneId = 1; zoneId <= 50; zoneId++) {
-    // Exponential scaling - early zones are smaller level ranges, endgame zones are larger
-    let minLevel: number, maxLevel: number;
+  // 10 AGGRESSIVE ZONES - Each covering 1,500 levels
+  const zoneConfig = [
+    { id: 1, name: 'Emerald Sanctum', theme: 'forest', levelRange: [1, 1500], enemies: ['forest_goblin', 'wild_wolf', 'tree_guardian'] },
+    { id: 2, name: 'Crimson Peaks', theme: 'mountain', levelRange: [1501, 3000], enemies: ['mountain_orc', 'stone_giant', 'fire_drake'] },
+    { id: 3, name: 'Scorching Wasteland', theme: 'desert', levelRange: [3001, 4500], enemies: ['sand_scorpion', 'desert_basilisk', 'flame_salamander'] },
+    { id: 4, name: 'Molten Abyss', theme: 'volcanic', levelRange: [4501, 6000], enemies: ['magma_elemental', 'lava_beast', 'inferno_dragon'] },
+    { id: 5, name: 'Frozen Citadel', theme: 'ice', levelRange: [6001, 7500], enemies: ['ice_wraith', 'crystal_spider', 'phoenix_guardian'] },
+    { id: 6, name: 'Shadow Nexus', theme: 'shadow', levelRange: [7501, 9000], enemies: ['shadow_demon', 'void_stalker', 'nightmare_lord'] },
+    { id: 7, name: 'Celestial Realm', theme: 'divine', levelRange: [9001, 10500], enemies: ['chaos_titan', 'void_stalker', 'nightmare_lord'] },
+    { id: 8, name: 'Void Dimension', theme: 'cosmic', levelRange: [10501, 12000], enemies: ['chaos_titan', 'shadow_demon', 'inferno_dragon'] },
+    { id: 9, name: 'Reality Rift', theme: 'quantum', levelRange: [12001, 13500], enemies: ['nightmare_lord', 'chaos_titan', 'void_stalker'] },
+    { id: 10, name: 'Final Frontier', theme: 'endgame', levelRange: [13501, 15000], enemies: ['chaos_titan', 'nightmare_lord', 'shadow_demon'] }
+  ];
+
+  zoneConfig.forEach((config) => {
+    const [minLevel, maxLevel] = config.levelRange;
+    const levelSpan = maxLevel - minLevel + 1; // 1500 levels per zone
     
-    if (zoneId <= 10) {
-      // Zones 1-10: Levels 1-300 (early game, 30 levels per zone)
-      minLevel = 1 + (zoneId - 1) * 30;
-      maxLevel = zoneId * 30;
-    } else if (zoneId <= 25) {
-      // Zones 11-25: Levels 300-1500 (mid game, 80 levels per zone)
-      minLevel = 300 + (zoneId - 11) * 80;
-      maxLevel = 300 + (zoneId - 10) * 80;
-    } else if (zoneId <= 40) {
-      // Zones 26-40: Levels 1500-6000 (late game, 300 levels per zone)
-      minLevel = 1500 + (zoneId - 26) * 300;
-      maxLevel = 1500 + (zoneId - 25) * 300;
-    } else {
-      // Zones 41-50: Levels 6000-15000 (endgame, 900 levels per zone)
-      minLevel = 6000 + (zoneId - 41) * 900;
-      maxLevel = 6000 + (zoneId - 40) * 900;
-    }
+    // AGGRESSIVE SCALING: Each zone gets exponentially harder
+    const zoneMultiplier = Math.pow(2, config.id - 1); // Zone 1: 1x, Zone 2: 2x, Zone 3: 4x, etc.
     
-    // Clamp to max level
-    maxLevel = Math.min(maxLevel, 15000);
-    
-    // Determine enemy types and multipliers based on zone tier
-    let enemyTypes: string[], theme: string, enemyMultiplier: number, xpMultiplier: number;
-    
-    if (zoneId <= 10) {
-      // Forest zones
-      theme = 'forest';
-      enemyTypes = ['forest_goblin', 'wild_wolf', 'tree_guardian', 'dark_sprite'];
-      enemyMultiplier = 0.8 + (zoneId * 0.1);
-      xpMultiplier = 1.0 + (zoneId * 0.1);
-    } else if (zoneId <= 20) {
-      // Mountain zones
-      theme = 'mountain';
-      enemyTypes = ['mountain_orc', 'stone_giant', 'fire_drake', 'rock_golem'];
-      enemyMultiplier = 1.5 + (zoneId * 0.1);
-      xpMultiplier = 1.8 + (zoneId * 0.1);
-    } else if (zoneId <= 30) {
-      // Desert zones
-      theme = 'desert';
-      enemyTypes = ['sand_scorpion', 'ice_wraith', 'crystal_spider', 'desert_basilisk'];
-      enemyMultiplier = 2.5 + (zoneId * 0.15);
-      xpMultiplier = 3.0 + (zoneId * 0.15);
-    } else if (zoneId <= 40) {
-      // Volcanic zones
-      theme = 'volcanic';
-      enemyTypes = ['magma_elemental', 'lava_beast', 'inferno_dragon', 'phoenix_guardian'];
-      enemyMultiplier = 4.0 + (zoneId * 0.2);
-      xpMultiplier = 5.0 + (zoneId * 0.2);
-    } else {
-      // Shadow/Void zones (endgame)
-      theme = 'shadow';
-      enemyTypes = ['shadow_demon', 'void_stalker', 'nightmare_lord', 'chaos_titan', 'void_emperor', 'cosmic_leviathan', 'reality_shatterer'];
-      enemyMultiplier = 8.0 + (zoneId * 0.5);
-      xpMultiplier = 10.0 + (zoneId * 0.5);
-    }
-    
-    // Generate zone levels
+    // Generate 10 levels per zone (each covering ~150 character levels)
     const levels: ZoneLevel[] = [];
-    for (let level = 1; level <= 5; level++) {
+    for (let level = 1; level <= 10; level++) {
+      // Each zone level covers ~150 character levels
+      const levelMultiplier = zoneMultiplier * (1 + (level - 1) * 0.5); // Exponential within zone
+      
       levels.push({
         level,
-        enemyMultiplier: enemyMultiplier + (level * 0.1),
-        xpMultiplier: xpMultiplier + (level * 0.2),
-        requiredKills: calculateKillRequirement(zoneId, level),
-        enemyTypes: enemyTypes
+        enemyMultiplier: levelMultiplier,
+        xpMultiplier: levelMultiplier,
+        // AGGRESSIVE KILL REQUIREMENTS: Scale with zone and level
+        requiredKills: Math.floor(50 + (config.id * 50) + (level * 25)), // Zone 1 L1: 125, Zone 10 L10: 800
+        enemyTypes: config.enemies
       });
     }
     
-    // Zone names based on theme and progression
-    const zoneNames = {
-      forest: [`Emerald Grove`, `Whispering Woods`, `Shadow Forest`, `Ancient Ruins`, `Mystical Glade`, 
-               `Deep Woods`, `Twilight Grove`, `Enchanted Valley`, `Cursed Grove`, `Sacred Forest`],
-      mountain: [`Rocky Foothills`, `Stone Peaks`, `Misty Mountains`, `Crystal Caverns`, `Dragon Pass`,
-                 `Frozen Peaks`, `Thunder Cliffs`, `Giant's Spine`, `Sky Fortress`, `Celestial Summit`],
-      desert: [`Shifting Sands`, `Bone Valley`, `Mirage Oasis`, `Scorching Dunes`, `Crystal Desert`,
-               `Forbidden Wastes`, `Sun Temple`, `Phantom Dunes`, `Eternal Sands`, `Lost Citadel`],
-      volcanic: [`Molten Core`, `Fire Peaks`, `Lava Fields`, `Ember Caverns`, `Inferno Gates`,
-                 `Magma Falls`, `Forge of Titans`, `Burning Abyss`, `Phoenix Nest`, `Hellfire Summit`],
-      shadow: [`Void Nexus`, `Shadow Realm`, `Dark Dimension`, `Nightmare Plane`, `Chaos Void`,
-               `Reality Rift`, `Cosmic Abyss`, `Infinite Darkness`, `End of All`, `Final Frontier`]
-    };
-    
-    const nameIndex = ((zoneId - 1) % 10);
-    const zoneName = zoneNames[theme as keyof typeof zoneNames][nameIndex] || `${theme.charAt(0).toUpperCase() + theme.slice(1)} Zone ${zoneId}`;
-    
     zones.push({
-      id: zoneId,
-      name: zoneName,
-      theme,
+      id: config.id,
+      name: config.name,
+      theme: config.theme,
       minPlayerLevel: minLevel,
       maxPlayerLevel: maxLevel,
       levels,
-      unlockRequirement: zoneId === 1 ? {} : { previousZone: zoneId - 1 }
+      unlockRequirement: config.id === 1 ? {} : { previousZone: config.id - 1 }
     });
-  }
+  });
   
   return zones;
 };
