@@ -978,6 +978,39 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       fontSize: layout.bodyFontSize,
       color: MythicTechColors.voidSilver,
     },
+    // Player Health Bar Styles
+    playerHealthContainer: {
+      position: 'absolute',
+      top: layout.paddingS + 80, // Position below zone info
+      left: layout.paddingM,
+      zIndex: 2,
+      backgroundColor: MythicTechColors.deepVoid + 'cc',
+      borderWidth: 2,
+      borderColor: MythicTechColors.crimsonRed,
+      paddingHorizontal: layout.paddingS,
+      paddingVertical: layout.paddingXS,
+      borderRadius: layout.paddingS,
+      minWidth: 200,
+    },
+    playerHealthBar: {
+      height: Math.max(6, layout.paddingXS),
+      backgroundColor: MythicTechColors.voidSilver + '33',
+      borderRadius: layout.paddingXS * 0.5,
+      overflow: 'hidden',
+      marginBottom: layout.paddingXS * 0.5,
+    },
+    playerHealthFill: {
+      height: '100%',
+      backgroundColor: MythicTechColors.crimsonRed,
+      borderRadius: layout.paddingXS * 0.5,
+      transition: 'width 0.3s ease',
+    },
+    playerHealthText: {
+      fontSize: layout.bodyFontSize,
+      color: MythicTechColors.white,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
     // Mobile Movement Controls
     movementToggle: {
       position: 'absolute',
