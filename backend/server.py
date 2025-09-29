@@ -642,12 +642,20 @@ async def register(user_data: UserCreate, response: Response):
                 detail="Password must be between 8 and 64 characters"
             )
 
-        # Check if user already exists
-        existing_user = await get_user_by_email(user_data.email)
-        if existing_user:
+        # Check if email already exists
+        existing_user_email = await get_user_by_email(user_data.email)
+        if existing_user_email:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Email already registered"
+            )
+        
+        # Check if name (username) already exists
+        existing_user_name = await get_user_by_name(user_data.name)
+        if existing_user_name:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Username already taken"
             )
 
         # Create new user
