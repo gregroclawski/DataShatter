@@ -501,22 +501,42 @@ const StoreOverlay = ({ onClose }: Props) => {
             </View>
 
             <View style={styles.gemPackageContent}>
-              {/* Gem Icon */}
+              {/* Package Icon - Special handling for revive tickets */}
               <View style={styles.gemIcon}>
-                <Ionicons name="diamond" size={32} color="#3b82f6" />
+                {gemPackage.type === 'revive_tickets' ? (
+                  <Text style={{ fontSize: 32 }}>🎫</Text>
+                ) : (
+                  <Ionicons name="diamond" size={32} color="#3b82f6" />
+                )}
               </View>
 
               {/* Package Info */}
               <View style={styles.gemPackageInfo}>
                 <Text style={styles.gemPackageName}>{gemPackage.name}</Text>
+                {gemPackage.description && (
+                  <Text style={styles.gemPackageDescription}>{gemPackage.description}</Text>
+                )}
                 <View style={styles.gemPackageDetails}>
-                  <Text style={styles.gemCount}>
-                    {(gemPackage.gems + (gemPackage.bonus || 0)).toLocaleString()} Gems
-                  </Text>
-                  {gemPackage.bonus && (
-                    <Text style={styles.bonusText}>
-                      +{gemPackage.bonus} Bonus!
-                    </Text>
+                  {gemPackage.type === 'revive_tickets' ? (
+                    <>
+                      <Text style={styles.gemCount}>
+                        {gemPackage.gems} Revive Tickets
+                      </Text>
+                      <Text style={styles.bonusText}>
+                        Cost: {gemPackage.bonus} Gems
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text style={styles.gemCount}>
+                        {(gemPackage.gems + (gemPackage.bonus || 0)).toLocaleString()} Gems
+                      </Text>
+                      {gemPackage.bonus && (
+                        <Text style={styles.bonusText}>
+                          +{gemPackage.bonus} Bonus!
+                        </Text>
+                      )}
+                    </>
                   )}
                 </View>
               </View>
