@@ -395,10 +395,6 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     const ability = deck.slots[slotIndex];
     if (!ability) return;
 
-    // Find target (closest enemy)
-    const target = findClosestEnemyInternal(state.enemies);
-    if (!target) return;
-
     // Calculate base damage
     let damage = ability.stats.baseDamage;
     
@@ -410,30 +406,82 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       }
     });
 
-    // Calculate final damage with stats
-    const damageResult = DamageCalculator.calculateDamage(damage, state.playerStats, target.stats);
-
-    // Create projectile for visual effect and delayed damage
-    createProjectile(target, damageResult.damage, currentNinjaPosition, {
-      id: ability.id,
-      name: ability.name,
-      icon: ability.icon
-    });
-
-    // Apply DoT effects (immediate)
-    if (ability.effects.includes('DoT') && ability.stats.duration) {
-      state.statusEffects.addEffect(target.id, {
-        id: `${ability.id}_dot`,
-        type: 'dot',
-        remainingTicks: Math.floor(ability.stats.duration * 10), // Convert seconds to ticks
-        tickInterval: 10, // Every second
-        lastTick: state.currentTick,
-        value: Math.floor(damage * 0.3), // 30% of base damage per tick
-        stackable: false,
+    // Check if this is an AOE ability
+    const isAOE = ability.effects.includes('AoE') && ability.stats.aoeRadius;
+    
+    if (isAOE) {
+      console.log(`💥 AOE ABILITY: ${ability.name} with radius ${ability.stats.aoeRadius}`);
+      
+      // Find all enemies within AOE range of ninja
+      const ninjaX = currentNinjaPosition.x + 20; // Center of ninja
+      const ninjaY = currentNinjaPosition.y + 20;
+      const aoeRadius = ability.stats.aoeRadius;
+      
+      const enemiesInRange = state.enemies.filter(enemy => {
+        const enemyX = enemy.position.x + 17.5; // Center of enemy
+        const enemyY = enemy.position.y + 17.5;
+        const distance = Math.sqrt(Math.pow(enemyX - ninjaX, 2) + Math.pow(enemyY - ninjaY, 2));
+        return distance <= aoeRadius;
       });
+      
+      console.log(`💥 AOE TARGETS: Found ${enemiesInRange.length} enemies in range (${aoeRadius} radius)`);
+      
+      // Create projectile/effect for each enemy in range
+      enemiesInRange.forEach(enemy => {
+        const damageResult = DamageCalculator.calculateDamage(damage, state.playerStats, enemy.stats);
+        createProjectile(enemy, damageResult.damage, currentNinjaPosition, {
+          id: ability.id,
+          name: ability.name,
+          icon: ability.icon
+        });
+        
+        console.log(`💥 AOE HIT: ${enemy.name} for ${damageResult.damage} damage`);
+      });
+      
+      console.log(`🎯 ${ability.name} AOE cast! Hit ${enemiesInRange.length} enemies for ${damage} base damage each`);
+      
+    } else {
+      // Single target ability (original logic)
+      const target = findClosestEnemyInternal(state.enemies);
+      if (!target) return;
+
+      const damageResult = DamageCalculator.calculateDamage(damage, state.playerStats, target.stats);
+
+      // Create projectile for visual effect and delayed damage
+      createProjectile(target, damageResult.damage, currentNinjaPosition, {
+        id: ability.id,
+        name: ability.name,
+        icon: ability.icon
+      });
+
+      console.log(`🎯 ${ability.name} cast! Single target for ${damageResult.damage} damage${damageResult.isCritical ? ' (CRIT!)' : ''}`);
     }
 
-    console.log(`🎯 ${ability.name} cast! Projectile created for ${damageResult.damage} damage${damageResult.isCritical ? ' (CRIT!)' : ''}`);
+    // Apply DoT effects (for primary target in single target, or all targets in AOE)
+    if (ability.effects.includes('DoT') && ability.stats.duration) {
+      const targets = isAOE ? 
+        state.enemies.filter(enemy => {
+          const ninjaX = currentNinjaPosition.x + 20;
+          const ninjaY = currentNinjaPosition.y + 20;
+          const enemyX = enemy.position.x + 17.5;
+          const enemyY = enemy.position.y + 17.5;
+          const distance = Math.sqrt(Math.pow(enemyX - ninjaX, 2) + Math.pow(enemyY - ninjaY, 2));
+          return distance <= ability.stats.aoeRadius;
+        }) : 
+        [findClosestEnemyInternal(state.enemies)].filter(Boolean);
+
+      targets.forEach(target => {
+        state.statusEffects.addEffect(target.id, {
+          id: `${ability.id}_dot`,
+          type: 'dot',
+          remainingTicks: Math.floor(ability.stats.duration * 10),
+          tickInterval: 10,
+          lastTick: state.currentTick,
+          value: Math.floor(damage * 0.3),
+          stackable: false,
+        });
+      });
+    }
   };
 
   // Create projectile that will deal damage when it hits
