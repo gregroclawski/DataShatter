@@ -33,9 +33,9 @@ interface CurrentEnemy {
 }
 
 interface ZoneContextType {
-  currentZone: Zone | null;
+  currentZone: Zone | null; // Currently selected zone for gameplay
   currentZoneLevel: ZoneLevel | null;
-  progressionZone: Zone | null;
+  progressionZone: Zone | null; // Highest unlocked zone for progression
   zoneProgress: Record<number, ZoneProgress>;
   availableZones: Zone[];
   
