@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Event-Driven Character Upgrades
-Focus: Test goldUpgrades and skillPointUpgrades persistence in save/load system
+URGENT DATA RECOVERY CHECK - Backend API Testing
+Critical Issue: User reports Level 40 character data reset to default after event-driven saves
 
-REVIEW REQUEST FOCUS:
-1. Test all core authentication endpoints
-2. Test save-game endpoint with ninja data that includes goldUpgrades and skillPointUpgrades
-3. Test load-game endpoint to verify goldUpgrades and skillPointUpgrades are preserved
-4. Verify backend logs show the upgrade data being saved and loaded correctly
-5. Test that no regressions occurred in any backend functionality
+CRITICAL REVIEW REQUEST:
+1. Test /api/load-game endpoint for user ID: 4ccda8a0-4b37-47c2-9171-d2dfe8d9a4f4
+2. Check if database still contains Level 40 character with:
+   - skillPointUpgrades with attack: 75, speed: 30
+   - goldUpgrades data
+   - High level progression (Level 40+)
+   - Equipment data (Flame Sword)
+   - Ability data with Shadow Clone level 2
+3. Verify what the load-game endpoint returns
+4. Check if user's progress is still in database or actually lost
 
-This will help verify that character tab upgrades (gold points and skill points) are being persisted correctly on the backend side.
+This is a critical data recovery check to determine if user's progress exists.
 """
 
 import requests
