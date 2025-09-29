@@ -123,6 +123,29 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
             </View>
           )}
 
+          {/* Watch Ad Button for Free Tickets */}
+          <TouchableOpacity 
+            style={styles.adButton}
+            onPress={() => {
+              // Award 10 free revive tickets for watching ad
+              console.log('📺 Watching ad for 10 free revive tickets!');
+              
+              // Update ninja with bonus tickets
+              gameState.ninja.reviveTickets = (gameState.ninja.reviveTickets || 0) + 10;
+              
+              // Show success message
+              alert('🎉 Ad watched! You received 10 free revive tickets!');
+              
+              // TODO: Integrate with actual ad service (AdMob, Unity Ads, etc.)
+            }}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="play-circle" size={20} color={MythicTechColors.neonGold} />
+            <Text style={styles.adButtonText}>
+              WATCH AD (+10 TICKETS)
+            </Text>
+          </TouchableOpacity>
+
           <TouchableOpacity 
             style={styles.declineButton}
             onPress={onDecline}
