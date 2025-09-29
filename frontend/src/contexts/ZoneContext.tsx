@@ -296,9 +296,35 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
             console.log(`🎯 SELECTION PRESERVED: Player selected different zone, keeping their choice`);
           }
         } else {
-          // Zone completed
+          // Zone completed - Auto-advance to next zone
           progress.completed = true;
           console.log(`🏆 Zone ${currentZone.name} completed! Next zone unlocked.`);
+          
+          // CRITICAL FIX: Auto-advance to the next zone when current zone is completed
+          const nextZone = ZONES.find(z => z.id === zoneId + 1);
+          if (nextZone) {
+            console.log(`⬆️ ZONE PROGRESSION: Auto-advancing from Zone ${zoneId} to Zone ${nextZone.id}`);
+            
+            // Initialize next zone progress if it doesn't exist
+            if (!newProgress[nextZone.id]) {
+              newProgress[nextZone.id] = {
+                zoneId: nextZone.id,
+                currentLevel: 1,
+                killsInLevel: 0,
+                completed: false
+              };
+            }
+            
+            // Auto-select the next zone for the player
+            setTimeout(() => {
+              console.log(`🎯 AUTO-SELECTING: Moving player to Zone ${nextZone.id} Level 1`);
+              setCurrentZone(nextZone);
+              setCurrentZoneLevel(nextZone.levels[0]);
+              setProgressionZone(nextZone);
+            }, 100); // Small delay to ensure state updates properly
+          } else {
+            console.log(`🏁 GAME COMPLETE: No more zones available after Zone ${zoneId}`);
+          }
         }
       }
       
