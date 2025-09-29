@@ -293,7 +293,9 @@ export default function NinjaIdleGame() {
   useEffect(() => {
     const animateProjectiles = () => {
       setAnimatedProjectiles(currentProjectiles => {
-        return (projectiles || []).map(projectile => {
+        const completedProjectiles: string[] = []; // Track projectiles that hit their targets
+        
+        const updatedProjectiles = (projectiles || []).map(projectile => {
           if (!projectile) return null;
           
           // Calculate projectile flight progress (0 to 1)
@@ -302,23 +304,12 @@ export default function NinjaIdleGame() {
           const flightDuration = projectile.duration || 500; // Use projectile's duration
           const progress = Math.min(elapsedTime / flightDuration, 1);
           
-          // CRITICAL FIX: Apply damage when projectile reaches target
+          // CRITICAL FIX: Track projectiles that hit their targets
           if (progress >= 1 && !projectile.hasHit) {
-            // Mark projectile as having hit to prevent multiple damage applications
+            // Mark projectile as having hit and track it for damage application
             projectile.hasHit = true;
-            
-            // Apply damage to the target enemy
-            setCombatState(prevState => {
-              const targetEnemy = prevState.enemies.find(enemy => enemy.id === projectile.targetEnemyId);
-              if (targetEnemy && targetEnemy.health > 0) {
-                // Apply damage
-                targetEnemy.health = Math.max(0, targetEnemy.health - projectile.damage);
-                targetEnemy.lastDamaged = combatEngine.getCurrentTick();
-                
-                console.log(`💥 PROJECTILE HIT: ${projectile.abilityName} hit ${targetEnemy.name} for ${projectile.damage} damage (${targetEnemy.health}/${targetEnemy.maxHealth} HP remaining)`);
-              }
-              return { ...prevState };
-            });
+            completedProjectiles.push(projectile.id);
+            console.log(`💥 PROJECTILE COMPLETED: ${projectile.abilityName} hit target (ID: ${projectile.targetEnemyId})`);
           }
           
           // Only keep projectiles that haven't completed their flight
@@ -337,6 +328,21 @@ export default function NinjaIdleGame() {
             progress
           };
         }).filter(Boolean);
+        
+        // Apply damage for completed projectiles using CombatContext function
+        if (completedProjectiles.length > 0) {
+          completedProjectiles.forEach(projectileId => {
+            const projectile = projectiles?.find(p => p?.id === projectileId);
+            if (projectile) {
+              // Use the handleProjectileImpact function from CombatContext (we'll add this)
+              if (handleProjectileImpact) {
+                handleProjectileImpact(projectile.targetEnemyId, projectile.damage, projectile.abilityName);
+              }
+            }
+          });
+        }
+        
+        return updatedProjectiles;
       });
     };
 
@@ -344,7 +350,7 @@ export default function NinjaIdleGame() {
     const projectileAnimationInterval = setInterval(animateProjectiles, 16); // ~60fps
     
     return () => clearInterval(projectileAnimationInterval);
-  }, [projectiles, setCombatState]);
+  }, [projectiles, handleProjectileImpact]);
 
   // Start combat automatically when component mounts
   useEffect(() => {
