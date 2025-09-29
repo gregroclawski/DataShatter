@@ -854,7 +854,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('❌ SUBSCRIPTION BENEFITS NETWORK ERROR:', error);
     }
-  }, [isAuthenticated, user?.access_token, API_BASE_URL]);
+  }, [isAuthenticated, token, API_BASE_URL]);
 
   const equipShuriken = (id: string) => {
     setGameState(prev => ({
