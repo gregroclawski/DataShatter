@@ -148,6 +148,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     const goldReward = Math.floor(10 * dropMultiplier);
     
     console.log(`💰 MOBILE DEBUG - Awarding ${xpReward} XP and ${goldReward} gold for kill`);
+    console.log(`🔍 SUBSCRIPTION DEBUG - XP Multiplier: ${xpMultiplier}, Drop Multiplier: ${dropMultiplier}`);
+    console.log(`🔍 SUBSCRIPTION DEBUG - Base XP: ${baseXpReward}, Final XP: ${xpReward}`);
     console.log(`📱 MOBILE DEBUG - Platform: ${Platform.OS}, Time: ${Date.now()}`);
     
     // MOBILE FIX: Defer ALL cross-context state updates to prevent render-phase violations
