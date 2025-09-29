@@ -132,6 +132,34 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [game.gameState.abilityData, combatState.abilityManager]);
   
+  // Initialize player stats when game context changes
+  useEffect(() => {
+    if (game.gameState.ninja) {
+      const effectiveStats = game.getEffectiveStats();
+      
+      setCombatState(prev => {
+        // Only initialize if combat player stats are at defaults
+        if (prev.playerStats.maxHealth === 100 && prev.playerStats.attack === 10) {
+          console.log(`🔧 INITIALIZING PLAYER STATS: HP=${effectiveStats.health}, Attack=${effectiveStats.attack}, Defense=${effectiveStats.defense}`);
+          
+          return {
+            ...prev,
+            playerStats: {
+              attack: effectiveStats.attack,
+              defense: effectiveStats.defense,
+              health: effectiveStats.health, // Start at full health
+              maxHealth: effectiveStats.health,
+              critChance: effectiveStats.critChance || 3,
+              critDamage: effectiveStats.critDamage || 150,
+              cooldownReduction: effectiveStats.cooldownReduction || 0,
+            }
+          };
+        }
+        return prev;
+      });
+    }
+  }, [game.gameState.ninja]);
+  
   const [projectiles, setProjectiles] = useState<CombatProjectile[]>([]);
   const [lastExplosionTime, setLastExplosionTime] = useState<number>(0);
   // MOBILE FIX: Removed duplicate ninja position state - using main game's position instead
