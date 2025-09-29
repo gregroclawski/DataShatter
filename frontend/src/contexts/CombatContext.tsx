@@ -313,12 +313,13 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
             if (!enemy.lastAttackTick) enemy.lastAttackTick = 0;
             
             if (newState.currentTick - enemy.lastAttackTick >= ATTACK_COOLDOWN) {
-              // Enemy attacks player
-              const attackDamage = Math.floor(enemy.stats.attack * (0.8 + Math.random() * 0.4)); // 80-120% of base damage
+              // Enemy attacks player - FIXED: Scale damage appropriately for balanced gameplay
+              const baseAttack = enemy.stats.attack / 100; // Scale down massive attack values
+              const attackDamage = Math.floor(baseAttack * (0.8 + Math.random() * 0.4)); // 80-120% of scaled damage
               const playerDefense = newState.playerStats.defense;
-              const finalDamage = Math.max(1, attackDamage - Math.floor(playerDefense * 0.5)); // Defense reduces damage by 50%
+              const finalDamage = Math.max(1, attackDamage - Math.floor(playerDefense * 0.1)); // Defense reduces 10% of damage
               
-              console.log(`🗡️ ENEMY ATTACK: ${enemy.name} attacks player for ${finalDamage} damage (${attackDamage} - ${Math.floor(playerDefense * 0.5)} defense)`);
+              console.log(`🗡️ ENEMY ATTACK: ${enemy.name} attacks player for ${finalDamage} damage (${attackDamage} base - ${Math.floor(playerDefense * 0.1)} defense reduction)`);
               
               // Apply damage to player
               const newPlayerHealth = Math.max(0, newState.playerStats.health - finalDamage);
