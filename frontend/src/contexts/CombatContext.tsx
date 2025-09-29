@@ -82,8 +82,6 @@ interface CombatContextType {
   saveAbilityData: () => void; // Save ability data to game context
   // Shadow Clone access
   shadowClone: CombatState['shadowClone']; // Expose shadow clone state for rendering
-  // CRITICAL FIX: Projectile impact handling
-  handleProjectileImpact: (targetEnemyId: string, damage: number, abilityName: string) => void;
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
