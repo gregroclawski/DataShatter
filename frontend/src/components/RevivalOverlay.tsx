@@ -131,7 +131,6 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
               console.log('📺 Watching ad for 10 free revive tickets!');
               
               // Use GameContext to properly update revive tickets
-              const { updateNinja, saveOnEvent } = useGame();
               updateNinja(prev => ({
                 ...prev,
                 reviveTickets: (prev.reviveTickets || 0) + 10
