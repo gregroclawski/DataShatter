@@ -816,6 +816,21 @@ export default function NinjaIdleGame() {
           <PetsOverlay onClose={() => setActiveOverlay(null)} />
         </View>
       )}
+
+      {/* Revival System */}
+      <RevivalOverlay
+        visible={!gameState.isAlive}
+        onRevive={() => {
+          const success = revivePlayer();
+          if (success) {
+            console.log('💖 Revival successful!');
+          } else {
+            console.log('❌ Revival failed - no tickets');
+          }
+        }}
+        onDecline={freeRespawn}
+      />
+
       {activeOverlay === 'store' && (
         <View style={styles.overlayWrapper}>
           <StoreOverlay onClose={() => setActiveOverlay(null)} />
