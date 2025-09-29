@@ -24,7 +24,7 @@ import sys
 from typing import Dict, Any
 
 # Backend URL from frontend .env
-BACKEND_URL = "https://idle-ninja-fix.preview.emergentagent.com/api"
+BACKEND_URL = "https://idle-ninja-game.preview.emergentagent.com/api"
 
 def test_api_call(method: str, endpoint: str, data: Dict[Any, Any] = None, headers: Dict[str, str] = None) -> Dict[str, Any]:
     """Make API call and return response details"""

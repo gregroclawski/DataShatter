@@ -9,7 +9,7 @@ import json
 import uuid
 
 # Configuration
-BASE_URL = "https://idle-ninja-fix.preview.emergentagent.com/api"
+BASE_URL = "https://idle-ninja-game.preview.emergentagent.com/api"
 
 def test_json_serialization():
     """Test JSON serialization for subscription endpoints"""

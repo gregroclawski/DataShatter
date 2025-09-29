@@ -1,11 +1,16 @@
 <analysis>
-The AI engineer's work was highly iterative, primarily focused on fixing critical bugs and implementing new features for an Expo mobile application. Initial efforts included resolving React Hooks order violations, overhauling the equipment system, and enhancing character progression UI (combining stats/skills, dual upgrades, neon theme). A significant portion of the trajectory involved meticulously debugging and fixing persistent issues with the zone progression system's display and kill tracking, often requiring multiple troubleshooting rounds with the  to identify hardcoded values and synchronization problems across UI and context logic. Subsequently, the focus shifted to implementing ability persistence, including backend model updates and frontend context integration, which also required several iterations to resolve  errors and ensure proper save/load. The current task involves addressing the Shadow Clone ability functionality.
+The AI engineer's work primarily involved a series of iterative feature implementations and bug fixes for an Expo mobile application, Idle Ninja Online. Key feature developments included integrating the Shadow Clone ability with specific visual and functional requirements (semi-transparent, single clone, player-following, 70% damage attacks) and a comprehensive store system featuring three tabs (Items, Subscriptions, Gems) with server-side managed subscription benefits (XP and zone kill multipliers). A name change functionality was also added, allowing one free change with case-insensitive uniqueness validation. Significant effort was dedicated to fixing persistent data persistence issues across character upgrades, skill points, and store purchases, often requiring deep dives into  and  to ensure proper state management and MongoDB serialization. Multiple network request failures were debugged, tracing back to incorrect environment variable usage and lingering  processes, which were systematically resolved to restore proper frontend-backend communication. The zone progression was also scaled for max level 15,000.
 </analysis>
 
 <product_requirements>
-Idle Ninja Online is a mobile RPG featuring auto-fighting across 50 zones, character progression (up to level 15000), stat points, and level-up animations. The UI includes a battle arena and bottom tabs for Stats, Abilities, Pets, Skills, Store, Raids, and Equipment, all utilizing a Mythic-Tech theme. Core mechanics include a 50-zone system, 25-level gear progression with material upgrades, and a 5-tier Boss Battle System. Secure, server-side login and progression are paramount, using Expo (frontend), FastAPI (backend), and MongoDB.
+Idle Ninja Online is a mobile RPG with auto-fighting across 50 zones, character progression to level 15000, stat points, and level-up animations. It features a battle arena and bottom tabs for Stats, Abilities, Pets, Skills, Store, Raids, and Equipment, adhering to a Mythic-Tech theme. Core mechanics include a 50-zone system, 25-level gear progression with material upgrades, and a 5-tier Boss Battle System. Secure, server-side login and progression using Expo (frontend), FastAPI (backend), and MongoDB are critical.
 
-Recent developments addressed: React Hooks issues, equipment system bugs (key duplication, touch events, persistence), combined Stats/Skills into a Character tab with dual (gold/skill point) bulk upgrades, reactive skill displays, and optimized zone progression (linear kill requirements). Subsequent work fixed zone progress display (top bar and overlay), ability tab disappearance, implemented Whirlwind AOE damage, and began Shadow Clone ability implementation.
+Recent work focused on:
+- **Shadow Clone Ability:** Implement a shadow clone that is semi-transparent, casts duplicate attacks at 70% damage, has a max of 1 clone, and follows the player.
+- **Store System:** Create a 3-tab store (Items, Subscriptions, Gems). Subscriptions tab needs two 30-day, 0 items: a global 2x EXP/Drop buff and a 2x zone kill progression multiplier, both server-time based and persistent.
+- **Character Management:** Implement event-driven saves for skill/gold point upgrades in the character tab. Implement a name change feature with 1 free change, then .99, including unique, case-insensitive name validation.
+- **Game Progression:** Triple base XP values. Scale all 50 zones for progression from level 1 to 15,000.
+- **Bugs & Stability:** Fix network request failures (server saves, subscription loading, login), console errors visibility, and name change resetting progress. Ensure server-only game saves.
 </product_requirements>
 
 <key_technical_concepts>
@@ -14,33 +19,82 @@ Recent developments addressed: React Hooks issues, equipment system bugs (key du
 - **FastAPI**: Python backend, MongoDB for database.
 - **JWT Authentication**: Secure token-based user authentication.
 - **Zustand/React Context**: State management for various game systems.
-- **react-native-reanimated**: For animations and advanced touch.
+- **react-native-reanimated**: For animations.
 </key_technical_concepts>
 
 <code_architecture>
 **Directory Structure:**
 
 
--   : FastAPI backend.
-    -   **Changes**:  and  models updated to include , , , and  for persistence. Save endpoint now logs and handles  and stat upgrade fields.
--   : Main game screen.
-    -   **Changes**: Multiple React Hooks order fixes. Overlay rendering logic adjusted.  type expanded.  props updated. Zone progression top bar display fixed to use  and  data, removing hardcoded values. Abilities tab re-added to navigation and overlay rendering.
--   : Abilities display and upgrade.
-    -   **Changes**: Integrated  context. Ability upgrade logic now calls  for persistence. Display now shows upgrade requirements.
--   : Displays zone/enemy info.
-    -   **Changes**: Removed , added  and . Hardcoded 1000 kill requirements replaced with dynamic . Zone selection logic updated to call  from context.  updated to correctly use context's .
--   : Manages combat logic.
-    -   **Changes**: Enemy movement, player/enemy speeds adjusted.  and  added.  and  added to . Integrated  and  for persistence.  dependencies updated to prevent infinite loops.  now includes AOE logic, identifying multiple enemies within .  now uses .  now stores  data.
--   : Manages game state, auto-save, persistence.
-    -   **Changes**:  added to   dependency array. Mobile-optimized save/load (local backups, ,  parameter). , , ,  added to  interface. , ,  functions added. Ninja interface updated to , , .  updated to include default .  updated to send , , .
--   : Manages zone progression.
-    -   **Changes**: Uses  context. Calls . Initializes  from . , ,  functions added.  updated to track kills for .  function introduced for linear progression.  for  initialization now uses  to run only once, preventing auto-reversion. Duplicate  removed.  uses  and .
--   : Defines equipment types.
-    -   **Changes**: uid=0(root) gid=0(root) groups=0(root) generation updated to include  for uniqueness.
--   : Defines zones and enemy data.
-    -   **Changes**:  values updated using  for linear progression (all 50 zones).
--   : Defines ability types and .
-    -   **Changes**:  interface added.  now includes  and  for persistence. Whirlwind Strike  increased to 500. Whirlwind Strike  doubled to 56. Shadow Clone (, , ). Added , ,  to CombatContextType.
+- : FastAPI backend.
+    - **Initial State**: ,  models updated to include , , , . Save endpoint logs and handles these fields.
+    - **Changes Made**:
+        - Added  and  models for store subscriptions.
+        - Implemented subscription endpoints (, ) for purchasing and fetching active subscriptions, ensuring proper JSON serialization (handling MongoDB  and  objects).
+        - Updated  model and registration endpoint to include  (username).
+        - Added  function and updated registration endpoint for case-insensitive unique email and username validation.
+        - Added  field to  model to track free name changes.
+        - Implemented  model and  endpoint for name changes, including unique name validation.
+- : Main game screen.
+    - **Initial State**: React Hooks order fixes, overlay rendering,  props, zone progression display (using , ).
+    - **Changes Made**:
+        - Integrated Shadow Clone rendering (using ) with semi-transparent visuals, positioned near the player.
+        - Updated projectile rendering to make Shadow Clone projectiles semi-transparent.
+        - Destructured  from  hook.
+- : Abilities display and upgrade.
+    - **Initial State**: Integrated  context, ability upgrade logic calls , displays upgrade requirements.
+- : Displays zone/enemy info.
+    - **Initial State**: Layout adjusted (, ). Hardcoded kill requirements replaced with dynamic . Zone selection uses .
+- : Authentication screen.
+    - **Changes Made**: Simplified URL detection logic to consistently use  for the backend when configured in , preventing  or external preview URL issues for login.
+- : Character stats and skills.
+    - **Initial State**: Only *spends* skill points.
+    - **Changes Made**: Updated to ensure  calls trigger a proper save mechanism in  for  and  persistence.
+- : Store UI.
+    - **Initial State**: Existing store system with gem bags.
+    - **Changes Made**:
+        - Rewritten to implement a 3-tab interface (Items, Subscriptions, Gems).
+        - Added Account Services section to the Items tab.
+        - Integrated a  component for name changes (1 free, then paid), including input validation and user feedback popups.
+        - Updated API calls to use  from  for subscription-related endpoints.
+        - Improved error handling to suppress console errors, showing only user-friendly popups.
+- : Manages authentication.
+    - **Initial State**: Standard JWT authentication.
+    - **Changes Made**:
+        - Simplified URL detection logic to prioritize  when  is set to localhost, preventing accidental use of  or external preview URLs.
+        - Exposed  to allow updating user data (e.g., after a name change).
+- : Manages combat logic.
+    - **Initial State**: Enemy movement, player/enemy speeds, . ,  to . Integrated , . AOE logic.  uses .  stores  data. Whirlwind  increased,  doubled. Shadow Clone , .
+    - **Changes Made**:
+        - Implemented Shadow Clone logic: manages clone duration, makes clone follow player, casts duplicate attacks at 70% damage.
+        - Updated  to expose  state.
+        - Tripled base XP reward in .
+        - Applied  and  from  to rewards.
+        - Fixed variable access issues, ensuring  is correctly used where  is the  context.
+- : Manages game state, auto-save, persistence.
+    - **Initial State**:  in  . Mobile-optimized save/load (local backups, ). , , ,  in . , , .  interface updated.  includes .  sends , , .
+    - **Changes Made**:
+        - Added event-driven save logic for  and  in  function, specifically detecting changes in these nested objects.
+        - Fixed stale closures issue in  callback functions by creating proper save functions that don't interfere with state updates, resolving data loss.
+        - Added  interface and state to  and .
+        - Implemented  function to fetch active subscriptions from the server.
+        - Integrated  into  on game startup.
+        - Removed the entire local backup system, including all  calls and error messages, to enforce server-only saves.
+        - Fixed  to use the correct  from  instead of , and updated  dependencies.
+        - Enhanced debugging for subscription loading.
+        - Suppressed console errors from subscription loading.
+- : Manages zone progression.
+    - **Initial State**: Uses . Calls . Initializes . , , .  tracks kills for . .  for  initialization uses .
+    - **Changes Made**:
+        - Applied  from  to .
+        - Fixed variable access issues, ensuring  is correctly used where  is destructured from  hook.
+- : Defines zones and enemy data.
+    - **Initial State**:  values use .
+    - **Changes Made**:
+        - Tripled all  values for enemies.
+        - Rewrote zone data to properly scale all 50 zones for progression from level 1 to 15,000, instead of being underscaled.
+- : Defines ability types and .
+    - **Initial State**:  interface.  has , . Whirlwind Strike  increased to 500,  doubled to 56. Shadow Clone (, , ). Added , ,  to .
 </code_architecture>
 
 <pending_tasks>
@@ -51,10 +105,9 @@ Recent developments addressed: React Hooks issues, equipment system bugs (key du
 </pending_tasks>
 
 <current_work>
-Immediately prior to this summary, the AI engineer was implementing the Shadow Clone ability. The user requested to double the base damage of the Whirlwind ability and to investigate why the Shadow Clone ability doesn't create a shadow of the player that casts duplicate attacks at 70% damage. The Whirlwind damage increase was completed. The engineer found that the  defines Shadow Clone with , , and , but the  lacked any logic to handle 'Buff' effects or to create visual clones. The engineer has identified that the Shadow Clone system requires adding state to the , creating a visual clone entity, making the clone cast duplicate attacks at 70% damage, and managing its 30-second duration. The first step of adding shadow clone state and logic to the  has just been initiated.
+Immediately prior to this summary, the AI engineer completed the implementation and debugging of several critical features and bug fixes. The **Shadow Clone system** is fully functional, rendering a semi-transparent clone near the player that follows movements and casts duplicate attacks at 70% damage, with a single clone limit. The **store system** has been overhauled into a 3-tab interface (Items, Subscriptions, Gems). Two subscription items (2x XP/Drop Boost and 2x Zone Kill Boost) are implemented, with server-side management ensuring persistence and proper application of multipliers in combat and zone progression. A **name change feature** is available in the store, offering one free change and then a .99 cost, with robust case-insensitive uniqueness validation. The backend registration system has been updated for unique username validation. All **XP values** (base and zone-specific) have been tripled, and all **50 zones have been rescaled** to support seamless progression up to level 15,000. Significant effort was put into resolving data persistence issues with character upgrades and skill points, network request failures for API calls, and login, by correcting environment variable usage (), killing a lingering  process, and fixing variable access in React Contexts. Console errors were suppressed, ensuring only user-friendly popups are displayed for issues like name change failures. The local backup system was completely removed to enhance security. The MongoDB database was analyzed to explain the presence of multiple game saves.
 </current_work>
 
 <optional_next_step>
-Implement the shadow clone logic within the  function in .
+Thoroughly test the subscription benefits (XP and Zone Kill multipliers) to confirm they are actively applying and persisting.
 </optional_next_step>
-

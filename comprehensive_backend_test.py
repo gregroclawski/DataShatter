@@ -11,7 +11,7 @@ from datetime import datetime
 import sys
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://idle-ninja-fix.preview.emergentagent.com/api"
+BACKEND_URL = "https://idle-ninja-game.preview.emergentagent.com/api"
 
 class ComprehensiveBackendTester:
     def __init__(self):
