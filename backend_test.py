@@ -406,57 +406,69 @@ class RevivalSystemTester:
             print(f"❌ Comprehensive data test error: {str(e)}")
             return False
 
+            
     async def run_all_tests(self):
-        """Run all projectile and XP diagnosis tests"""
-        print("🚀 Starting Projectile & XP System Diagnosis")
+        """Run all backend tests"""
+        print("🚀 BACKEND API TESTING SUITE - REVIVAL SYSTEM INTEGRATION")
         print("=" * 60)
         
         await self.setup_session()
         
-        try:
-            # Setup
-            if not await self.create_test_user():
-                print("❌ Failed to create test user - aborting tests")
-                return
+        tests = [
+            ("Health Check", self.test_health_check),
+            ("User Registration", self.test_user_registration),
+            ("User Login", self.test_user_login),
+            ("Session Management", self.test_session_check),
+            ("Game Save with Revival System", self.test_save_game_with_revival_system),
+            ("Game Load with Revival System", self.test_load_game_with_revival_system),
+            ("Comprehensive Data Persistence", self.test_comprehensive_game_data_persistence)
+        ]
+        
+        results = []
+        
+        for test_name, test_func in tests:
+            try:
+                result = await test_func()
+                results.append((test_name, result))
+            except Exception as e:
+                print(f"❌ {test_name} crashed: {str(e)}")
+                results.append((test_name, False))
                 
-            # Run core backend tests
-            tests = [
-                ("Health Check", self.test_health_check),
-                ("Subscription Benefits (XP Multipliers)", self.test_subscription_benefits),
-                ("Game Save/Load (Ability Data)", self.test_xp_progression_save_load),
-            ]
-            
-            passed = 0
-            total = len(tests)
-            
-            for test_name, test_func in tests:
-                try:
-                    if await test_func():
-                        passed += 1
-                    else:
-                        print(f"❌ {test_name} FAILED")
-                except Exception as e:
-                    print(f"❌ {test_name} ERROR: {str(e)}")
-            
-            # Run specific diagnosis
-            await self.diagnose_projectile_xp_issues()
-                    
-            print("\n" + "=" * 60)
-            print(f"🏁 PROJECTILE & XP DIAGNOSIS COMPLETE")
-            print(f"📊 Backend Tests: {passed}/{total} passed ({(passed/total)*100:.1f}%)")
-            
-            if passed == total:
-                print("✅ BACKEND WORKING CORRECTLY - Issues are in frontend")
-            else:
-                print(f"❌ {total - passed} backend tests failed - backend issues detected")
+        await self.cleanup_session()
+        
+        # Print summary
+        print("\n" + "=" * 60)
+        print("📋 TEST RESULTS SUMMARY")
+        print("=" * 60)
+        
+        passed = 0
+        total = len(results)
+        
+        for test_name, result in results:
+            status = "✅ PASS" if result else "❌ FAIL"
+            print(f"{status} - {test_name}")
+            if result:
+                passed += 1
                 
-        finally:
-            await self.cleanup_session()
+        success_rate = (passed / total) * 100
+        print(f"\n🎯 OVERALL SUCCESS RATE: {passed}/{total} tests passed ({success_rate:.1f}%)")
+        
+        if success_rate >= 85:
+            print("🎉 BACKEND API IS READY FOR PRODUCTION")
+        elif success_rate >= 70:
+            print("⚠️  BACKEND API HAS MINOR ISSUES")
+        else:
+            print("🚨 BACKEND API HAS CRITICAL ISSUES")
+            
+        return results
 
 async def main():
     """Main test runner"""
-    tester = ProjectileXPDiagnosisTester()
-    await tester.run_all_tests()
+    tester = RevivalSystemTester()
+    results = await tester.run_all_tests()
+    
+    # Return results for further processing
+    return results
 
 if __name__ == "__main__":
     asyncio.run(main())
