@@ -29,6 +29,7 @@ interface CombatEnemy {
   stats: CombatStats;
   position: { x: number; y: number };
   lastDamaged: number;
+  lastAttackTick?: number; // Track when enemy last attacked player
   abilities?: string[]; // Boss abilities
   isBoss?: boolean; // Mark as boss for special behavior
   element?: 'fire' | 'ice' | 'shadow' | 'earth'; // Boss element
