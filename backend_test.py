@@ -1,636 +1,453 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend Testing for Name Change Functionality
-Testing all name change logic, authentication, and database persistence
+Backend Testing for XP Progression System Improvements
+Tests the backend's ability to handle improved XP progression data
 """
 
 import asyncio
 import aiohttp
 import json
-import os
+import uuid
 from datetime import datetime
-from typing import Dict, Any, Optional
+import os
 
 # Get backend URL from environment
 BACKEND_URL = os.getenv('EXPO_PUBLIC_BACKEND_URL', 'https://idle-ninja-game.preview.emergentagent.com')
 API_BASE = f"{BACKEND_URL}/api"
 
-class BackendTester:
+class XPProgressionTester:
     def __init__(self):
         self.session = None
-        self.test_users = []
-        self.test_results = []
+        self.test_user_id = None
+        self.auth_token = None
+        self.session_cookie = None
         
     async def setup_session(self):
-        """Setup HTTP session with proper headers"""
-        self.session = aiohttp.ClientSession(
-            headers={
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            timeout=aiohttp.ClientTimeout(total=30)
-        )
-    
+        """Setup HTTP session for testing"""
+        self.session = aiohttp.ClientSession()
+        
     async def cleanup_session(self):
         """Cleanup HTTP session"""
         if self.session:
             await self.session.close()
-    
-    def log_test(self, test_name: str, success: bool, details: str = ""):
-        """Log test result"""
-        status = "✅ PASS" if success else "❌ FAIL"
-        print(f"{status}: {test_name}")
-        if details:
-            print(f"   Details: {details}")
+            
+    async def create_test_user(self):
+        """Create a test user for authentication"""
+        user_data = {
+            "email": f"xp_test_{uuid.uuid4().hex[:8]}@test.com",
+            "password": "testpass123",
+            "name": f"XPTester_{uuid.uuid4().hex[:6]}"
+        }
         
-        self.test_results.append({
-            'test': test_name,
-            'success': success,
-            'details': details,
-            'timestamp': datetime.now().isoformat()
-        })
-    
-    async def register_test_user(self, email: str, password: str, name: str) -> Optional[Dict[str, Any]]:
-        """Register a test user and return auth data"""
-        try:
-            payload = {
-                "email": email,
-                "password": password,
-                "name": name
-            }
-            
-            async with self.session.post(f"{API_BASE}/auth/register", json=payload) as response:
-                if response.status == 201:
-                    data = await response.json()
-                    user_data = {
-                        'user': data['user'],
-                        'token': data['access_token'],
-                        'email': email,
-                        'password': password,
-                        'name': name
-                    }
-                    self.test_users.append(user_data)
-                    return user_data
-                else:
-                    error_text = await response.text()
-                    print(f"Registration failed for {email}: {response.status} - {error_text}")
-                    return None
-        except Exception as e:
-            print(f"Registration error for {email}: {str(e)}")
-            return None
-    
-    async def login_user(self, email: str, password: str) -> Optional[Dict[str, Any]]:
-        """Login user and return auth data"""
-        try:
-            # Use form data for OAuth2PasswordRequestForm
-            form_data = aiohttp.FormData()
-            form_data.add_field('username', email)  # OAuth2 uses 'username' field
-            form_data.add_field('password', password)
-            
-            async with self.session.post(f"{API_BASE}/auth/login", data=form_data) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    return {
-                        'user': data['user'],
-                        'token': data['access_token'],
-                        'email': email,
-                        'password': password
-                    }
-                else:
-                    error_text = await response.text()
-                    print(f"Login failed for {email}: {response.status} - {error_text}")
-                    return None
-        except Exception as e:
-            print(f"Login error for {email}: {str(e)}")
-            return None
-    
-    async def make_authenticated_request(self, method: str, endpoint: str, user_data: Dict[str, Any], payload: Dict[str, Any] = None) -> tuple:
-        """Make authenticated request"""
-        try:
-            headers = {
-                'Authorization': f"Bearer {user_data['token']}",
-                'Content-Type': 'application/json'
-            }
-            
-            url = f"{API_BASE}{endpoint}"
-            
-            if method.upper() == 'GET':
-                async with self.session.get(url, headers=headers) as response:
-                    return response.status, await response.json()
-            elif method.upper() == 'POST':
-                async with self.session.post(url, headers=headers, json=payload) as response:
-                    return response.status, await response.json()
-            else:
-                raise ValueError(f"Unsupported method: {method}")
+        async with self.session.post(
+            f"{API_BASE}/auth/register",
+            json=user_data,
+            headers={"Content-Type": "application/json"}
+        ) as response:
+            if response.status == 201:
+                data = await response.json()
+                self.test_user_id = data["user"]["id"]
+                self.auth_token = data["access_token"]
                 
-        except Exception as e:
-            print(f"Request error: {str(e)}")
-            return 500, {"error": str(e)}
-    
+                # Extract session cookie
+                cookies = response.cookies
+                if 'session_token' in cookies:
+                    self.session_cookie = cookies['session_token'].value
+                
+                print(f"✅ Created test user: {user_data['email']}")
+                return True
+            else:
+                error_text = await response.text()
+                print(f"❌ Failed to create test user: {response.status} - {error_text}")
+                return False
+                
     async def test_health_check(self):
         """Test basic API health"""
+        print("\n🔍 Testing API Health Check...")
         try:
             async with self.session.get(f"{API_BASE}/") as response:
                 if response.status == 200:
                     data = await response.json()
-                    self.log_test("Health Check", True, f"API responding: {data.get('message', 'OK')}")
+                    print(f"✅ Health check passed: {data.get('message', 'OK')}")
                     return True
                 else:
-                    self.log_test("Health Check", False, f"Status: {response.status}")
+                    print(f"❌ Health check failed: {response.status}")
                     return False
         except Exception as e:
-            self.log_test("Health Check", False, f"Error: {str(e)}")
+            print(f"❌ Health check error: {str(e)}")
             return False
-    
-    async def test_user_registration_and_auth(self):
-        """Test user registration for name change testing"""
-        print("\n🔐 TESTING USER REGISTRATION & AUTHENTICATION")
-        
-        # Test user 1 - will be used for basic name change tests
-        user1 = await self.register_test_user(
-            "nametest1@example.com", 
-            "testpass123", 
-            "TestUser1"
-        )
-        
-        if user1:
-            self.log_test("User Registration (TestUser1)", True, f"User ID: {user1['user']['id']}")
-        else:
-            self.log_test("User Registration (TestUser1)", False, "Failed to register")
-            return False
-        
-        # Test user 2 - will be used for name conflict tests
-        user2 = await self.register_test_user(
-            "nametest2@example.com", 
-            "testpass123", 
-            "TestUser2"
-        )
-        
-        if user2:
-            self.log_test("User Registration (TestUser2)", True, f"User ID: {user2['user']['id']}")
-        else:
-            self.log_test("User Registration (TestUser2)", False, "Failed to register")
-            return False
-        
-        return True
-    
-    async def test_name_change_info_endpoint(self):
-        """Test name change info endpoint"""
-        print("\n📋 TESTING NAME CHANGE INFO ENDPOINT")
-        
-        if not self.test_users:
-            self.log_test("Name Change Info", False, "No test users available")
-            return False
-        
-        user = self.test_users[0]
-        status, data = await self.make_authenticated_request('GET', '/user/name-change-info', user)
-        
-        if status == 200:
-            expected_fields = ['current_name', 'name_changes_used', 'next_change_free', 'next_change_cost']
-            if all(field in data for field in expected_fields):
-                self.log_test("Name Change Info Endpoint", True, 
-                             f"Current: {data['current_name']}, Changes used: {data['name_changes_used']}, Next free: {data['next_change_free']}, Cost: ${data['next_change_cost']}")
-                return True
-            else:
-                self.log_test("Name Change Info Endpoint", False, f"Missing fields in response: {data}")
-                return False
-        else:
-            self.log_test("Name Change Info Endpoint", False, f"Status: {status}, Response: {data}")
-            return False
-    
-    async def test_free_name_change(self):
-        """Test free name change (first change)"""
-        print("\n🆓 TESTING FREE NAME CHANGE")
-        
-        if not self.test_users:
-            self.log_test("Free Name Change", False, "No test users available")
-            return False
-        
-        user = self.test_users[0]
-        original_name = user['name']
-        new_name = "FreeChangeUser"
-        
-        payload = {
-            "new_name": new_name,
-            "payment_method": "demo"
-        }
-        
-        status, data = await self.make_authenticated_request('POST', '/user/change-name', user, payload)
-        
-        if status == 200:
-            if (data.get('success') and 
-                data.get('new_name') == new_name and 
-                data.get('was_free') == True and 
-                data.get('cost') == 0.0):
-                
-                # Update user data for future tests
-                user['name'] = new_name
-                user['user']['name'] = new_name
-                
-                self.log_test("Free Name Change", True, 
-                             f"Changed from '{original_name}' to '{new_name}' (Free)")
-                return True
-            else:
-                self.log_test("Free Name Change", False, f"Unexpected response: {data}")
-                return False
-        else:
-            self.log_test("Free Name Change", False, f"Status: {status}, Response: {data}")
-            return False
-    
-    async def test_paid_name_change(self):
-        """Test paid name change (subsequent changes)"""
-        print("\n💰 TESTING PAID NAME CHANGE")
-        
-        if not self.test_users:
-            self.log_test("Paid Name Change", False, "No test users available")
-            return False
-        
-        user = self.test_users[0]
-        original_name = user['name']
-        new_name = "PaidChangeUser"
-        
-        payload = {
-            "new_name": new_name,
-            "payment_method": "demo"
-        }
-        
-        status, data = await self.make_authenticated_request('POST', '/user/change-name', user, payload)
-        
-        if status == 200:
-            if (data.get('success') and 
-                data.get('new_name') == new_name and 
-                data.get('was_free') == False and 
-                data.get('cost') == 6.99):
-                
-                # Update user data for future tests
-                user['name'] = new_name
-                user['user']['name'] = new_name
-                
-                self.log_test("Paid Name Change", True, 
-                             f"Changed from '{original_name}' to '{new_name}' ($6.99)")
-                return True
-            else:
-                self.log_test("Paid Name Change", False, f"Unexpected response: {data}")
-                return False
-        else:
-            self.log_test("Paid Name Change", False, f"Status: {status}, Response: {data}")
-            return False
-    
-    async def test_name_availability_logic(self):
-        """Test name availability and conflict detection"""
-        print("\n🔍 TESTING NAME AVAILABILITY LOGIC")
-        
-        if len(self.test_users) < 2:
-            self.log_test("Name Availability Logic", False, "Need at least 2 test users")
-            return False
-        
-        user1 = self.test_users[0]
-        user2 = self.test_users[1]
-        
-        # Test 1: Try to take a name that's currently in use
-        payload = {
-            "new_name": user2['name'],  # Try to take user2's name
-            "payment_method": "demo"
-        }
-        
-        status, data = await self.make_authenticated_request('POST', '/user/change-name', user1, payload)
-        
-        if status == 400 and "already taken" in data.get('detail', '').lower():
-            self.log_test("Name Conflict Detection", True, 
-                         f"Correctly prevented taking existing name '{user2['name']}'")
-        else:
-            self.log_test("Name Conflict Detection", False, 
-                         f"Should have prevented name conflict. Status: {status}, Response: {data}")
-            return False
-        
-        # Test 2: Change user2's name to make their old name available
-        old_user2_name = user2['name']
-        new_user2_name = "AvailabilityTestUser"
-        
-        payload = {
-            "new_name": new_user2_name,
-            "payment_method": "demo"
-        }
-        
-        status, data = await self.make_authenticated_request('POST', '/user/change-name', user2, payload)
-        
-        if status == 200:
-            user2['name'] = new_user2_name
-            user2['user']['name'] = new_user2_name
-            self.log_test("Name Release", True, f"User2 changed to '{new_user2_name}', releasing '{old_user2_name}'")
-        else:
-            self.log_test("Name Release", False, f"Failed to change user2 name: {data}")
-            return False
-        
-        # Test 3: Now user1 should be able to take the released name
-        payload = {
-            "new_name": old_user2_name,
-            "payment_method": "demo"
-        }
-        
-        status, data = await self.make_authenticated_request('POST', '/user/change-name', user1, payload)
-        
-        if status == 200 and data.get('new_name') == old_user2_name:
-            user1['name'] = old_user2_name
-            user1['user']['name'] = old_user2_name
-            self.log_test("Name Reuse After Release", True, 
-                         f"User1 successfully took released name '{old_user2_name}'")
-            return True
-        else:
-            self.log_test("Name Reuse After Release", False, 
-                         f"Failed to take released name. Status: {status}, Response: {data}")
-            return False
-    
-    async def test_case_insensitive_name_checking(self):
-        """Test case-insensitive name checking"""
-        print("\n🔤 TESTING CASE-INSENSITIVE NAME CHECKING")
-        
-        if len(self.test_users) < 2:
-            self.log_test("Case Insensitive Checking", False, "Need at least 2 test users")
-            return False
-        
-        user1 = self.test_users[0]
-        user2 = self.test_users[1]
-        
-        # Try to take user2's name with different case
-        user2_name_upper = user2['name'].upper()
-        
-        payload = {
-            "new_name": user2_name_upper,
-            "payment_method": "demo"
-        }
-        
-        status, data = await self.make_authenticated_request('POST', '/user/change-name', user1, payload)
-        
-        if status == 400 and "already taken" in data.get('detail', '').lower():
-            self.log_test("Case Insensitive Name Conflict", True, 
-                         f"Correctly prevented taking '{user2_name_upper}' (case variant of '{user2['name']}')")
-            return True
-        else:
-            self.log_test("Case Insensitive Name Conflict", False, 
-                         f"Should have prevented case-insensitive conflict. Status: {status}, Response: {data}")
-            return False
-    
-    async def test_same_name_prevention(self):
-        """Test prevention of changing to same name"""
-        print("\n🚫 TESTING SAME NAME PREVENTION")
-        
-        if not self.test_users:
-            self.log_test("Same Name Prevention", False, "No test users available")
-            return False
-        
-        user = self.test_users[0]
-        current_name = user['name']
-        
-        # Test 1: Try exact same name
-        payload = {
-            "new_name": current_name,
-            "payment_method": "demo"
-        }
-        
-        status, data = await self.make_authenticated_request('POST', '/user/change-name', user, payload)
-        
-        if status == 400 and "different from current" in data.get('detail', '').lower():
-            self.log_test("Same Name Prevention (Exact)", True, 
-                         f"Correctly prevented changing to same name '{current_name}'")
-        else:
-            self.log_test("Same Name Prevention (Exact)", False, 
-                         f"Should have prevented same name change. Status: {status}, Response: {data}")
-            return False
-        
-        # Test 2: Try same name with different case
-        same_name_different_case = current_name.lower() if current_name.isupper() else current_name.upper()
-        
-        payload = {
-            "new_name": same_name_different_case,
-            "payment_method": "demo"
-        }
-        
-        status, data = await self.make_authenticated_request('POST', '/user/change-name', user, payload)
-        
-        if status == 400 and "different from current" in data.get('detail', '').lower():
-            self.log_test("Same Name Prevention (Case Variant)", True, 
-                         f"Correctly prevented changing to case variant '{same_name_different_case}'")
-            return True
-        else:
-            self.log_test("Same Name Prevention (Case Variant)", False, 
-                         f"Should have prevented case variant change. Status: {status}, Response: {data}")
-            return False
-    
-    async def test_authentication_validation(self):
-        """Test authentication token validation"""
-        print("\n🔐 TESTING AUTHENTICATION VALIDATION")
-        
-        # Test 1: Request without authentication
+            
+    async def test_subscription_benefits(self):
+        """Test subscription benefits endpoint for XP multipliers"""
+        print("\n🔍 Testing Subscription Benefits (XP Multipliers)...")
         try:
-            async with self.session.get(f"{API_BASE}/user/name-change-info") as response:
-                if response.status == 401:
-                    self.log_test("Unauthenticated Request Rejection", True, 
-                                 "Correctly rejected request without auth token")
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            if self.session_cookie:
+                headers["Cookie"] = f"session_token={self.session_cookie}"
+                
+            async with self.session.get(
+                f"{API_BASE}/subscriptions/benefits",
+                headers=headers
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    print(f"✅ Subscription benefits retrieved:")
+                    print(f"   - XP Multiplier: {data.get('xp_multiplier', 'N/A')}")
+                    print(f"   - Drop Multiplier: {data.get('drop_multiplier', 'N/A')}")
+                    print(f"   - Zone Kill Multiplier: {data.get('zone_kill_multiplier', 'N/A')}")
+                    print(f"   - Active Subscriptions: {len(data.get('active_subscriptions', []))}")
+                    
+                    # Verify default multipliers (no subscription)
+                    if (data.get('xp_multiplier') == 1.0 and 
+                        data.get('drop_multiplier') == 1.0 and 
+                        data.get('zone_kill_multiplier') == 1.0):
+                        print("✅ Default multipliers correct (1.0x each)")
+                        return True
+                    else:
+                        print("⚠️ Unexpected multiplier values")
+                        return False
                 else:
-                    self.log_test("Unauthenticated Request Rejection", False, 
-                                 f"Should have returned 401, got {response.status}")
+                    error_text = await response.text()
+                    print(f"❌ Subscription benefits failed: {response.status} - {error_text}")
                     return False
         except Exception as e:
-            self.log_test("Unauthenticated Request Rejection", False, f"Error: {str(e)}")
+            print(f"❌ Subscription benefits error: {str(e)}")
             return False
-        
-        # Test 2: Request with invalid token
+            
+    async def test_xp_progression_save_load(self):
+        """Test saving and loading high XP progression data"""
+        print("\n🔍 Testing XP Progression Save/Load...")
         try:
-            headers = {
-                'Authorization': 'Bearer invalid_token_here',
-                'Content-Type': 'application/json'
+            # Create test data with new XP progression values
+            test_ninja_data = {
+                "level": 150,  # High level to test new progression
+                "experience": 12000,  # Higher XP values
+                "experienceToNext": 15000,  # New XP requirements
+                "health": 2500,
+                "maxHealth": 2500,
+                "energy": 150,
+                "maxEnergy": 150,
+                "attack": 180,
+                "defense": 95,
+                "speed": 120,
+                "luck": 85,
+                "gold": 50000,
+                "gems": 2500,
+                "skillPoints": 450,  # More skill points from faster progression
+                "baseStats": {
+                    "attack": 50,
+                    "defense": 25,
+                    "speed": 40,
+                    "luck": 20,
+                    "maxHealth": 500,
+                    "maxEnergy": 100
+                },
+                "goldUpgrades": {
+                    "attack": 80,
+                    "defense": 40,
+                    "speed": 50,
+                    "luck": 35,
+                    "maxHealth": 1000,
+                    "maxEnergy": 30
+                },
+                "skillPointUpgrades": {
+                    "attack": 50,
+                    "defense": 30,
+                    "speed": 30,
+                    "luck": 30,
+                    "maxHealth": 1000,
+                    "maxEnergy": 20
+                }
             }
-            async with self.session.get(f"{API_BASE}/user/name-change-info", headers=headers) as response:
-                if response.status == 401:
-                    self.log_test("Invalid Token Rejection", True, 
-                                 "Correctly rejected request with invalid token")
+            
+            save_data = {
+                "playerId": self.test_user_id,
+                "ninja": test_ninja_data,
+                "shurikens": [
+                    {
+                        "id": str(uuid.uuid4()),
+                        "name": "XP Boost Shuriken",
+                        "rarity": "legendary",
+                        "attack": 120,  # Doubled base values
+                        "level": 5,
+                        "equipped": True
+                    }
+                ],
+                "pets": [
+                    {
+                        "id": str(uuid.uuid4()),
+                        "name": "XP Dragon",
+                        "type": "Dragon",
+                        "level": 25,
+                        "experience": 2400,  # Higher XP values
+                        "happiness": 95,
+                        "strength": 180,  # Doubled strength
+                        "active": True,
+                        "rarity": "epic"
+                    }
+                ],
+                "achievements": ["level_100", "xp_master", "progression_king"],
+                "unlockedFeatures": ["stats", "shurikens", "pets", "zones", "abilities"],
+                "zoneProgress": {
+                    "currentZone": 15,
+                    "currentLevel": 3,
+                    "killsInLevel": 85,
+                    "totalKills": 1250,
+                    "highestZone": 15
+                }
+            }
+            
+            # Test save
+            print("📤 Testing save with high XP progression data...")
+            async with self.session.post(
+                f"{API_BASE}/save-game",
+                json=save_data,
+                headers={"Content-Type": "application/json"}
+            ) as response:
+                if response.status == 200:
+                    save_result = await response.json()
+                    print(f"✅ Save successful - Level {save_result['ninja']['level']}, XP: {save_result['ninja']['experience']}")
+                else:
+                    error_text = await response.text()
+                    print(f"❌ Save failed: {response.status} - {error_text}")
+                    return False
+                    
+            # Test load
+            print("📥 Testing load of high XP progression data...")
+            async with self.session.get(f"{API_BASE}/load-game/{self.test_user_id}") as response:
+                if response.status == 200:
+                    load_result = await response.json()
+                    if load_result:
+                        ninja = load_result['ninja']
+                        print(f"✅ Load successful:")
+                        print(f"   - Level: {ninja['level']}")
+                        print(f"   - Experience: {ninja['experience']}")
+                        print(f"   - Experience to Next: {ninja['experienceToNext']}")
+                        print(f"   - Skill Points: {ninja['skillPoints']}")
+                        print(f"   - Zone Progress: Zone {load_result.get('zoneProgress', {}).get('currentZone', 'N/A')}")
+                        
+                        # Verify data integrity
+                        if (ninja['level'] == 150 and 
+                            ninja['experience'] == 12000 and
+                            ninja['skillPoints'] == 450):
+                            print("✅ High XP progression data integrity verified")
+                            return True
+                        else:
+                            print("❌ Data integrity check failed")
+                            return False
+                    else:
+                        print("❌ Load returned null")
+                        return False
+                else:
+                    error_text = await response.text()
+                    print(f"❌ Load failed: {response.status} - {error_text}")
+                    return False
+                    
+        except Exception as e:
+            print(f"❌ XP progression save/load error: {str(e)}")
+            return False
+            
+    async def test_subscription_purchase_xp_boost(self):
+        """Test purchasing XP boost subscription"""
+        print("\n🔍 Testing XP Boost Subscription Purchase...")
+        try:
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            if self.session_cookie:
+                headers["Cookie"] = f"session_token={self.session_cookie}"
+                
+            purchase_data = {
+                "subscription_type": "xp_drop_boost",
+                "payment_method": "demo"
+            }
+            
+            async with self.session.post(
+                f"{API_BASE}/subscriptions/purchase",
+                json=purchase_data,
+                headers=headers
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    print(f"✅ XP boost subscription purchased:")
+                    print(f"   - Type: {data['subscription']['subscription_type']}")
+                    print(f"   - Price: ${data['subscription']['price']}")
+                    print(f"   - Duration: {data['subscription']['duration_days']} days")
+                    print(f"   - Active: {data['subscription']['is_active']}")
                     return True
                 else:
-                    self.log_test("Invalid Token Rejection", False, 
-                                 f"Should have returned 401, got {response.status}")
+                    error_text = await response.text()
+                    print(f"❌ Subscription purchase failed: {response.status} - {error_text}")
                     return False
         except Exception as e:
-            self.log_test("Invalid Token Rejection", False, f"Error: {str(e)}")
+            print(f"❌ Subscription purchase error: {str(e)}")
             return False
-    
-    async def test_database_persistence(self):
-        """Test database persistence of name changes"""
-        print("\n💾 TESTING DATABASE PERSISTENCE")
-        
-        if not self.test_users:
-            self.log_test("Database Persistence", False, "No test users available")
-            return False
-        
-        user = self.test_users[0]
-        
-        # Get current name change info
-        status, before_data = await self.make_authenticated_request('GET', '/user/name-change-info', user)
-        
-        if status != 200:
-            self.log_test("Database Persistence", False, f"Failed to get initial data: {status}")
-            return False
-        
-        # Perform a name change
-        new_name = f"PersistenceTest_{datetime.now().strftime('%H%M%S')}"
-        payload = {
-            "new_name": new_name,
-            "payment_method": "demo"
-        }
-        
-        status, change_data = await self.make_authenticated_request('POST', '/user/change-name', user, payload)
-        
-        if status != 200:
-            self.log_test("Database Persistence", False, f"Name change failed: {status}")
-            return False
-        
-        # Update user data
-        user['name'] = new_name
-        user['user']['name'] = new_name
-        
-        # Get updated name change info
-        status, after_data = await self.make_authenticated_request('GET', '/user/name-change-info', user)
-        
-        if status != 200:
-            self.log_test("Database Persistence", False, f"Failed to get updated data: {status}")
-            return False
-        
-        # Verify persistence
-        if (after_data['current_name'] == new_name and 
-            after_data['name_changes_used'] == before_data['name_changes_used'] + 1):
             
-            self.log_test("Database Persistence", True, 
-                         f"Name and counter correctly persisted. Changes: {before_data['name_changes_used']} → {after_data['name_changes_used']}")
-            return True
-        else:
-            self.log_test("Database Persistence", False, 
-                         f"Persistence failed. Before: {before_data}, After: {after_data}")
+    async def test_subscription_benefits_with_boost(self):
+        """Test subscription benefits after purchasing XP boost"""
+        print("\n🔍 Testing Subscription Benefits with XP Boost...")
+        try:
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            if self.session_cookie:
+                headers["Cookie"] = f"session_token={self.session_cookie}"
+                
+            async with self.session.get(
+                f"{API_BASE}/subscriptions/benefits",
+                headers=headers
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    print(f"✅ Subscription benefits with XP boost:")
+                    print(f"   - XP Multiplier: {data.get('xp_multiplier', 'N/A')}")
+                    print(f"   - Drop Multiplier: {data.get('drop_multiplier', 'N/A')}")
+                    print(f"   - Zone Kill Multiplier: {data.get('zone_kill_multiplier', 'N/A')}")
+                    print(f"   - Active Subscriptions: {len(data.get('active_subscriptions', []))}")
+                    
+                    # Verify XP boost multipliers
+                    if (data.get('xp_multiplier') == 2.0 and 
+                        data.get('drop_multiplier') == 2.0):
+                        print("✅ XP boost multipliers correct (2.0x XP and drops)")
+                        return True
+                    else:
+                        print(f"❌ Expected 2.0x multipliers, got XP: {data.get('xp_multiplier')}, Drop: {data.get('drop_multiplier')}")
+                        return False
+                else:
+                    error_text = await response.text()
+                    print(f"❌ Subscription benefits failed: {response.status} - {error_text}")
+                    return False
+        except Exception as e:
+            print(f"❌ Subscription benefits error: {str(e)}")
             return False
-    
-    async def test_payment_simulation(self):
-        """Test payment simulation with demo method"""
-        print("\n💳 TESTING PAYMENT SIMULATION")
-        
-        if not self.test_users:
-            self.log_test("Payment Simulation", False, "No test users available")
-            return False
-        
-        # Create a new user for payment testing
-        payment_user = await self.register_test_user(
-            "paymenttest@example.com", 
-            "testpass123", 
-            "PaymentTestUser"
-        )
-        
-        if not payment_user:
-            self.log_test("Payment Simulation", False, "Failed to create payment test user")
-            return False
-        
-        # Use up the free change
-        payload = {
-            "new_name": "FirstChange",
-            "payment_method": "demo"
-        }
-        
-        status, data = await self.make_authenticated_request('POST', '/user/change-name', payment_user, payload)
-        
-        if status != 200:
-            self.log_test("Payment Simulation", False, f"Free change failed: {status}")
-            return False
-        
-        payment_user['name'] = "FirstChange"
-        
-        # Now test paid change with demo payment
-        payload = {
-            "new_name": "PaidChange",
-            "payment_method": "demo"
-        }
-        
-        status, data = await self.make_authenticated_request('POST', '/user/change-name', payment_user, payload)
-        
-        if (status == 200 and 
-            data.get('success') and 
-            data.get('cost') == 6.99 and 
-            data.get('was_free') == False):
             
-            self.log_test("Payment Simulation", True, 
-                         f"Demo payment processed successfully for ${data.get('cost')}")
-            return True
-        else:
-            self.log_test("Payment Simulation", False, 
-                         f"Payment simulation failed. Status: {status}, Response: {data}")
+    async def test_extreme_progression_data(self):
+        """Test backend handling of extreme progression values"""
+        print("\n🔍 Testing Extreme Progression Data Handling...")
+        try:
+            # Test with very high level progression (approaching level 15,000 cap)
+            extreme_ninja_data = {
+                "level": 14500,  # Near max level
+                "experience": 49500,  # Near max XP cap of 50,000
+                "experienceToNext": 500,  # Small amount to next level
+                "health": 50000,
+                "maxHealth": 50000,
+                "energy": 5000,
+                "maxEnergy": 5000,
+                "attack": 15000,
+                "defense": 8000,
+                "speed": 12000,
+                "luck": 10000,
+                "gold": 999999,
+                "gems": 99999,
+                "skillPoints": 43500,  # 3 skill points per level * 14500
+                "baseStats": {
+                    "attack": 1000,
+                    "defense": 500,
+                    "speed": 800,
+                    "luck": 600,
+                    "maxHealth": 10000,
+                    "maxEnergy": 1000
+                }
+            }
+            
+            save_data = {
+                "playerId": self.test_user_id,
+                "ninja": extreme_ninja_data,
+                "shurikens": [],
+                "pets": [],
+                "achievements": ["max_level_master", "xp_cap_reached"],
+                "unlockedFeatures": ["all"],
+                "zoneProgress": {
+                    "currentZone": 50,  # Max zone
+                    "currentLevel": 10,
+                    "killsInLevel": 275,  # Max kills for zone 50
+                    "totalKills": 50000,
+                    "highestZone": 50
+                }
+            }
+            
+            # Test save
+            async with self.session.post(
+                f"{API_BASE}/save-game",
+                json=save_data,
+                headers={"Content-Type": "application/json"}
+            ) as response:
+                if response.status == 200:
+                    save_result = await response.json()
+                    print(f"✅ Extreme progression save successful:")
+                    print(f"   - Level: {save_result['ninja']['level']}")
+                    print(f"   - XP: {save_result['ninja']['experience']}/{save_result['ninja']['experienceToNext']}")
+                    print(f"   - Skill Points: {save_result['ninja']['skillPoints']}")
+                    
+                    # Test load
+                    async with self.session.get(f"{API_BASE}/load-game/{self.test_user_id}") as load_response:
+                        if load_response.status == 200:
+                            load_result = await load_response.json()
+                            if load_result and load_result['ninja']['level'] == 14500:
+                                print("✅ Extreme progression data integrity verified")
+                                return True
+                            else:
+                                print("❌ Extreme progression data integrity failed")
+                                return False
+                        else:
+                            print("❌ Extreme progression load failed")
+                            return False
+                else:
+                    error_text = await response.text()
+                    print(f"❌ Extreme progression save failed: {response.status} - {error_text}")
+                    return False
+                    
+        except Exception as e:
+            print(f"❌ Extreme progression test error: {str(e)}")
             return False
-    
+            
     async def run_all_tests(self):
-        """Run all name change functionality tests"""
-        print("🚀 STARTING COMPREHENSIVE NAME CHANGE FUNCTIONALITY TESTING")
-        print(f"Backend URL: {BACKEND_URL}")
-        print("=" * 80)
+        """Run all XP progression backend tests"""
+        print("🚀 Starting XP Progression System Backend Tests")
+        print("=" * 60)
         
         await self.setup_session()
         
         try:
-            # Basic connectivity
-            if not await self.test_health_check():
-                print("❌ Health check failed - aborting tests")
+            # Setup
+            if not await self.create_test_user():
+                print("❌ Failed to create test user - aborting tests")
                 return
-            
-            # Authentication setup
-            if not await self.test_user_registration_and_auth():
-                print("❌ User registration failed - aborting tests")
-                return
-            
-            # Core name change functionality tests
-            test_functions = [
-                self.test_name_change_info_endpoint,
-                self.test_free_name_change,
-                self.test_paid_name_change,
-                self.test_name_availability_logic,
-                self.test_case_insensitive_name_checking,
-                self.test_same_name_prevention,
-                self.test_authentication_validation,
-                self.test_database_persistence,
-                self.test_payment_simulation
+                
+            # Run tests
+            tests = [
+                ("Health Check", self.test_health_check),
+                ("Subscription Benefits (Default)", self.test_subscription_benefits),
+                ("XP Progression Save/Load", self.test_xp_progression_save_load),
+                ("XP Boost Subscription Purchase", self.test_subscription_purchase_xp_boost),
+                ("Subscription Benefits (With Boost)", self.test_subscription_benefits_with_boost),
+                ("Extreme Progression Data", self.test_extreme_progression_data),
             ]
             
-            for test_func in test_functions:
+            passed = 0
+            total = len(tests)
+            
+            for test_name, test_func in tests:
                 try:
-                    await test_func()
+                    if await test_func():
+                        passed += 1
+                    else:
+                        print(f"❌ {test_name} FAILED")
                 except Exception as e:
-                    self.log_test(test_func.__name__, False, f"Exception: {str(e)}")
+                    print(f"❌ {test_name} ERROR: {str(e)}")
+                    
+            print("\n" + "=" * 60)
+            print(f"🏁 XP PROGRESSION BACKEND TESTS COMPLETE")
+            print(f"📊 Results: {passed}/{total} tests passed ({(passed/total)*100:.1f}%)")
             
-            # Summary
-            self.print_summary()
-            
+            if passed == total:
+                print("✅ ALL TESTS PASSED - XP progression backend ready!")
+            else:
+                print(f"❌ {total - passed} tests failed - issues need attention")
+                
         finally:
             await self.cleanup_session()
-    
-    def print_summary(self):
-        """Print test summary"""
-        print("\n" + "=" * 80)
-        print("📊 TEST SUMMARY")
-        print("=" * 80)
-        
-        total_tests = len(self.test_results)
-        passed_tests = sum(1 for result in self.test_results if result['success'])
-        failed_tests = total_tests - passed_tests
-        
-        print(f"Total Tests: {total_tests}")
-        print(f"✅ Passed: {passed_tests}")
-        print(f"❌ Failed: {failed_tests}")
-        print(f"Success Rate: {(passed_tests/total_tests*100):.1f}%")
-        
-        if failed_tests > 0:
-            print("\n🚨 FAILED TESTS:")
-            for result in self.test_results:
-                if not result['success']:
-                    print(f"   ❌ {result['test']}: {result['details']}")
-        
-        print("\n" + "=" * 80)
 
 async def main():
-    """Main test execution"""
-    tester = BackendTester()
+    """Main test runner"""
+    tester = XPProgressionTester()
     await tester.run_all_tests()
 
 if __name__ == "__main__":
