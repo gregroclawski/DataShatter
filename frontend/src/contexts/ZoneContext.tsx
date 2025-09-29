@@ -119,9 +119,13 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
       return false;
     }
 
-    console.log(`🎯 SELECTED Zone ${zoneId} - Level ${levelNumber}: ${zone.name} (separate from progression)`);
+    console.log(`🎯 ZONE SELECTION: Setting currentZone to Zone ${zoneId} Level ${levelNumber} (${zone.name})`);
+    console.log(`📍 BEFORE: currentZone=${currentZone?.id}, currentLevel=${currentZoneLevel?.level}`);
+    
     setCurrentZone(zone);
     setCurrentZoneLevel(level);
+    
+    console.log(`📍 AFTER: Selected Zone ${zoneId} Level ${levelNumber} - Kills will count toward this zone`);
     return true;
   };
 
