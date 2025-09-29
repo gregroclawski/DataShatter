@@ -465,6 +465,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       };
 
       console.log('🚀 SAVE REQUEST STARTING - URL:', saveUrl);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
       const response = await fetch(saveUrl, {
         method: 'POST',
         credentials: 'include',
@@ -473,8 +476,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           ...(token && { 'Authorization': `Bearer ${token}` }),
         },
         body: JSON.stringify(saveData),
+        signal: controller.signal,
       });
-
+      
+      clearTimeout(timeoutId); // Clear timeout if request completes
       console.log('📡 SAVE RESPONSE RECEIVED - Status:', response.status, 'OK:', response.ok);
       
       if (!response.ok) {
