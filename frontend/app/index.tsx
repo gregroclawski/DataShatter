@@ -507,6 +507,23 @@ export default function NinjaIdleGame() {
           </Text>
         </View>
 
+        {/* Player Health Bar - NEW */}
+        <View style={styles.playerHealthContainer}>
+          <View style={styles.playerHealthBar}>
+            <View 
+              style={[
+                styles.playerHealthFill, 
+                { 
+                  width: `${Math.max(0, Math.min(100, (combatState.playerStats.health / combatState.playerStats.maxHealth) * 100))}%` 
+                }
+              ]} 
+            />
+          </View>
+          <Text style={styles.playerHealthText}>
+            HP: {combatState.playerStats.health} / {combatState.playerStats.maxHealth}
+          </Text>
+        </View>
+
         {/* Ninja Character - Position based on movement mode */}
         <View style={[
           styles.ninjaContainer, 
