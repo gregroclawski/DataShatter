@@ -987,7 +987,6 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     useAbilityManually, // MOBILE FIX: Add manual ability casting
     saveAbilityData, // Expose save function to UI components
     shadowClone: combatState.shadowClone, // Expose shadow clone state for rendering
-    handleProjectileImpact, // CRITICAL FIX: Projectile impact handling
   }), [
     // Only include primitive values and state to prevent infinite loop
     // Remove function dependencies that recreate and cause circular refs
