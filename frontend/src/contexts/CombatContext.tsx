@@ -333,10 +333,10 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         console.log(`🗑️ MOBILE DEBUG - Removed ${beforeCount - afterCount} dead enemies from state`);
       }
 
-      // Maintain 10 enemies on screen with slower respawn to prevent chaos
+      // Maintain 20 enemies on screen with faster respawn for more intense combat
       // BUT: Don't spawn new enemies if there's a boss present
-      const MAX_ENEMIES = 10;
-      const MIN_SPAWN_DELAY = 500; // Minimum 500ms between spawns
+      const MAX_ENEMIES = 20; // DOUBLED from 10 to 20 for more intense combat
+      const MIN_SPAWN_DELAY = 250; // HALVED from 500ms to 250ms for 2x faster spawning
       const now = Date.now();
       const hasBoss = newState.enemies.some(enemy => enemy.isBoss);
       
