@@ -258,12 +258,18 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
         if (progress.currentLevel < 5) {
           progress.currentLevel += 1;
           progress.killsInLevel = 0;
-          console.log(`⬆️ Advanced to Level ${progress.currentLevel}`);
+          console.log(`⬆️ PROGRESSION: Advanced to Level ${progress.currentLevel} (player can still select other zones)`);
           
-          // Auto-select next level
+          // Update progression zone but DON'T auto-select next level
+          // Player keeps their current selection unless they manually change it
           const nextLevel = currentZone.levels[progress.currentLevel - 1];
-          if (nextLevel) {
+          if (nextLevel && currentZone === progressionZone) {
+            // Only auto-advance if player is currently on the progression zone
+            console.log(`🎯 AUTO-ADVANCE: Player was on progression zone, advancing to next level`);
             setCurrentZoneLevel(nextLevel);
+            setProgressionZone(currentZone); // Update progression zone
+          } else {
+            console.log(`🎯 SELECTION PRESERVED: Player selected different zone, keeping their choice`);
           }
         } else {
           // Zone completed
