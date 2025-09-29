@@ -302,9 +302,20 @@ export default function NinjaIdleGame() {
           const flightDuration = projectile.duration || 500; // Use projectile's duration
           const progress = Math.min(elapsedTime / flightDuration, 1);
           
+          // CRITICAL FIX: Apply damage when projectile reaches target (moved from CombatContext)
+          if (progress >= 1 && !projectile.hasHit) {
+            projectile.hasHit = true;
+            console.log(`💥 Projectile ${projectile.id} hit enemy ${projectile.targetEnemyId} for ${projectile.damage} damage`);
+            
+            // Apply damage using the CombatContext function
+            if (handleProjectileImpact) {
+              handleProjectileImpact(projectile.targetEnemyId, projectile.damage, projectile.abilityName);
+            }
+          }
+          
           // Remove projectiles that have completed their visual flight
-          if (progress >= 1) {
-            return null; // Remove completed projectiles from visual display
+          if (progress >= 1.2) {
+            return null; // Remove completed projectiles from visual display with extra time for impact
           }
           
           // Interpolate position from ninja to target
@@ -325,7 +336,7 @@ export default function NinjaIdleGame() {
     const projectileAnimationInterval = setInterval(animateProjectiles, 16); // ~60fps
     
     return () => clearInterval(projectileAnimationInterval);
-  }, [projectiles]);
+  }, [projectiles, handleProjectileImpact]);
 
   // Start combat automatically when component mounts
   useEffect(() => {
