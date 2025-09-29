@@ -598,10 +598,16 @@ async def get_subscription_benefits(current_user: dict = Depends(get_current_use
         
         async for subscription in cursor:
             subscription_type = subscription["subscription_type"]
+            end_date = subscription["end_date"]
+            
+            # Ensure end_date is timezone-aware
+            if end_date.tzinfo is None:
+                end_date = end_date.replace(tzinfo=timezone.utc)
+            
             benefits["active_subscriptions"].append({
                 "type": subscription_type,
-                "end_date": subscription["end_date"].isoformat(),
-                "days_remaining": (subscription["end_date"] - current_time).days
+                "end_date": end_date.isoformat(),
+                "days_remaining": (end_date - current_time).days
             })
             
             # Apply subscription benefits
