@@ -90,6 +90,11 @@ class PurchaseSubscriptionRequest(BaseModel):
     subscription_type: SubscriptionType
     payment_method: str = "demo"  # For demo purposes
 
+# Name Change Models
+class NameChangeRequest(BaseModel):
+    new_name: str = Field(..., min_length=1, max_length=100)
+    payment_method: str = "demo"  # For demo purposes
+
 # Password validation
 def validate_password(password: str) -> bool:
     """Validate password requirements: 8-64 characters"""
