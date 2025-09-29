@@ -78,6 +78,7 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
     console.log('🎯 ZONE INIT: Initializing progressionZone (unlock progress) to Zone 1');
     return ZONES[0];
   }); // Highest unlocked zone for progression
+  const [hasInitializedZones, setHasInitializedZones] = useState(false); // Flag to prevent re-initialization
   const [zoneProgress, setZoneProgress] = useState<Record<number, ZoneProgress>>(() => {
     // MOBILE FIX: Initialize with saved zone progress from GameContext instead of defaults
     const savedProgress = gameState?.zoneProgress;
