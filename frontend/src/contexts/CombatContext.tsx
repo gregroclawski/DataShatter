@@ -923,6 +923,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     combatState.shadowClone, // Add shadow clone state to dependencies
     useAbilityManually, // Add the callback to dependencies
     saveAbilityData, // Add saveAbilityData to dependencies
+    handleProjectileImpact, // Add handleProjectileImpact to dependencies
   ]);
 
   return (
