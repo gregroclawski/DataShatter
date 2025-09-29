@@ -289,40 +289,25 @@ export default function NinjaIdleGame() {
     }
   }, [layout.screenWidth, layout.gameAreaHeight, layout.ninjaSize, ninjaPosition.x, ninjaPosition.y, updateNinjaPosition]);
 
-  // Mobile-compatible projectile animation system - replaces web-specific requestAnimationFrame
+  // Mobile-compatible projectile animation system - PURE VISUAL ONLY
   useEffect(() => {
     const animateProjectiles = () => {
       setAnimatedProjectiles(currentProjectiles => {
-        const projectilesToImpact: Array<{targetEnemyId: string, damage: number, abilityName: string}> = [];
-        
-        const updatedProjectiles = (projectiles || []).map(projectile => {
+        return (projectiles || []).map(projectile => {
           if (!projectile) return null;
           
-          // Calculate projectile flight progress (0 to 1)
+          // Calculate projectile flight progress (0 to 1) - VISUAL ONLY
           const startTime = projectile.startTime || Date.now();
           const elapsedTime = Date.now() - startTime;
-          const flightDuration = projectile.duration || 500; // Use projectile's duration
+          const flightDuration = projectile.duration || 500;
           const progress = Math.min(elapsedTime / flightDuration, 1);
-          
-          // CRITICAL FIX: Track projectiles that need to apply damage (defer actual state update)
-          if (progress >= 1 && !projectile.hasHit) {
-            projectile.hasHit = true;
-            console.log(`💥 Projectile ${projectile.id} hit enemy ${projectile.targetEnemyId} for ${projectile.damage} damage`);
-            
-            // Queue for damage application outside render cycle
-            projectilesToImpact.push({
-              targetEnemyId: projectile.targetEnemyId,
-              damage: projectile.damage,
-              abilityName: projectile.abilityName
-            });
-          }
           
           // Remove projectiles that have completed their visual flight
           if (progress >= 1.2) {
-            return null; // Remove completed projectiles from visual display with extra time for impact
+            return null; // Remove completed projectiles from visual display
           }
           
-          // Interpolate position from ninja to target
+          // Interpolate position from ninja to target - VISUAL ONLY
           const currentX = projectile.x + (projectile.targetX - projectile.x) * progress;
           const currentY = projectile.y + (projectile.targetY - projectile.y) * progress;
           
@@ -333,27 +318,14 @@ export default function NinjaIdleGame() {
             progress
           };
         }).filter(Boolean);
-        
-        // CRITICAL FIX: Apply damage after render cycle completes
-        if (projectilesToImpact.length > 0) {
-          setTimeout(() => {
-            projectilesToImpact.forEach(impact => {
-              if (handleProjectileImpact) {
-                handleProjectileImpact(impact.targetEnemyId, impact.damage, impact.abilityName);
-              }
-            });
-          }, 0); // Defer to next event loop tick
-        }
-        
-        return updatedProjectiles;
       });
     };
 
-    // Mobile-compatible animation loop using setInterval instead of requestAnimationFrame
+    // Mobile-compatible animation loop - VISUAL ONLY
     const projectileAnimationInterval = setInterval(animateProjectiles, 16); // ~60fps
     
     return () => clearInterval(projectileAnimationInterval);
-  }, [projectiles, handleProjectileImpact]);
+  }, [projectiles]);
 
   // Start combat automatically when component mounts
   useEffect(() => {
