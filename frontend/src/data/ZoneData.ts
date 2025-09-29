@@ -49,7 +49,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👹',
     baseHP: 15,
     baseAttack: 8,
-    baseXP: 60, // TRIPLED from 20 to 60
+    baseXP: 120, // 6X from original 20 (tripled to 60, now doubled to 120)
   },
   'wild_wolf': {
     id: 'wild_wolf', 
@@ -57,7 +57,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐺',
     baseHP: 25,
     baseAttack: 12,
-    baseXP: 45, // TRIPLED from 15 to 45
+    baseXP: 90, // 6X from original 15 (tripled to 45, now doubled to 90)
   },
   'tree_guardian': {
     id: 'tree_guardian',
@@ -65,7 +65,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🌳',
     baseHP: 45,
     baseAttack: 15,
-    baseXP: 75, // TRIPLED from 25 to 75
+    baseXP: 150, // 6X from original 25 (tripled to 75, now doubled to 150)
     resistances: { physical: 0.2 }
   },
   'dark_sprite': {
@@ -74,7 +74,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🧚‍♀️',
     baseHP: 20,
     baseAttack: 18,
-    baseXP: 60, // TRIPLED from 20 to 60
+    baseXP: 120, // 6X from original 20 (tripled to 60, now doubled to 120)
     resistances: { magic: 0.3 }
   },
   'shadow_wolf': {
@@ -83,7 +83,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐺',
     baseHP: 30,
     baseAttack: 20,
-    baseXP: 75, // TRIPLED from 25 to 75
+    baseXP: 150, // 6X from original 25 (tripled to 75, now doubled to 150)
     resistances: { magic: 0.2 }
   },
   'ancient_oak': {
@@ -92,7 +92,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🌲',
     baseHP: 80,
     baseAttack: 25,
-    baseXP: 105, // TRIPLED from 35 to 105
+    baseXP: 210, // 6X from original 35 (tripled to 105, now doubled to 210)
     resistances: { physical: 0.3 }
   },
   'flame_salamander': {
@@ -101,7 +101,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🦎',
     baseHP: 40,
     baseAttack: 30,
-    baseXP: 135, // TRIPLED from 45 to 135
+    baseXP: 270, // 6X from original 45 (tripled to 135, now doubled to 270)
     resistances: { physical: 0.4, fire: -0.3 }
   },
 
