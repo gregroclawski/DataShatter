@@ -674,6 +674,17 @@ async def change_name(
         
         print(f"📝 NAME CHANGE REQUEST - User: {user_id}, Current: '{user['name']}', New: '{name_request.new_name}', Cost: ${cost}")
         
+        # For paid name changes, simulate payment processing
+        if not is_free:
+            if name_request.payment_method == "demo":
+                print(f"💳 DEMO PAYMENT PROCESSED - User: {user_id}, Amount: ${cost}")
+            else:
+                # In a real app, this would integrate with actual payment processing
+                raise HTTPException(
+                    status_code=400, 
+                    detail="Payment processing not implemented for non-demo payments"
+                )
+        
         # Update user's name and increment change counter
         update_result = await db.users.update_one(
             {"id": user_id},
