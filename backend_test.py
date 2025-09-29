@@ -27,11 +27,11 @@ import uuid
 from datetime import datetime
 import time
 
-# Backend URL from frontend/.env
-BACKEND_URL = "https://idle-ninja-fix.preview.emergentagent.com/api"
-
-# Critical user ID for data recovery check
-CRITICAL_USER_ID = "4ccda8a0-4b37-47c2-9171-d2dfe8d9a4f4"
+# Configuration
+BASE_URL = "https://idle-ninja-fix.preview.emergentagent.com/api"
+TEST_USER_EMAIL = f"testuser_{uuid.uuid4().hex[:8]}@example.com"
+TEST_USER_PASSWORD = "testpassword123"
+TEST_USER_NAME = "Test Subscription User"
 
 class BackendTester:
     def __init__(self):
