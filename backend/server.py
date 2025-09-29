@@ -241,6 +241,7 @@ class NinjaStats(BaseModel):
     gold: int = 100
     gems: int = 10
     skillPoints: int = 0
+    reviveTickets: int = 0  # Revival System integration - tickets for reviving after death
     
     # Separate stat pools for upgrades
     baseStats: Optional[StatPool] = None
