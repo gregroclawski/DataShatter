@@ -1070,7 +1070,7 @@ const NameChangeCard = () => {
         setNameChangeInfo(info);
       }
     } catch (error) {
-      console.error('Failed to load name change info:', error);
+      console.log('Failed to load name change info:', error); // Log for debugging only
     } finally {
       setLoading(false);
     }
