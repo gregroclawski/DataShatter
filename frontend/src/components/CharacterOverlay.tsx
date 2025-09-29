@@ -342,8 +342,8 @@ const CharacterOverlay = ({ onClose }: Props) => {
 
       <Text style={styles.sectionSubtitle}>
         {skillUpgradeType === 'gold' 
-          ? 'Use gold for permanent stat increases (larger bonuses)'
-          : 'Use skill points for smaller but consistent upgrades (3 SP per level)'}
+          ? 'Use gold for basic stat increases (1 stat point per level, 10 for health/energy)'
+          : 'Use skill points for PREMIUM upgrades (3x more beneficial: 3 stat points per level, 15 for health/energy)'}
       </Text>
       
       {skills.map((skill) => {
