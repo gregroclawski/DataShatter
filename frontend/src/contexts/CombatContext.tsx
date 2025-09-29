@@ -870,7 +870,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
           if (progress >= 1 && !projectile.hasHit) {
             projectile.hasHit = true;
             
-            // Apply damage to the target enemy
+            // Apply damage to the target enemy and check for death
             setCombatState(prev => {
               const newState = { ...prev };
               const enemyIndex = newState.enemies.findIndex(e => e.id === projectile.targetEnemyId);
@@ -887,12 +887,24 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
                 };
                 
                 console.log(`💥 PROJECTILE HIT: ${projectile.abilityName} hit ${enemy.name} for ${projectile.damage} damage (${newHealth}/${enemy.maxHealth} HP remaining)`);
+                
+                // CRITICAL FIX: Award XP when enemy dies from projectile
+                if (newHealth <= 0 && enemy.health > 0) {
+                  console.log(`💀 PROJECTILE KILL: ${enemy.name} killed by ${projectile.abilityName}!`);
+                  // Use setTimeout to ensure handleEnemyKill is called after state update
+                  setTimeout(() => {
+                    handleEnemyKill(enemy);
+                  }, 0);
+                }
               }
               
               return newState;
             });
-            
-            return null; // Remove completed projectile
+          }
+
+          // Keep projectiles until they've been visible for enough time (allow visual completion)
+          if (progress >= 1.2) { // Give extra time for visual completion
+            return null; // Remove projectile after visual animation completes
           }
 
           return projectile;
@@ -903,7 +915,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     // Process projectiles at 60fps
     const projectileInterval = setInterval(processProjectiles, 16);
     return () => clearInterval(projectileInterval);
-  }, []);
+  }, [handleEnemyKill]);
 
   // CRITICAL FIX: Handle projectile impact - deals damage to specific enemy
   const handleProjectileImpact = useCallback((targetEnemyId: string, damage: number, abilityName: string) => {
