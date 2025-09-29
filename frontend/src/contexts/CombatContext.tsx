@@ -884,6 +884,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     // MOBILE PERFORMANCE FIX: Add missing dependencies for proper state synchronization
     combatState.abilityManager,
     combatState.enemies,
+    combatState.shadowClone, // Add shadow clone state to dependencies
     useAbilityManually, // Add the callback to dependencies
     saveAbilityData, // Add saveAbilityData to dependencies
   ]);
