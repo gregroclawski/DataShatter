@@ -352,19 +352,19 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isAuthenticated, gameState]);
 
-  // Calculate experience required for next level (incremental up to level 15000)
+  // Calculate experience required for next level (FASTER SCALING for level 15000)
   const calculateExpForLevel = (level: number): number => {
     if (level <= 1) return 100;
-    if (level >= 15000) return 1000000; // Max exp requirement at level 15000
+    if (level >= 15000) return 50000; // Reduced max exp requirement for endgame
     
-    // Exponential scaling up to level 15000
-    // Base formula: 100 * (1.05^(level-1))
-    const baseExp = 100;
-    const growthRate = 1.05;
+    // MUCH FASTER SCALING: Lower growth rate and reduced base for faster leveling to 15000
+    // Base formula: 80 * (1.03^(level-1)) - Much gentler curve for faster progression
+    const baseExp = 80; // Reduced base EXP requirement (was 100, now 80)
+    const growthRate = 1.03; // Reduced growth rate (was 1.05, now 1.03)
     const expRequired = Math.floor(baseExp * Math.pow(growthRate, level - 1));
     
-    // Cap at reasonable maximum
-    return Math.min(expRequired, 1000000);
+    // Cap at much lower maximum for faster endgame progression
+    return Math.min(expRequired, 50000); // Was 1,000,000, now 50,000 for much faster progression
   };
 
   // Handle level up logic with proper exp scaling and 3 stat points per level
