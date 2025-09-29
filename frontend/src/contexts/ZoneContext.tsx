@@ -268,7 +268,7 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
         console.log(`📊 Zone ${zoneId} Level ${progress.currentLevel}: ${progress.killsInLevel}/${requiredKills} kills (COMPLETED)`);
       } else {
         // Normal kill increment with subscription multiplier
-        const zoneKillMultiplier = game.gameState.subscriptionBenefits?.zone_kill_multiplier || 1.0;
+        const zoneKillMultiplier = gameState.subscriptionBenefits?.zone_kill_multiplier || 1.0;
         const killsToAdd = Math.floor(1 * zoneKillMultiplier);
         progress.killsInLevel += killsToAdd;
         console.log(`📊 Zone ${zoneId} Level ${progress.currentLevel}: ${progress.killsInLevel}/${requiredKills} kills (+${killsToAdd} with ${zoneKillMultiplier}x multiplier)`);
