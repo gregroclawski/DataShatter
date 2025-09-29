@@ -879,6 +879,15 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     });
   }, []);
 
+  // Manual save ability data function - called when abilities are modified
+  const saveAbilityData = useCallback(() => {
+    if (combatState.abilityManager) {
+      const abilityData = combatState.abilityManager.getSaveData();
+      console.log('💾 MANUALLY SAVING ABILITY DATA TO GAME CONTEXT:', abilityData);
+      game.updateAbilityData(abilityData);
+    }
+  }, [combatState.abilityManager, game.updateAbilityData]);
+
   // CRITICAL FIX: Handle projectile impact - deals damage to specific enemy
   const handleProjectileImpact = useCallback((targetEnemyId: string, damage: number, abilityName: string) => {
     console.log(`💥 PROJECTILE IMPACT: ${abilityName} hit enemy ${targetEnemyId} for ${damage} damage`);
