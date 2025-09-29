@@ -854,31 +854,46 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  // CRITICAL FIX: Handle projectile impact - deals damage to specific enemy
+  // CRITICAL FIX: Handle projectile impact - deals damage to specific enemy (ASYNC)
   const handleProjectileImpact = useCallback((targetEnemyId: string, damage: number, abilityName: string) => {
-    console.log(`💥 PROJECTILE IMPACT: ${abilityName} hit enemy ${targetEnemyId} for ${damage} damage`);
+    console.log(`💥 PROJECTILE IMPACT QUEUED: ${abilityName} targeting enemy ${targetEnemyId} for ${damage} damage`);
     
-    setCombatState(prev => {
-      const newState = { ...prev };
-      
-      // Find the target enemy and deal damage
-      const enemyIndex = newState.enemies.findIndex(e => e.id === targetEnemyId);
-      if (enemyIndex >= 0) {
-        newState.enemies = [...newState.enemies];
-        newState.enemies[enemyIndex] = {
-          ...newState.enemies[enemyIndex],
-          health: Math.max(0, newState.enemies[enemyIndex].health - damage),
-          lastDamaged: combatEngine.getCurrentTick()
-        };
+    // CRITICAL: Defer state update to prevent render-phase violations
+    setTimeout(() => {
+      setCombatState(prev => {
+        const newState = { ...prev };
         
-        console.log(`🎯 Enemy ${targetEnemyId} health: ${newState.enemies[enemyIndex].health}/${newState.enemies[enemyIndex].maxHealth} after ${abilityName} impact`);
-      } else {
-        console.log(`❌ Enemy ${targetEnemyId} not found for projectile impact`);
-      }
-      
-      return newState;
-    });
-  }, []);
+        // Find the target enemy and deal damage
+        const enemyIndex = newState.enemies.findIndex(e => e.id === targetEnemyId);
+        if (enemyIndex >= 0 && newState.enemies[enemyIndex].health > 0) {
+          newState.enemies = [...newState.enemies];
+          const enemy = newState.enemies[enemyIndex];
+          const newHealth = Math.max(0, enemy.health - damage);
+          
+          newState.enemies[enemyIndex] = {
+            ...enemy,
+            health: newHealth,
+            lastDamaged: combatEngine.getCurrentTick()
+          };
+          
+          console.log(`🎯 DAMAGE APPLIED: ${abilityName} hit ${enemy.name} for ${damage} damage (${newHealth}/${enemy.maxHealth} HP remaining)`);
+          
+          // CRITICAL FIX: Award XP when enemy dies from projectile
+          if (newHealth <= 0 && enemy.health > 0) {
+            console.log(`💀 PROJECTILE KILL: ${enemy.name} killed by ${abilityName}!`);
+            // Defer handleEnemyKill to prevent nested setState calls
+            setTimeout(() => {
+              handleEnemyKill(enemy);
+            }, 0);
+          }
+        } else {
+          console.log(`❌ Enemy ${targetEnemyId} not found or already dead`);
+        }
+        
+        return newState;
+      });
+    }, 0); // Defer to next event loop to prevent setState-during-render
+  }, [handleEnemyKill]);
 
   // Manual save ability data function - called when abilities are modified
   const saveAbilityData = useCallback(() => {
