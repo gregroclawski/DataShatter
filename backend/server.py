@@ -526,7 +526,6 @@ async def purchase_subscription(
         response_subscription["start_date"] = response_subscription["start_date"].isoformat()
         response_subscription["end_date"] = response_subscription["end_date"].isoformat()
         response_subscription["created_at"] = response_subscription["created_at"].isoformat()
-        response_subscription["subscription_type"] = str(response_subscription["subscription_type"])
         
         return {
             "success": True,
