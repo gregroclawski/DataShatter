@@ -35,6 +35,7 @@ interface CurrentEnemy {
 interface ZoneContextType {
   currentZone: Zone | null;
   currentZoneLevel: ZoneLevel | null;
+  progressionZone: Zone | null;
   zoneProgress: Record<number, ZoneProgress>;
   availableZones: Zone[];
   
