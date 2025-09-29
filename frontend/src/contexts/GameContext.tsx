@@ -471,8 +471,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       lastSaveTimeRef.current = now;
       console.log('✅ PROGRESS SAVED TO SERVER - Level:', result.ninja?.level, 'XP:', result.ninja?.experience);
     } catch (error) {
-      console.error('❌ Server save failed, but local backup completed:', error);
-      // Don't throw - local backup ensures progress isn't lost
+      console.error('❌ Server save failed:', error);
+      // SECURITY: No local backup - all progress must be saved to server for integrity
+      throw error; // Propagate error since we can't rely on local backup anymore
     }
   };
 
