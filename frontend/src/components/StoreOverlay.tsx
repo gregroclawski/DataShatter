@@ -1114,6 +1114,12 @@ const NameChangeCard = () => {
         setShowModal(false);
         setNewName('');
         
+        // CRITICAL: Update user context with new name to prevent progress reset
+        // Force a page refresh to reload user data with new name
+        setTimeout(() => {
+          window.location.reload?.() || location.reload?.();
+        }, 1000);
+        
         // Reload name change info
         await loadNameChangeInfo();
       } else {
