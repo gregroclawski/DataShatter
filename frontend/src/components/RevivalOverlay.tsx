@@ -130,11 +130,25 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
               // Award 10 free revive tickets for watching ad
               console.log('📺 Watching ad for 10 free revive tickets!');
               
-              // Update ninja with bonus tickets
-              gameState.ninja.reviveTickets = (gameState.ninja.reviveTickets || 0) + 10;
+              // Use GameContext to properly update revive tickets
+              const { updateNinja, saveOnEvent } = useGame();
+              updateNinja(prev => ({
+                ...prev,
+                reviveTickets: (prev.reviveTickets || 0) + 10
+              }));
+              
+              // Trigger save
+              setTimeout(() => {
+                saveOnEvent('ad_reward_revive_tickets');
+              }, 100);
               
               // Show success message
-              alert('🎉 Ad watched! You received 10 free revive tickets!');
+              Alert.alert(
+                '🎉 Ad Reward!',
+                'You received 10 free revive tickets!\n\nTotal tickets: ' + 
+                ((gameState.ninja.reviveTickets || 0) + 10),
+                [{ text: 'Awesome!' }]
+              );
               
               // TODO: Integrate with actual ad service (AdMob, Unity Ads, etc.)
             }}
