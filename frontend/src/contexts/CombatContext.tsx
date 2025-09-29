@@ -250,25 +250,25 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       if (newState.playerStats && game.gameState.ninja) {
         const effectiveStats = game.getEffectiveStats();
         
-        // Only update if different to prevent unnecessary state changes
+        // MOBILE FIX: Synchronize player stats with effective stats to reflect upgrades
         if (newState.playerStats.attack !== effectiveStats.attack ||
             newState.playerStats.defense !== effectiveStats.defense ||
-            newState.playerStats.maxHealth !== effectiveStats.health) {
+            newState.playerStats.maxHealth !== effectiveStats.maxHealth) {
           
-          console.log(`🔧 PLAYER STATS UPDATE: Attack ${newState.playerStats.attack} → ${effectiveStats.attack}, Defense ${newState.playerStats.defense} → ${effectiveStats.defense}, MaxHP ${newState.playerStats.maxHealth} → ${effectiveStats.health}`);
+          console.log(`🔧 PLAYER STATS UPDATE: Attack ${newState.playerStats.attack} → ${effectiveStats.attack}, Defense ${newState.playerStats.defense} → ${effectiveStats.defense}, MaxHP ${newState.playerStats.maxHealth} → ${effectiveStats.maxHealth}`);
           
           // Handle max health changes carefully
           let newHealth = newState.playerStats.health;
-          if (newState.playerStats.maxHealth !== effectiveStats.health) {
+          if (newState.playerStats.maxHealth !== effectiveStats.maxHealth) {
             // Only adjust health ratio if max health increased significantly (upgrades)
-            if (effectiveStats.health > newState.playerStats.maxHealth * 1.1) {
+            if (effectiveStats.maxHealth > newState.playerStats.maxHealth * 1.1) {
               // Player got a health upgrade - maintain ratio but give the benefit
               const healthRatio = newState.playerStats.maxHealth > 0 ? 
                 newState.playerStats.health / newState.playerStats.maxHealth : 1;
-              newHealth = Math.floor(effectiveStats.health * healthRatio);
-            } else if (newState.playerStats.health > effectiveStats.health) {
+              newHealth = Math.floor(effectiveStats.maxHealth * healthRatio);
+            } else if (newState.playerStats.health > effectiveStats.maxHealth) {
               // Max health decreased or current health exceeds new max - cap it
-              newHealth = effectiveStats.health;
+              newHealth = effectiveStats.maxHealth;
             }
             // Otherwise keep current health value (preserve combat damage)
           }
@@ -277,12 +277,19 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
             ...newState.playerStats,
             attack: effectiveStats.attack,
             defense: effectiveStats.defense,
-            maxHealth: effectiveStats.health,
+            maxHealth: effectiveStats.maxHealth, // FIXED: Use maxHealth from effectiveStats
             health: newHealth, // Preserve combat damage
             critChance: effectiveStats.critChance || newState.playerStats.critChance,
             critDamage: effectiveStats.critDamage || newState.playerStats.critDamage,
             cooldownReduction: effectiveStats.cooldownReduction || newState.playerStats.cooldownReduction,
           };
+        }
+
+        // REVIVAL SYNC: When player is revived, sync the combat state with game state health
+        if (game.gameState.isAlive && effectiveStats.health === effectiveStats.maxHealth && 
+            newState.playerStats.health !== effectiveStats.health) {
+          console.log(`💖 REVIVAL SYNC: Combat health ${newState.playerStats.health} → ${effectiveStats.health} (Full health restoration detected)`);
+          newState.playerStats.health = effectiveStats.health;
         }
       }
 
