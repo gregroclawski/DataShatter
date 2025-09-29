@@ -852,6 +852,57 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       combatEngine.stop();
     };
   }, []);
+  // Projectile management and animation
+  useEffect(() => {
+    const processProjectiles = () => {
+      setProjectiles(currentProjectiles => {
+        return currentProjectiles.map(projectile => {
+          if (!projectile) return null;
+
+          // Calculate projectile progress
+          const currentTime = Date.now();
+          const startTime = projectile.startTime || currentTime;
+          const elapsedTime = currentTime - startTime;
+          const progress = Math.min(elapsedTime / (projectile.duration || 500), 1);
+
+          // CRITICAL FIX: Apply damage when projectile reaches target
+          if (progress >= 1 && !projectile.hasHit) {
+            projectile.hasHit = true;
+            
+            // Apply damage to the target enemy
+            setCombatState(prev => {
+              const newState = { ...prev };
+              const enemyIndex = newState.enemies.findIndex(e => e.id === projectile.targetEnemyId);
+              
+              if (enemyIndex >= 0 && newState.enemies[enemyIndex].health > 0) {
+                newState.enemies = [...newState.enemies];
+                const enemy = newState.enemies[enemyIndex];
+                const newHealth = Math.max(0, enemy.health - projectile.damage);
+                
+                newState.enemies[enemyIndex] = {
+                  ...enemy,
+                  health: newHealth,
+                  lastDamaged: combatEngine.getCurrentTick()
+                };
+                
+                console.log(`💥 PROJECTILE HIT: ${projectile.abilityName} hit ${enemy.name} for ${projectile.damage} damage (${newHealth}/${enemy.maxHealth} HP remaining)`);
+              }
+              
+              return newState;
+            });
+            
+            return null; // Remove completed projectile
+          }
+
+          return projectile;
+        }).filter(Boolean);
+      });
+    };
+
+    // Process projectiles at 60fps
+    const projectileInterval = setInterval(processProjectiles, 16);
+    return () => clearInterval(projectileInterval);
+  }, []);
 
   // CRITICAL FIX: Handle projectile impact - deals damage to specific enemy
   const handleProjectileImpact = useCallback((targetEnemyId: string, damage: number, abilityName: string) => {
