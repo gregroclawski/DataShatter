@@ -139,9 +139,13 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   const handleEnemyKill = useCallback((enemy: CombatEnemy) => {
     console.log(`🗡️  MOBILE DEBUG - handleEnemyKill CALLED for enemy:`, enemy.id);
     
-    // Award XP and gold directly using useGame hook
-    const xpReward = 60; // TRIPLED Base XP reward per kill (was 20, now 60 for data recovery)
-    const goldReward = 10;
+    // Award XP and gold directly using useGame hook with subscription multipliers
+    const baseXpReward = 60; // TRIPLED Base XP reward per kill (was 20, now 60 for data recovery)
+    const xpMultiplier = game.gameState.subscriptionBenefits?.xp_multiplier || 1.0;
+    const dropMultiplier = game.gameState.subscriptionBenefits?.drop_multiplier || 1.0;
+    
+    const xpReward = Math.floor(baseXpReward * xpMultiplier);
+    const goldReward = Math.floor(10 * dropMultiplier);
     
     console.log(`💰 MOBILE DEBUG - Awarding ${xpReward} XP and ${goldReward} gold for kill`);
     console.log(`📱 MOBILE DEBUG - Platform: ${Platform.OS}, Time: ${Date.now()}`);
