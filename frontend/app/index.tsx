@@ -293,9 +293,7 @@ export default function NinjaIdleGame() {
   useEffect(() => {
     const animateProjectiles = () => {
       setAnimatedProjectiles(currentProjectiles => {
-        const completedProjectiles: string[] = []; // Track projectiles that hit their targets
-        
-        const updatedProjectiles = (projectiles || []).map(projectile => {
+        return (projectiles || []).map(projectile => {
           if (!projectile) return null;
           
           // Calculate projectile flight progress (0 to 1)
@@ -304,17 +302,9 @@ export default function NinjaIdleGame() {
           const flightDuration = projectile.duration || 500; // Use projectile's duration
           const progress = Math.min(elapsedTime / flightDuration, 1);
           
-          // CRITICAL FIX: Track projectiles that hit their targets
-          if (progress >= 1 && !projectile.hasHit) {
-            // Mark projectile as having hit and track it for damage application
-            projectile.hasHit = true;
-            completedProjectiles.push(projectile.id);
-            console.log(`💥 PROJECTILE COMPLETED: ${projectile.abilityName} hit target (ID: ${projectile.targetEnemyId})`);
-          }
-          
           // Only keep projectiles that haven't completed their flight
           if (progress >= 1) {
-            return null; // Remove completed projectiles
+            return null; // Remove completed projectiles - damage handling moved to CombatContext
           }
           
           // Interpolate position from ninja to target
@@ -328,24 +318,6 @@ export default function NinjaIdleGame() {
             progress
           };
         }).filter(Boolean);
-        
-        // Apply damage for completed projectiles using CombatContext function
-        if (completedProjectiles.length > 0) {
-          // CRITICAL FIX: Defer state updates to prevent render-phase violations
-          setTimeout(() => {
-            completedProjectiles.forEach(projectileId => {
-              const projectile = projectiles?.find(p => p?.id === projectileId);
-              if (projectile) {
-                // Use the handleProjectileImpact function from CombatContext
-                if (handleProjectileImpact) {
-                  handleProjectileImpact(projectile.targetEnemyId, projectile.damage, projectile.abilityName);
-                }
-              }
-            });
-          }, 0); // Defer to next event loop to prevent setState-in-render error
-        }
-        
-        return updatedProjectiles;
       });
     };
 
@@ -353,7 +325,7 @@ export default function NinjaIdleGame() {
     const projectileAnimationInterval = setInterval(animateProjectiles, 16); // ~60fps
     
     return () => clearInterval(projectileAnimationInterval);
-  }, [projectiles, handleProjectileImpact]);
+  }, [projectiles]);
 
   // Start combat automatically when component mounts
   useEffect(() => {
