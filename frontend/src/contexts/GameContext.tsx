@@ -140,6 +140,9 @@ interface GameContextType {
   startAdventure: (id: string) => void;
   completeAdventure: () => void;
   reviveNinja: () => void;
+  revivePlayer: () => boolean;
+  freeRespawn: () => void;
+  purchaseReviveTickets: (quantity: number) => boolean;
   trainSkill: (skill: string) => void;
   collectIdleRewards: () => void;
   saveGame: () => void;
