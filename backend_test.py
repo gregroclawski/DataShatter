@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend Testing for XP Progression System Improvements
-Tests the backend's ability to handle improved XP progression data
+Backend Testing for Projectile and XP System Diagnosis
+Tests backend functionality and diagnoses projectile/XP issues
 """
 
 import asyncio
@@ -15,7 +15,7 @@ import os
 BACKEND_URL = os.getenv('EXPO_PUBLIC_BACKEND_URL', 'https://idle-ninja-game.preview.emergentagent.com')
 API_BASE = f"{BACKEND_URL}/api"
 
-class XPProgressionTester:
+class ProjectileXPDiagnosisTester:
     def __init__(self):
         self.session = None
         self.test_user_id = None
