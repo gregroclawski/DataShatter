@@ -506,7 +506,7 @@ async def purchase_subscription(
         subscription_data = {
             "id": subscription_id,
             "user_id": user_id,
-            "subscription_type": subscription_request.subscription_type,
+            "subscription_type": str(subscription_request.subscription_type),  # Convert enum to string
             "price": 40.0,  # $40 for both subscription types
             "duration_days": 30,
             "start_date": start_date,
