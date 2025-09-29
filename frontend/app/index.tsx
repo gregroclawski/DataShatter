@@ -696,10 +696,19 @@ export default function NinjaIdleGame() {
                 {
                   left: (projectile.currentX || projectile.x) - layout.paddingXS,
                   top: (projectile.currentY || projectile.y) - layout.paddingXS,
+                  // Make Shadow Clone projectiles semi-transparent
+                  opacity: projectile.abilityId === 'shadow_clone_attack' ? 0.7 : 1.0
                 }
               ]}
             >
-              <Text style={[styles.projectileText, { fontSize: layout.smallFontSize }]}>
+              <Text style={[
+                styles.projectileText, 
+                { 
+                  fontSize: layout.smallFontSize,
+                  // Additional transparency for Shadow Clone projectile text
+                  opacity: projectile.abilityId === 'shadow_clone_attack' ? 0.8 : 1.0
+                }
+              ]}>
                 {projectile.abilityIcon || '⭐'}
               </Text>
             </View>
