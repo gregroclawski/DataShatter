@@ -69,23 +69,26 @@ const CharacterOverlay = ({ onClose }: Props) => {
     }
   };
 
-  // Calculate actual skill upgrade levels (separate from final combined stats)
-  const getSkillUpgradeLevel = (skillKey: string) => {
+  // Calculate actual skill upgrade levels (separate display for gold vs skill points)
+  const getSkillUpgradeLevel = (skillKey: string, upgradeType: 'gold' | 'skillPoints' | 'total') => {
     const goldUpgrades = ninja.goldUpgrades || { attack: 0, defense: 0, speed: 0, luck: 0, maxHealth: 0, maxEnergy: 0 };
     const skillPointUpgrades = ninja.skillPointUpgrades || { attack: 0, defense: 0, speed: 0, luck: 0, maxHealth: 0, maxEnergy: 0 };
     
     // For health and energy, use maxHealth/maxEnergy keys
     const actualKey = skillKey === 'health' ? 'maxHealth' : skillKey === 'energy' ? 'maxEnergy' : skillKey;
     
-    // Total upgrade level = gold upgrades + skill point upgrades
-    const goldLevel = goldUpgrades[actualKey as keyof typeof goldUpgrades] || 0;
-    const spLevel = skillPointUpgrades[actualKey as keyof typeof skillPointUpgrades] || 0;
+    const goldStatPoints = goldUpgrades[actualKey as keyof typeof goldUpgrades] || 0;
+    const spStatPoints = skillPointUpgrades[actualKey as keyof typeof skillPointUpgrades] || 0;
     
-    // Convert stat points back to upgrade levels
-    const goldLevels = skillKey === 'health' || skillKey === 'energy' ? Math.floor(goldLevel / 10) : goldLevel;
-    const spLevels = skillKey === 'health' || skillKey === 'energy' ? Math.floor(spLevel / 5) : spLevel;
+    // Convert stat points back to upgrade levels for display
+    // Gold: 1 level = 1 stat point (10 for health/energy)
+    // Skill Points: 1 level = 3 stat points (15 for health/energy) - MORE BENEFICIAL
+    const goldLevels = skillKey === 'health' || skillKey === 'energy' ? Math.floor(goldStatPoints / 10) : goldStatPoints;
+    const spLevels = skillKey === 'health' || skillKey === 'energy' ? Math.floor(spStatPoints / 15) : Math.floor(spStatPoints / 3);
     
-    return goldLevels + spLevels;
+    if (upgradeType === 'gold') return goldLevels;
+    if (upgradeType === 'skillPoints') return spLevels;
+    return goldLevels + spLevels; // total
   };
 
   const skills = [
