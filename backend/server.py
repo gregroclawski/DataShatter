@@ -56,6 +56,7 @@ class User(BaseModel):
     created_at: datetime
     is_active: bool = True
     provider: str = "email"  # email, google, apple, facebook, microsoft
+    name_changes_used: int = 0  # Track how many name changes user has used
 
 class Token(BaseModel):
     access_token: str
