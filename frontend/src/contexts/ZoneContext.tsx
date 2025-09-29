@@ -99,23 +99,28 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [gameState?.ninja?.level]);
 
-  // Select a zone and level for farming
+  // Zone selection and management - separate from progression
   const selectZone = (zoneId: number, levelNumber: number): boolean => {
-    const zone = ZONES.find(z => z.id === zoneId);
-    if (!zone || !isZoneUnlocked(zoneId, zoneProgress)) {
-      console.log(`❌ Zone ${zoneId} not found or locked`);
+    if (!isZoneUnlockedLocal(zoneId)) {
+      console.log(`❌ Zone ${zoneId} is not unlocked`);
       return false;
     }
-    
+
+    const zone = ZONES.find(z => z.id === zoneId);
+    if (!zone) {
+      console.log(`❌ Zone ${zoneId} not found`);
+      return false;
+    }
+
     const level = zone.levels[levelNumber - 1];
     if (!level) {
-      console.log(`❌ Level ${levelNumber} not found in zone ${zoneId}`);
+      console.log(`❌ Zone ${zoneId} Level ${levelNumber} not found`);
       return false;
     }
-    
+
+    console.log(`🎯 SELECTED Zone ${zoneId} - Level ${levelNumber}: ${zone.name} (separate from progression)`);
     setCurrentZone(zone);
     setCurrentZoneLevel(level);
-    console.log(`🗺️ Selected ${zone.name} - Level ${levelNumber}`);
     return true;
   };
 
