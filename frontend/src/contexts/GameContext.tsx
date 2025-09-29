@@ -313,26 +313,20 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const saveOnEvent = useCallback((eventType: string) => {
     if (isAuthenticated) {
       console.log(`🔥 EVENT-DRIVEN SAVE TRIGGERED: ${eventType} - bypassing all loading guards`);
-      // CRITICAL FIX: Use state callback pattern to avoid stale closure
-      setGameState(currentState => {
-        saveGameToServerWithState(currentState, true); // Force save for events with current state
-        return currentState;
-      });
+      // CRITICAL FIX: Use current gameState directly, don't use setGameState callback
+      saveGameToServerWithState(gameState, true); // Force save for events with current state
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, gameState]);
 
   // Critical milestone save - Save immediately on very important events
   const saveOnMilestone = useCallback((milestoneType: string) => {
     if (isAuthenticated) {
       console.log(`🏆 MILESTONE SAVE TRIGGERED: ${milestoneType} - bypassing all loading guards`);
-      // CRITICAL FIX: Use state callback pattern to avoid stale closure
-      setGameState(currentState => {
-        console.log(`🏆 MILESTONE SAVE - Current state Level: ${currentState.ninja.level}, XP: ${currentState.ninja.experience}`);
-        saveGameToServerWithState(currentState, true); // Force save for milestones with current state
-        return currentState;
-      });
+      console.log(`🏆 MILESTONE SAVE - Current state Level: ${gameState.ninja.level}, XP: ${gameState.ninja.experience}`);
+      // CRITICAL FIX: Use current gameState directly, don't use setGameState callback  
+      saveGameToServerWithState(gameState, true); // Force save for milestones with current state
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, gameState]);
 
   // Calculate experience required for next level (incremental up to level 15000)
   const calculateExpForLevel = (level: number): number => {
