@@ -565,7 +565,7 @@ async def get_active_subscriptions(current_user: dict = Depends(get_current_user
 async def get_subscription_benefits(current_user: dict = Depends(get_current_user)):
     """Get current subscription benefits/multipliers for user"""
     try:
-        user_id = current_user.get("user_id")
+        user_id = current_user.get("id")
         current_time = datetime.now(timezone.utc)
         
         # Default multipliers (no subscription)
