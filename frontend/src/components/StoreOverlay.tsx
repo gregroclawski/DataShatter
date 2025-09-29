@@ -899,6 +899,12 @@ const styles = StyleSheet.create({
     color: '#f8fafc',
     marginBottom: 4,
   },
+  gemPackageDescription: {
+    fontSize: 12,
+    color: '#94a3b8',
+    marginBottom: 8,
+    lineHeight: 16,
+  },
   gemPackageDetails: {
     flexDirection: 'row',
     alignItems: 'center',
