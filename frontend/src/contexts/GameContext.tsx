@@ -949,6 +949,68 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Revival system functions
+  const revivePlayer = useCallback(() => {
+    if (gameState.ninja.reviveTickets > 0) {
+      console.log('💖 PLAYER REVIVED using ticket!');
+      
+      const effectiveStats = getEffectiveStats();
+      
+      setGameState(prevState => ({
+        ...prevState,
+        isAlive: true,
+        ninja: {
+          ...prevState.ninja,
+          health: effectiveStats.health, // Full health restore
+          reviveTickets: prevState.ninja.reviveTickets - 1 // Use 1 ticket
+        }
+      }));
+      
+      return true; // Successfully revived
+    }
+    return false; // No tickets available
+  }, [gameState.ninja.reviveTickets, getEffectiveStats]);
+
+  const freeRespawn = useCallback(() => {
+    console.log('♻️ PLAYER FREE RESPAWN!');
+    
+    const effectiveStats = getEffectiveStats();
+    
+    setGameState(prevState => ({
+      ...prevState,
+      isAlive: true,
+      ninja: {
+        ...prevState.ninja,
+        health: effectiveStats.health, // Full health restore
+        // No ticket cost for free respawn
+      }
+    }));
+  }, [getEffectiveStats]);
+
+  // Function to purchase revive tickets with gems
+  const purchaseReviveTickets = useCallback((quantity: number) => {
+    const ticketsPerGem = 50 / 1000; // 50 tickets for 1000 gems = 0.05 tickets per gem
+    const gemsRequired = Math.ceil(quantity / ticketsPerGem); // 1000 gems for 50 tickets
+    
+    if (gameState.ninja.gems >= gemsRequired) {
+      setGameState(prevState => ({
+        ...prevState,
+        ninja: {
+          ...prevState.ninja,
+          gems: prevState.ninja.gems - gemsRequired,
+          reviveTickets: prevState.ninja.reviveTickets + quantity
+        }
+      }));
+      
+      console.log(`💎 Purchased ${quantity} revive tickets for ${gemsRequired} gems`);
+      return true;
+    }
+    
+    console.log(`❌ Not enough gems to purchase ${quantity} tickets (need ${gemsRequired}, have ${gameState.ninja.gems})`);
+    return false;
+  }, [gameState.ninja.gems, gameState.ninja.reviveTickets]);
+
+  // Legacy reviveNinja function for backward compatibility
   const reviveNinja = () => {
     if (gameState.ninja.gems >= 5) {
       updateNinja({
