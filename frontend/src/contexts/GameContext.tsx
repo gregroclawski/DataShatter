@@ -815,9 +815,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     console.log('🔍 SUBSCRIPTION BENEFITS LOADING ATTEMPT:');
     console.log('  - isAuthenticated:', isAuthenticated);
     console.log('  - user exists:', !!user);
-    console.log('  - access_token exists:', !!user?.access_token);
+    console.log('  - token exists:', !!token);
     
-    if (!isAuthenticated || !user?.access_token) {
+    if (!isAuthenticated || !token) {
       console.log('❌ SUBSCRIPTION BENEFITS: Missing auth or token, skipping');
       return;
     }
@@ -825,13 +825,13 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     try {
       console.log('🏪 LOADING SUBSCRIPTION BENEFITS - Starting API call...');
       console.log('  - API_BASE_URL:', API_BASE_URL);
-      console.log('  - Using access token:', user?.access_token?.substring(0, 10) + '...');
+      console.log('  - Using token:', token?.substring(0, 10) + '...');
       
       const response = await fetch(`${API_BASE_URL}/api/subscriptions/benefits`, {
         method: 'GET',
         credentials: 'include',
         headers: {
-          'Authorization': `Bearer ${user.access_token}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
