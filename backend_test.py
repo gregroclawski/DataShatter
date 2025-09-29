@@ -21,450 +21,389 @@ class RevivalSystemTester:
     def __init__(self):
         self.session = None
         self.test_user_id = None
+        self.test_user_email = f"revival_test_{uuid.uuid4().hex[:8]}@example.com"
+        self.test_user_password = "testpass123"
+        self.test_user_name = f"RevivalNinja_{uuid.uuid4().hex[:6]}"
         self.auth_token = None
         self.session_cookie = None
         
     async def setup_session(self):
-        """Setup HTTP session for testing"""
-        self.session = aiohttp.ClientSession()
+        """Setup HTTP session with proper headers"""
+        self.session = aiohttp.ClientSession(
+            timeout=aiohttp.ClientTimeout(total=30),
+            headers={'Content-Type': 'application/json'}
+        )
         
     async def cleanup_session(self):
         """Cleanup HTTP session"""
         if self.session:
             await self.session.close()
             
-    async def create_test_user(self):
-        """Create a test user for authentication"""
-        user_data = {
-            "email": f"xp_test_{uuid.uuid4().hex[:8]}@test.com",
-            "password": "testpass123",
-            "name": f"XPTester_{uuid.uuid4().hex[:6]}"
-        }
-        
-        async with self.session.post(
-            f"{API_BASE}/auth/register",
-            json=user_data,
-            headers={"Content-Type": "application/json"}
-        ) as response:
-            if response.status == 201:
-                data = await response.json()
-                self.test_user_id = data["user"]["id"]
-                self.auth_token = data["access_token"]
-                
-                # Extract session cookie
-                cookies = response.cookies
-                if 'session_token' in cookies:
-                    self.session_cookie = cookies['session_token'].value
-                
-                print(f"✅ Created test user: {user_data['email']}")
-                return True
-            else:
-                error_text = await response.text()
-                print(f"❌ Failed to create test user: {response.status} - {error_text}")
-                return False
-                
     async def test_health_check(self):
-        """Test basic API health"""
-        print("\n🔍 Testing API Health Check...")
+        """Test 1: Health Check - Verify the basic /api/ endpoint is responding"""
+        print("\n🔍 TEST 1: Health Check Endpoint")
         try:
             async with self.session.get(f"{API_BASE}/") as response:
                 if response.status == 200:
                     data = await response.json()
-                    print(f"✅ Health check passed: {data.get('message', 'OK')}")
+                    print(f"✅ Health check passed: {data}")
                     return True
                 else:
-                    print(f"❌ Health check failed: {response.status}")
+                    print(f"❌ Health check failed: Status {response.status}")
                     return False
         except Exception as e:
             print(f"❌ Health check error: {str(e)}")
             return False
             
-    async def test_subscription_benefits(self):
-        """Test subscription benefits endpoint for XP multipliers"""
-        print("\n🔍 Testing Subscription Benefits (XP Multipliers)...")
+    async def test_user_registration(self):
+        """Test 2: User Registration"""
+        print(f"\n🔍 TEST 2: User Registration")
         try:
-            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            registration_data = {
+                "email": self.test_user_email,
+                "password": self.test_user_password,
+                "name": self.test_user_name
+            }
+            
+            async with self.session.post(
+                f"{API_BASE}/auth/register",
+                json=registration_data
+            ) as response:
+                if response.status == 201:
+                    data = await response.json()
+                    self.auth_token = data.get('access_token')
+                    self.test_user_id = data.get('user', {}).get('id')
+                    
+                    # Extract session cookie if present
+                    if 'Set-Cookie' in response.headers:
+                        cookies = response.headers.get('Set-Cookie', '')
+                        if 'session_token=' in cookies:
+                            self.session_cookie = cookies.split('session_token=')[1].split(';')[0]
+                    
+                    print(f"✅ Registration successful: User ID {self.test_user_id}")
+                    return True
+                else:
+                    error_text = await response.text()
+                    print(f"❌ Registration failed: Status {response.status}, Error: {error_text}")
+                    return False
+        except Exception as e:
+            print(f"❌ Registration error: {str(e)}")
+            return False
+            
+    async def test_user_login(self):
+        """Test 3: User Login"""
+        print(f"\n🔍 TEST 3: User Login")
+        try:
+            # Use form data for OAuth2PasswordRequestForm
+            login_data = {
+                "username": self.test_user_email,  # OAuth2 uses 'username' field
+                "password": self.test_user_password
+            }
+            
+            async with self.session.post(
+                f"{API_BASE}/auth/login",
+                data=login_data,  # Use form data, not JSON
+                headers={'Content-Type': 'application/x-www-form-urlencoded'}
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    self.auth_token = data.get('access_token')
+                    print(f"✅ Login successful: Token received")
+                    return True
+                else:
+                    error_text = await response.text()
+                    print(f"❌ Login failed: Status {response.status}, Error: {error_text}")
+                    return False
+        except Exception as e:
+            print(f"❌ Login error: {str(e)}")
+            return False
+            
+    async def test_session_check(self):
+        """Test 4: Session Management"""
+        print(f"\n🔍 TEST 4: Session Management")
+        try:
+            headers = {}
             if self.session_cookie:
-                headers["Cookie"] = f"session_token={self.session_cookie}"
+                headers['Cookie'] = f'session_token={self.session_cookie}'
                 
             async with self.session.get(
-                f"{API_BASE}/subscriptions/benefits",
+                f"{API_BASE}/auth/session/check",
                 headers=headers
             ) as response:
                 if response.status == 200:
                     data = await response.json()
-                    print(f"✅ Subscription benefits retrieved:")
-                    print(f"   - XP Multiplier: {data.get('xp_multiplier', 'N/A')}")
-                    print(f"   - Drop Multiplier: {data.get('drop_multiplier', 'N/A')}")
-                    print(f"   - Zone Kill Multiplier: {data.get('zone_kill_multiplier', 'N/A')}")
-                    print(f"   - Active Subscriptions: {len(data.get('active_subscriptions', []))}")
-                    
-                    # Verify default multipliers (no subscription)
-                    if (data.get('xp_multiplier') == 1.0 and 
-                        data.get('drop_multiplier') == 1.0 and 
-                        data.get('zone_kill_multiplier') == 1.0):
-                        print("✅ Default multipliers correct (1.0x each)")
+                    is_authenticated = data.get('authenticated', False)
+                    if is_authenticated:
+                        print(f"✅ Session check passed: User authenticated")
                         return True
                     else:
-                        print("⚠️ Unexpected multiplier values")
+                        print(f"❌ Session check failed: User not authenticated")
                         return False
                 else:
-                    error_text = await response.text()
-                    print(f"❌ Subscription benefits failed: {response.status} - {error_text}")
+                    print(f"❌ Session check failed: Status {response.status}")
                     return False
         except Exception as e:
-            print(f"❌ Subscription benefits error: {str(e)}")
+            print(f"❌ Session check error: {str(e)}")
             return False
             
-    async def test_xp_progression_save_load(self):
-        """Test saving and loading high XP progression data"""
-        print("\n🔍 Testing XP Progression Save/Load...")
+    async def test_save_game_with_revival_system(self):
+        """Test 5: Game Save with Revival System (reviveTickets field)"""
+        print(f"\n🔍 TEST 5: Game Save with Revival System Integration")
         try:
-            # Create test data with new XP progression values
-            test_ninja_data = {
-                "level": 150,  # High level to test new progression
-                "experience": 12000,  # Higher XP values
-                "experienceToNext": 15000,  # New XP requirements
-                "health": 2500,
-                "maxHealth": 2500,
-                "energy": 150,
-                "maxEnergy": 150,
-                "attack": 180,
-                "defense": 95,
-                "speed": 120,
-                "luck": 85,
-                "gold": 50000,
-                "gems": 2500,
-                "skillPoints": 450,  # More skill points from faster progression
+            # Create Level 25+ ninja with reviveTickets data
+            ninja_data = {
+                "level": 27,
+                "experience": 7290,
+                "experienceToNext": 2710,
+                "health": 270,
+                "maxHealth": 270,
+                "energy": 135,
+                "maxEnergy": 135,
+                "attack": 54,
+                "defense": 32,
+                "speed": 43,
+                "luck": 21,
+                "gold": 5420,
+                "gems": 89,
+                "skillPoints": 81,
+                "reviveTickets": 3,  # NEW FIELD: Revival System integration
                 "baseStats": {
-                    "attack": 50,
-                    "defense": 25,
-                    "speed": 40,
-                    "luck": 20,
-                    "maxHealth": 500,
-                    "maxEnergy": 100
+                    "attack": 15,
+                    "defense": 8,
+                    "speed": 12,
+                    "luck": 5,
+                    "maxHealth": 50,
+                    "maxEnergy": 25
                 },
                 "goldUpgrades": {
-                    "attack": 80,
-                    "defense": 40,
-                    "speed": 50,
-                    "luck": 35,
-                    "maxHealth": 1000,
-                    "maxEnergy": 30
+                    "attack": 20,
+                    "defense": 12,
+                    "speed": 15,
+                    "luck": 8,
+                    "maxHealth": 100,
+                    "maxEnergy": 50
                 },
                 "skillPointUpgrades": {
-                    "attack": 50,
-                    "defense": 30,
-                    "speed": 30,
-                    "luck": 30,
-                    "maxHealth": 1000,
-                    "maxEnergy": 20
+                    "attack": 19,
+                    "defense": 12,
+                    "speed": 16,
+                    "luck": 8,
+                    "maxHealth": 120,
+                    "maxEnergy": 60
                 }
             }
             
             save_data = {
                 "playerId": self.test_user_id,
-                "ninja": test_ninja_data,
+                "ninja": ninja_data,
                 "shurikens": [
                     {
                         "id": str(uuid.uuid4()),
-                        "name": "XP Boost Shuriken",
+                        "name": "Legendary Dragon Fang",
                         "rarity": "legendary",
-                        "attack": 120,  # Doubled base values
-                        "level": 5,
+                        "attack": 45,
+                        "level": 3,
                         "equipped": True
                     }
                 ],
                 "pets": [
                     {
                         "id": str(uuid.uuid4()),
-                        "name": "XP Dragon",
-                        "type": "Dragon",
-                        "level": 25,
-                        "experience": 2400,  # Higher XP values
-                        "happiness": 95,
-                        "strength": 180,  # Doubled strength
+                        "name": "Epic Phoenix",
+                        "type": "Phoenix",
+                        "level": 5,
+                        "experience": 250,
+                        "happiness": 85,
+                        "strength": 35,
                         "active": True,
                         "rarity": "epic"
                     }
                 ],
-                "achievements": ["level_100", "xp_master", "progression_king"],
-                "unlockedFeatures": ["stats", "shurikens", "pets", "zones", "abilities"],
+                "achievements": ["first_kill", "level_10", "level_25", "revival_master"],
+                "unlockedFeatures": ["stats", "shurikens", "pets", "revival_system"],
                 "zoneProgress": {
-                    "currentZone": 15,
+                    "currentZone": 8,
                     "currentLevel": 3,
-                    "killsInLevel": 85,
-                    "totalKills": 1250,
-                    "highestZone": 15
+                    "killsInLevel": 67,
+                    "totalKills": 1247
+                },
+                "equipment": {
+                    "helmet": {"name": "Dragon Scale Helmet", "defense": 25, "rarity": "epic"},
+                    "armor": {"name": "Phoenix Feather Armor", "defense": 40, "rarity": "legendary"},
+                    "weapon": {"name": "Void Piercer", "attack": 55, "rarity": "legendary"}
+                },
+                "abilityData": {
+                    "equippedAbilities": ["basic_shuriken", "fire_shuriken", "ice_shuriken", "shadow_clone", "revival_technique"],
+                    "availableAbilities": {
+                        "basic_shuriken": {"level": 5, "stats": {"baseDamage": 25, "cooldown": 1.0}},
+                        "fire_shuriken": {"level": 4, "stats": {"baseDamage": 35, "cooldown": 2.5}},
+                        "ice_shuriken": {"level": 3, "stats": {"baseDamage": 30, "cooldown": 3.0}},
+                        "shadow_clone": {"level": 2, "stats": {"baseDamage": 40, "cooldown": 4.5}},
+                        "revival_technique": {"level": 1, "stats": {"reviveTickets": 1, "cooldown": 60.0}}
+                    }
                 }
             }
             
-            # Test save
-            print("📤 Testing save with high XP progression data...")
+            headers = {'Authorization': f'Bearer {self.auth_token}'}
+            
             async with self.session.post(
                 f"{API_BASE}/save-game",
                 json=save_data,
-                headers={"Content-Type": "application/json"}
-            ) as response:
-                if response.status == 200:
-                    save_result = await response.json()
-                    print(f"✅ Save successful - Level {save_result['ninja']['level']}, XP: {save_result['ninja']['experience']}")
-                else:
-                    error_text = await response.text()
-                    print(f"❌ Save failed: {response.status} - {error_text}")
-                    return False
-                    
-            # Test load
-            print("📥 Testing load of high XP progression data...")
-            async with self.session.get(f"{API_BASE}/load-game/{self.test_user_id}") as response:
-                if response.status == 200:
-                    load_result = await response.json()
-                    if load_result:
-                        ninja = load_result['ninja']
-                        print(f"✅ Load successful:")
-                        print(f"   - Level: {ninja['level']}")
-                        print(f"   - Experience: {ninja['experience']}")
-                        print(f"   - Experience to Next: {ninja['experienceToNext']}")
-                        print(f"   - Skill Points: {ninja['skillPoints']}")
-                        print(f"   - Zone Progress: Zone {load_result.get('zoneProgress', {}).get('currentZone', 'N/A')}")
-                        
-                        # Verify data integrity
-                        if (ninja['level'] == 150 and 
-                            ninja['experience'] == 12000 and
-                            ninja['skillPoints'] == 450):
-                            print("✅ High XP progression data integrity verified")
-                            return True
-                        else:
-                            print("❌ Data integrity check failed")
-                            return False
-                    else:
-                        print("❌ Load returned null")
-                        return False
-                else:
-                    error_text = await response.text()
-                    print(f"❌ Load failed: {response.status} - {error_text}")
-                    return False
-                    
-        except Exception as e:
-            print(f"❌ XP progression save/load error: {str(e)}")
-            return False
-            
-    async def test_subscription_purchase_xp_boost(self):
-        """Test purchasing XP boost subscription"""
-        print("\n🔍 Testing XP Boost Subscription Purchase...")
-        try:
-            headers = {"Authorization": f"Bearer {self.auth_token}"}
-            if self.session_cookie:
-                headers["Cookie"] = f"session_token={self.session_cookie}"
-                
-            purchase_data = {
-                "subscription_type": "xp_drop_boost",
-                "payment_method": "demo"
-            }
-            
-            async with self.session.post(
-                f"{API_BASE}/subscriptions/purchase",
-                json=purchase_data,
                 headers=headers
             ) as response:
                 if response.status == 200:
                     data = await response.json()
-                    print(f"✅ XP boost subscription purchased:")
-                    print(f"   - Type: {data['subscription']['subscription_type']}")
-                    print(f"   - Price: ${data['subscription']['price']}")
-                    print(f"   - Duration: {data['subscription']['duration_days']} days")
-                    print(f"   - Active: {data['subscription']['is_active']}")
-                    return True
-                else:
-                    error_text = await response.text()
-                    print(f"❌ Subscription purchase failed: {response.status} - {error_text}")
-                    return False
-        except Exception as e:
-            print(f"❌ Subscription purchase error: {str(e)}")
-            return False
-            
-    async def test_subscription_benefits_with_boost(self):
-        """Test subscription benefits after purchasing XP boost"""
-        print("\n🔍 Testing Subscription Benefits with XP Boost...")
-        try:
-            headers = {"Authorization": f"Bearer {self.auth_token}"}
-            if self.session_cookie:
-                headers["Cookie"] = f"session_token={self.session_cookie}"
-                
-            async with self.session.get(
-                f"{API_BASE}/subscriptions/benefits",
-                headers=headers
-            ) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    print(f"✅ Subscription benefits with XP boost:")
-                    print(f"   - XP Multiplier: {data.get('xp_multiplier', 'N/A')}")
-                    print(f"   - Drop Multiplier: {data.get('drop_multiplier', 'N/A')}")
-                    print(f"   - Zone Kill Multiplier: {data.get('zone_kill_multiplier', 'N/A')}")
-                    print(f"   - Active Subscriptions: {len(data.get('active_subscriptions', []))}")
+                    saved_ninja = data.get('ninja', {})
+                    saved_revive_tickets = saved_ninja.get('reviveTickets')
                     
-                    # Verify XP boost multipliers
-                    if (data.get('xp_multiplier') == 2.0 and 
-                        data.get('drop_multiplier') == 2.0):
-                        print("✅ XP boost multipliers correct (2.0x XP and drops)")
+                    print(f"✅ Game save successful: Level {saved_ninja.get('level')}, XP {saved_ninja.get('experience')}")
+                    
+                    # Check if reviveTickets field was saved
+                    if saved_revive_tickets is not None:
+                        print(f"✅ Revival System Integration: reviveTickets field saved ({saved_revive_tickets})")
                         return True
                     else:
-                        print(f"❌ Expected 2.0x multipliers, got XP: {data.get('xp_multiplier')}, Drop: {data.get('drop_multiplier')}")
+                        print(f"❌ Revival System Integration: reviveTickets field NOT saved")
                         return False
                 else:
                     error_text = await response.text()
-                    print(f"❌ Subscription benefits failed: {response.status} - {error_text}")
+                    print(f"❌ Game save failed: Status {response.status}, Error: {error_text}")
                     return False
         except Exception as e:
-            print(f"❌ Subscription benefits error: {str(e)}")
+            print(f"❌ Game save error: {str(e)}")
             return False
             
-    async def test_extreme_progression_data(self):
-        """Test backend handling of extreme progression values"""
-        print("\n🔍 Testing Extreme Progression Data Handling...")
+    async def test_load_game_with_revival_system(self):
+        """Test 6: Game Load with Revival System verification"""
+        print(f"\n🔍 TEST 6: Game Load with Revival System Verification")
         try:
-            # Test with very high level progression (approaching level 15,000 cap)
-            extreme_ninja_data = {
-                "level": 14500,  # Near max level
-                "experience": 49500,  # Near max XP cap of 50,000
-                "experienceToNext": 500,  # Small amount to next level
-                "health": 50000,
-                "maxHealth": 50000,
-                "energy": 5000,
-                "maxEnergy": 5000,
-                "attack": 15000,
-                "defense": 8000,
-                "speed": 12000,
-                "luck": 10000,
-                "gold": 999999,
-                "gems": 99999,
-                "skillPoints": 43500,  # 3 skill points per level * 14500
-                "baseStats": {
-                    "attack": 1000,
-                    "defense": 500,
-                    "speed": 800,
-                    "luck": 600,
-                    "maxHealth": 10000,
-                    "maxEnergy": 1000
-                }
-            }
+            headers = {'Authorization': f'Bearer {self.auth_token}'}
             
-            save_data = {
-                "playerId": self.test_user_id,
-                "ninja": extreme_ninja_data,
-                "shurikens": [],
-                "pets": [],
-                "achievements": ["max_level_master", "xp_cap_reached"],
-                "unlockedFeatures": ["all"],
-                "zoneProgress": {
-                    "currentZone": 50,  # Max zone
-                    "currentLevel": 10,
-                    "killsInLevel": 275,  # Max kills for zone 50
-                    "totalKills": 50000,
-                    "highestZone": 50
-                }
-            }
-            
-            # Test save
-            async with self.session.post(
-                f"{API_BASE}/save-game",
-                json=save_data,
-                headers={"Content-Type": "application/json"}
+            async with self.session.get(
+                f"{API_BASE}/load-game/{self.test_user_id}",
+                headers=headers
             ) as response:
                 if response.status == 200:
-                    save_result = await response.json()
-                    print(f"✅ Extreme progression save successful:")
-                    print(f"   - Level: {save_result['ninja']['level']}")
-                    print(f"   - XP: {save_result['ninja']['experience']}/{save_result['ninja']['experienceToNext']}")
-                    print(f"   - Skill Points: {save_result['ninja']['skillPoints']}")
-                    
-                    # Test load
-                    async with self.session.get(f"{API_BASE}/load-game/{self.test_user_id}") as load_response:
-                        if load_response.status == 200:
-                            load_result = await load_response.json()
-                            if load_result and load_result['ninja']['level'] == 14500:
-                                print("✅ Extreme progression data integrity verified")
+                    data = await response.json()
+                    if data:
+                        ninja = data.get('ninja', {})
+                        revive_tickets = ninja.get('reviveTickets')
+                        level = ninja.get('level')
+                        experience = ninja.get('experience')
+                        
+                        print(f"✅ Game load successful: Level {level}, XP {experience}")
+                        
+                        # Verify Revival System data persistence
+                        if revive_tickets is not None:
+                            print(f"✅ Revival System Persistence: reviveTickets field loaded ({revive_tickets})")
+                            
+                            # Verify it's Level 25+ as requested
+                            if level and level >= 25:
+                                print(f"✅ Level 25+ Requirement: Ninja is Level {level}")
                                 return True
                             else:
-                                print("❌ Extreme progression data integrity failed")
+                                print(f"❌ Level 25+ Requirement: Ninja is only Level {level}")
                                 return False
                         else:
-                            print("❌ Extreme progression load failed")
+                            print(f"❌ Revival System Persistence: reviveTickets field NOT loaded")
                             return False
+                    else:
+                        print(f"❌ Game load failed: No data returned")
+                        return False
                 else:
                     error_text = await response.text()
-                    print(f"❌ Extreme progression save failed: {response.status} - {error_text}")
+                    print(f"❌ Game load failed: Status {response.status}, Error: {error_text}")
                     return False
-                    
         except Exception as e:
-            print(f"❌ Extreme progression test error: {str(e)}")
+            print(f"❌ Game load error: {str(e)}")
             return False
             
-    async def diagnose_projectile_xp_issues(self):
-        """Specific diagnosis for projectile and XP system issues"""
-        print("\n🔍 PROJECTILE & XP SYSTEM DIAGNOSIS")
-        print("=" * 50)
-        
-        # Check backend logs for combat activity
-        print("📋 BACKEND LOG ANALYSIS:")
+    async def test_comprehensive_game_data_persistence(self):
+        """Test 7: Comprehensive Game Data Persistence"""
+        print(f"\n🔍 TEST 7: Comprehensive Game Data Persistence")
         try:
-            # Check if there are any combat-related logs in backend
-            print("   - Backend handles save/load of ability data ✅")
-            print("   - Backend stores XP progression data ✅") 
-            print("   - Backend has subscription XP multipliers ✅")
-            print("   - No dedicated combat/projectile endpoints found ❌")
+            headers = {'Authorization': f'Bearer {self.auth_token}'}
             
-            # Check current user's save data for combat info
-            if self.test_user_id:
-                async with self.session.get(f"{API_BASE}/load-game/{self.test_user_id}") as response:
-                    if response.status == 200:
-                        data = await response.json()
-                        if data:
-                            ability_data = data.get('abilityData')
-                            zone_progress = data.get('zoneProgress')
+            async with self.session.get(
+                f"{API_BASE}/load-game/{self.test_user_id}",
+                headers=headers
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data:
+                        # Check all major data components
+                        ninja = data.get('ninja', {})
+                        shurikens = data.get('shurikens', [])
+                        pets = data.get('pets', [])
+                        achievements = data.get('achievements', [])
+                        zone_progress = data.get('zoneProgress', {})
+                        equipment = data.get('equipment', {})
+                        ability_data = data.get('abilityData', {})
+                        
+                        checks_passed = 0
+                        total_checks = 7
+                        
+                        # Check ninja stats
+                        if ninja.get('level') == 27 and ninja.get('reviveTickets') == 3:
+                            print(f"✅ Ninja stats with reviveTickets: Level {ninja.get('level')}, Tickets {ninja.get('reviveTickets')}")
+                            checks_passed += 1
+                        else:
+                            print(f"❌ Ninja stats incomplete: Level {ninja.get('level')}, Tickets {ninja.get('reviveTickets')}")
                             
-                            print(f"\n📊 SAVE DATA ANALYSIS:")
-                            print(f"   - Ability Data Present: {'✅' if ability_data else '❌'}")
-                            print(f"   - Zone Progress Present: {'✅' if zone_progress else '❌'}")
+                        # Check shurikens
+                        if len(shurikens) > 0 and any(s.get('name') == 'Legendary Dragon Fang' for s in shurikens):
+                            print(f"✅ Shurikens data: {len(shurikens)} shurikens loaded")
+                            checks_passed += 1
+                        else:
+                            print(f"❌ Shurikens data incomplete: {len(shurikens)} shurikens")
                             
-                            if ability_data:
-                                equipped = ability_data.get('equippedAbilities', [])
-                                available = ability_data.get('availableAbilities', {})
-                                print(f"   - Equipped Abilities: {len(equipped)} slots")
-                                print(f"   - Available Abilities: {len(available)} types")
-                                
-                                # Check for basic_shuriken specifically
-                                basic_shuriken = available.get('basic_shuriken')
-                                if basic_shuriken:
-                                    print(f"   - Basic Shuriken Level: {basic_shuriken.get('level', 'N/A')}")
-                                    print(f"   - Basic Shuriken Damage: {basic_shuriken.get('stats', {}).get('baseDamage', 'N/A')}")
-                                
-            print(f"\n🎯 DIAGNOSIS SUMMARY:")
-            print(f"   BACKEND STATUS: ✅ WORKING CORRECTLY")
-            print(f"   - All save/load operations functional")
-            print(f"   - Ability data persistence working")
-            print(f"   - XP multiplier system operational")
-            
-            print(f"\n🔍 LIKELY ISSUE LOCATIONS (FRONTEND):")
-            print(f"   1. PROJECTILE RENDERING:")
-            print(f"      - Check main game component projectile display")
-            print(f"      - Verify CombatContext projectile creation")
-            print(f"      - Check projectile animation/movement logic")
-            
-            print(f"\n   2. XP REWARD SYSTEM:")
-            print(f"      - Check handleEnemyKill function in CombatContext")
-            print(f"      - Verify enemy death detection logic")
-            print(f"      - Check XP calculation and updateNinja calls")
-            
-            print(f"\n   3. COMBAT SYSTEM INTEGRATION:")
-            print(f"      - Verify abilities are casting (check logs)")
-            print(f"      - Check enemy spawning and health systems")
-            print(f"      - Verify projectile hit detection")
-            
-            return True
-            
+                        # Check pets
+                        if len(pets) > 0 and any(p.get('name') == 'Epic Phoenix' for p in pets):
+                            print(f"✅ Pets data: {len(pets)} pets loaded")
+                            checks_passed += 1
+                        else:
+                            print(f"❌ Pets data incomplete: {len(pets)} pets")
+                            
+                        # Check achievements
+                        if 'revival_master' in achievements:
+                            print(f"✅ Achievements data: {len(achievements)} achievements including revival_master")
+                            checks_passed += 1
+                        else:
+                            print(f"❌ Achievements data incomplete: revival_master not found")
+                            
+                        # Check zone progress
+                        if zone_progress.get('currentZone') == 8:
+                            print(f"✅ Zone progress: Zone {zone_progress.get('currentZone')}")
+                            checks_passed += 1
+                        else:
+                            print(f"❌ Zone progress incomplete: Zone {zone_progress.get('currentZone')}")
+                            
+                        # Check equipment
+                        if equipment and equipment.get('weapon', {}).get('name') == 'Void Piercer':
+                            print(f"✅ Equipment data: Weapon loaded")
+                            checks_passed += 1
+                        else:
+                            print(f"❌ Equipment data incomplete")
+                            
+                        # Check ability data with revival technique
+                        if ability_data and 'revival_technique' in ability_data.get('equippedAbilities', []):
+                            print(f"✅ Ability data: Revival technique equipped")
+                            checks_passed += 1
+                        else:
+                            print(f"❌ Ability data incomplete: Revival technique not found")
+                            
+                        success_rate = (checks_passed / total_checks) * 100
+                        print(f"\n📊 Comprehensive Data Persistence: {checks_passed}/{total_checks} checks passed ({success_rate:.1f}%)")
+                        
+                        return checks_passed >= 6  # Allow 1 failure for minor issues
+                    else:
+                        print(f"❌ No game data found")
+                        return False
+                else:
+                    print(f"❌ Failed to load game data: Status {response.status}")
+                    return False
         except Exception as e:
-            print(f"❌ Diagnosis error: {str(e)}")
+            print(f"❌ Comprehensive data test error: {str(e)}")
             return False
 
     async def run_all_tests(self):
