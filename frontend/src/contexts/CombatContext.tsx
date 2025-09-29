@@ -79,6 +79,8 @@ interface CombatContextType {
   setManualControlActive: (active: boolean) => void; // Pause/resume combat during manual joystick control
   // Save ability data
   saveAbilityData: () => void; // Save ability data to game context
+  // Shadow Clone access
+  shadowClone: CombatState['shadowClone']; // Expose shadow clone state for rendering
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
