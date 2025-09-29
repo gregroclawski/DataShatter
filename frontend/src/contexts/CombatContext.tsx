@@ -853,14 +853,31 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  // Manual save ability data function - called when abilities are modified
-  const saveAbilityData = useCallback(() => {
-    if (combatState.abilityManager) {
-      const abilityData = combatState.abilityManager.getSaveData();
-      console.log('💾 MANUALLY SAVING ABILITY DATA TO GAME CONTEXT:', abilityData);
-      game.updateAbilityData(abilityData);
-    }
-  }, [combatState.abilityManager, game.updateAbilityData]);
+  // CRITICAL FIX: Handle projectile impact - deals damage to specific enemy
+  const handleProjectileImpact = useCallback((targetEnemyId: string, damage: number, abilityName: string) => {
+    console.log(`💥 PROJECTILE IMPACT: ${abilityName} hit enemy ${targetEnemyId} for ${damage} damage`);
+    
+    setCombatState(prev => {
+      const newState = { ...prev };
+      
+      // Find the target enemy and deal damage
+      const enemyIndex = newState.enemies.findIndex(e => e.id === targetEnemyId);
+      if (enemyIndex >= 0) {
+        newState.enemies = [...newState.enemies];
+        newState.enemies[enemyIndex] = {
+          ...newState.enemies[enemyIndex],
+          health: Math.max(0, newState.enemies[enemyIndex].health - damage),
+          lastDamaged: combatEngine.getCurrentTick()
+        };
+        
+        console.log(`🎯 Enemy ${targetEnemyId} health: ${newState.enemies[enemyIndex].health}/${newState.enemies[enemyIndex].maxHealth} after ${abilityName} impact`);
+      } else {
+        console.log(`❌ Enemy ${targetEnemyId} not found for projectile impact`);
+      }
+      
+      return newState;
+    });
+  }, []);
 
   // CRITICAL FIX: Handle projectile impact - deals damage to specific enemy
   const handleProjectileImpact = useCallback((targetEnemyId: string, damage: number, abilityName: string) => {
