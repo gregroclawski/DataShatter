@@ -278,6 +278,7 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
   }), [
     currentZone,
     currentZoneLevel,
+    progressionZone,
     zoneProgress,
     selectZone,
     getZoneProgress,
