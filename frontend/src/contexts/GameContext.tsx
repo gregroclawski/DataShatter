@@ -964,7 +964,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         isAlive: true,
         ninja: {
           ...prevState.ninja,
-          health: effectiveStats.health, // Full health restore
+          health: effectiveStats.maxHealth, // FIXED: Full health restore to MAX health
           reviveTickets: prevState.ninja.reviveTickets - 1 // Use 1 ticket
         }
       }));
