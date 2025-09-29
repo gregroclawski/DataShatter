@@ -302,9 +302,9 @@ export default function NinjaIdleGame() {
           const flightDuration = projectile.duration || 500; // Use projectile's duration
           const progress = Math.min(elapsedTime / flightDuration, 1);
           
-          // Only keep projectiles that haven't completed their flight
+          // Remove projectiles that have completed their visual flight
           if (progress >= 1) {
-            return null; // Remove completed projectiles - damage handling moved to CombatContext
+            return null; // Remove completed projectiles from visual display
           }
           
           // Interpolate position from ninja to target
