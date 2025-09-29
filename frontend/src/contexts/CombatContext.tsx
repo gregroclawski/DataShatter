@@ -141,8 +141,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     
     // Award XP and gold directly using useGame hook with subscription multipliers
     const baseXpReward = 60; // TRIPLED Base XP reward per kill (was 20, now 60 for data recovery)
-    const xpMultiplier = gameState.subscriptionBenefits?.xp_multiplier || 1.0;
-    const dropMultiplier = gameState.subscriptionBenefits?.drop_multiplier || 1.0;
+    const xpMultiplier = game.gameState.subscriptionBenefits?.xp_multiplier || 1.0;
+    const dropMultiplier = game.gameState.subscriptionBenefits?.drop_multiplier || 1.0;
     
     const xpReward = Math.floor(baseXpReward * xpMultiplier);
     const goldReward = Math.floor(10 * dropMultiplier);
