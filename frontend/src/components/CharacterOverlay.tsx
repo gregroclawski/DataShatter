@@ -39,9 +39,9 @@ const CharacterOverlay = ({ onClose }: Props) => {
       const actualQuantity = Math.min(quantity, ninja.skillPoints);
       return { cost: actualQuantity, quantity: actualQuantity, type: 'SP' };
     } else {
-      // Gold upgrades with escalating costs
+      // Gold upgrades with escalating costs - use ONLY gold levels for cost calculation
       let totalCost = 0;
-      let currentLevel = skill.current;
+      let currentLevel = skill.goldLevels; // Use only gold upgrade levels for cost calculation
       let actualQuantity = 0;
 
       if (quantity === 'max') {
