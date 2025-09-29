@@ -590,14 +590,21 @@ class BackendTester:
             return False
             
     def run_all_tests(self):
-        """Run all backend tests"""
-        print("🚀 STARTING BACKEND TESTING FOR EVENT-DRIVEN CHARACTER UPGRADES")
+        """Run all backend tests with priority on critical data recovery"""
+        print("🚨 URGENT DATA RECOVERY CHECK - BACKEND TESTING")
         print("=" * 70)
         
-        # Core authentication tests
-        print("\n📋 TESTING CORE AUTHENTICATION ENDPOINTS:")
+        # PRIORITY 1: Critical data recovery check
+        print("\n🚨 PRIORITY 1: CRITICAL DATA RECOVERY CHECK")
+        critical_test = self.test_critical_data_recovery()
+        
+        # Basic health check
+        print("\n📋 BASIC API HEALTH CHECK:")
+        health_test = self.test_health_check()
+        
+        # Core authentication tests (if needed)
+        print("\n📋 CORE AUTHENTICATION ENDPOINTS:")
         auth_tests = [
-            self.test_health_check(),
             self.test_user_registration(),
             self.test_user_login(),
             self.test_session_check()
