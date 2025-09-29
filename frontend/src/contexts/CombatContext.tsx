@@ -313,31 +313,42 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
             if (!enemy.lastAttackTick) enemy.lastAttackTick = 0;
             
             if (newState.currentTick - enemy.lastAttackTick >= ATTACK_COOLDOWN) {
-              // Enemy attacks player - FIXED: Scale damage appropriately for balanced gameplay
-              const baseAttack = enemy.stats.attack / 100; // Scale down massive attack values
-              const attackDamage = Math.floor(baseAttack * (0.8 + Math.random() * 0.4)); // 80-120% of scaled damage
-              const playerDefense = newState.playerStats.defense;
-              const finalDamage = Math.max(1, attackDamage - Math.floor(playerDefense * 0.1)); // Defense reduces 10% of damage
+              // Check if player is invincible
+              const isPlayerInvincible = game.gameState.isInvincible && 
+                                       game.gameState.invincibilityEndTime && 
+                                       Date.now() < game.gameState.invincibilityEndTime;
               
-              console.log(`🗡️ ENEMY ATTACK: ${enemy.name} attacks player for ${finalDamage} damage (${attackDamage} base - ${Math.floor(playerDefense * 0.1)} defense reduction)`);
-              
-              // Apply damage to player
-              const newPlayerHealth = Math.max(0, newState.playerStats.health - finalDamage);
-              newState.playerStats.health = newPlayerHealth;
-              
-              console.log(`❤️ PLAYER HEALTH: ${newState.playerStats.health}/${newState.playerStats.maxHealth} (took ${finalDamage} damage)`);
-              
-              // Update enemy attack cooldown
-              enemy.lastAttackTick = newState.currentTick;
-              
-              // Handle player death if health reaches 0
-              if (newPlayerHealth <= 0) {
-                console.log('💀 PLAYER DEFEATED! Triggering revival system...');
-                // Set player as dead and trigger revival modal
-                setTimeout(() => {
-                  // Set isAlive to false to trigger revival system
-                  game.updateGameState({ isAlive: false });
-                }, 100);
+              if (isPlayerInvincible) {
+                console.log(`🛡️ INVINCIBLE: ${enemy.name} attack blocked! Player is invincible.`);
+                // Update enemy attack cooldown even if blocked
+                enemy.lastAttackTick = newState.currentTick;
+              } else {
+                // Enemy attacks player - FIXED: Scale damage appropriately for balanced gameplay
+                const baseAttack = enemy.stats.attack / 100; // Scale down massive attack values
+                const attackDamage = Math.floor(baseAttack * (0.8 + Math.random() * 0.4)); // 80-120% of scaled damage
+                const playerDefense = newState.playerStats.defense;
+                const finalDamage = Math.max(1, attackDamage - Math.floor(playerDefense * 0.1)); // Defense reduces 10% of damage
+                
+                console.log(`🗡️ ENEMY ATTACK: ${enemy.name} attacks player for ${finalDamage} damage (${attackDamage} base - ${Math.floor(playerDefense * 0.1)} defense reduction)`);
+                
+                // Apply damage to player
+                const newPlayerHealth = Math.max(0, newState.playerStats.health - finalDamage);
+                newState.playerStats.health = newPlayerHealth;
+                
+                console.log(`❤️ PLAYER HEALTH: ${newState.playerStats.health}/${newState.playerStats.maxHealth} (took ${finalDamage} damage)`);
+                
+                // Update enemy attack cooldown
+                enemy.lastAttackTick = newState.currentTick;
+                
+                // Handle player death if health reaches 0
+                if (newPlayerHealth <= 0) {
+                  console.log('💀 PLAYER DEFEATED! Triggering revival system...');
+                  // Set player as dead and trigger revival modal
+                  setTimeout(() => {
+                    // Set isAlive to false to trigger revival system
+                    game.updateGameState({ isAlive: false });
+                  }, 100);
+                }
               }
             }
           } else {
