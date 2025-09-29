@@ -12,7 +12,7 @@ from datetime import datetime
 import os
 
 # Get backend URL from environment
-BACKEND_URL = os.getenv('EXPO_PUBLIC_BACKEND_URL', 'https://idle-ninja-game.preview.emergentagent.com')
+BACKEND_URL = os.getenv('EXPO_PUBLIC_BACKEND_URL', 'https://rpg-rebalance.preview.emergentagent.com')
 API_BASE = f"{BACKEND_URL}/api"
 
 class ProjectileXPDiagnosisTester:

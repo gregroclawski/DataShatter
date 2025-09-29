@@ -9,7 +9,7 @@ import json
 import uuid
 from datetime import datetime
 
-BACKEND_URL = "https://idle-ninja-game.preview.emergentagent.com/api"
+BACKEND_URL = "https://rpg-rebalance.preview.emergentagent.com/api"
 
 def test_zone_progression_data_handling():
     """Test backend handling of new zone progression system data"""
