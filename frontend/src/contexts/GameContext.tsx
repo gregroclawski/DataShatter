@@ -28,6 +28,7 @@ export interface NinjaStats {
   gold: number;
   gems: number;
   skillPoints: number;
+  reviveTickets: number; // Revival system currency
   
   // Separate stat pools
   baseStats: StatPool;        // Character's natural stats
