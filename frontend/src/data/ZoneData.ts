@@ -1,6 +1,6 @@
 // Zone and Enemy Data for 50-Zone Progression System  
-// Linear progression: Early zones have fewer kills, later zones have more kills
-// Total progression designed for players to reach higher XP zones faster
+// Proper scaling for level 1-15,000 progression
+// Each zone provides meaningful advancement toward max level
 
 export interface EnemyType {
   id: string;
@@ -40,7 +40,7 @@ export interface Zone {
   };
 }
 
-// Enemy Types Database
+// Enemy Types Database (same as before - properly scaled with TRIPLED XP)
 export const ENEMY_TYPES: Record<string, EnemyType> = {
   // Forest Realms (Zones 1-10)
   'forest_goblin': {
@@ -248,320 +248,156 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     baseXP: 900, // TRIPLED from 300 to 900
     resistances: { fire: 0.8, physical: 0.3 }
   },
+
+  // Endgame Enemies (Zones 41-50)
+  'void_emperor': {
+    id: 'void_emperor',
+    name: 'Void Emperor',
+    icon: '👑💀',
+    baseHP: 500,
+    baseAttack: 300,
+    baseXP: 1500, // Ultra high XP for endgame
+    resistances: { magic: 0.8, physical: 0.5 }
+  },
+  'cosmic_leviathan': {
+    id: 'cosmic_leviathan',
+    name: 'Cosmic Leviathan',
+    icon: '🐲🌌',
+    baseHP: 800,
+    baseAttack: 400,
+    baseXP: 2400, // Ultra high XP for endgame
+    resistances: { fire: 0.9, ice: 0.9, magic: 0.7 }
+  },
+  'reality_shatterer': {
+    id: 'reality_shatterer',
+    name: 'Reality Shatterer',
+    icon: '💥🌌',
+    baseHP: 1200,
+    baseAttack: 600,
+    baseXP: 3600, // Ultra high XP for final zones
+    resistances: { physical: 0.8, magic: 0.8, fire: 0.8, ice: 0.8 }
+  },
 };
 
 // Helper function to calculate linear progression kill requirements
 const calculateKillRequirement = (zoneId: number, level: number): number => {
-  // Early zones: Very low kills to allow fast progression to better XP zones
-  // Later zones: More kills as players are stronger and want endgame content
-  
-  if (zoneId <= 5) return 25 + (level * 5);      // Zones 1-5: 30-50 kills per level
-  if (zoneId <= 15) return 40 + (level * 10);     // Zones 6-15: 50-90 kills per level  
-  if (zoneId <= 30) return 60 + (level * 15);     // Zones 16-30: 75-135 kills per level
-  if (zoneId <= 45) return 100 + (level * 20);    // Zones 31-45: 120-200 kills per level
-  return 150 + (level * 25);                      // Zones 46-50: 175-275 kills per level (endgame)
+  // Balanced kill requirements across all zones
+  if (zoneId <= 10) return 25 + (level * 5);      // Zones 1-10: 30-50 kills per level
+  if (zoneId <= 25) return 40 + (level * 10);     // Zones 11-25: 50-90 kills per level  
+  if (zoneId <= 40) return 60 + (level * 15);     // Zones 26-40: 75-135 kills per level
+  return 100 + (level * 25);                      // Zones 41-50: 125-225 kills per level (endgame)
 };
 
-// Zone Database - Complete 50 Zones with 5 levels each
-export const ZONES: Zone[] = [
-  // Forest Realms (Zones 1-10)
-  {
-    id: 1,
-    name: 'Emerald Grove',
-    theme: 'forest',
-    minPlayerLevel: 1,
-    maxPlayerLevel: 5,
-    levels: [
-      { level: 1, enemyMultiplier: 0.8, xpMultiplier: 1.0, requiredKills: calculateKillRequirement(1, 1), enemyTypes: ['forest_goblin', 'wild_wolf'] },
-      { level: 2, enemyMultiplier: 0.9, xpMultiplier: 1.1, requiredKills: calculateKillRequirement(1, 2), enemyTypes: ['forest_goblin', 'wild_wolf', 'dark_sprite'] },
-      { level: 3, enemyMultiplier: 1.0, xpMultiplier: 1.2, requiredKills: calculateKillRequirement(1, 3), enemyTypes: ['wild_wolf', 'dark_sprite', 'tree_guardian'] },
-      { level: 4, enemyMultiplier: 1.1, xpMultiplier: 1.3, requiredKills: calculateKillRequirement(1, 4), enemyTypes: ['dark_sprite', 'tree_guardian'] },
-      { level: 5, enemyMultiplier: 1.2, xpMultiplier: 1.4, requiredKills: calculateKillRequirement(1, 5), enemyTypes: ['tree_guardian', 'shadow_wolf'] },
-    ],
-    unlockRequirement: {},
-  },
-  {
-    id: 2,
-    name: 'Whispering Woods',
-    theme: 'forest',
-    minPlayerLevel: 3,
-    maxPlayerLevel: 8,
-    levels: [
-      { level: 1, enemyMultiplier: 0.9, xpMultiplier: 1.1, requiredKills: calculateKillRequirement(2, 1), enemyTypes: ['wild_wolf', 'shadow_wolf'] },
-      { level: 2, enemyMultiplier: 1.0, xpMultiplier: 1.2, requiredKills: calculateKillRequirement(2, 2), enemyTypes: ['shadow_wolf', 'dark_sprite'] },
-      { level: 3, enemyMultiplier: 1.1, xpMultiplier: 1.3, requiredKills: calculateKillRequirement(2, 3), enemyTypes: ['dark_sprite', 'tree_guardian'] },
-      { level: 4, enemyMultiplier: 1.2, xpMultiplier: 1.4, requiredKills: calculateKillRequirement(2, 4), enemyTypes: ['tree_guardian', 'ancient_oak'] },
-      { level: 5, enemyMultiplier: 1.3, xpMultiplier: 1.5, requiredKills: calculateKillRequirement(2, 5), enemyTypes: ['ancient_oak'] },
-    ],
-    unlockRequirement: { previousZone: 1 },
-  },
-  {
-    id: 3,
-    name: 'Shadow Forest',
-    theme: 'forest',
-    minPlayerLevel: 5,
-    maxPlayerLevel: 12,
-    levels: [
-      { level: 1, enemyMultiplier: 1.0, xpMultiplier: 1.2, requiredKills: calculateKillRequirement(3, 1), enemyTypes: ['shadow_wolf', 'dark_sprite'] },
-      { level: 2, enemyMultiplier: 1.1, xpMultiplier: 1.3, requiredKills: calculateKillRequirement(3, 2), enemyTypes: ['dark_sprite', 'ancient_oak'] },
-      { level: 3, enemyMultiplier: 1.2, xpMultiplier: 1.4, requiredKills: calculateKillRequirement(3, 3), enemyTypes: ['ancient_oak', 'flame_salamander'] },
-      { level: 4, enemyMultiplier: 1.3, xpMultiplier: 1.5, requiredKills: calculateKillRequirement(3, 4), enemyTypes: ['flame_salamander'] },
-      { level: 5, enemyMultiplier: 1.4, xpMultiplier: 1.6, requiredKills: calculateKillRequirement(3, 5), enemyTypes: ['flame_salamander', 'mountain_orc'] },
-    ],
-    unlockRequirement: { previousZone: 2 },
-  },
-  {
-    id: 4,
-    name: 'Ancient Ruins',
-    theme: 'ruins',
-    minPlayerLevel: 8,
-    maxPlayerLevel: 15,
-    levels: [
-      { level: 1, enemyMultiplier: 1.1, xpMultiplier: 1.3, requiredKills: calculateKillRequirement(4, 1), enemyTypes: ['ancient_oak', 'flame_salamander'] },
-      { level: 2, enemyMultiplier: 1.2, xpMultiplier: 1.4, requiredKills: calculateKillRequirement(4, 2), enemyTypes: ['flame_salamander', 'mountain_orc'] },
-      { level: 3, enemyMultiplier: 1.3, xpMultiplier: 1.5, requiredKills: calculateKillRequirement(4, 3), enemyTypes: ['mountain_orc', 'stone_giant'] },
-      { level: 4, enemyMultiplier: 1.4, xpMultiplier: 1.6, requiredKills: calculateKillRequirement(4, 4), enemyTypes: ['stone_giant'] },
-      { level: 5, enemyMultiplier: 1.5, xpMultiplier: 1.7, requiredKills: calculateKillRequirement(4, 5), enemyTypes: ['stone_giant', 'fire_drake'] },
-    ],
-    unlockRequirement: { previousZone: 3 },
-  },
-  {
-    id: 5,
-    name: 'Mystical Glade',
-    theme: 'forest',
-    minPlayerLevel: 12,
-    maxPlayerLevel: 20,
-    levels: [
-      { level: 1, enemyMultiplier: 1.2, xpMultiplier: 1.4, requiredKills: calculateKillRequirement(5, 1), enemyTypes: ['flame_salamander', 'mountain_orc'] },
-      { level: 2, enemyMultiplier: 1.3, xpMultiplier: 1.5, requiredKills: calculateKillRequirement(5, 2), enemyTypes: ['mountain_orc', 'stone_giant'] },
-      { level: 3, enemyMultiplier: 1.4, xpMultiplier: 1.6, requiredKills: calculateKillRequirement(5, 3), enemyTypes: ['stone_giant', 'fire_drake'] },
-      { level: 4, enemyMultiplier: 1.5, xpMultiplier: 1.7, requiredKills: calculateKillRequirement(5, 4), enemyTypes: ['fire_drake'] },
-      { level: 5, enemyMultiplier: 1.6, xpMultiplier: 1.8, requiredKills: calculateKillRequirement(5, 5), enemyTypes: ['fire_drake', 'rock_golem'] },
-    ],
-    unlockRequirement: { previousZone: 4 },
-  },
+// Generate all 50 zones with proper level scaling (1-15,000)
+const generateZones = (): Zone[] => {
+  const zones: Zone[] = [];
+  
+  // Calculate level ranges for each zone (distributed across 15,000 levels)
+  for (let zoneId = 1; zoneId <= 50; zoneId++) {
+    // Exponential scaling - early zones are smaller level ranges, endgame zones are larger
+    let minLevel: number, maxLevel: number;
+    
+    if (zoneId <= 10) {
+      // Zones 1-10: Levels 1-300 (early game, 30 levels per zone)
+      minLevel = 1 + (zoneId - 1) * 30;
+      maxLevel = zoneId * 30;
+    } else if (zoneId <= 25) {
+      // Zones 11-25: Levels 300-1500 (mid game, 80 levels per zone)
+      minLevel = 300 + (zoneId - 11) * 80;
+      maxLevel = 300 + (zoneId - 10) * 80;
+    } else if (zoneId <= 40) {
+      // Zones 26-40: Levels 1500-6000 (late game, 300 levels per zone)
+      minLevel = 1500 + (zoneId - 26) * 300;
+      maxLevel = 1500 + (zoneId - 25) * 300;
+    } else {
+      // Zones 41-50: Levels 6000-15000 (endgame, 900 levels per zone)
+      minLevel = 6000 + (zoneId - 41) * 900;
+      maxLevel = 6000 + (zoneId - 40) * 900;
+    }
+    
+    // Clamp to max level
+    maxLevel = Math.min(maxLevel, 15000);
+    
+    // Determine enemy types and multipliers based on zone tier
+    let enemyTypes: string[], theme: string, enemyMultiplier: number, xpMultiplier: number;
+    
+    if (zoneId <= 10) {
+      // Forest zones
+      theme = 'forest';
+      enemyTypes = ['forest_goblin', 'wild_wolf', 'tree_guardian', 'dark_sprite'];
+      enemyMultiplier = 0.8 + (zoneId * 0.1);
+      xpMultiplier = 1.0 + (zoneId * 0.1);
+    } else if (zoneId <= 20) {
+      // Mountain zones
+      theme = 'mountain';
+      enemyTypes = ['mountain_orc', 'stone_giant', 'fire_drake', 'rock_golem'];
+      enemyMultiplier = 1.5 + (zoneId * 0.1);
+      xpMultiplier = 1.8 + (zoneId * 0.1);
+    } else if (zoneId <= 30) {
+      // Desert zones
+      theme = 'desert';
+      enemyTypes = ['sand_scorpion', 'ice_wraith', 'crystal_spider', 'desert_basilisk'];
+      enemyMultiplier = 2.5 + (zoneId * 0.15);
+      xpMultiplier = 3.0 + (zoneId * 0.15);
+    } else if (zoneId <= 40) {
+      // Volcanic zones
+      theme = 'volcanic';
+      enemyTypes = ['magma_elemental', 'lava_beast', 'inferno_dragon', 'phoenix_guardian'];
+      enemyMultiplier = 4.0 + (zoneId * 0.2);
+      xpMultiplier = 5.0 + (zoneId * 0.2);
+    } else {
+      // Shadow/Void zones (endgame)
+      theme = 'shadow';
+      enemyTypes = ['shadow_demon', 'void_stalker', 'nightmare_lord', 'chaos_titan', 'void_emperor', 'cosmic_leviathan', 'reality_shatterer'];
+      enemyMultiplier = 8.0 + (zoneId * 0.5);
+      xpMultiplier = 10.0 + (zoneId * 0.5);
+    }
+    
+    // Generate zone levels
+    const levels: ZoneLevel[] = [];
+    for (let level = 1; level <= 5; level++) {
+      levels.push({
+        level,
+        enemyMultiplier: enemyMultiplier + (level * 0.1),
+        xpMultiplier: xpMultiplier + (level * 0.2),
+        requiredKills: calculateKillRequirement(zoneId, level),
+        enemyTypes: enemyTypes
+      });
+    }
+    
+    // Zone names based on theme and progression
+    const zoneNames = {
+      forest: [`Emerald Grove`, `Whispering Woods`, `Shadow Forest`, `Ancient Ruins`, `Mystical Glade`, 
+               `Deep Woods`, `Twilight Grove`, `Enchanted Valley`, `Cursed Grove`, `Sacred Forest`],
+      mountain: [`Rocky Foothills`, `Stone Peaks`, `Misty Mountains`, `Crystal Caverns`, `Dragon Pass`,
+                 `Frozen Peaks`, `Thunder Cliffs`, `Giant's Spine`, `Sky Fortress`, `Celestial Summit`],
+      desert: [`Shifting Sands`, `Bone Valley`, `Mirage Oasis`, `Scorching Dunes`, `Crystal Desert`,
+               `Forbidden Wastes`, `Sun Temple`, `Phantom Dunes`, `Eternal Sands`, `Lost Citadel`],
+      volcanic: [`Molten Core`, `Fire Peaks`, `Lava Fields`, `Ember Caverns`, `Inferno Gates`,
+                 `Magma Falls`, `Forge of Titans`, `Burning Abyss`, `Phoenix Nest`, `Hellfire Summit`],
+      shadow: [`Void Nexus`, `Shadow Realm`, `Dark Dimension`, `Nightmare Plane`, `Chaos Void`,
+               `Reality Rift`, `Cosmic Abyss`, `Infinite Darkness`, `End of All`, `Final Frontier`]
+    };
+    
+    const nameIndex = ((zoneId - 1) % 10);
+    const zoneName = zoneNames[theme as keyof typeof zoneNames][nameIndex] || `${theme.charAt(0).toUpperCase() + theme.slice(1)} Zone ${zoneId}`;
+    
+    zones.push({
+      id: zoneId,
+      name: zoneName,
+      theme,
+      minPlayerLevel: minLevel,
+      maxPlayerLevel: maxLevel,
+      levels,
+      unlockRequirement: zoneId === 1 ? {} : { previousZone: zoneId - 1 }
+    });
+  }
+  
+  return zones;
+};
 
-  // Zones 6-10: Deeper Forest
-  {
-    id: 6,
-    name: 'Deep Woods',
-    theme: 'forest',
-    minPlayerLevel: 15,
-    maxPlayerLevel: 25,
-    levels: [
-      { level: 1, enemyMultiplier: 1.3, xpMultiplier: 1.5, requiredKills: calculateKillRequirement(6, 1), enemyTypes: ['stone_giant', 'fire_drake'] },
-      { level: 2, enemyMultiplier: 1.4, xpMultiplier: 1.6, requiredKills: calculateKillRequirement(6, 2), enemyTypes: ['fire_drake', 'rock_golem'] },
-      { level: 3, enemyMultiplier: 1.5, xpMultiplier: 1.7, requiredKills: calculateKillRequirement(6, 3), enemyTypes: ['rock_golem'] },
-      { level: 4, enemyMultiplier: 1.6, xpMultiplier: 1.8, requiredKills: calculateKillRequirement(6, 4), enemyTypes: ['rock_golem', 'sand_scorpion'] },
-      { level: 5, enemyMultiplier: 1.7, xpMultiplier: 1.9, requiredKills: calculateKillRequirement(6, 5), enemyTypes: ['sand_scorpion'] },
-    ],
-    unlockRequirement: { previousZone: 5 },
-  },
-  {
-    id: 7,
-    name: 'Twilight Grove',
-    theme: 'forest',
-    minPlayerLevel: 18,
-    maxPlayerLevel: 30,
-    levels: [
-      { level: 1, enemyMultiplier: 1.4, xpMultiplier: 1.6, requiredKills: calculateKillRequirement(7, 1), enemyTypes: ['fire_drake', 'rock_golem'] },
-      { level: 2, enemyMultiplier: 1.5, xpMultiplier: 1.7, requiredKills: calculateKillRequirement(7, 2), enemyTypes: ['rock_golem', 'sand_scorpion'] },
-      { level: 3, enemyMultiplier: 1.6, xpMultiplier: 1.8, requiredKills: calculateKillRequirement(7, 3), enemyTypes: ['sand_scorpion', 'ice_wraith'] },
-      { level: 4, enemyMultiplier: 1.7, xpMultiplier: 1.9, requiredKills: calculateKillRequirement(7, 4), enemyTypes: ['ice_wraith'] },
-      { level: 5, enemyMultiplier: 1.8, xpMultiplier: 2.0, requiredKills: calculateKillRequirement(7, 5), enemyTypes: ['ice_wraith', 'crystal_spider'] },
-    ],
-    unlockRequirement: { previousZone: 6 },
-  },
-  {
-    id: 8,
-    name: 'Enchanted Valley',
-    theme: 'forest',
-    minPlayerLevel: 22,
-    maxPlayerLevel: 35,
-    levels: [
-      { level: 1, enemyMultiplier: 1.5, xpMultiplier: 1.7, requiredKills: calculateKillRequirement(8, 1), enemyTypes: ['sand_scorpion', 'ice_wraith'] },
-      { level: 2, enemyMultiplier: 1.6, xpMultiplier: 1.8, requiredKills: calculateKillRequirement(8, 2), enemyTypes: ['ice_wraith', 'crystal_spider'] },
-      { level: 3, enemyMultiplier: 1.7, xpMultiplier: 1.9, requiredKills: calculateKillRequirement(8, 3), enemyTypes: ['crystal_spider', 'desert_basilisk'] },
-      { level: 4, enemyMultiplier: 1.8, xpMultiplier: 2.0, requiredKills: calculateKillRequirement(8, 4), enemyTypes: ['desert_basilisk'] },
-      { level: 5, enemyMultiplier: 1.9, xpMultiplier: 2.1, requiredKills: calculateKillRequirement(8, 5), enemyTypes: ['desert_basilisk', 'magma_elemental'] },
-    ],
-    unlockRequirement: { previousZone: 7 },
-  },
-  {
-    id: 9,
-    name: 'Cursed Grove',
-    theme: 'forest',
-    minPlayerLevel: 25,
-    maxPlayerLevel: 40,
-    levels: [
-      { level: 1, enemyMultiplier: 1.6, xpMultiplier: 1.8, requiredKills: calculateKillRequirement(9, 1), enemyTypes: ['crystal_spider', 'desert_basilisk'] },
-      { level: 2, enemyMultiplier: 1.7, xpMultiplier: 1.9, requiredKills: calculateKillRequirement(9, 2), enemyTypes: ['desert_basilisk', 'magma_elemental'] },
-      { level: 3, enemyMultiplier: 1.8, xpMultiplier: 2.0, requiredKills: calculateKillRequirement(9, 3), enemyTypes: ['magma_elemental', 'lava_beast'] },
-      { level: 4, enemyMultiplier: 1.9, xpMultiplier: 2.1, requiredKills: calculateKillRequirement(9, 4), enemyTypes: ['lava_beast'] },
-      { level: 5, enemyMultiplier: 2.0, xpMultiplier: 2.2, requiredKills: calculateKillRequirement(9, 5), enemyTypes: ['lava_beast', 'inferno_dragon'] },
-    ],
-    unlockRequirement: { previousZone: 8 },
-  },
-  {
-    id: 10,
-    name: 'Sacred Forest',
-    theme: 'forest',
-    minPlayerLevel: 30,
-    maxPlayerLevel: 45,
-    levels: [
-      { level: 1, enemyMultiplier: 1.7, xpMultiplier: 1.9, requiredKills: calculateKillRequirement(10, 1), enemyTypes: ['magma_elemental', 'lava_beast'] },
-      { level: 2, enemyMultiplier: 1.8, xpMultiplier: 2.0, requiredKills: calculateKillRequirement(10, 2), enemyTypes: ['lava_beast', 'inferno_dragon'] },
-      { level: 3, enemyMultiplier: 1.9, xpMultiplier: 2.1, requiredKills: calculateKillRequirement(10, 3), enemyTypes: ['inferno_dragon', 'phoenix_guardian'] },
-      { level: 4, enemyMultiplier: 2.0, xpMultiplier: 2.2, requiredKills: calculateKillRequirement(10, 4), enemyTypes: ['phoenix_guardian'] },
-      { level: 5, enemyMultiplier: 2.1, xpMultiplier: 2.3, requiredKills: calculateKillRequirement(10, 5), enemyTypes: ['phoenix_guardian', 'shadow_demon'] },
-    ],
-    unlockRequirement: { previousZone: 9 },
-  },
-
-  // Mountain Peaks (Zones 11-20)
-  {
-    id: 11,
-    name: 'Rocky Foothills',
-    theme: 'mountain',
-    minPlayerLevel: 32,
-    maxPlayerLevel: 50,
-    levels: [
-      { level: 1, enemyMultiplier: 1.8, xpMultiplier: 2.0, requiredKills: calculateKillRequirement(11, 1), enemyTypes: ['inferno_dragon', 'phoenix_guardian'] },
-      { level: 2, enemyMultiplier: 1.9, xpMultiplier: 2.1, requiredKills: calculateKillRequirement(11, 2), enemyTypes: ['phoenix_guardian', 'shadow_demon'] },
-      { level: 3, enemyMultiplier: 2.0, xpMultiplier: 2.2, requiredKills: calculateKillRequirement(11, 3), enemyTypes: ['shadow_demon', 'void_stalker'] },
-      { level: 4, enemyMultiplier: 2.1, xpMultiplier: 2.3, requiredKills: calculateKillRequirement(11, 4), enemyTypes: ['void_stalker'] },
-      { level: 5, enemyMultiplier: 2.2, xpMultiplier: 2.4, requiredKills: calculateKillRequirement(11, 5), enemyTypes: ['void_stalker', 'nightmare_lord'] },
-    ],
-    unlockRequirement: { previousZone: 10 },
-  },
-  {
-    id: 12,
-    name: 'Stone Peaks',
-    theme: 'mountain',
-    minPlayerLevel: 35,
-    maxPlayerLevel: 55,
-    levels: [
-      { level: 1, enemyMultiplier: 1.9, xpMultiplier: 2.1, requiredKills: calculateKillRequirement(12, 1), enemyTypes: ['shadow_demon', 'void_stalker'] },
-      { level: 2, enemyMultiplier: 2.0, xpMultiplier: 2.2, requiredKills: calculateKillRequirement(12, 2), enemyTypes: ['void_stalker', 'nightmare_lord'] },
-      { level: 3, enemyMultiplier: 2.1, xpMultiplier: 2.3, requiredKills: calculateKillRequirement(12, 3), enemyTypes: ['nightmare_lord', 'chaos_titan'] },
-      { level: 4, enemyMultiplier: 2.2, xpMultiplier: 2.4, requiredKills: calculateKillRequirement(12, 4), enemyTypes: ['chaos_titan'] },
-      { level: 5, enemyMultiplier: 2.3, xpMultiplier: 2.5, requiredKills: calculateKillRequirement(12, 5), enemyTypes: ['chaos_titan'] },
-    ],
-    unlockRequirement: { previousZone: 11 },
-  },
-  {
-    id: 13,
-    name: 'Misty Mountains',
-    theme: 'mountain',
-    minPlayerLevel: 40,
-    maxPlayerLevel: 60,
-    levels: [
-      { level: 1, enemyMultiplier: 2.0, xpMultiplier: 2.2, requiredKills: calculateKillRequirement(13, 1), enemyTypes: ['nightmare_lord', 'chaos_titan'] },
-      { level: 2, enemyMultiplier: 2.1, xpMultiplier: 2.3, requiredKills: calculateKillRequirement(13, 2), enemyTypes: ['chaos_titan'] },
-      { level: 3, enemyMultiplier: 2.2, xpMultiplier: 2.4, requiredKills: calculateKillRequirement(13, 3), enemyTypes: ['chaos_titan'] },
-      { level: 4, enemyMultiplier: 2.3, xpMultiplier: 2.5, requiredKills: calculateKillRequirement(13, 4), enemyTypes: ['chaos_titan'] },
-      { level: 5, enemyMultiplier: 2.4, xpMultiplier: 2.6, requiredKills: calculateKillRequirement(13, 5), enemyTypes: ['chaos_titan'] },
-    ],
-    unlockRequirement: { previousZone: 12 },
-  },
-
-  // Continue with remaining zones (14-50) following the same pattern
-  // Each zone progressively harder with better XP multipliers and enemy types
-  {
-    id: 14,
-    name: 'Crystal Caverns',
-    theme: 'cave',
-    minPlayerLevel: 45,
-    maxPlayerLevel: 65,
-    levels: [
-      { level: 1, enemyMultiplier: 2.1, xpMultiplier: 2.3, requiredKills: calculateKillRequirement(14, 1), enemyTypes: ['chaos_titan'] },
-      { level: 2, enemyMultiplier: 2.2, xpMultiplier: 2.4, requiredKills: calculateKillRequirement(14, 2), enemyTypes: ['chaos_titan'] },
-      { level: 3, enemyMultiplier: 2.3, xpMultiplier: 2.5, requiredKills: calculateKillRequirement(14, 3), enemyTypes: ['chaos_titan'] },
-      { level: 4, enemyMultiplier: 2.4, xpMultiplier: 2.6, requiredKills: calculateKillRequirement(14, 4), enemyTypes: ['chaos_titan'] },
-      { level: 5, enemyMultiplier: 2.5, xpMultiplier: 2.7, requiredKills: calculateKillRequirement(14, 5), enemyTypes: ['chaos_titan'] },
-    ],
-    unlockRequirement: { previousZone: 13 },
-  },
-  {
-    id: 15,
-    name: 'Dragon Pass',
-    theme: 'mountain',
-    minPlayerLevel: 50,
-    maxPlayerLevel: 70,
-    levels: [
-      { level: 1, enemyMultiplier: 2.2, xpMultiplier: 2.4, requiredKills: calculateKillRequirement(15, 1), enemyTypes: ['chaos_titan'] },
-      { level: 2, enemyMultiplier: 2.3, xpMultiplier: 2.5, requiredKills: calculateKillRequirement(15, 2), enemyTypes: ['chaos_titan'] },
-      { level: 3, enemyMultiplier: 2.4, xpMultiplier: 2.6, requiredKills: calculateKillRequirement(15, 3), enemyTypes: ['chaos_titan'] },
-      { level: 4, enemyMultiplier: 2.5, xpMultiplier: 2.7, requiredKills: calculateKillRequirement(15, 4), enemyTypes: ['chaos_titan'] },
-      { level: 5, enemyMultiplier: 2.6, xpMultiplier: 2.8, requiredKills: calculateKillRequirement(15, 5), enemyTypes: ['chaos_titan'] },
-    ],
-    unlockRequirement: { previousZone: 14 },
-  },
-
-  // Desert Wastelands (Zones 16-30) - Skipping intermediate zones for brevity
-  {
-    id: 16,
-    name: 'Shifting Sands',
-    theme: 'desert',
-    minPlayerLevel: 55,
-    maxPlayerLevel: 75,
-    levels: [
-      { level: 1, enemyMultiplier: 2.3, xpMultiplier: 2.5, requiredKills: calculateKillRequirement(16, 1), enemyTypes: ['chaos_titan'] },
-      { level: 2, enemyMultiplier: 2.4, xpMultiplier: 2.6, requiredKills: calculateKillRequirement(16, 2), enemyTypes: ['chaos_titan'] },
-      { level: 3, enemyMultiplier: 2.5, xpMultiplier: 2.7, requiredKills: calculateKillRequirement(16, 3), enemyTypes: ['chaos_titan'] },
-      { level: 4, enemyMultiplier: 2.6, xpMultiplier: 2.8, requiredKills: calculateKillRequirement(16, 4), enemyTypes: ['chaos_titan'] },
-      { level: 5, enemyMultiplier: 2.7, xpMultiplier: 2.9, requiredKills: calculateKillRequirement(16, 5), enemyTypes: ['chaos_titan'] },
-    ],
-    unlockRequirement: { previousZone: 15 },
-  },
-
-  // Adding final endgame zones (zones 30, 40, 50 as examples)
-  {
-    id: 30,
-    name: 'Scorching Dunes',
-    theme: 'desert',
-    minPlayerLevel: 150,
-    maxPlayerLevel: 200,  
-    levels: [
-      { level: 1, enemyMultiplier: 4.0, xpMultiplier: 4.5, requiredKills: calculateKillRequirement(30, 1), enemyTypes: ['chaos_titan'] },
-      { level: 2, enemyMultiplier: 4.2, xpMultiplier: 4.7, requiredKills: calculateKillRequirement(30, 2), enemyTypes: ['chaos_titan'] },
-      { level: 3, enemyMultiplier: 4.4, xpMultiplier: 4.9, requiredKills: calculateKillRequirement(30, 3), enemyTypes: ['chaos_titan'] },
-      { level: 4, enemyMultiplier: 4.6, xpMultiplier: 5.1, requiredKills: calculateKillRequirement(30, 4), enemyTypes: ['chaos_titan'] },
-      { level: 5, enemyMultiplier: 4.8, xpMultiplier: 5.3, requiredKills: calculateKillRequirement(30, 5), enemyTypes: ['chaos_titan'] },
-    ],
-    unlockRequirement: { previousZone: 29 },
-  },
-  {
-    id: 40,
-    name: 'Molten Core',
-    theme: 'volcanic',
-    minPlayerLevel: 300,
-    maxPlayerLevel: 400,
-    levels: [
-      { level: 1, enemyMultiplier: 6.0, xpMultiplier: 7.0, requiredKills: calculateKillRequirement(40, 1), enemyTypes: ['chaos_titan'] },
-      { level: 2, enemyMultiplier: 6.3, xpMultiplier: 7.4, requiredKills: calculateKillRequirement(40, 2), enemyTypes: ['chaos_titan'] },
-      { level: 3, enemyMultiplier: 6.6, xpMultiplier: 7.8, requiredKills: calculateKillRequirement(40, 3), enemyTypes: ['chaos_titan'] },
-      { level: 4, enemyMultiplier: 6.9, xpMultiplier: 8.2, requiredKills: calculateKillRequirement(40, 4), enemyTypes: ['chaos_titan'] },
-      { level: 5, enemyMultiplier: 7.2, xpMultiplier: 8.6, requiredKills: calculateKillRequirement(40, 5), enemyTypes: ['chaos_titan'] },
-    ],
-    unlockRequirement: { previousZone: 39 },
-  },
-  {
-    id: 50,
-    name: 'Void Nexus',
-    theme: 'shadow',
-    minPlayerLevel: 500,
-    maxPlayerLevel: 15000, // Max level endgame
-    levels: [
-      { level: 1, enemyMultiplier: 10.0, xpMultiplier: 12.0, requiredKills: calculateKillRequirement(50, 1), enemyTypes: ['chaos_titan'] },
-      { level: 2, enemyMultiplier: 11.0, xpMultiplier: 13.0, requiredKills: calculateKillRequirement(50, 2), enemyTypes: ['chaos_titan'] },
-      { level: 3, enemyMultiplier: 12.0, xpMultiplier: 14.0, requiredKills: calculateKillRequirement(50, 3), enemyTypes: ['chaos_titan'] },
-      { level: 4, enemyMultiplier: 13.0, xpMultiplier: 15.0, requiredKills: calculateKillRequirement(50, 4), enemyTypes: ['chaos_titan'] },
-      { level: 5, enemyMultiplier: 15.0, xpMultiplier: 18.0, requiredKills: calculateKillRequirement(50, 5), enemyTypes: ['chaos_titan'] },
-    ],
-    unlockRequirement: { previousZone: 49 },
-  },
-];
+// Generate all 50 zones with proper scaling
+export const ZONES: Zone[] = generateZones();
 
 // Utility Functions
 export const calculateEnemyStats = (enemyType: EnemyType, zoneLevel: ZoneLevel, zoneId: number) => {
