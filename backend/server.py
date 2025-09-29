@@ -482,7 +482,7 @@ async def purchase_subscription(
 ):
     """Purchase a subscription"""
     try:
-        user_id = current_user.get("user_id")
+        user_id = current_user.get("id")
         
         # Check if user already has active subscription of this type
         existing_subscription = await db.subscriptions.find_one({
