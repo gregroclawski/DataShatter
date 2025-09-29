@@ -29,6 +29,9 @@ interface GemPackage {
   bonus?: number;
   featured?: boolean;
   bestValue?: boolean;
+  description?: string;
+  icon?: string;
+  type?: string;
 }
 
 interface SubscriptionPackage {
