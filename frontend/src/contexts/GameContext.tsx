@@ -752,6 +752,11 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           console.log('💰 MILESTONE: Currency change - SAVE');
           saveOnMilestone('currency_change');
         }
+        // MILESTONE: Skill points gained - Save skill point awards immediately
+        else if (finalNinja.skillPoints > prev.ninja.skillPoints) {
+          console.log('🎯 MILESTONE: Skill points gained - SAVE');
+          setTimeout(() => saveOnMilestone('skill_points_gained'), 0);
+        }
         // MILESTONE: Skill point spending - Save character development
         else if (finalNinja.skillPoints < prev.ninja.skillPoints) {
           console.log('📈 MILESTONE: Skill points spent - SAVE');
