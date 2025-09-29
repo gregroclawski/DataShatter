@@ -604,48 +604,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     return collectIdleRewardsWithState(gameState);
   };
 
-  const loadLocalGameBackup = async () => {
-    if (!user?.id) return;
-    
-    try {
-      let savedData = null;
-      
-      // MOBILE OPTIMIZATION: Use platform-specific storage consistently
-      if (Platform.OS !== 'web') {
-        // Mobile: Use AsyncStorage only
-        const asyncData = await AsyncStorage.getItem(`ninjaGameSave_${user.id}`);
-        if (asyncData) {
-          savedData = asyncData;
-          console.log('📱 Found local backup in AsyncStorage (mobile)');
-        }
-      } else {
-        // Web: Use localStorage only
-        if (typeof window !== 'undefined' && window.localStorage) {
-          savedData = window.localStorage.getItem(`ninjaGameSave_${user.id}`);
-          if (savedData) {
-            console.log('🌐 Found local backup in localStorage (web)');
-          }
-        }
-      }
-      
-      if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        lastSaveTimeRef.current = parsedData.lastSaveTime || Date.now();
-        setGameState(parsedData);
-        console.log('💾 Game loaded from local backup - Level:', parsedData.ninja?.level);
-        
-        // Try to save this data to server after a delay
-        setTimeout(() => saveGameToServer(), 2000);
-      } else {
-        // No local data either, start with fresh game
-        console.log('🆕 Starting fresh game for user');
-        setGameState(defaultGameState);
-      }
-    } catch (error) {
-      console.error('❌ Failed to load local backup:', error);
-      setGameState(defaultGameState);
-    }
-  };
+  // LOCAL BACKUP LOADING REMOVED: All game data comes from server only for security
 
   const updateZoneProgress = (zoneProgress: Record<number, any>) => {
     setGameState(prev => ({
