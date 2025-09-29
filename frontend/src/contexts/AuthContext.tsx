@@ -54,7 +54,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [minLoadingComplete, setMinLoadingComplete] = useState(false);
 
   const isAuthenticated = !!user && !!token;
 
@@ -67,22 +66,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (user) console.log('  - user email:', user.email);
     if (token) console.log('  - token preview:', token.substring(0, 15) + '...');
   }, [user, token, isAuthenticated]);
-
-  // Memoize the combined loading state to prevent infinite re-renders
-  const actualIsLoading = React.useMemo(() => {
-    return isLoading || !minLoadingComplete;
-  }, [isLoading, minLoadingComplete]);
-
-  // Set up minimum loading timer on app start
-  useEffect(() => {
-    console.log('🕐 Starting 2-second loading timer...');
-    const minLoadingTimer = setTimeout(() => {
-      console.log('⏰ 2-second loading timer complete');
-      setMinLoadingComplete(true);
-    }, 2000);
-
-    return () => clearTimeout(minLoadingTimer);
-  }, []);
 
   // Start authentication check on app start  
   useEffect(() => {
