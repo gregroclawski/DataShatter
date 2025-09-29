@@ -53,6 +53,9 @@ const StoreOverlay = ({ onClose }: Props) => {
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
   const [loadingSubscriptions, setLoadingSubscriptions] = useState(true);
 
+  // Use same API base URL configuration as other components
+  const API_BASE_URL = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+
   const subscriptionPackages: SubscriptionPackage[] = [
     {
       id: 'xp_drop_boost',
