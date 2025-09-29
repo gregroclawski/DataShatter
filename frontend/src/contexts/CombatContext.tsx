@@ -688,6 +688,11 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
   // Create projectile that will deal damage when it hits
   const createProjectile = (targetEnemy: CombatEnemy, damage: number, ninjaPos?: {x: number, y: number}, abilityInfo?: {id: string, name: string, icon: string}) => {
+    if (!targetEnemy) {
+      console.log('❌ Cannot create projectile: No target enemy');
+      return null;
+    }
+    
     const SCREEN_WIDTH = 390;
     const GAME_AREA_HEIGHT = 844 - 140; // Smaller top bar + compact abilities bar
     const NINJA_SIZE = 40;
@@ -697,8 +702,10 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     const ninjaY = ninjaPos ? ninjaPos.y + NINJA_SIZE / 2 : GAME_AREA_HEIGHT / 2;
     const ENEMY_SIZE = 35;
     
+    const projectileId = `proj_${Date.now()}_${Math.random()}`;
+    
     const projectile: CombatProjectile = {
-      id: `proj_${Date.now()}_${Math.random()}`,
+      id: projectileId,
       x: ninjaX,
       y: ninjaY,
       targetX: targetEnemy.position.x + ENEMY_SIZE / 2,
@@ -713,6 +720,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       abilityIcon: abilityInfo?.icon || '🌟', // Default to star if no ability info
     };
     
+    console.log(`🚀 PROJECTILE CREATED: ${abilityInfo?.name || 'Basic Shuriken'} projectile (ID: ${projectileId}) targeting ${targetEnemy.name} for ${damage} damage`);
+    
     console.log(`🔥 Creating projectile to enemy ${targetEnemy.id} for ${damage} damage`);
     console.log(`🎯 Projectile origin: ninja at (${ninjaX}, ${ninjaY}), target at (${projectile.targetX}, ${projectile.targetY})`);
     
@@ -722,6 +731,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     setTimeout(() => {
       handleProjectileHit(projectile);
     }, 500);
+    
+    return projectile;
   };
 
   // Spawn a zone-based enemy using the selected zone
