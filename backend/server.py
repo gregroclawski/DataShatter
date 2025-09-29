@@ -659,9 +659,9 @@ async def change_name(
                 detail="New name must be different from current name"
             )
         
-        # Check if new name already exists (case-insensitive)
+        # Check if new name already exists (case-insensitive) - exclude current user
         existing_user = await get_user_by_name(name_request.new_name)
-        if existing_user:
+        if existing_user and existing_user["id"] != user_id:
             raise HTTPException(
                 status_code=400,
                 detail="Username already taken"
