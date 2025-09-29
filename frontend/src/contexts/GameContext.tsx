@@ -1058,6 +1058,22 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const saveGame = () => saveGameToServer();
   const loadGame = () => loadGameFromServer();
 
+  // Update general game state (for Revival System and other general state changes)
+  const updateGameState = useCallback((updates: Partial<GameState>) => {
+    console.log('🎮 UPDATING GAME STATE:', updates);
+    setGameState(prev => {
+      const newState = { ...prev, ...updates };
+      
+      // MILESTONE SAVE: Critical game state changes
+      if (isAuthenticated && updates.isAlive !== undefined) {
+        console.log('💀 CRITICAL STATE CHANGE: Player death/revival - IMMEDIATE SAVE');
+        setTimeout(() => saveOnMilestone('player_death_revival'), 0);
+      }
+      
+      return newState;
+    });
+  }, [isAuthenticated, saveOnMilestone]);
+
   // SEPARATE STAT POOLS: Calculate effective stats combining all sources
   const getEffectiveStats = useCallback((): NinjaStats => {
     const ninja = gameState.ninja;
