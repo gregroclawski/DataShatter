@@ -1167,6 +1167,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     revivePlayer,
     freeRespawn,
     purchaseReviveTickets,
+    updateGameState,
     trainSkill,
     collectIdleRewards,
     saveGame,
@@ -1196,6 +1197,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     revivePlayer,
     freeRespawn,
     purchaseReviveTickets,
+    updateGameState, // Add updateGameState to dependencies
     trainSkill,
     collectIdleRewards,
     saveGame,
