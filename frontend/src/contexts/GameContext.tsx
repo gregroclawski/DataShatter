@@ -962,6 +962,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       const effectiveStats = getEffectiveStats();
       const invincibilityEndTime = Date.now() + 5000; // 5 seconds from now
       
+      console.log(`🔍 REVIVAL DEBUG: Current health=${gameState.ninja.health}, Max health=${effectiveStats.maxHealth}`);
+      
       setGameState(prevState => ({
         ...prevState,
         isAlive: true,
@@ -973,6 +975,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           reviveTickets: prevState.ninja.reviveTickets - 1 // Use 1 ticket
         }
       }));
+      
+      console.log(`✅ REVIVAL COMPLETE: Set health to ${effectiveStats.maxHealth}`);
       
       // Remove invincibility after 5 seconds
       setTimeout(() => {
