@@ -92,10 +92,10 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
     }
   });
 
-  // Initialize with game context data when it becomes available
+  // Initialize with game context data when it becomes available (ONLY ONCE)
   useEffect(() => {
-    if (gameState?.zoneProgress) {
-      console.log('🔄 ZONE CONTEXT - Loading zone progress from GameContext:', gameState.zoneProgress);
+    if (gameState?.zoneProgress && !hasInitializedZones) {
+      console.log('🔄 ZONE CONTEXT - Loading zone progress from GameContext (FIRST TIME):', gameState.zoneProgress);
       setZoneProgress(gameState.zoneProgress);
       
       // Find the highest unlocked zone for progression tracking
@@ -116,12 +116,33 @@ export const ZoneProvider = ({ children }: { children: ReactNode }) => {
       console.log(`🎯 PROGRESSION ZONE SET: Zone ${highestZone.id} Level ${highestLevel?.level || 1} (highest unlocked)`);
       setProgressionZone(highestZone);
       
-      // Set current selected zone to progression zone initially  
-      console.log(`🎯 SELECTED ZONE INITIALIZED: Zone ${highestZone.id} Level ${highestLevel?.level || 1} (matching progression)`);
+      // Set current selected zone to progression zone ONLY on initial load  
+      console.log(`🎯 SELECTED ZONE INITIALIZED (ONCE): Zone ${highestZone.id} Level ${highestLevel?.level || 1} (matching progression)`);
       setCurrentZone(highestZone);
       setCurrentZoneLevel(highestLevel || ZONES[0]?.levels[0]);
+      setHasInitializedZones(true); // Mark as initialized to prevent future auto-selection
+    } else if (gameState?.zoneProgress && hasInitializedZones) {
+      // Update zone progress data but DON'T change selected zone
+      console.log('🔄 ZONE CONTEXT - Updating zone progress data (preserving selection)');
+      setZoneProgress(gameState.zoneProgress);
+      
+      // Update progression zone tracking for unlock logic
+      const progressEntries = Object.values(gameState.zoneProgress || {});
+      let highestZone = ZONES[0];
+      
+      for (const progress of progressEntries) {
+        if (progress && progress.zoneId) {
+          const zone = ZONES.find(z => z.id === progress.zoneId);
+          if (zone) {
+            highestZone = zone;
+          }
+        }
+      }
+      
+      console.log(`🎯 PROGRESSION ZONE UPDATED: Zone ${highestZone.id} (selected zone unchanged)`);
+      setProgressionZone(highestZone);
     }
-  }, [gameState?.zoneProgress]);
+  }, [gameState?.zoneProgress, hasInitializedZones]);
 
   // Initialize default zone based on player level
   useEffect(() => {
