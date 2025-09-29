@@ -52,6 +52,7 @@ interface CombatProjectile {
   abilityId: string;
   abilityName: string;
   abilityIcon: string; // Emoji icon of the ability (🌟🔥❄️☠️👥)
+  hasHit?: boolean; // Track if projectile has already hit to prevent duplicate damage
 }
 
 interface CombatContextType {
