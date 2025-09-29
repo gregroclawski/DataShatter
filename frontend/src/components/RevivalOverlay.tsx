@@ -11,7 +11,7 @@ interface RevivalOverlayProps {
 }
 
 export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onRevive, onDecline }) => {
-  const { gameState } = useGame();
+  const { gameState, updateNinja, saveOnEvent } = useGame();
   const [countdown, setCountdown] = useState(10);
   const [fadeAnim] = useState(new Animated.Value(0));
   const [scaleAnim] = useState(new Animated.Value(0.8));
