@@ -217,6 +217,47 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         }
       });
 
+      // Sync player stats from game state with EFFECTIVE stats (including upgrades)
+      // CRITICAL: Do this BEFORE enemy attacks to avoid overriding combat damage
+      if (newState.playerStats && game.gameState.ninja) {
+        const effectiveStats = game.getEffectiveStats();
+        
+        // Only update if different to prevent unnecessary state changes
+        if (newState.playerStats.attack !== effectiveStats.attack ||
+            newState.playerStats.defense !== effectiveStats.defense ||
+            newState.playerStats.maxHealth !== effectiveStats.health) {
+          
+          console.log(`🔧 PLAYER STATS UPDATE: Attack ${newState.playerStats.attack} → ${effectiveStats.attack}, Defense ${newState.playerStats.defense} → ${effectiveStats.defense}, MaxHP ${newState.playerStats.maxHealth} → ${effectiveStats.health}`);
+          
+          // Handle max health changes carefully
+          let newHealth = newState.playerStats.health;
+          if (newState.playerStats.maxHealth !== effectiveStats.health) {
+            // Only adjust health ratio if max health increased significantly (upgrades)
+            if (effectiveStats.health > newState.playerStats.maxHealth * 1.1) {
+              // Player got a health upgrade - maintain ratio but give the benefit
+              const healthRatio = newState.playerStats.maxHealth > 0 ? 
+                newState.playerStats.health / newState.playerStats.maxHealth : 1;
+              newHealth = Math.floor(effectiveStats.health * healthRatio);
+            } else if (newState.playerStats.health > effectiveStats.health) {
+              // Max health decreased or current health exceeds new max - cap it
+              newHealth = effectiveStats.health;
+            }
+            // Otherwise keep current health value (preserve combat damage)
+          }
+          
+          newState.playerStats = {
+            ...newState.playerStats,
+            attack: effectiveStats.attack,
+            defense: effectiveStats.defense,
+            maxHealth: effectiveStats.health,
+            health: newHealth, // Preserve combat damage
+            critChance: effectiveStats.critChance || newState.playerStats.critChance,
+            critDamage: effectiveStats.critDamage || newState.playerStats.critDamage,
+            cooldownReduction: effectiveStats.cooldownReduction || newState.playerStats.cooldownReduction,
+          };
+        }
+      }
+
       // MOBILE FIX: Enemy AI - Track toward player for idle game combat engagement
       newState.enemies.forEach(enemy => {
         if (!enemy.isBoss) { // Only move regular enemies, not bosses
