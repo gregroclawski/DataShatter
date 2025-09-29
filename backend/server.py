@@ -474,6 +474,136 @@ async def get_game_events():
     
     return {"events": events}
 
+# Subscription Routes
+@api_router.post("/subscriptions/purchase")
+async def purchase_subscription(
+    subscription_request: PurchaseSubscriptionRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    """Purchase a subscription"""
+    try:
+        user_id = current_user.get("user_id")
+        
+        # Check if user already has active subscription of this type
+        existing_subscription = await db.subscriptions.find_one({
+            "user_id": user_id,
+            "subscription_type": subscription_request.subscription_type,
+            "is_active": True,
+            "end_date": {"$gt": datetime.now(timezone.utc)}
+        })
+        
+        if existing_subscription:
+            raise HTTPException(
+                status_code=400, 
+                detail="You already have an active subscription of this type"
+            )
+        
+        # Create new subscription
+        subscription_id = str(uuid.uuid4())
+        start_date = datetime.now(timezone.utc)
+        end_date = start_date + timedelta(days=30)  # 30 days subscription
+        
+        subscription_data = {
+            "id": subscription_id,
+            "user_id": user_id,
+            "subscription_type": subscription_request.subscription_type,
+            "price": 40.0,  # $40 for both subscription types
+            "duration_days": 30,
+            "start_date": start_date,
+            "end_date": end_date,
+            "is_active": True,
+            "created_at": start_date,
+            "payment_method": subscription_request.payment_method
+        }
+        
+        # Insert subscription into database
+        await db.subscriptions.insert_one(subscription_data)
+        
+        print(f"💳 SUBSCRIPTION PURCHASED - User: {user_id}, Type: {subscription_request.subscription_type}")
+        
+        return {
+            "success": True,
+            "subscription": subscription_data,
+            "message": f"Successfully purchased {subscription_request.subscription_type} subscription for 30 days!"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"❌ Subscription purchase error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to purchase subscription: {str(e)}")
+
+@api_router.get("/subscriptions/active")
+async def get_active_subscriptions(current_user: dict = Depends(get_current_user)):
+    """Get user's active subscriptions"""
+    try:
+        user_id = current_user.get("user_id")
+        current_time = datetime.now(timezone.utc)
+        
+        # Find all active subscriptions for user
+        active_subscriptions = []
+        cursor = db.subscriptions.find({
+            "user_id": user_id,
+            "is_active": True,
+            "end_date": {"$gt": current_time}
+        })
+        
+        async for subscription in cursor:
+            # Convert ObjectId to string for JSON serialization
+            subscription["_id"] = str(subscription["_id"])
+            active_subscriptions.append(subscription)
+        
+        print(f"📋 ACTIVE SUBSCRIPTIONS - User: {user_id}, Count: {len(active_subscriptions)}")
+        
+        return {"subscriptions": active_subscriptions}
+        
+    except Exception as e:
+        print(f"❌ Failed to get active subscriptions: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get subscriptions: {str(e)}")
+
+@api_router.get("/subscriptions/benefits")
+async def get_subscription_benefits(current_user: dict = Depends(get_current_user)):
+    """Get current subscription benefits/multipliers for user"""
+    try:
+        user_id = current_user.get("user_id")
+        current_time = datetime.now(timezone.utc)
+        
+        # Default multipliers (no subscription)
+        benefits = {
+            "xp_multiplier": 1.0,
+            "drop_multiplier": 1.0,
+            "zone_kill_multiplier": 1.0,
+            "active_subscriptions": []
+        }
+        
+        # Find all active subscriptions for user
+        cursor = db.subscriptions.find({
+            "user_id": user_id,
+            "is_active": True,
+            "end_date": {"$gt": current_time}
+        })
+        
+        async for subscription in cursor:
+            subscription_type = subscription["subscription_type"]
+            benefits["active_subscriptions"].append({
+                "type": subscription_type,
+                "end_date": subscription["end_date"].isoformat(),
+                "days_remaining": (subscription["end_date"] - current_time).days
+            })
+            
+            # Apply subscription benefits
+            if subscription_type == "xp_drop_boost":
+                benefits["xp_multiplier"] = 2.0
+                benefits["drop_multiplier"] = 2.0
+            elif subscription_type == "zone_progression_boost":
+                benefits["zone_kill_multiplier"] = 2.0
+        
+        return benefits
+        
+    except Exception as e:
+        print(f"❌ Failed to get subscription benefits: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get benefits: {str(e)}")
+
 # Authentication Routes
 @api_router.post("/auth/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 async def register(user_data: UserCreate, response: Response):
