@@ -488,6 +488,24 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         });
       });
     }
+
+    // Apply Buff effects (Shadow Clone)
+    if (ability.effects.includes('Buff') && ability.id === 'shadow_clone') {
+      console.log(`👥 SHADOW CLONE: Creating shadow clone for ${ability.stats.duration} seconds`);
+      
+      // Position clone slightly offset from ninja
+      const cloneX = currentNinjaPosition.x + 60; // 60 pixels to the right
+      const cloneY = currentNinjaPosition.y + 10; // 10 pixels down
+      
+      state.shadowClone = {
+        id: `shadow_clone_${Date.now()}`,
+        remainingTicks: Math.floor(ability.stats.duration * 10), // Convert seconds to ticks (30s = 300 ticks)
+        position: { x: cloneX, y: cloneY },
+        damageMultiplier: 0.7, // 70% damage
+      };
+      
+      console.log(`👥 SHADOW CLONE ACTIVE: Clone will last ${ability.stats.duration}s and deal 70% damage`);
+    }
   };
 
   // Create projectile that will deal damage when it hits
