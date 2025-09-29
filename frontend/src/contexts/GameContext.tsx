@@ -448,6 +448,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const now = Date.now();
+      const saveUrl = `${API_BASE_URL}/api/save-game`;
+      console.log('💾 ATTEMPTING SAVE TO:', saveUrl);
+      
       const saveData = {
         playerId: user.id,
         ninja: currentState.ninja,
@@ -461,7 +464,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         subscriptionBenefits: currentState.subscriptionBenefits, // Include subscription benefits
       };
 
-      const response = await fetch(`${API_BASE_URL}/api/save-game`, {
+      console.log('🚀 SAVE REQUEST STARTING - URL:', saveUrl);
+      const response = await fetch(saveUrl, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -471,8 +475,19 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         body: JSON.stringify(saveData),
       });
 
+      console.log('📡 SAVE RESPONSE RECEIVED - Status:', response.status, 'OK:', response.ok);
+      
       if (!response.ok) {
-        throw new Error(`Save failed: ${response.status}`);
+        // Get more detailed error information
+        let errorDetails = '';
+        try {
+          const errorText = await response.text();
+          errorDetails = ` - Details: ${errorText}`;
+          console.error('❌ SAVE ERROR DETAILS:', errorText);
+        } catch (textError) {
+          console.error('❌ Could not read error text:', textError);
+        }
+        throw new Error(`Save failed: ${response.status}${errorDetails}`);
       }
 
       const result = await response.json();
@@ -480,6 +495,13 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       console.log('✅ PROGRESS SAVED TO SERVER - Level:', result.ninja?.level, 'XP:', result.ninja?.experience);
     } catch (error) {
       console.error('❌ Server save failed:', error);
+      console.error('❌ Save error details:', {
+        message: error.message,
+        stack: error.stack,
+        apiUrl: API_BASE_URL,
+        isAuthenticated,
+        hasToken: !!token
+      });
       // SECURITY: No local backup - all progress must be saved to server for integrity
       throw error; // Propagate error since we can't rely on local backup anymore
     }
