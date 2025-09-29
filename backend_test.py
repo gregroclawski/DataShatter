@@ -48,6 +48,165 @@ class BackendTester:
             "details": details
         })
         
+    def test_critical_data_recovery(self):
+        """CRITICAL: Test if user's Level 40 character data still exists in database"""
+        try:
+            print(f"\n🚨 CRITICAL DATA RECOVERY CHECK")
+            print(f"🔍 Checking user: {CRITICAL_USER_ID}")
+            print(f"📋 Expected: Level 40+ character with specific upgrades")
+            print("=" * 60)
+            
+            response = self.session.get(f"{BACKEND_URL}/load-game/{CRITICAL_USER_ID}")
+            
+            if response.status_code != 200:
+                self.log_test("Critical Data Recovery - API Call", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+            
+            data = response.json()
+            
+            if data is None:
+                print("❌ CRITICAL ISSUE: NO SAVE DATA FOUND!")
+                print("🔥 USER'S PROGRESS APPEARS TO BE COMPLETELY LOST!")
+                self.log_test("Critical Data Recovery - Data Exists", False, "No save data found - user progress lost!")
+                return False
+            
+            # Extract ninja data
+            ninja = data.get('ninja', {})
+            level = ninja.get('level', 0)
+            experience = ninja.get('experience', 0)
+            gold = ninja.get('gold', 0)
+            gems = ninja.get('gems', 0)
+            
+            print(f"📊 FOUND USER DATA:")
+            print(f"   Level: {level}")
+            print(f"   Experience: {experience}")
+            print(f"   Gold: {gold}")
+            print(f"   Gems: {gems}")
+            
+            # Critical check: Level 40+ progression
+            level_check = level >= 40
+            if level_check:
+                print(f"✅ HIGH LEVEL PRESERVED: Level {level}")
+            else:
+                print(f"❌ LEVEL RESET: Found Level {level}, Expected 40+")
+            
+            # Check skill point upgrades (attack: 75, speed: 30)
+            skill_upgrades = ninja.get('skillPointUpgrades', {})
+            skill_attack = skill_upgrades.get('attack', 0) if skill_upgrades else 0
+            skill_speed = skill_upgrades.get('speed', 0) if skill_upgrades else 0
+            
+            skill_check = skill_attack == 75 and skill_speed == 30
+            if skill_upgrades:
+                print(f"🎯 Skill Point Upgrades:")
+                print(f"   Attack: {skill_attack} (Expected: 75)")
+                print(f"   Speed: {skill_speed} (Expected: 30)")
+                if skill_check:
+                    print("✅ SKILL UPGRADES MATCH EXPECTED VALUES")
+                else:
+                    print("❌ SKILL UPGRADES DON'T MATCH")
+            else:
+                print("❌ NO SKILL POINT UPGRADES FOUND")
+            
+            # Check gold upgrades
+            gold_upgrades = ninja.get('goldUpgrades', {})
+            gold_check = gold_upgrades is not None and len(gold_upgrades) > 0
+            if gold_check:
+                print(f"💰 Gold Upgrades Found: {gold_upgrades}")
+            else:
+                print("❌ NO GOLD UPGRADES FOUND")
+            
+            # Check equipment (Flame Sword)
+            equipment = data.get('equipment', {})
+            flame_sword_found = False
+            if equipment:
+                print(f"⚔️ Equipment Data:")
+                for slot, item in equipment.items():
+                    if item and isinstance(item, dict):
+                        item_name = item.get('name', 'Unknown')
+                        print(f"   {slot}: {item_name}")
+                        if 'Flame Sword' in item_name:
+                            flame_sword_found = True
+                            print("✅ FLAME SWORD FOUND!")
+                
+                if not flame_sword_found:
+                    print("❌ FLAME SWORD NOT FOUND")
+            else:
+                print("❌ NO EQUIPMENT DATA FOUND")
+            
+            # Check ability data (Shadow Clone level 2)
+            ability_data = data.get('abilityData', {})
+            shadow_clone_check = False
+            if ability_data:
+                available_abilities = ability_data.get('availableAbilities', {})
+                print(f"🥷 Ability Data:")
+                
+                for ability_id, ability in available_abilities.items():
+                    if 'shadow_clone' in ability_id.lower():
+                        ability_level = ability.get('level', 0)
+                        print(f"   Shadow Clone Level: {ability_level} (Expected: 2)")
+                        shadow_clone_check = ability_level == 2
+                        break
+                
+                if shadow_clone_check:
+                    print("✅ SHADOW CLONE LEVEL 2 FOUND")
+                else:
+                    print("❌ SHADOW CLONE LEVEL 2 NOT FOUND")
+            else:
+                print("❌ NO ABILITY DATA FOUND")
+            
+            # Overall assessment
+            print("\n" + "=" * 60)
+            print("🎯 CRITICAL DATA RECOVERY ASSESSMENT:")
+            
+            if level_check:
+                print(f"✅ HIGH-LEVEL CHARACTER PRESERVED (Level {level})")
+                recovery_status = "PARTIAL_RECOVERY"
+            else:
+                print(f"❌ CHARACTER RESET TO LOW LEVEL (Level {level})")
+                recovery_status = "DATA_LOSS"
+            
+            if skill_check:
+                print("✅ SKILL POINT UPGRADES PRESERVED")
+            else:
+                print("❌ SKILL POINT UPGRADES LOST/INCORRECT")
+            
+            if gold_check:
+                print("✅ GOLD UPGRADES PRESERVED")
+            else:
+                print("❌ GOLD UPGRADES LOST")
+            
+            if flame_sword_found:
+                print("✅ FLAME SWORD EQUIPMENT PRESERVED")
+            else:
+                print("❌ FLAME SWORD EQUIPMENT LOST")
+            
+            if shadow_clone_check:
+                print("✅ SHADOW CLONE LEVEL 2 PRESERVED")
+            else:
+                print("❌ SHADOW CLONE LEVEL 2 LOST")
+            
+            # Final verdict
+            critical_data_preserved = level_check and skill_check
+            
+            if critical_data_preserved:
+                print("\n🎉 CRITICAL DATA RECOVERY: SUCCESS")
+                print("   User's Level 40+ character and upgrades are preserved!")
+                details = f"Level {level} character with correct skill upgrades preserved"
+                success = True
+            else:
+                print("\n🚨 CRITICAL DATA RECOVERY: FAILURE")
+                print("   User's progress has been lost or corrupted!")
+                details = f"Level {level} character, skill upgrades incorrect. Expected Level 40+ with attack:75, speed:30"
+                success = False
+            
+            self.log_test("Critical Data Recovery", success, details)
+            return success
+            
+        except Exception as e:
+            print(f"\n💥 CRITICAL ERROR during data recovery check: {str(e)}")
+            self.log_test("Critical Data Recovery", False, f"Exception: {str(e)}")
+            return False
+        
     def test_health_check(self):
         """Test basic API health check"""
         try:
