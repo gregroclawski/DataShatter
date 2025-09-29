@@ -637,6 +637,101 @@ async def get_subscription_benefits(current_user: dict = Depends(get_current_use
         print(f"❌ Failed to get subscription benefits: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to get benefits: {str(e)}")
 
+# Name Change Routes
+@api_router.post("/user/change-name")
+async def change_name(
+    name_request: NameChangeRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    """Change user's display name"""
+    try:
+        user_id = current_user.get("id")
+        
+        # Get current user data
+        user = await get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Check if new name is different from current name (case-insensitive)
+        if user["name"].lower() == name_request.new_name.lower():
+            raise HTTPException(
+                status_code=400,
+                detail="New name must be different from current name"
+            )
+        
+        # Check if new name already exists (case-insensitive)
+        existing_user = await get_user_by_name(name_request.new_name)
+        if existing_user:
+            raise HTTPException(
+                status_code=400,
+                detail="Username already taken"
+            )
+        
+        # Check if user needs to pay (after first free change)
+        name_changes_used = user.get("name_changes_used", 0)
+        is_free = name_changes_used == 0
+        cost = 0.0 if is_free else 6.99
+        
+        print(f"📝 NAME CHANGE REQUEST - User: {user_id}, Current: '{user['name']}', New: '{name_request.new_name}', Cost: ${cost}")
+        
+        # Update user's name and increment change counter
+        update_result = await db.users.update_one(
+            {"id": user_id},
+            {
+                "$set": {
+                    "name": name_request.new_name,
+                    "name_changes_used": name_changes_used + 1,
+                    "updated_at": datetime.now(timezone.utc)
+                }
+            }
+        )
+        
+        if update_result.modified_count == 0:
+            raise HTTPException(status_code=500, detail="Failed to update name")
+        
+        print(f"✅ NAME CHANGE COMPLETED - User: {user_id}, New Name: '{name_request.new_name}'")
+        
+        return {
+            "success": True,
+            "old_name": user["name"],
+            "new_name": name_request.new_name,
+            "cost": cost,
+            "was_free": is_free,
+            "name_changes_used": name_changes_used + 1,
+            "message": f"Name successfully changed to '{name_request.new_name}'" + (" (Free)" if is_free else f" (${cost})")
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"❌ Name change error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to change name: {str(e)}")
+
+@api_router.get("/user/name-change-info")
+async def get_name_change_info(current_user: dict = Depends(get_current_user)):
+    """Get user's name change information"""
+    try:
+        user_id = current_user.get("id")
+        
+        user = await get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        name_changes_used = user.get("name_changes_used", 0)
+        is_next_free = name_changes_used == 0
+        next_cost = 0.0 if is_next_free else 6.99
+        
+        return {
+            "current_name": user["name"],
+            "name_changes_used": name_changes_used,
+            "next_change_free": is_next_free,
+            "next_change_cost": next_cost
+        }
+        
+    except Exception as e:
+        print(f"❌ Failed to get name change info: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get name change info: {str(e)}")
+
 # Authentication Routes
 @api_router.post("/auth/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 async def register(user_data: UserCreate, response: Response):
