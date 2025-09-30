@@ -301,11 +301,14 @@ async def root():
 async def save_game(save_request: SaveGameRequest):
     """Save player's game progress"""
     try:
+        ninja_name = getattr(save_request.ninja, 'name', 'Unknown')
         print(f"💾 SAVE REQUEST - Player ID: {save_request.playerId}")
+        print(f"💾 SAVE REQUEST - Ninja Name: {ninja_name}")
         print(f"💾 SAVE REQUEST - Ninja Level: {save_request.ninja.level}")
         print(f"💾 SAVE REQUEST - Ninja XP: {save_request.ninja.experience}")
         print(f"💾 SAVE REQUEST - Ninja Gold: {save_request.ninja.gold}")
         print(f"💾 SAVE REQUEST - Ninja Gems: {save_request.ninja.gems}")
+        print(f"💾 SAVE REQUEST - Revive Tickets: {getattr(save_request.ninja, 'reviveTickets', 0)}")
         print(f"💾 SAVE REQUEST - Gold Upgrades: {getattr(save_request.ninja, 'goldUpgrades', None)}")  # Add gold upgrades logging
         print(f"💾 SAVE REQUEST - Skill Point Upgrades: {getattr(save_request.ninja, 'skillPointUpgrades', None)}")  # Add skill point upgrades logging
         print(f"💾 SAVE REQUEST - Zone Progress: {save_request.zoneProgress}")
