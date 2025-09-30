@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
+    marginBottom: 15, // Replace gap with explicit margin
     shadowColor: MythicTechColors.neonCyan,
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 10,
