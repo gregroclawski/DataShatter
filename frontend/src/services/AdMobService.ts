@@ -1,21 +1,26 @@
-import { Platform, Alert } from 'react-native';
+import { Platform } from 'react-native';
 
-// Try to import AdMob modules with error handling
+// AdMob modules - only available in production builds
 let RewardedAd: any = null;
 let TestIds: any = null;
 let RewardedAdEventType: any = null;
 let isAdMobAvailable = false;
 
-try {
-  const AdMobModule = require('react-native-google-mobile-ads');
-  RewardedAd = AdMobModule.RewardedAd;
-  TestIds = AdMobModule.TestIds;
-  RewardedAdEventType = AdMobModule.RewardedAdEventType;
-  isAdMobAvailable = true;
-  console.log('✅ AdMob modules loaded successfully');
-} catch (error) {
-  console.log('❌ AdMob modules not available:', error.message);
-  console.log('📱 Running in Expo Go or AdMob not properly configured');
+// Only try to load AdMob in development builds (not web/development server)
+if (Platform.OS === 'ios' || Platform.OS === 'android') {
+  try {
+    const AdMobModule = require('react-native-google-mobile-ads');
+    RewardedAd = AdMobModule.RewardedAd;
+    TestIds = AdMobModule.TestIds;
+    RewardedAdEventType = AdMobModule.RewardedAdEventType;
+    isAdMobAvailable = true;
+    console.log('✅ AdMob modules loaded successfully');
+  } catch (error) {
+    console.log('❌ AdMob modules not available:', error.message);
+    console.log('📱 Running in Expo Go or development environment');
+  }
+} else {
+  console.log('🌐 Web environment detected - AdMob not available');
 }
 
 // AdMob Ad Unit IDs
