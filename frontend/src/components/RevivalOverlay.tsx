@@ -128,13 +128,15 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
             style={styles.adButton}
             onPress={async () => {
               try {
-                console.log('📺 Starting AdMob rewarded ad...');
+                console.log('📺 Starting rewarded ad...');
                 
-                // Import AdMob service dynamically to avoid initialization issues
-                const { adMobService } = await import('../services/AdMobService');
+                // For now, provide mock ad functionality until AdMob is properly configured
+                console.log('🎯 MOCK: Simulating ad watch...');
                 
-                const success = await adMobService.showRewardedAd((ticketCount: number) => {
-                  console.log(`🎫 Ad reward earned: ${ticketCount} tickets`);
+                // Simulate ad watching
+                setTimeout(() => {
+                  const ticketCount = 10;
+                  console.log(`🎫 Mock ad reward earned: ${ticketCount} tickets`);
                   
                   // Award tickets through GameContext
                   updateNinja(prev => ({
@@ -153,17 +155,17 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
                     `You received ${ticketCount} free revive tickets!\n\nTotal tickets: ${(gameState.ninja.reviveTickets || 0) + ticketCount}`,
                     [{ text: 'Awesome!' }]
                   );
-                });
+                }, 2000); // 2 second delay to simulate ad
                 
-                if (!success) {
-                  Alert.alert(
-                    'Ad Not Available',
-                    'Unable to show ad right now. Please try again in a moment.',
-                    [{ text: 'OK' }]
-                  );
-                }
+                // Show loading message
+                Alert.alert(
+                  '📺 Watching Ad',
+                  'Please wait while the ad loads...',
+                  [{ text: 'OK' }]
+                );
+                
               } catch (error) {
-                console.error('AdMob error:', error);
+                console.error('Ad error:', error);
                 Alert.alert(
                   'Error',
                   'Unable to show ad. Please try again later.',
