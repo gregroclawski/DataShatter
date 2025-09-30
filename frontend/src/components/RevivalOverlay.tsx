@@ -132,60 +132,39 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
               try {
                 console.log('📺 Starting rewarded ad system...');
                 
-                // Check if we're in a production build (iOS/Android) vs development server
-                if (Platform.OS === 'ios' || Platform.OS === 'android') {
-                  try {
-                    console.log('📱 Production build detected - attempting real AdMob');
-                    // Dynamic import only in production builds
-                    const AdMobModule = await import('../services/AdMobService');
-                    const { adMobService } = AdMobModule;
+                // Use MockAdService for development server (no AdMob dependencies)
+                console.log('🎯 Using mock ad service for development');
+                
+                try {
+                  const MockAdModule = await import('../services/MockAdService');
+                  const { mockAdService } = MockAdModule;
+                  
+                  Alert.alert('📺 Watching Ad', 'Loading advertisement...', [{ text: 'OK' }]);
+                  
+                  const success = await mockAdService.showRewardedAd((ticketCount: number) => {
+                    console.log(`🎫 Mock ad reward: ${ticketCount} tickets`);
                     
-                    if (adMobService.isServiceAvailable()) {
-                      const success = await adMobService.showRewardedAd((ticketCount: number) => {
-                        console.log(`🎫 AdMob reward: ${ticketCount} tickets`);
-                        
-                        updateNinja(prev => ({
-                          ...prev,
-                          reviveTickets: (prev.reviveTickets || 0) + ticketCount
-                        }));
-                        
-                        setTimeout(() => saveOnEvent('ad_reward_revive_tickets'), 100);
-                        
-                        Alert.alert(
-                          '🎉 Ad Reward!',
-                          `You received ${ticketCount} revive tickets!\n\nTotal: ${(gameState.ninja.reviveTickets || 0) + ticketCount}`,
-                          [{ text: 'Awesome!' }]
-                        );
-                      });
-                      
-                      if (success) return; // AdMob worked, exit function
-                    }
-                  } catch (error) {
-                    console.log('🎯 AdMob failed, falling back to mock:', error.message);
+                    updateNinja(prev => ({
+                      ...prev,
+                      reviveTickets: (prev.reviveTickets || 0) + ticketCount
+                    }));
+                    
+                    setTimeout(() => saveOnEvent('ad_reward_revive_tickets'), 100);
+                    
+                    Alert.alert(
+                      '🎉 Ad Complete!',
+                      `You received ${ticketCount} revive tickets!\n\nTotal: ${(gameState.ninja.reviveTickets || 0) + ticketCount}`,
+                      [{ text: 'Awesome!' }]
+                    );
+                  });
+                  
+                  if (!success) {
+                    throw new Error('Mock ad service failed');
                   }
+                } catch (error) {
+                  console.error('Mock ad error:', error);
+                  Alert.alert('Error', 'Unable to show ad. Please try again.', [{ text: 'OK' }]);
                 }
-                
-                // Fallback: Mock ad system for development/web or when AdMob fails
-                console.log('🎯 Using mock ad system');
-                Alert.alert('📺 Watching Ad', 'Loading advertisement...', [{ text: 'OK' }]);
-                
-                setTimeout(() => {
-                  const ticketCount = 10;
-                  console.log(`🎫 Mock ad reward: ${ticketCount} tickets`);
-                  
-                  updateNinja(prev => ({
-                    ...prev,
-                    reviveTickets: (prev.reviveTickets || 0) + ticketCount
-                  }));
-                  
-                  setTimeout(() => saveOnEvent('ad_reward_revive_tickets'), 100);
-                  
-                  Alert.alert(
-                    '🎉 Ad Complete!',
-                    `You received ${ticketCount} revive tickets!\n\nTotal: ${(gameState.ninja.reviveTickets || 0) + ticketCount}`,
-                    [{ text: 'Awesome!' }]
-                  );
-                }, 2000);
                 
               } catch (error) {
                 console.error('Ad button error:', error);
