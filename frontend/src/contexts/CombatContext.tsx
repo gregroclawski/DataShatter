@@ -955,6 +955,12 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   const useAbilityManually = useCallback((slotIndex: number): boolean => {
     console.log(`🎮 Manual cast attempt for slot ${slotIndex}`);
     
+    // CRITICAL: Check if player is alive first
+    if (!game.gameState.isAlive) {
+      console.log(`💀 Manual ability cast blocked - player is dead!`);
+      return false;
+    }
+    
     // Check if ability is ready and cast it
     const isReady = combatState.abilityManager.isAbilityReady(slotIndex);
     if (!isReady) {
