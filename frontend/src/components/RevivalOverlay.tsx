@@ -100,7 +100,7 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
               onPress={onRevive}
               activeOpacity={0.8}
             >
-              <Ionicons name="heart" size={24} color={MythicTechColors.darkVoid} />
+              <Ionicons name="heart" size={24} color={MythicTechColors.darkSpace} />
               <Text style={styles.reviveButtonText}>
                 USE REVIVE TICKET
               </Text>
