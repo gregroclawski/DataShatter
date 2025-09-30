@@ -346,6 +346,10 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 8,
     shadowOpacity: 0.4,
+    marginVertical: 8, // Add vertical margin
+    minHeight: 44, // Ensure minimum touch target
+    borderWidth: 2, // Add border for debugging
+    borderColor: '#FF0000', // Red border to debug visibility
   },
   adButtonText: {
     fontSize: 14,
