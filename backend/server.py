@@ -347,7 +347,7 @@ async def save_game(save_request: SaveGameRequest):
             insert_result = await db.game_saves.insert_one(save_data)
             print(f"💾 INSERT RESULT - ID: {insert_result.inserted_id}")
         
-        print(f"✅ SAVE COMPLETED - Player: {save_request.playerId}, Level: {save_request.ninja.level}")
+        print(f"✅ SAVE COMPLETED - Player: {ninja_name} ({save_request.playerId}), Level: {save_request.ninja.level}")
         return GameSave(**save_data)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save game: {str(e)}")
