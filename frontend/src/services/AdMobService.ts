@@ -23,9 +23,9 @@ if (Platform.OS === 'ios' || Platform.OS === 'android') {
   console.log('🌐 Web environment detected - AdMob not available');
 }
 
-// AdMob Ad Unit IDs
+// AdMob Ad Unit IDs - only defined if AdMob is available
 const AD_UNIT_IDS = {
-  rewarded: __DEV__ && TestIds
+  rewarded: isAdMobAvailable && TestIds && __DEV__
     ? TestIds.REWARDED 
     : 'ca-app-pub-9692390081647816/9535889564', // Production ad unit ID
 };
