@@ -14,7 +14,7 @@
     "newArchEnabled": false,
     "ios": {
       "supportsTablet": true,
-      "admobAppId": "ca-app-pub-3940256099942544~1458002511"
+      "admobAppId": "ca-app-pub-9692390081647816~1234567890"
     },
     "android": {
       "adaptiveIcon": {
@@ -22,7 +22,7 @@
         "backgroundColor": "#0a0a0f"
       },
       "edgeToEdgeEnabled": true,
-      "admobAppId": "ca-app-pub-3940256099942544~3347511713"
+      "admobAppId": "ca-app-pub-9692390081647816~1234567890"
     },
     "web": {
       "bundler": "metro",
