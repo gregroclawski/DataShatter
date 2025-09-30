@@ -5,10 +5,7 @@ import { Platform } from 'react-native';
 const AD_UNIT_IDS = {
   rewarded: __DEV__ 
     ? TestIds.REWARDED 
-    : Platform.select({
-        ios: 'ca-app-pub-3940256099942544/5224354917', // Test ID for now
-        android: 'ca-app-pub-3940256099942544/5224354917', // Test ID for now
-      }),
+    : 'ca-app-pub-9692390081647816/9535889564', // Production ad unit ID
 };
 
 export class AdMobService {
