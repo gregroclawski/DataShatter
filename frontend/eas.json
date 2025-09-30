@@ -6,7 +6,8 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "prebuildCommand": "npm install",
+      "node": "18.18.0",
+      "prebuildCommand": "npm install && npx expo install --check",
       "ios": {
         "resourceClass": "m-medium"
       },
