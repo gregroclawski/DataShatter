@@ -125,7 +125,7 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
             </View>
           )}
 
-          {/* Watch Ad Button - Simplified for debugging */}
+          {/* AdMob Button - Working but invisible due to AdMob overlay */}
           <View style={{
             backgroundColor: 'red',
             padding: 20,
@@ -134,49 +134,57 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
             borderWidth: 3,
             borderColor: 'blue',
             width: '90%',
-            alignItems: 'center'
+            alignItems: 'center',
+            zIndex: 9999, // Try to render above AdMob
+            elevation: 9999, // Android elevation
           }}>
+            <Text style={{ 
+              color: 'white', 
+              fontSize: 16, 
+              fontWeight: 'bold',
+              textAlign: 'center',
+              marginBottom: 10
+            }}>
+              ⚠️ ADMOB BUTTON BELOW (INVISIBLE BUT WORKING)
+            </Text>
             <TouchableOpacity 
               style={{
                 backgroundColor: 'yellow',
                 padding: 15,
                 borderRadius: 5,
                 width: '100%',
-                alignItems: 'center'
+                alignItems: 'center',
+                zIndex: 10000,
+                elevation: 10000,
               }}
               onPress={async () => {
-                try {
-                  console.log('📺 AD BUTTON PRESSED!');
-                  
-                  const ticketCount = 10;
-                  console.log(`🎫 Mock ad reward earned: ${ticketCount} tickets`);
-                  
-                  // Award tickets through GameContext
-                  updateNinja(prev => ({
-                    ...prev,
-                    reviveTickets: (prev.reviveTickets || 0) + ticketCount
-                  }));
-                  
-                  // Trigger save
-                  setTimeout(() => {
-                    saveOnEvent('ad_reward_revive_tickets');
-                  }, 100);
-                  
-                  Alert.alert('AD BUTTON WORKS!', `You got ${ticketCount} tickets!`);
-                  
-                } catch (error) {
-                  console.error('Ad error:', error);
-                }
+                console.log('📺 MANUAL BUTTON PRESSED - BYPASSING ADMOB');
+                
+                const ticketCount = 10;
+                console.log(`🎫 Manual reward: ${ticketCount} tickets`);
+                
+                // Award tickets through GameContext
+                updateNinja(prev => ({
+                  ...prev,
+                  reviveTickets: (prev.reviveTickets || 0) + ticketCount
+                }));
+                
+                // Trigger save
+                setTimeout(() => {
+                  saveOnEvent('ad_reward_revive_tickets');
+                }, 100);
+                
+                Alert.alert('MANUAL BUTTON WORKS!', `You got ${ticketCount} tickets without watching ad!`);
               }}
               activeOpacity={0.8}
             >
               <Text style={{ 
                 color: 'black', 
-                fontSize: 20, 
+                fontSize: 18, 
                 fontWeight: 'bold',
                 textAlign: 'center'
               }}>
-                WATCH AD (+10 TICKETS)
+                GET 10 TICKETS (NO AD)
               </Text>
             </TouchableOpacity>
           </View>
