@@ -285,11 +285,12 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
           };
         }
 
-        // REVIVAL SYNC: When player is revived, sync the combat state with game state health
-        if (game.gameState.isAlive && effectiveStats.health === effectiveStats.maxHealth && 
-            newState.playerStats.health !== effectiveStats.health) {
-          console.log(`💖 REVIVAL SYNC: Combat health ${newState.playerStats.health} → ${effectiveStats.health} (Full health restoration detected)`);
-          newState.playerStats.health = effectiveStats.health;
+        // REVIVAL SYNC: Only sync when player is actually revived (game health equals max health and combat health is very low)
+        if (game.gameState.isAlive && 
+            game.gameState.ninja.health === effectiveStats.maxHealth && 
+            newState.playerStats.health < effectiveStats.maxHealth * 0.1) {
+          console.log(`💖 REVIVAL SYNC: Combat health ${newState.playerStats.health} → ${game.gameState.ninja.health} (Revival detected)`);
+          newState.playerStats.health = game.gameState.ninja.health;
         }
       }
 
