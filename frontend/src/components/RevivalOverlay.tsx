@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   reviveButtonText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: MythicTechColors.darkVoid,
+    color: MythicTechColors.darkSpace,
   },
   ticketIndicator: {
     flexDirection: 'row',
