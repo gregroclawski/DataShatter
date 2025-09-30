@@ -1055,7 +1055,7 @@ async def check_session(request: Request):
 
 # Admin endpoints for easier player management
 class AdminPlayerRequest(BaseModel):
-    ninja_name: str
+    player_id: str
     revive_tickets: Optional[int] = None
     gems: Optional[int] = None
     gold: Optional[int] = None
@@ -1070,7 +1070,6 @@ async def list_all_players():
         
         for save in saves:
             player_id = save.get('playerId', 'Unknown')
-            ninja_name = save.get('ninja', {}).get('name', 'Unknown')
             level = save.get('ninja', {}).get('level', 0)
             tickets = save.get('ninja', {}).get('reviveTickets', 0)
             gems = save.get('ninja', {}).get('gems', 0)
@@ -1078,7 +1077,6 @@ async def list_all_players():
             
             players.append({
                 'playerId': player_id,
-                'ninjaName': ninja_name,
                 'level': level,
                 'reviveTickets': tickets,
                 'gems': gems,
@@ -1092,16 +1090,14 @@ async def list_all_players():
         raise HTTPException(status_code=500, detail=f"Failed to list players: {str(e)}")
 
 @api_router.post("/admin/update-player")
-async def update_player_by_name(request: AdminPlayerRequest):
-    """Update a player's stats by ninja name"""
+async def update_player_by_id(request: AdminPlayerRequest):
+    """Update a player's stats by player ID"""
     try:
-        # Find player by ninja name (case insensitive)
-        save = await db.game_saves.find_one({
-            "ninja.name": {"$regex": f"^{request.ninja_name}$", "$options": "i"}
-        })
+        # Find player by player ID
+        save = await db.game_saves.find_one({"playerId": request.player_id})
         
         if not save:
-            raise HTTPException(status_code=404, detail=f"Player '{request.ninja_name}' not found")
+            raise HTTPException(status_code=404, detail=f"Player '{request.player_id}' not found")
         
         # Prepare update data
         update_data = {}
@@ -1124,8 +1120,8 @@ async def update_player_by_name(request: AdminPlayerRequest):
         )
         
         if result.modified_count > 0:
-            print(f"🔧 ADMIN UPDATE: {request.ninja_name} - {update_data}")
-            return {"message": f"Successfully updated {request.ninja_name}", "changes": update_data}
+            print(f"🔧 ADMIN UPDATE: {request.player_id} - {update_data}")
+            return {"message": f"Successfully updated {request.player_id}", "changes": update_data}
         else:
             raise HTTPException(status_code=500, detail="Update failed")
             
