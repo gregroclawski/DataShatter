@@ -61,6 +61,8 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
   const reviveTickets = gameState.ninja.reviveTickets || 0;
   const canRevive = reviveTickets > 0;
 
+  console.log('🔴 REVIVAL OVERLAY RENDERING:', { visible, reviveTickets, canRevive, countdown });
+
   return (
     <Animated.View 
       style={[
