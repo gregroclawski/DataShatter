@@ -329,6 +329,21 @@ export default function NinjaIdleGame() {
     return () => clearInterval(projectileAnimationInterval);
   }, [projectiles]);
 
+  // Initialize AdMob when app starts
+  useEffect(() => {
+    const initializeAdMob = async () => {
+      try {
+        console.log('📱 Initializing AdMob...');
+        await mobileAds().initialize();
+        console.log('✅ AdMob initialized successfully');
+      } catch (error) {
+        console.error('❌ AdMob initialization failed:', error);
+      }
+    };
+
+    initializeAdMob();
+  }, []);
+
   // Start combat automatically when component mounts
   useEffect(() => {
     console.log('🎮 Starting combat on component mount');
