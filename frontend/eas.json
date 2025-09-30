@@ -6,6 +6,7 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "prebuildCommand": "npm install",
       "ios": {
         "resourceClass": "m-medium"
       },
