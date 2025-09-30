@@ -395,8 +395,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         }
       });
 
-      // Sync player stats from game state with EFFECTIVE stats (including upgrades) - DUPLICATE REMOVED
-      // This duplicate sync block has been removed to prevent conflicts with the main sync above
+      // Shadow clone management
       if (newState.shadowClone) {
         // Update clone duration
         newState.shadowClone.remainingTicks--;
