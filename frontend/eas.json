@@ -6,7 +6,6 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "prebuildCommand": "yarn install",
       "ios": {
         "resourceClass": "m-medium"
       },
@@ -17,7 +16,6 @@
     },
     "preview": {
       "distribution": "internal",
-      "prebuildCommand": "yarn install",
       "ios": {
         "resourceClass": "m-medium"
       },
@@ -27,7 +25,6 @@
       }
     },
     "production": {
-      "prebuildCommand": "yarn install",
       "ios": {
         "resourceClass": "m-medium"
       },
