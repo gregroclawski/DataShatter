@@ -1,4 +1,4 @@
-import { RewardedAd, TestIds, AdEventType, RewardedAdEventType } from 'react-native-google-mobile-ads';
+import { RewardedAd, TestIds, RewardedAdEventType } from 'react-native-google-mobile-ads';
 import { Platform } from 'react-native';
 
 // AdMob Ad Unit IDs
