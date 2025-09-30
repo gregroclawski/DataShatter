@@ -435,7 +435,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       }
 
       // Auto-cast abilities - MOBILE FIX: Pause during manual joystick control to prevent stuttering
-      if (!isManualControlActive) {
+      // CRITICAL: Don't cast abilities when player is dead
+      if (!isManualControlActive && game.gameState.isAlive) {
         for (let i = 0; i < 5; i++) {
           if (newState.abilityManager.isAbilityReady(i) && newState.enemies.length > 0) {
             if (newState.abilityManager.useAbility(i, newTick)) {
