@@ -6,8 +6,8 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "node": "18.18.0",
-      "prebuildCommand": "npm install",
+      "node": "20.18.0",
+      "prebuildCommand": "yarn install",
       "ios": {
         "resourceClass": "m-medium"
       },
