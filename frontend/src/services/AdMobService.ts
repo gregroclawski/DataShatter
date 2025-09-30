@@ -1,9 +1,26 @@
-import { RewardedAd, TestIds, RewardedAdEventType } from 'react-native-google-mobile-ads';
-import { Platform } from 'react-native';
+import { Platform, Alert } from 'react-native';
+
+// Try to import AdMob modules with error handling
+let RewardedAd: any = null;
+let TestIds: any = null;
+let RewardedAdEventType: any = null;
+let isAdMobAvailable = false;
+
+try {
+  const AdMobModule = require('react-native-google-mobile-ads');
+  RewardedAd = AdMobModule.RewardedAd;
+  TestIds = AdMobModule.TestIds;
+  RewardedAdEventType = AdMobModule.RewardedAdEventType;
+  isAdMobAvailable = true;
+  console.log('✅ AdMob modules loaded successfully');
+} catch (error) {
+  console.log('❌ AdMob modules not available:', error.message);
+  console.log('📱 Running in Expo Go or AdMob not properly configured');
+}
 
 // AdMob Ad Unit IDs
 const AD_UNIT_IDS = {
-  rewarded: __DEV__ 
+  rewarded: __DEV__ && TestIds
     ? TestIds.REWARDED 
     : 'ca-app-pub-9692390081647816/9535889564', // Production ad unit ID
 };
