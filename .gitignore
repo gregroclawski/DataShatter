@@ -139,3 +139,7 @@ Thumbs.db
 
 # EAS
 eas.json.backup
+-e 
+# Environment files
+*.env
+*.env.*
