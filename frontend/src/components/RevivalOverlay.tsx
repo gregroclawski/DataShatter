@@ -123,50 +123,59 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
             </View>
           )}
 
-          {/* Watch Ad Button for Free Tickets */}
+          {/* Watch Ad Button - Replaces Free Respawn */}
           <TouchableOpacity 
             style={styles.adButton}
-            onPress={() => {
-              // Award 10 free revive tickets for watching ad
-              console.log('📺 Watching ad for 10 free revive tickets!');
-              
-              // Use GameContext to properly update revive tickets
-              updateNinja(prev => ({
-                ...prev,
-                reviveTickets: (prev.reviveTickets || 0) + 10
-              }));
-              
-              // Trigger save
-              setTimeout(() => {
-                saveOnEvent('ad_reward_revive_tickets');
-              }, 100);
-              
-              // Show success message
-              Alert.alert(
-                '🎉 Ad Reward!',
-                'You received 10 free revive tickets!\n\nTotal tickets: ' + 
-                ((gameState.ninja.reviveTickets || 0) + 10),
-                [{ text: 'Awesome!' }]
-              );
-              
-              // TODO: Integrate with actual ad service (AdMob, Unity Ads, etc.)
+            onPress={async () => {
+              try {
+                console.log('📺 Starting AdMob rewarded ad...');
+                
+                // Import AdMob service dynamically to avoid initialization issues
+                const { adMobService } = await import('../services/AdMobService');
+                
+                const success = await adMobService.showRewardedAd((ticketCount: number) => {
+                  console.log(`🎫 Ad reward earned: ${ticketCount} tickets`);
+                  
+                  // Award tickets through GameContext
+                  updateNinja(prev => ({
+                    ...prev,
+                    reviveTickets: (prev.reviveTickets || 0) + ticketCount
+                  }));
+                  
+                  // Trigger save
+                  setTimeout(() => {
+                    saveOnEvent('ad_reward_revive_tickets');
+                  }, 100);
+                  
+                  // Show success message
+                  Alert.alert(
+                    '🎉 Ad Reward!',
+                    `You received ${ticketCount} free revive tickets!\n\nTotal tickets: ${(gameState.ninja.reviveTickets || 0) + ticketCount}`,
+                    [{ text: 'Awesome!' }]
+                  );
+                });
+                
+                if (!success) {
+                  Alert.alert(
+                    'Ad Not Available',
+                    'Unable to show ad right now. Please try again in a moment.',
+                    [{ text: 'OK' }]
+                  );
+                }
+              } catch (error) {
+                console.error('AdMob error:', error);
+                Alert.alert(
+                  'Error',
+                  'Unable to show ad. Please try again later.',
+                  [{ text: 'OK' }]
+                );
+              }
             }}
             activeOpacity={0.8}
           >
-            <Ionicons name="play-circle" size={20} color={MythicTechColors.neonGold} />
+            <Ionicons name="play-circle" size={20} color={MythicTechColors.darkVoid} />
             <Text style={styles.adButtonText}>
               WATCH AD (+10 TICKETS)
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.declineButton}
-            onPress={onDecline}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="refresh" size={20} color={MythicTechColors.voidSilver} />
-            <Text style={styles.declineButtonText}>
-              RESPAWN FREE
             </Text>
           </TouchableOpacity>
         </View>
