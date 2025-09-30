@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "frontend",
+    "name": "Data Shatter",
+    "slug": "data-shatter",
     "owner": "ontract",
     "version": "1.0.0",
     "orientation": "portrait",
