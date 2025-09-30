@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
     color: MythicTechColors.voidSilver,
   },
   adButton: {
-    backgroundColor: MythicTechColors.neonGold,
+    backgroundColor: '#FFD700', // Bright gold color
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 12,
@@ -342,14 +342,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    shadowColor: MythicTechColors.neonGold,
+    shadowColor: '#FFD700',
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 8,
     shadowOpacity: 0.4,
-    marginVertical: 8, // Add vertical margin
-    minHeight: 44, // Ensure minimum touch target
-    borderWidth: 2, // Add border for debugging
-    borderColor: '#FF0000', // Red border to debug visibility
+    marginVertical: 8,
+    minHeight: 44,
+    borderWidth: 2,
+    borderColor: '#FFA500', // Orange border
   },
   adButtonText: {
     fontSize: 16, // Increase font size
