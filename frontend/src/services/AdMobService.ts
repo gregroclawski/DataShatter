@@ -38,6 +38,12 @@ export class AdMobService {
 
   private initializeRewardedAd() {
     try {
+      if (!isAdMobAvailable) {
+        console.log('🎯 AdMob: Not available - using mock service');
+        this.isInitialized = false;
+        return;
+      }
+
       if (!AD_UNIT_IDS.rewarded) {
         console.error('AdMob: No ad unit ID found for current platform');
         return;
