@@ -74,7 +74,7 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
       <View style={styles.modalContainer}>
         {/* Death Icon */}
         <View style={styles.deathIcon}>
-          <Ionicons name="skull" size={60} color={MythicTechColors.neonRed} />
+          <Ionicons name="skull" size={60} color={MythicTechColors.crimsonRed} />
         </View>
 
         {/* Title */}
