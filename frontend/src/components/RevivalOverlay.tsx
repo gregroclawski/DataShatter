@@ -175,7 +175,7 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
             }}
             activeOpacity={0.8}
           >
-            <Ionicons name="play-circle" size={20} color="#000000" />
+            <Ionicons name="play-circle" size={20} color="#000000" style={{ marginRight: 8 }} />
             <Text style={styles.adButtonText}>
               WATCH AD (+10 TICKETS)
             </Text>
