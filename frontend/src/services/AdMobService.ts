@@ -116,8 +116,8 @@ export class AdMobService {
   }
 
   public async showRewardedAd(onRewardEarned: (ticketCount: number) => void): Promise<boolean> {
-    if (!this.rewardedAd) {
-      console.error('🎯 AdMob: Rewarded ad not initialized');
+    if (!this.isInitialized || !this.rewardedAd) {
+      console.error('🎯 AdMob: Service not initialized - likely running in Expo Go');
       return false;
     }
 
@@ -137,6 +137,10 @@ export class AdMobService {
       this.onRewardEarnedCallback = null;
       return false;
     }
+  }
+
+  public isServiceAvailable(): boolean {
+    return this.isInitialized && this.rewardedAd !== null;
   }
 
   public isRewardedAdLoaded(): boolean {
