@@ -105,7 +105,7 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
                 USE REVIVE TICKET
               </Text>
               <View style={styles.ticketIndicator}>
-                <Ionicons name="ticket" size={16} color={MythicTechColors.neonGold} />
+                <Ionicons name="ticket" size={16} color={MythicTechColors.divineGold} />
                 <Text style={styles.ticketCount}>
                   {reviveTickets}
                 </Text>
