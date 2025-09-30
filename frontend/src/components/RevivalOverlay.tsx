@@ -341,9 +341,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
-    marginVertical: 12,
+    marginBottom: 15, // Replace gap with explicit margin
     minHeight: 50,
+    width: '100%', // Explicit width for iOS
     borderWidth: 3,
     borderColor: '#00FF00', // BRIGHT GREEN border for debugging
     opacity: 1.0, // Force full opacity
