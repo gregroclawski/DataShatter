@@ -228,10 +228,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: MythicTechColors.neonRed,
+    color: MythicTechColors.crimsonRed,
     textAlign: 'center',
     marginBottom: 8,
-    textShadowColor: MythicTechColors.neonRed,
+    textShadowColor: MythicTechColors.crimsonRed,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 8,
   },
