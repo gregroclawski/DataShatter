@@ -132,10 +132,44 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
               try {
                 console.log('📺 Starting rewarded ad system...');
                 
-                // Use MockAdService for development server (no AdMob dependencies)
-                console.log('🎯 Using mock ad service for development');
+                // Try to use real AdMob first, fallback to mock if needed
+                console.log('🎯 Attempting AdMob integration...');
                 
                 try {
+                  // Try real AdMob service first
+                  const AdMobModule = await import('../services/AdMobService');
+                  const { adMobService } = AdMobModule;
+                  
+                  if (adMobService.isServiceAvailable() && adMobService.isRewardedAdLoaded()) {
+                    console.log('📱 AdMob service available - showing real ad');
+                    
+                    const success = await adMobService.showRewardedAd((ticketCount: number) => {
+                      console.log(`🎫 AdMob reward earned: ${ticketCount} tickets`);
+                      
+                      updateNinja(prev => ({
+                        ...prev,
+                        reviveTickets: (prev.reviveTickets || 0) + ticketCount
+                      }));
+                      
+                      setTimeout(() => saveOnEvent('ad_reward_revive_tickets'), 100);
+                      
+                      Alert.alert(
+                        '🎉 Ad Reward!',
+                        `You received ${ticketCount} revive tickets!\n\nTotal: ${(gameState.ninja.reviveTickets || 0) + ticketCount}`,
+                        [{ text: 'Awesome!' }]
+                      );
+                    });
+                    
+                    if (success) return; // AdMob worked
+                  }
+                  
+                  // Fallback to mock if AdMob failed
+                  throw new Error('AdMob not ready, using fallback');
+                  
+                } catch (adMobError) {
+                  console.log('🎯 AdMob failed, using mock service:', adMobError.message);
+                  
+                  // Fallback: Mock ad system
                   const MockAdModule = await import('../services/MockAdService');
                   const { mockAdService } = MockAdModule;
                   
@@ -159,11 +193,8 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
                   });
                   
                   if (!success) {
-                    throw new Error('Mock ad service failed');
+                    Alert.alert('Error', 'Unable to show ad. Please try again.', [{ text: 'OK' }]);
                   }
-                } catch (error) {
-                  console.error('Mock ad error:', error);
-                  Alert.alert('Error', 'Unable to show ad. Please try again.', [{ text: 'OK' }]);
                 }
                 
               } catch (error) {
