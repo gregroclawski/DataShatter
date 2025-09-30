@@ -334,28 +334,26 @@ const styles = StyleSheet.create({
     color: MythicTechColors.voidSilver,
   },
   adButton: {
-    backgroundColor: '#FFD700', // Bright gold color
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 12,
+    backgroundColor: '#FF0000', // BRIGHT RED for debugging
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 8,
-    shadowOpacity: 0.4,
-    marginVertical: 8,
-    minHeight: 44,
-    borderWidth: 2,
-    borderColor: '#FFA500', // Orange border
+    marginVertical: 12,
+    minHeight: 50,
+    borderWidth: 3,
+    borderColor: '#00FF00', // BRIGHT GREEN border for debugging
+    opacity: 1.0, // Force full opacity
   },
   adButtonText: {
-    fontSize: 16, // Increase font size
-    fontWeight: 'bold',
-    color: '#000000', // Use black color for better contrast
+    fontSize: 18, // Even larger font
+    fontWeight: '900', // Extra bold
+    color: '#FFFFFF', // White text on red background
     textAlign: 'center',
+    textTransform: 'uppercase',
   },
   helpText: {
     fontSize: 12,
