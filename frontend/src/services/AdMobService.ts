@@ -74,8 +74,8 @@ export class AdMobService {
       }, 1000);
     });
 
-    // Ad failed to load
-    this.rewardedAd.addAdEventListener(AdEventType.ERROR, (error) => {
+    // Ad failed to load - using correct event type for RewardedAd
+    this.rewardedAd.addAdEventListener(RewardedAdEventType.ERROR, (error) => {
       console.error('🎯 AdMob: Rewarded ad error:', error);
       this.isAdLoaded = false;
       this.isLoading = false;
