@@ -365,6 +365,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
                 }
               }
             }
+          }
           } else {
             // Move toward player if not in attack range
             // Only move if not too close to player (maintain some distance for combat)
