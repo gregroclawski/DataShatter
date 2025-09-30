@@ -20,20 +20,26 @@ export class AdMobService {
   }
 
   private initializeRewardedAd() {
-    if (!AD_UNIT_IDS.rewarded) {
-      console.error('AdMob: No ad unit ID found for current platform');
-      return;
+    try {
+      if (!AD_UNIT_IDS.rewarded) {
+        console.error('AdMob: No ad unit ID found for current platform');
+        return;
+      }
+
+      console.log('🎯 AdMob: Initializing rewarded ad with ID:', AD_UNIT_IDS.rewarded);
+      
+      this.rewardedAd = RewardedAd.createForAdRequest(AD_UNIT_IDS.rewarded, {
+        keywords: ['gaming', 'mobile', 'ninja', 'idle game'],
+        requestNonPersonalizedAdsOnly: false,
+      });
+
+      this.setupEventListeners();
+      this.loadAd();
+      this.isInitialized = true;
+    } catch (error) {
+      console.error('🎯 AdMob: Failed to initialize - likely not in development build', error);
+      this.isInitialized = false;
     }
-
-    console.log('🎯 AdMob: Initializing rewarded ad with ID:', AD_UNIT_IDS.rewarded);
-    
-    this.rewardedAd = RewardedAd.createForAdRequest(AD_UNIT_IDS.rewarded, {
-      keywords: ['gaming', 'mobile', 'ninja', 'idle game'],
-      requestNonPersonalizedAdsOnly: false,
-    });
-
-    this.setupEventListeners();
-    this.loadAd();
   }
 
   private setupEventListeners() {
