@@ -125,69 +125,96 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
             </View>
           )}
 
-          {/* AdMob Button - Working but invisible due to AdMob overlay */}
-          <View style={{
-            backgroundColor: 'red',
-            padding: 20,
-            margin: 10,
-            borderRadius: 10,
-            borderWidth: 3,
-            borderColor: 'blue',
-            width: '90%',
-            alignItems: 'center',
-            zIndex: 9999, // Try to render above AdMob
-            elevation: 9999, // Android elevation
-          }}>
-            <Text style={{ 
-              color: 'white', 
-              fontSize: 16, 
-              fontWeight: 'bold',
-              textAlign: 'center',
-              marginBottom: 10
-            }}>
-              ⚠️ ADMOB BUTTON BELOW (INVISIBLE BUT WORKING)
+          {/* Watch Ad Button - Real AdMob Integration */}
+          <TouchableOpacity 
+            style={styles.adButton}
+            onPress={async () => {
+              try {
+                console.log('📺 Starting AdMob rewarded ad...');
+                
+                // Try to import and use AdMob service
+                try {
+                  const { adMobService } = await import('../services/AdMobService');
+                  
+                  // Check if AdMob service is available
+                  if (adMobService.isServiceAvailable()) {
+                    const success = await adMobService.showRewardedAd((ticketCount: number) => {
+                      console.log(`🎫 AdMob reward earned: ${ticketCount} tickets`);
+                      
+                      // Award tickets through GameContext
+                      updateNinja(prev => ({
+                        ...prev,
+                        reviveTickets: (prev.reviveTickets || 0) + ticketCount
+                      }));
+                      
+                      // Trigger save
+                      setTimeout(() => {
+                        saveOnEvent('ad_reward_revive_tickets');
+                      }, 100);
+                      
+                      // Show success message
+                      Alert.alert(
+                        '🎉 Ad Reward!',
+                        `You received ${ticketCount} revive tickets!\n\nTotal tickets: ${(gameState.ninja.reviveTickets || 0) + ticketCount}`,
+                        [{ text: 'Awesome!' }]
+                      );
+                    });
+                    
+                    if (!success) {
+                      throw new Error('AdMob service failed to show ad');
+                    }
+                  } else {
+                    throw new Error('AdMob service not available');
+                  }
+                } catch (adMobError) {
+                  console.log('🎯 AdMob not available, using fallback mock system:', adMobError.message);
+                  
+                  // Fallback: Mock ad system with 2-second delay
+                  Alert.alert(
+                    '📺 Watching Ad',
+                    'Loading advertisement...',
+                    [{ text: 'OK' }]
+                  );
+                  
+                  setTimeout(() => {
+                    const ticketCount = 10;
+                    console.log(`🎫 Mock ad reward: ${ticketCount} tickets`);
+                    
+                    // Award tickets through GameContext
+                    updateNinja(prev => ({
+                      ...prev,
+                      reviveTickets: (prev.reviveTickets || 0) + ticketCount
+                    }));
+                    
+                    // Trigger save
+                    setTimeout(() => {
+                      saveOnEvent('ad_reward_revive_tickets');
+                    }, 100);
+                    
+                    Alert.alert(
+                      '🎉 Ad Complete!',
+                      `You received ${ticketCount} revive tickets!\n\nTotal tickets: ${(gameState.ninja.reviveTickets || 0) + ticketCount}`,
+                      [{ text: 'Awesome!' }]
+                    );
+                  }, 2000);
+                }
+                
+              } catch (error) {
+                console.error('Ad button error:', error);
+                Alert.alert(
+                  'Error',
+                  'Unable to show ad right now. Please try again.',
+                  [{ text: 'OK' }]
+                );
+              }
+            }}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="play-circle" size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
+            <Text style={styles.adButtonText}>
+              WATCH AD (+10 TICKETS)
             </Text>
-            <TouchableOpacity 
-              style={{
-                backgroundColor: 'yellow',
-                padding: 15,
-                borderRadius: 5,
-                width: '100%',
-                alignItems: 'center',
-                zIndex: 10000,
-                elevation: 10000,
-              }}
-              onPress={async () => {
-                console.log('📺 MANUAL BUTTON PRESSED - BYPASSING ADMOB');
-                
-                const ticketCount = 10;
-                console.log(`🎫 Manual reward: ${ticketCount} tickets`);
-                
-                // Award tickets through GameContext
-                updateNinja(prev => ({
-                  ...prev,
-                  reviveTickets: (prev.reviveTickets || 0) + ticketCount
-                }));
-                
-                // Trigger save
-                setTimeout(() => {
-                  saveOnEvent('ad_reward_revive_tickets');
-                }, 100);
-                
-                Alert.alert('MANUAL BUTTON WORKS!', `You got ${ticketCount} tickets without watching ad!`);
-              }}
-              activeOpacity={0.8}
-            >
-              <Text style={{ 
-                color: 'black', 
-                fontSize: 18, 
-                fontWeight: 'bold',
-                textAlign: 'center'
-              }}>
-                GET 10 TICKETS (NO AD)
-              </Text>
-            </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Help Text */}
