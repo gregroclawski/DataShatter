@@ -369,26 +369,28 @@ const styles = StyleSheet.create({
     color: MythicTechColors.voidSilver,
   },
   adButton: {
-    backgroundColor: '#FF0000', // BRIGHT RED for debugging
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+    backgroundColor: MythicTechColors.divineGold, // Beautiful gold color
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 15, // Replace gap with explicit margin
-    minHeight: 50,
-    width: '100%', // Explicit width for iOS
-    borderWidth: 3,
-    borderColor: '#00FF00', // BRIGHT GREEN border for debugging
-    opacity: 1.0, // Force full opacity
+    marginBottom: 15, // Maintain spacing
+    minHeight: 48,
+    width: '100%',
+    shadowColor: MythicTechColors.divineGold,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 8,
+    shadowOpacity: 0.4,
+    borderWidth: 1,
+    borderColor: MythicTechColors.cosmicGold,
   },
   adButtonText: {
-    fontSize: 18, // Even larger font
-    fontWeight: '900', // Extra bold
-    color: '#FFFFFF', // White text on red background
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: MythicTechColors.darkSpace,
     textAlign: 'center',
-    textTransform: 'uppercase',
   },
   helpText: {
     fontSize: 12,
