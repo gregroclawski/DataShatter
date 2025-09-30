@@ -352,9 +352,10 @@ const styles = StyleSheet.create({
     borderColor: '#FF0000', // Red border to debug visibility
   },
   adButtonText: {
-    fontSize: 14,
+    fontSize: 16, // Increase font size
     fontWeight: 'bold',
-    color: MythicTechColors.darkVoid,
+    color: '#000000', // Use black color for better contrast
+    textAlign: 'center',
   },
   helpText: {
     fontSize: 12,
