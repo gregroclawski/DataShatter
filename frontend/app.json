@@ -13,16 +13,14 @@
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true,
-      "admobAppId": "ca-app-pub-9692390081647816~7941119756"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#0a0a0f"
       },
-      "edgeToEdgeEnabled": true,
-      "admobAppId": "ca-app-pub-9692390081647816~7941119756"
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",
