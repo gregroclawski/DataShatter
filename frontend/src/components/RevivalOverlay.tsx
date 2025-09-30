@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   },
   optionsContainer: {
     width: '100%',
-    gap: 15,
+    // Removed gap: 15 - iOS flexbox bug with TouchableOpacity
   },
   reviveButton: {
     backgroundColor: MythicTechColors.neonCyan,
