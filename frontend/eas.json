@@ -6,7 +6,7 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "prebuildCommand": "rm -f package-lock.json && yarn install",
+      "prebuildCommand": "yarn install",
       "ios": {
         "resourceClass": "m-medium"
       },
@@ -17,7 +17,7 @@
     },
     "preview": {
       "distribution": "internal",
-      "prebuildCommand": "rm -f package-lock.json && yarn install",
+      "prebuildCommand": "yarn install",
       "ios": {
         "resourceClass": "m-medium"
       },
@@ -27,7 +27,7 @@
       }
     },
     "production": {
-      "prebuildCommand": "rm -f package-lock.json && yarn install",
+      "prebuildCommand": "yarn install",
       "ios": {
         "resourceClass": "m-medium"
       },
