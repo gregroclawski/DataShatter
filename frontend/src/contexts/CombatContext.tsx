@@ -321,16 +321,22 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
             if (!enemy.lastAttackTick) enemy.lastAttackTick = 0;
             
             if (newState.currentTick - enemy.lastAttackTick >= ATTACK_COOLDOWN) {
-              // Check if player is invincible
-              const isPlayerInvincible = game.gameState.isInvincible && 
-                                       game.gameState.invincibilityEndTime && 
-                                       Date.now() < game.gameState.invincibilityEndTime;
-              
-              if (isPlayerInvincible) {
-                console.log(`🛡️ INVINCIBLE: ${enemy.name} attack blocked! Player is invincible.`);
-                // Update enemy attack cooldown even if blocked
+              // Check if player is alive - CRITICAL: Don't attack dead players
+              if (!game.gameState.isAlive) {
+                console.log(`💀 DEAD PLAYER: ${enemy.name} cannot attack - player is dead!`);
+                // Update enemy attack cooldown to prevent spam
                 enemy.lastAttackTick = newState.currentTick;
               } else {
+                // Check if player is invincible
+                const isPlayerInvincible = game.gameState.isInvincible && 
+                                         game.gameState.invincibilityEndTime && 
+                                         Date.now() < game.gameState.invincibilityEndTime;
+                
+                if (isPlayerInvincible) {
+                  console.log(`🛡️ INVINCIBLE: ${enemy.name} attack blocked! Player is invincible.`);
+                  // Update enemy attack cooldown even if blocked
+                  enemy.lastAttackTick = newState.currentTick;
+                } else {
                 // Enemy attacks player - FIXED: Scale damage appropriately for balanced gameplay
                 const baseAttack = enemy.stats.attack / 100; // Scale down massive attack values
                 const attackDamage = Math.floor(baseAttack * (0.8 + Math.random() * 0.4)); // 80-120% of scaled damage
