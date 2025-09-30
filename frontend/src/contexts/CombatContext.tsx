@@ -363,6 +363,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
                     game.updateGameState({ isAlive: false });
                   }, 100);
                 }
+                }
               }
             }
           } else {
