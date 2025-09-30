@@ -18,6 +18,8 @@
     },
     "preview": {
       "distribution": "internal",
+      "node": "20.18.0",
+      "prebuildCommand": "yarn install",
       "ios": {
         "resourceClass": "m-medium"
       },
@@ -27,6 +29,8 @@
       }
     },
     "production": {
+      "node": "20.18.0",
+      "prebuildCommand": "yarn install",
       "ios": {
         "resourceClass": "m-medium"
       },
