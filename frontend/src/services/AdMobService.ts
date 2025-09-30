@@ -12,6 +12,7 @@ export class AdMobService {
   private rewardedAd: RewardedAd | null = null;
   private isAdLoaded = false;
   private isLoading = false;
+  private isInitialized = false;
   private onRewardEarnedCallback: ((ticketCount: number) => void) | null = null;
 
   constructor() {
