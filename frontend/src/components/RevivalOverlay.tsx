@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   ticketCount: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: MythicTechColors.neonGold,
+    color: MythicTechColors.divineGold,
   },
   noTicketsContainer: {
     backgroundColor: 'rgba(139, 92, 246, 0.1)',
