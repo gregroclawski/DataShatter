@@ -7,7 +7,7 @@ import asyncio
 import aiohttp
 import json
 
-BACKEND_URL = "https://rpg-rebalance.preview.emergentagent.com"
+BACKEND_URL = "https://idle-ninja-1.preview.emergentagent.com"
 API_BASE = f"{BACKEND_URL}/api"
 
 async def debug_name_issues():

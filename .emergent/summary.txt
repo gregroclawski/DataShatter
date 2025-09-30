@@ -1,63 +1,103 @@
 <analysis>
-The development trajectory transitioned from fixing severe infrastructure and data persistence bugs to implementing complex game balancing and core architectural improvements. Initial efforts successfully resolved network connectivity issues caused by environment forking (stale  URLs) and fortified the backend name change feature against race conditions using MongoDB unique indexes. A major focus was correcting recurring React state update violations in  and , which required moving projectile impact and damage calculation into an asynchronous, dedicated  loop for stability. Game progression was aggressively scaled (10 zones for 15,000 levels, 6x XP, 100x gold) and combat was balanced by normalizing massive enemy HP/Attack values. The current phase involves implementing the Revival System, with core state management and UI components created and integrated, pending final store and combat loop verification.
+The trajectory details the evolution of an Expo-based mobile RPG, Idle Ninja Online, from completing a core Revival System to implementing and extensively debugging a monetized AdMob integration. The work began by finalizing the revival feature, which involved fixing state synchronization bugs between different React contexts (, ) and ensuring player health and status (, ) were managed correctly.
+
+A significant portion of the effort was dedicated to integrating AdMob for rewarded video ads. This led to a complex series of troubleshooting steps, primarily revolving around environment-specific issues. Key challenges included resolving native module errors in Expo Go by guiding the user through creating an EAS Development Build, debugging numerous An Expo user account is required to proceed.
+
+Log in to EAS with email or username (exit and run eas login --help to see other login options)
+Input is required, but stdin is not readable. Failed to display prompt: Email or username failures (related to  configuration, Git dependencies, and platform-specific syntax), and fixing Metro bundler crashes caused by native AdMob imports in the development environment.
+
+The most intricate debugging challenge was an invisible button issue on the user's iOS device. After multiple failed attempts to fix styling, the root causes were identified as an iOS-specific flexbox  property bug and the real AdMob SDK rendering its own invisible touch overlay.
+
+Finally, the project was rebranded to Data Shatter, with the app name and icon updated. The last interactions focused on resolving persistent EAS build errors by refining build configurations and preparing for a more stable GitHub-based build workflow.
 </analysis>
 
 <product_requirements>
-Idle Ninja Online is a mobile RPG featuring auto-combat across 10 major zones (5 levels each, total 15,000 character levels). Core requirements include persistent character progression, a sophisticated store offering subscriptions and items, and a character management system.
+The application, originally Idle Ninja Online and later rebranded to Data Shatter, is an idle RPG for mobile. The core gameplay loop involves automatic combat, character progression through leveling and stat upgrades, and navigating through multiple zones.
 
-**Implemented Features/Balance:**
-- **Progression Scaling:** Aggressive XP and Gold boost (100x gold, 6x base XP), new 10-zone structure for balanced leveling.
-- **Combat System:** Full two-way combat enabled (enemies now damage the player), max enemies increased to 20, projectile/AOE kill tracking fixed, and enemy/player damage normalized.
-- **Character Upgrades:** Attack/Defense/Speed upgrades separated into Gold (less effective) and Skill Points (3x more effective), with Level 0 accessibility fixed.
-- **Revival System (In Progress):** Implementation of a death countdown modal () requiring Revive Tickets (50 tickets for 1000 Gems in the store).
-- **Quality & Stability:** Critical fixes for React render violations, login/network errors, and name uniqueness race conditions.
+**Key Feature Requirements:**
+1.  **Revival System:** When a player's health reaches zero, a Revival Overlay must appear.
+    *   Players can use a Revive Ticket to instantly respawn with full health and a 5-second invincibility period.
+    *   A 10-second countdown allows for a free respawn if no ticket is used.
+2.  **Monetization with AdMob:**
+    *   The free respawn option should be replaced by a Watch Ad button.
+    *   Watching a rewarded video ad grants the player 10 Revive Tickets.
+    *   This feature must be integrated using Google AdMob with user-provided production Ad Unit and App IDs.
+3.  **In-Game Store:**
+    *   Players can purchase Revive Tickets using in-game currency (Gems). A bundle of 50 tickets for 1000 Gems was specified.
+4.  **Admin Capabilities:**
+    *   A backend mechanism is required to look up players (by name or ID) and modify their stats, specifically to remove or adjust Revive Tickets for testing and administration.
+5.  **Branding:**
+    *   The app's display name must be changed to Data Shatter.
+    *   The app icon must be updated to a user-provided custom image.
 </product_requirements>
 
 <key_technical_concepts>
-- **Expo & Expo Router**: Mobile app framework using file-based routing.
-- **FastAPI/MongoDB**: Backend services; MongoDB indexing used for case-insensitive unique usernames.
-- **React Context**: Used for global state (, ), employing asynchronous state updates () to resolve React render-phase errors.
-- **Game Balancing**: Implemented scaled enemy stats via mathematical formulas in  to support high-level progression.
+- **Frameworks**: Expo (with Expo Router), React Native, FastAPI (Python backend).
+- **State Management**: React Context API for global state (, ), with careful handling of state synchronization between contexts to avoid bugs.
+- **Database**: MongoDB, with backend logic for saving/loading player data.
+- **Monetization**:  for rewarded video ads.
+- **Build/Deployment**: Expo Application Services (EAS) Build for creating development and production builds containing native modules.
+- **Debugging Strategy**: Conditional imports and mock services () to isolate native dependencies, allowing the development server to run without crashing while production builds use the real SDK.
 </key_technical_concepts>
 
 <code_architecture>
+The application is a full-stack monorepo with a  (Expo) and  (FastAPI) directory.
+
 **Directory Structure:**
 
 
-- :
-    - Critical for name change stability. Added MongoDB unique index with collation on  field. Modified name change logic to exclude the current user ID and handle .
-- :
-    - Main rendering loop. Removed synchronous state updates related to projectiles. Added  and integrated the new  component.
-- :
-    - **Crucial Changes:** Implemented enemy attack logic. Fixed React render-phase state violation by moving projectile damage processing into a new, separate asynchronous  loop that manages damage application and projectile removal. Added  and  states. Increased  to 20.
-- :
-    - Added  to . Implemented  and . Fixed stat sync logic to prevent overriding current player health.
-- :
-    - Redesigned zone structure to 10 zones, each with 5 levels (covering 300 character levels per level). Normalized enemy HP/Attack calculation by scaling the exponential factors down by 100 to balance combat.
-- :
-    - Updated stat upgrade functions to differentiate gold and skill point benefits (skill points are 3x better). Fixed the cost calculation base to enable level 0 gold upgrades.
-- : **(NEW)**
-    - Component for displaying player death and revival options, including a 10-second countdown timer.
+**File Summaries & Key Changes:**
+
+-   ****:
+    -   **Importance**: The main configuration file for the Expo app. It controls the app's name, icon, plugins, and build settings.
+    -   **Changes**: The  was changed to Data Shatter, and the  field was added for EAS. The configuration for  was added, including production App IDs.
+
+-   ****:
+    -   **Importance**: The UI component for the entire revival flow, including the countdown, ticket usage, and the monetized ad button.
+    -   **Changes**: Major refactoring to integrate the AdMob service. A persistent invisible button bug was fixed by removing the flexbox  property and replacing it with margins. It was updated to conditionally import  for development to prevent bundler crashes.
+
+-   ****:
+    -   **Importance**: Manages all real-time combat logic, including player/enemy health, attacks, and state updates.
+    -   **Changes**: Logic was added to prevent dead players from attacking and to stop enemies from attacking dead players. A critical bug causing instant health regeneration was fixed by refining the state synchronization logic with . A syntax error (missing bracket) was also resolved.
+
+-   ****:
+    -   **Importance**: Manages persistent player state, including health, stats, and inventory items like .
+    -   **Changes**: Added  state and logic for a 5-second post-revival invincibility timer. Revival functions were updated to restore  correctly.
+
+-   ****:
+    -   **Importance**: A dedicated service to encapsulate all logic for initializing, loading, and showing AdMob rewarded ads.
+    -   **Changes**: Created from scratch. It was heavily modified to handle both production and test Ad Unit IDs, and includes error handling and a fallback mechanism if AdMob fails to initialize. It was later modified to be development-safe by wrapping AdMob imports.
+
+-   ****:
+    -   **Importance**: The FastAPI backend that handles game saves, player data, and API requests.
+    -   **Changes**: Enhanced with new admin endpoints (, ) to allow searching for players and updating their , simplifying account management.
 </code_architecture>
 
 <pending_tasks>
-- Complete the integration of the Revive Ticket purchase flow in .
-- Backend Persistence: Ensure all game systems (specifically Companions, which are pending implementation) are integrated with server-side save/load mechanisms.
-- Implement battle and support pets (Companions).
-- Implement Idle/Offline Progression simulation.
+- **Create a  file**: The Git repository was initialized, but it was staging unnecessary cache files. A proper  needs to be created to exclude , , and other transient directories.
+- **Push to GitHub**: The project needs to be pushed to a GitHub repository to enable a more stable and convenient EAS build workflow directly from the source control.
+- **Implement Companions and Idle/Offline Progression**: These are major features from the initial product requirements that have not yet been started.
 </pending_tasks>
 
 <current_work>
-The most recent work involved implementing the core framework for the player revival system. This required significant additions across the codebase:
-1.  **Game State:**  added to  in .
-2.  **Combat Logic:** Player death detection, setting  state, and exposing revival controls were added to .
-3.  **UI Component:** A new component, , was created to manage the 10-second revival countdown and options (use ticket or respawn).
-4.  **Integration:** The  has been integrated into the main game screen () to display when the player dies.
-5.  **Store Item Definition:** The item for 50 Revive Tickets costing 1000 Gems was defined in .
+The most recent work was a lengthy and complex troubleshooting process for the Expo Application Services (EAS) build system. The user was repeatedly unable to create a new iOS development build on their local Windows machine due to a series of errors.
 
-The previous engineer successfully merged these changes and was in the process of restarting the frontend to confirm the full integration before proceeding to complete the purchase flow.
+1.  **Initial Error**: . This was bypassed by providing the user with commands using the  environment variable, with platform-specific syntax for Windows PowerShell.
+2.  **Second Error**: . This error occurred on the EAS build server, indicating a problem with how the server recognized the project and installed dependencies.
+3.  **Fix Attempts**: The AI engineer attempted to fix this by:
+    *   Aligning the  in  with the  in .
+    *   Modifying  to include an explicit  (
+up to date, audited 1031 packages in 2s
+
+191 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities) and setting a specific Node.js version ().
+    *   Simplifying the  after an  error.
+
+The trajectory concluded with the user still facing build issues. The last action taken by the AI engineer was to initialize a local Git repository and begin preparing the project for a push to GitHub, with the intent of using EAS Build's more reliable GitHub integration to bypass the local environment issues.
 </current_work>
 
 <optional_next_step>
-Verify the  is displayed correctly on player death and then finalize the Revive Ticket purchase logic in .
+Create a proper  file, commit the project, and guide the user on how to push it to a new GitHub repository to enable building directly from source control.
 </optional_next_step>

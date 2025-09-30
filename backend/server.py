@@ -1140,7 +1140,7 @@ app.add_middleware(
         "http://localhost:3000",
         "https://app.emergent.sh",
         "http://127.0.0.1:3000",
-        "https://rpg-rebalance.preview.emergentagent.com",
+        "https://idle-ninja-1.preview.emergentagent.com",
         "https://ninja-idle-fix.ngrok.io",
     ],  # Specific origins instead of wildcard
     allow_methods=["*"],

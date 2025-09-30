@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv('/app/frontend/.env')
-BACKEND_URL = os.getenv('EXPO_PUBLIC_BACKEND_URL', 'https://rpg-rebalance.preview.emergentagent.com')
+BACKEND_URL = os.getenv('EXPO_PUBLIC_BACKEND_URL', 'https://idle-ninja-1.preview.emergentagent.com')
 API_BASE = f"{BACKEND_URL}/api"
 
 class RevivalSystemTester:
