@@ -132,9 +132,10 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
               try {
                 console.log('📺 Starting AdMob rewarded ad...');
                 
-                // Try to import and use AdMob service
+                // Try to import and use AdMob service (dynamic import to avoid bundling issues)
                 try {
-                  const { adMobService } = await import('../services/AdMobService');
+                  const AdMobModule = await import('../services/AdMobService');
+                  const { adMobService } = AdMobModule;
                   
                   // Check if AdMob service is available
                   if (adMobService.isServiceAvailable()) {
