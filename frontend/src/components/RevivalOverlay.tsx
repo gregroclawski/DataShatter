@@ -125,18 +125,29 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
             </View>
           )}
 
-          {/* Watch Ad Button - Replaces Free Respawn */}
-          <TouchableOpacity 
-            style={styles.adButton}
-            onPress={async () => {
-              try {
-                console.log('📺 Starting rewarded ad...');
-                
-                // For now, provide mock ad functionality until AdMob is properly configured
-                console.log('🎯 MOCK: Simulating ad watch...');
-                
-                // Simulate ad watching
-                setTimeout(() => {
+          {/* Watch Ad Button - Simplified for debugging */}
+          <View style={{
+            backgroundColor: 'red',
+            padding: 20,
+            margin: 10,
+            borderRadius: 10,
+            borderWidth: 3,
+            borderColor: 'blue',
+            width: '90%',
+            alignItems: 'center'
+          }}>
+            <TouchableOpacity 
+              style={{
+                backgroundColor: 'yellow',
+                padding: 15,
+                borderRadius: 5,
+                width: '100%',
+                alignItems: 'center'
+              }}
+              onPress={async () => {
+                try {
+                  console.log('📺 AD BUTTON PRESSED!');
+                  
                   const ticketCount = 10;
                   console.log(`🎫 Mock ad reward earned: ${ticketCount} tickets`);
                   
@@ -151,37 +162,24 @@ export const RevivalOverlay: React.FC<RevivalOverlayProps> = ({ visible, onReviv
                     saveOnEvent('ad_reward_revive_tickets');
                   }, 100);
                   
-                  // Show success message
-                  Alert.alert(
-                    '🎉 Ad Reward!',
-                    `You received ${ticketCount} free revive tickets!\n\nTotal tickets: ${(gameState.ninja.reviveTickets || 0) + ticketCount}`,
-                    [{ text: 'Awesome!' }]
-                  );
-                }, 2000); // 2 second delay to simulate ad
-                
-                // Show loading message
-                Alert.alert(
-                  '📺 Watching Ad',
-                  'Please wait while the ad loads...',
-                  [{ text: 'OK' }]
-                );
-                
-              } catch (error) {
-                console.error('Ad error:', error);
-                Alert.alert(
-                  'Error',
-                  'Unable to show ad. Please try again later.',
-                  [{ text: 'OK' }]
-                );
-              }
-            }}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="play-circle" size={20} color="#000000" style={{ marginRight: 8 }} />
-            <Text style={styles.adButtonText}>
-              WATCH AD (+10 TICKETS)
-            </Text>
-          </TouchableOpacity>
+                  Alert.alert('AD BUTTON WORKS!', `You got ${ticketCount} tickets!`);
+                  
+                } catch (error) {
+                  console.error('Ad error:', error);
+                }
+              }}
+              activeOpacity={0.8}
+            >
+              <Text style={{ 
+                color: 'black', 
+                fontSize: 20, 
+                fontWeight: 'bold',
+                textAlign: 'center'
+              }}>
+                WATCH AD (+10 TICKETS)
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Help Text */}
