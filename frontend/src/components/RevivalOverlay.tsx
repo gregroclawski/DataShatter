@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   countdownText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: MythicTechColors.neonRed,
+    color: MythicTechColors.crimsonRed,
     textAlign: 'center',
   },
   optionsContainer: {
