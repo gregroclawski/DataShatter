@@ -6,7 +6,7 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "node": "20.18.0",
+      "node": "20.20.0",
       "prebuildCommand": "yarn install",
       "ios": {
         "resourceClass": "m-medium"
@@ -18,7 +18,7 @@
     },
     "preview": {
       "distribution": "internal",
-      "node": "20.18.0",
+      "node": "20.20.0",
       "prebuildCommand": "yarn install",
       "ios": {
         "resourceClass": "m-medium"
@@ -29,7 +29,7 @@
       }
     },
     "production": {
-      "node": "20.18.0",
+      "node": "20.20.0",
       "prebuildCommand": "yarn install",
       "ios": {
         "resourceClass": "m-medium"
