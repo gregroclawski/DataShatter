@@ -184,7 +184,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🔥',
     baseHP: 80,
     baseAttack: 60,
-    baseXP: $((510 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: 2550, // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'lava_beast': {
     id: 'lava_beast',
