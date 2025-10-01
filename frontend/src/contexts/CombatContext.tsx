@@ -177,6 +177,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     const xpReward = (enemy.zoneXP || 5) * (game.gameState.subscriptionBenefits?.xp_multiplier || 1.0);
     const goldReward = 10 * (game.gameState.subscriptionBenefits?.drop_multiplier || 1.0);
     
+    console.log(`💰 ENEMY KILL - Awarding ${xpReward} XP and ${goldReward} gold for ${enemy.name}`);
+    
     // Award XP/Gold immediately for instant UI feedback
     game.updateNinja(prev => ({
       experience: prev.experience + xpReward,
