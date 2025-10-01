@@ -57,7 +57,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐺',
     baseHP: 25,
     baseAttack: 12,
-    baseXP: 450, // 30X from original 15 - massively boosted for faster progression
+    baseXP: 4500, // 30X from original 15 - massively boosted for faster progression
   },
   'tree_guardian': {
     id: 'tree_guardian',
