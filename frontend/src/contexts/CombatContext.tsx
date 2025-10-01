@@ -564,7 +564,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         }));
       }
     }
-  }, []); // Empty dependency array - handleEnemyKill is stable
+  }, [game.updateNinja, game.gameState.subscriptionBenefits, recordEnemyKill, spawnTestEnemy, spawnZoneEnemy]); // Fixed: Added required dependencies for XP/zone processing
 
   // Find closest enemy to ninja - exposed for UI use
   const findClosestEnemyInternal = (enemies: CombatEnemy[]): CombatEnemy | null => {
