@@ -1036,11 +1036,10 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
                   const distance = Math.sqrt(Math.pow(enemyX - impactX, 2) + Math.pow(enemyY - impactY, 2));
                   
                   if (distance <= projectile.aoeRadius) {
-                    // Calculate damage for this enemy
-                    const damageResult = DamageCalculator.calculateDamage(projectile.damage, prev.playerStats, enemy.stats);
-                    const newHealth = Math.max(0, enemy.health - damageResult.damage);
+                    // Use the projectile's pre-calculated damage (already includes all modifiers)
+                    const newHealth = Math.max(0, enemy.health - projectile.damage);
                     
-                    console.log(`💥 AOE DAMAGE: ${enemy.name} hit for ${damageResult.damage} damage (${enemy.health} -> ${newHealth})`);
+                    console.log(`💥 AOE DAMAGE: ${enemy.name} hit for ${projectile.damage} damage (${enemy.health} -> ${newHealth})`);
                     
                     // Check if enemy dies from AOE damage
                     if (newHealth <= 0 && enemy.health > 0) {
