@@ -173,8 +173,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
   // Function to handle enemy kills - integrates with zone progression and awards XP/gold
   const handleEnemyKill = useCallback((enemy: CombatEnemy) => {
-    // STREAMLINED XP CALCULATION - Single efficient computation
-    const xpReward = (enemy.zoneXP || 5000) * (game.gameState.subscriptionBenefits?.xp_multiplier || 1.0);
+    // BALANCED XP CALCULATION - Reduced by 1000x for proper progression
+    const xpReward = (enemy.zoneXP || 5) * (game.gameState.subscriptionBenefits?.xp_multiplier || 1.0);
     const goldReward = 10000 * (game.gameState.subscriptionBenefits?.drop_multiplier || 1.0);
     
     // INSTANT REWARD - Single update call
