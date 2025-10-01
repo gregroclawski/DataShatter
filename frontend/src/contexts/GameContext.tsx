@@ -474,8 +474,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       // Heal to full when leveling up
       updates.health = updates.maxHealth;
       updates.energy = updates.maxEnergy;
-      updates.experience = currentExp;
-      updates.experienceToNext = currentExpToNext;
+      updates.experience = Math.round(currentExp); // Ensure experience is always integer
+      updates.experienceToNext = Math.round(currentExpToNext); // Ensure experienceToNext is always integer
     }
 
     return updates;
