@@ -343,7 +343,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       loadGameFromServer().then(() => {
         // Load subscription benefits after game data
         console.log('🔄 GAME DATA LOADED, NOW LOADING SUBSCRIPTION BENEFITS...');
-        loadSubscriptionBenefits();
+        // TODO: Re-enable after fixing circular dependency
+        // loadSubscriptionBenefits();
       });
     } else {
       // No authenticated user - set loading to false immediately
