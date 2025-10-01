@@ -456,8 +456,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         }
       }
 
-      // Identify dead enemies but DON'T handle kills inside setState
-      const deadEnemies = newState.enemies.filter(enemy => enemy.health <= 0);
+      // Process dying enemies for XP awarding + death animation cleanup
+      const dyingEnemies = newState.enemies.filter(enemy => enemy.isDying && enemy.health <= 0);
+      const deadEnemies = newState.enemies.filter(enemy => enemy.health <= 0 && !enemy.isDying);
       enemiesToKill = [...deadEnemies]; // Store for processing outside setState
       
       // MOBILE DEBUG: Log enemy death processing
