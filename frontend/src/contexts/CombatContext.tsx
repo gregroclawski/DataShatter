@@ -1168,7 +1168,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     spawnBoss,
     clearAllEnemies,
     clearSpecificEnemy,
-    triggerLevelUpExplosion,
+    // triggerLevelUpExplosion, // REMOVED: Level up explosion disabled for performance
     findClosestEnemy,
     updateNinjaPosition,
     setManualControlActive,
