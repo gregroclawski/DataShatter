@@ -103,8 +103,22 @@ export default function NinjaIdleGame() {
     width: `${Math.max(0, Math.min(100, (enemy.health / enemy.maxHealth) * 100))}%`
   }), []);
 
-  // EQUIPMENT INTEGRATION: Use effective stats (base + equipment bonuses) for display
-  const testNinja = useMemo(() => getEffectiveStats(), [getEffectiveStats]);
+  // CRITICAL FIX: Use actual gameState.ninja for display instead of getEffectiveStats() 
+  // to show loaded progression data (Level, XP) rather than calculated effective stats
+  const testNinja = useMemo(() => {
+    // Use loaded game data if available, otherwise fall back to effective stats
+    if (gameState?.ninja) {
+      console.log('📊 USING LOADED GAME DATA for UI display:', {
+        level: gameState.ninja.level,
+        experience: gameState.ninja.experience,
+        gold: gameState.ninja.gold
+      });
+      return gameState.ninja;
+    } else {
+      console.log('⚠️ FALLBACK: Using getEffectiveStats() - game data not loaded yet');
+      return getEffectiveStats();
+    }
+  }, [gameState?.ninja, getEffectiveStats]);
   
   // Memoize responsive styles creation to prevent recreation and fix hooks order
   const styles = useMemo(() => createResponsiveStyles(layout), [layout]);
