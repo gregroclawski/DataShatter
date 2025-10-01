@@ -589,6 +589,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     const ability = deck.slots[slotIndex];
     if (!ability) return;
 
+    console.log(`🚨 ABILITY TRIGGERED: ${ability.id} from slot ${slotIndex}`);
+
     // Calculate base damage
     let damage = ability.stats.baseDamage;
     
