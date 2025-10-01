@@ -110,7 +110,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'mountain_orc',
     name: 'Mountain Orc',
     icon: '🧌',
-    baseHP: 50,
+    baseHP: 500, // x10 increased
     baseAttack: 22,
     baseXP: 90, // 3000X from original 30 - ULTRA MASSIVE BOOST for extremely fast progression
   },
@@ -118,7 +118,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'stone_giant',
     name: 'Stone Giant',
     icon: '🗿',
-    baseHP: 80,
+    baseHP: 800, // x10 increased
     baseAttack: 28,
     baseXP: 120, // 3000X from original 40 - ULTRA MASSIVE BOOST for extremely fast progression
   },
@@ -126,7 +126,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'fire_drake',
     name: 'Fire Drake',
     icon: '🐉',
-    baseHP: 60,
+    baseHP: 600, // x10 increased
     baseAttack: 35,
     baseXP: 150, // 3000X from original 50 - ULTRA MASSIVE BOOST for extremely fast progression
     resistances: { fire: 0.8, ice: -0.5 }
@@ -135,7 +135,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'rock_golem',
     name: 'Rock Golem',
     icon: '🪨',
-    baseHP: 100,
+    baseHP: 1000, // x10 increased
     baseAttack: 30,
     baseXP: 135, // 3000X from original 45 - ULTRA MASSIVE BOOST for extremely fast progression
     resistances: { physical: 0.4 }
