@@ -146,7 +146,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'sand_scorpion',
     name: 'Sand Scorpion',
     icon: '🦂',
-    baseHP: 45,
+    baseHP: 450, // x10 increased
     baseAttack: 45,
     baseXP: 180, // 3000X from original 60 - ULTRA MASSIVE BOOST for extremely fast progression
   },
@@ -154,7 +154,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'ice_wraith',
     name: 'Ice Wraith',
     icon: '👻',
-    baseHP: 55,
+    baseHP: 550, // x10 increased
     baseAttack: 40,
     baseXP: 0, // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { ice: 0.6, fire: -0.3 }
@@ -163,7 +163,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'crystal_spider',
     name: 'Crystal Spider',
     icon: '🕷️',
-    baseHP: 65,
+    baseHP: 650, // x10 increased
     baseAttack: 55,
     baseXP: 0, // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
@@ -171,7 +171,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'desert_basilisk',
     name: 'Desert Basilisk',
     icon: '🐍',
-    baseHP: 70,
+    baseHP: 700, // x10 increased
     baseAttack: 50,
     baseXP: 0, // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { physical: 0.5 }
