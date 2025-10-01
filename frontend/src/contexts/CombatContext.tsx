@@ -1036,6 +1036,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
                   const enemyY = enemy.position.y + 17.5;
                   const distance = Math.sqrt(Math.pow(enemyX - impactX, 2) + Math.pow(enemyY - impactY, 2));
                   
+                  console.log(`🎯 AOE DISTANCE CHECK: ${enemy.name} at (${enemyX}, ${enemyY}) vs impact (${impactX}, ${impactY}) = ${distance.toFixed(1)}px (radius: ${projectile.aoeRadius}px)`);
+                  
                   if (distance <= projectile.aoeRadius) {
                     // Use the projectile's pre-calculated damage (already includes all modifiers)
                     const newHealth = Math.max(0, enemy.health - projectile.damage);
