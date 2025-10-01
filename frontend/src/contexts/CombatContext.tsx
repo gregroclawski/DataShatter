@@ -38,6 +38,8 @@ interface CombatEnemy {
   zoneTypeId?: string; // Zone enemy type ID for kill tracking
   zoneXP?: number; // XP reward from zone system
   markedForDeath?: boolean; // Prevent duplicate XP processing from AOE abilities
+  isDying?: boolean; // Enemy is playing death animation
+  deathStartTime?: number; // When death animation started
 }
 
 interface CombatProjectile {
