@@ -1115,7 +1115,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
                   
                   // Award XP when enemy dies
                   if (newHealth <= 0 && enemy.health > 0) {
-                    console.log(`💀 SINGLE TARGET KILL: ${enemy.name} killed by ${projectile.abilityName}!`);
+                    console.log(`💀 SINGLE TARGET KILL: ${enemy.name} killed by ${projectile.abilityName}! (${enemy.health} → ${newHealth})`);
                     
                     // Mark enemy as killed immediately to prevent duplicate processing
                     newState.enemies[enemyIndex] = {
@@ -1125,7 +1125,12 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
                     };
                     
                     // Call handleEnemyKill with original enemy stats before damage
+                    console.log(`🔍 XP DEBUG: Scheduling handleEnemyKill for ${enemy.name} (ID: ${enemy.id})`);
                     setTimeout(() => handleEnemyKill(enemy), 0);
+                  } else if (enemy.health > 0) {
+                    console.log(`🎯 NON-FATAL DAMAGE: ${enemy.name} hit for ${projectile.damage} damage (${enemy.health} → ${newHealth})`);
+                  } else {
+                    console.log(`⚠️ XP DEBUG: Enemy ${enemy.name} already dead (health: ${enemy.health}), no XP awarded`);
                   }
                 }
               }
