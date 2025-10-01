@@ -49,7 +49,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👹',
     baseHP: 15,
     baseAttack: 8,
-    baseXP: 5000, // 25X from original 20 - massively boosted for faster progression
+    baseXP: $(((5000) * 10)), // 25X from original 20 - massively boosted for faster progression
   },
   'wild_wolf': {
     id: 'wild_wolf', 
@@ -57,7 +57,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐺',
     baseHP: 25,
     baseAttack: 12,
-    baseXP: 4500, // 30X from original 15 - massively boosted for faster progression
+    baseXP: $(((4500) * 10)), // 30X from original 15 - massively boosted for faster progression
   },
   'tree_guardian': {
     id: 'tree_guardian',
@@ -65,7 +65,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🌳',
     baseHP: 45,
     baseAttack: 15,
-    baseXP: 7500, // 30X from original 25 - massively boosted for faster progression
+    baseXP: $(((7500) * 10)), // 30X from original 25 - massively boosted for faster progression
     resistances: { physical: 0.2 }
   },
   'dark_sprite': {
@@ -74,7 +74,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🧚‍♀️',
     baseHP: 20,
     baseAttack: 18,
-    baseXP: 5000, // 25X from original 20 - massively boosted for faster progression
+    baseXP: $(((5000) * 10)), // 25X from original 20 - massively boosted for faster progression
     resistances: { magic: 0.3 }
   },
   'shadow_wolf': {
@@ -83,7 +83,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐺',
     baseHP: 30,
     baseAttack: 20,
-    baseXP: 7500, // 30X from original 25 - massively boosted for faster progression
+    baseXP: $(((7500) * 10)), // 30X from original 25 - massively boosted for faster progression
     resistances: { magic: 0.2 }
   },
   'ancient_oak': {
@@ -92,7 +92,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🌲',
     baseHP: 80,
     baseAttack: 25,
-    baseXP: 10500, // 30X from original 35 - massively boosted for faster progression
+    baseXP: $(((10500) * 10)), // 30X from original 35 - massively boosted for faster progression
     resistances: { physical: 0.3 }
   },
   'flame_salamander': {
@@ -101,7 +101,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🦎',
     baseHP: 40,
     baseAttack: 30,
-    baseXP: 13500, // 30X from original 45 - massively boosted for faster progression
+    baseXP: $(((13500) * 10)), // 30X from original 45 - massively boosted for faster progression
     resistances: { physical: 0.4, fire: -0.3 }
   },
 
@@ -112,7 +112,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🧌',
     baseHP: 50,
     baseAttack: 22,
-    baseXP: 900, // 30X from original 30 - massively boosted for faster progression
+    baseXP: $(((900) * 10)), // 30X from original 30 - massively boosted for faster progression
   },
   'stone_giant': {
     id: 'stone_giant',
@@ -120,7 +120,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🗿',
     baseHP: 80,
     baseAttack: 28,
-    baseXP: 1200, // 30X from original 40 - massively boosted for faster progression
+    baseXP: $(((1200) * 10)), // 30X from original 40 - massively boosted for faster progression
   },
   'fire_drake': {
     id: 'fire_drake',
@@ -128,7 +128,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐉',
     baseHP: 60,
     baseAttack: 35,
-    baseXP: 1500, // 30X from original 50 - massively boosted for faster progression
+    baseXP: $(((1500) * 10)), // 30X from original 50 - massively boosted for faster progression
     resistances: { fire: 0.8, ice: -0.5 }
   },
   'rock_golem': {
@@ -137,7 +137,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🪨',
     baseHP: 100,
     baseAttack: 30,
-    baseXP: 13500, // 30X from original 45 - massively boosted for faster progression
+    baseXP: $(((13500) * 10)), // 30X from original 45 - massively boosted for faster progression
     resistances: { physical: 0.4 }
   },
 
@@ -148,7 +148,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🦂',
     baseHP: 45,
     baseAttack: 45,
-    baseXP: 1800, // 30X from original 60 - massively boosted for faster progression
+    baseXP: $(((1800) * 10)), // 30X from original 60 - massively boosted for faster progression
   },
   'ice_wraith': {
     id: 'ice_wraith',
@@ -156,7 +156,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👻',
     baseHP: 55,
     baseAttack: 40,
-    baseXP: 2100, // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: $(((2100) * 10)), // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { ice: 0.6, fire: -0.3 }
   },
   'crystal_spider': {
@@ -165,7 +165,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🕷️',
     baseHP: 65,
     baseAttack: 55,
-    baseXP: 1950, // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: $(((1950) * 10)), // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'desert_basilisk': {
     id: 'desert_basilisk',
@@ -173,7 +173,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐍',
     baseHP: 70,
     baseAttack: 50,
-    baseXP: 2400, // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: $(((2400) * 10)), // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { physical: 0.5 }
   },
 
@@ -184,7 +184,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🔥',
     baseHP: 80,
     baseAttack: 60,
-    baseXP: 2550, // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: $(((2550) * 10)), // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'lava_beast': {
     id: 'lava_beast',
@@ -192,7 +192,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🦏',
     baseHP: 90,
     baseAttack: 70,
-    baseXP: 2700, // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: $(((2700) * 10)), // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'inferno_dragon': {
     id: 'inferno_dragon',
@@ -200,7 +200,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐲',
     baseHP: 120,
     baseAttack: 75,
-    baseXP: 3000, // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: $(((3000) * 10)), // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { fire: 0.7 }
   },
   'phoenix_guardian': {
@@ -209,7 +209,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🔥🦅',
     baseHP: 100,
     baseAttack: 80,
-    baseXP: 3300, // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: $(((3300) * 10)), // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { magic: 0.4 }
   },
 
@@ -220,7 +220,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👹',
     baseHP: 150,
     baseAttack: 100,
-    baseXP: 4500, // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: $(((4500) * 10)), // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'void_stalker': {
     id: 'void_stalker',
@@ -228,7 +228,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👤',
     baseHP: 180,
     baseAttack: 120,
-    baseXP: 5400, // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: $(((5400) * 10)), // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { magic: 0.6 }
   },
   'nightmare_lord': {
@@ -237,7 +237,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '💀',
     baseHP: 200,
     baseAttack: 150,
-    baseXP: 6000, // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: $(((6000) * 10)), // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'chaos_titan': {
     id: 'chaos_titan',
@@ -245,7 +245,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '⚡',
     baseHP: 300,
     baseAttack: 200,
-    baseXP: 9000, // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: $(((9000) * 10)), // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { fire: 0.8, physical: 0.3 }
   },
 
@@ -256,7 +256,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👑💀',
     baseHP: 500,
     baseAttack: 300,
-    baseXP: 7500, // MASSIVE XP BOOST - Ultra high XP for endgame
+    baseXP: $(((7500) * 10)), // MASSIVE XP BOOST - Ultra high XP for endgame
     resistances: { magic: 0.8, physical: 0.5 }
   },
   'cosmic_leviathan': {
@@ -265,7 +265,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐲🌌',
     baseHP: 800,
     baseAttack: 400,
-    baseXP: 12000, // MASSIVE XP BOOST - Ultra high XP for endgame
+    baseXP: $(((12000) * 10)), // MASSIVE XP BOOST - Ultra high XP for endgame
     resistances: { fire: 0.9, ice: 0.9, magic: 0.7 }
   },
   'reality_shatterer': {
@@ -274,7 +274,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '💥🌌',
     baseHP: 1200,
     baseAttack: 600,
-    baseXP: 18000, // MASSIVE XP BOOST - Ultra high XP for final zones
+    baseXP: $(((18000) * 10)), // MASSIVE XP BOOST - Ultra high XP for final zones
     resistances: { physical: 0.8, magic: 0.8, fire: 0.8, ice: 0.8 }
   },
 };
