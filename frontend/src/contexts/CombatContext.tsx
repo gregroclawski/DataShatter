@@ -174,8 +174,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   // Function to handle enemy kills - MEMOIZED to prevent infinite re-renders
   const handleEnemyKill = useCallback((enemy: CombatEnemy) => {
     // INSTANT XP AWARD - Immediate visual feedback for fluid gameplay
-    const xpReward = (enemy.zoneXP || 5) * (game.gameState.subscriptionBenefits?.xp_multiplier || 1.0);
-    const goldReward = 10 * (game.gameState.subscriptionBenefits?.drop_multiplier || 1.0);
+    const xpReward = Math.round((enemy.zoneXP || 5) * (game.gameState.subscriptionBenefits?.xp_multiplier || 1.0));
+    const goldReward = Math.round(10 * (game.gameState.subscriptionBenefits?.drop_multiplier || 1.0));
     
     console.log(`💰 ENEMY KILL - Awarding ${xpReward} XP and ${goldReward} gold for ${enemy.name}`);
     
