@@ -904,45 +904,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
-  // Trigger level-up explosion that actually damages enemies
-  const triggerLevelUpExplosion = () => {
-    console.log('💥 LEVEL UP EXPLOSION TRIGGERED IN COMBAT CONTEXT!');
-    
-    const explosionTime = Date.now();
-    setLastExplosionTime(explosionTime);
-    
-    setCombatState(prev => {
-      // Calculate rewards for all current enemies
-      const enemyCount = prev.enemies.length;
-      const explosionXP = enemyCount * 5000; // SAME AS REGULAR KILL XP (5000 XP per enemy in explosion)
-      const explosionGold = enemyCount * 500; // 100X GOLD BOOST (was 5, now 500)
-      
-      console.log(`💥 Explosion killing ${enemyCount} enemies, awarding ${explosionXP} XP and ${explosionGold} gold`);
-      
-      // Award XP using updateNinja if there are enemies to kill - MOBILE FIX: defer to prevent render-phase violation
-      if (explosionXP > 0) {
-        setTimeout(() => {
-          game.updateNinja((ninja) => ({
-            experience: ninja.experience + explosionXP,
-            gold: ninja.gold + explosionGold,
-          }));
-        }, 0); // Defer to next event loop to prevent cross-context update during render
-      }
-      
-      // Actually damage all enemies to 0 health instead of just clearing them
-      // This will trigger the normal kill processing in the next tick
-      const damagedEnemies = prev.enemies.map(enemy => ({
-        ...enemy,
-        health: 0, // Set health to 0 to trigger normal kill processing
-        lastDamaged: combatEngine.getCurrentTick()
-      }));
-      
-      return {
-        ...prev,
-        enemies: damagedEnemies
-      };
-    });
-  };
+  // REMOVED: Level up explosion disabled for performance with ultra-fast XP system
+  // const triggerLevelUpExplosion = () => { ... }
 
   // Enhanced enemy spawning function
   const spawnEnemy = (position?: { x: number; y: number }): CombatEnemy => {
