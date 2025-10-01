@@ -509,7 +509,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       
       enemiesToKill.forEach(enemy => {
         totalXP += (enemy.zoneXP || 5) * xpMultiplier;
-        totalGold += 10000 * goldMultiplier;
+        totalGold += 10 * goldMultiplier;
         
         if (enemy.zoneTypeId) {
           zoneKills.push({
