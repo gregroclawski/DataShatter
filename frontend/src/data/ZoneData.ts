@@ -218,7 +218,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'shadow_demon',
     name: 'Shadow Demon',
     icon: '👹',
-    baseHP: 150,
+    baseHP: 1500, // x10 increased
     baseAttack: 100,
     baseXP: 0, // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
@@ -226,7 +226,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'void_stalker',
     name: 'Void Stalker',
     icon: '👤',
-    baseHP: 180,
+    baseHP: 1800, // x10 increased
     baseAttack: 120,
     baseXP: 0, // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { magic: 0.6 }
@@ -235,7 +235,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'nightmare_lord',
     name: 'Nightmare Lord',
     icon: '💀',
-    baseHP: 200,
+    baseHP: 2000, // x10 increased
     baseAttack: 150,
     baseXP: 0, // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
@@ -243,7 +243,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'chaos_titan',
     name: 'Chaos Titan',
     icon: '⚡',
-    baseHP: 300,
+    baseHP: 3000, // x10 increased
     baseAttack: 200,
     baseXP: 0, // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { fire: 0.8, physical: 0.3 }
@@ -254,7 +254,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'void_emperor',
     name: 'Void Emperor',
     icon: '👑💀',
-    baseHP: 500,
+    baseHP: 5000, // x10 increased
     baseAttack: 300,
     baseXP: 0, // MASSIVE XP BOOST - Ultra high XP for endgame
     resistances: { magic: 0.8, physical: 0.5 }
@@ -263,7 +263,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'cosmic_leviathan',
     name: 'Cosmic Leviathan',
     icon: '🐲🌌',
-    baseHP: 800,
+    baseHP: 8000, // x10 increased
     baseAttack: 400,
     baseXP: 0, // MASSIVE XP BOOST - Ultra high XP for endgame
     resistances: { fire: 0.9, ice: 0.9, magic: 0.7 }
@@ -272,7 +272,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'reality_shatterer',
     name: 'Reality Shatterer',
     icon: '💥🌌',
-    baseHP: 1200,
+    baseHP: 12000, // x10 increased
     baseAttack: 600,
     baseXP: 0, // MASSIVE XP BOOST - Ultra high XP for final zones
     resistances: { physical: 0.8, magic: 0.8, fire: 0.8, ice: 0.8 }
