@@ -245,7 +245,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '⚡',
     baseHP: 300,
     baseAttack: 200,
-    baseXP: $((1800 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: 9000, // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { fire: 0.8, physical: 0.3 }
   },
 
