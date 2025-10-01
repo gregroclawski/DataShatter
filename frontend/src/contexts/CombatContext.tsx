@@ -1128,9 +1128,17 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
                   
                   console.log(`🎯 SINGLE TARGET DAMAGE: ${enemy.name} health: ${newHealth}/${enemy.maxHealth}`);
                   
-                  // Just update health - let batch system handle XP awarding
+                  // Mark enemies as dying for death animation + batch XP processing
                   if (newHealth <= 0 && enemy.health > 0) {
-                    console.log(`💀 ENEMY KILLED: ${enemy.name} by ${projectile.abilityName}! Health: ${enemy.health} → 0 (XP will be awarded by batch system)`);
+                    console.log(`💀 DEATH ANIMATION: ${enemy.name} killed by ${projectile.abilityName}! Starting death fade...`);
+                    
+                    // Start death animation - keep enemy visible but mark as dying
+                    newState.enemies[enemyIndex] = {
+                      ...newState.enemies[enemyIndex],
+                      health: 0,
+                      isDying: true,
+                      deathStartTime: Date.now()
+                    };
                   } else if (enemy.health > 0) {
                     console.log(`🎯 DAMAGE: ${enemy.name} hit for ${projectile.damage} damage (${enemy.health} → ${newHealth})`);
                   }
