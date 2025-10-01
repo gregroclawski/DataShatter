@@ -18,13 +18,13 @@ load_dotenv('/app/frontend/.env')
 BACKEND_URL = os.getenv('EXPO_PUBLIC_BACKEND_URL', 'https://idle-game-patch.preview.emergentagent.com')
 API_BASE = f"{BACKEND_URL}/api"
 
-class RevivalSystemTester:
+class XPDecimalFixTester:
     def __init__(self):
         self.session = None
         self.test_user_id = None
-        self.test_user_email = f"revival_test_{uuid.uuid4().hex[:8]}@example.com"
+        self.test_user_email = f"xp_fix_test_{uuid.uuid4().hex[:8]}@example.com"
         self.test_user_password = "testpass123"
-        self.test_user_name = f"RevivalNinja_{uuid.uuid4().hex[:6]}"
+        self.test_user_name = f"XPTestNinja_{uuid.uuid4().hex[:6]}"
         self.auth_token = None
         self.session_cookie = None
         
