@@ -441,16 +441,6 @@ class XPDecimalFixTester:
         except Exception as e:
             print(f"❌ Leaderboard error: {str(e)}")
             return False
-                    else:
-                        print(f"❌ No game data found")
-                        return False
-                else:
-                    print(f"❌ Failed to load game data: Status {response.status}")
-                    return False
-        except Exception as e:
-            print(f"❌ Comprehensive data test error: {str(e)}")
-            return False
-
             
     async def run_all_tests(self):
         """Run all backend tests for XP decimal fix verification"""
