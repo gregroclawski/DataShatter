@@ -101,7 +101,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🦎',
     baseHP: 40,
     baseAttack: 30,
-    baseXP: 135000, // 3000X from original 45 - ULTRA MASSIVE BOOST for extremely fast progression
+    baseXP: 135, // 3000X from original 45 - ULTRA MASSIVE BOOST for extremely fast progression
     resistances: { physical: 0.4, fire: -0.3 }
   },
 
@@ -137,7 +137,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🪨',
     baseHP: 100,
     baseAttack: 30,
-    baseXP: 135000, // 3000X from original 45 - ULTRA MASSIVE BOOST for extremely fast progression
+    baseXP: 135, // 3000X from original 45 - ULTRA MASSIVE BOOST for extremely fast progression
     resistances: { physical: 0.4 }
   },
 
