@@ -1415,5 +1415,43 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
         elevation: 4,
       }),
     },
+    
+    // XP Reward Debug Notification Styles
+    xpNotificationContainer: {
+      position: 'absolute',
+      bottom: 100, // Above bottom UI elements
+      left: 20,
+      right: 20,
+      alignItems: 'center',
+      pointerEvents: 'none', // Don't block touch events
+      zIndex: 1000, // Above all other elements
+    },
+    xpNotification: {
+      position: 'absolute',
+      backgroundColor: MythicTechColors.neonGreen + 'E6', // 90% opacity
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 15,
+      borderWidth: 1,
+      borderColor: MythicTechColors.neonGreen,
+      // Mobile-optimized shadow
+      ...(Platform.OS === 'ios' ? {
+        shadowColor: MythicTechColors.neonGreen,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 4,
+      } : {
+        elevation: 6,
+      }),
+    },
+    xpNotificationText: {
+      color: MythicTechColors.white,
+      fontSize: 14,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      textShadowColor: MythicTechColors.darkSpace,
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 2,
+    },
   });
 }
