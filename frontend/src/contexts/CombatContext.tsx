@@ -444,6 +444,12 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       const dyingEnemies = newState.enemies.filter(enemy => enemy.isDying && enemy.health <= 0);
       const deadEnemies = newState.enemies.filter(enemy => enemy.health <= 0 && !enemy.isDying);
       
+      // DEBUG: Check if any enemies actually have 0 or negative health
+      const zeroHpEnemies = newState.enemies.filter(enemy => enemy.health <= 0);
+      if (zeroHpEnemies.length > 0) {
+        console.log(`💀 FOUND ${zeroHpEnemies.length} enemies with health <= 0:`, zeroHpEnemies.map(e => `${e.name}(${e.health}hp, isDying:${e.isDying})`));
+      }
+      
       // Process ALL dead and dying enemies for XP (with 20 TPS = 50ms response time)
       enemiesToKill = [...deadEnemies, ...dyingEnemies]; // Process all killed enemies for XP
       
