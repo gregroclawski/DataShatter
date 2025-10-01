@@ -508,7 +508,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       const goldMultiplier = game.gameState.subscriptionBenefits?.drop_multiplier || 1.0;
       
       enemiesToKill.forEach(enemy => {
-        totalXP += (enemy.zoneXP || 5000) * xpMultiplier;
+        totalXP += (enemy.zoneXP || 5) * xpMultiplier;
         totalGold += 10000 * goldMultiplier;
         
         if (enemy.zoneTypeId) {
