@@ -1037,10 +1037,12 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  // CRITICAL FIX: Add missing combat tick timer - this is what calls handleCombatTick!
+  // CRITICAL FIX: Add missing combat tick timer - MOBILE OPTIMIZED
   useEffect(() => {
-    console.log('🎯 STARTING COMBAT TICK TIMER - handleCombatTick will be called every 100ms');
-    const combatTickInterval = setInterval(handleCombatTick, 100); // 10 TPS for bulk processing
+    // Mobile React Native performance optimization - slower tick rate for mobile
+    const tickInterval = Platform.OS === 'web' ? 100 : 250; // 10 TPS web, 4 TPS mobile
+    console.log(`🎯 STARTING COMBAT TICK TIMER - handleCombatTick will be called every ${tickInterval}ms on ${Platform.OS}`);
+    const combatTickInterval = setInterval(handleCombatTick, tickInterval);
     
     return () => {
       console.log('🛑 STOPPING COMBAT TICK TIMER');
