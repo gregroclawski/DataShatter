@@ -40,6 +40,7 @@ interface CombatEnemy {
   markedForDeath?: boolean; // Prevent duplicate XP processing from AOE abilities
   isDying?: boolean; // Enemy is playing death animation
   deathStartTime?: number; // When death animation started
+  xpAwarded?: boolean; // XP already awarded to prevent double-processing
 }
 
 interface CombatProjectile {
