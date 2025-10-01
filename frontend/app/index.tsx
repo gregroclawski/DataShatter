@@ -132,6 +132,16 @@ export default function NinjaIdleGame() {
   const [ninjaPosition, setNinjaPosition] = useState(initialNinjaPosition);
   const [isAttacking, setIsAttacking] = useState(false);
 
+  // XP Reward Debug System - Track recent XP gains for visual feedback
+  const [xpNotifications, setXpNotifications] = useState<Array<{
+    id: string;
+    amount: number;
+    timestamp: number;
+  }>>([]);
+
+  // Track previous XP to detect gains
+  const [prevXP, setPrevXP] = useState(0);
+
   // ALL useEffect AND useCallback HOOKS MUST BE HERE - BEFORE ANY CONDITIONAL LOGIC
   
   // Level up explosion handler
