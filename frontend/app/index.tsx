@@ -138,7 +138,7 @@ export default function NinjaIdleGame() {
     setTimeout(() => {
       setIsLevelingUp(false);
     }, 1000);
-  }, [lastExplosionTime, triggerLevelUpExplosion]);
+  }, [lastExplosionTime]); // triggerLevelUpExplosion dependency removed
 
   const startBossBattle = useCallback((boss: Boss, tier: BossTier) => {
     console.log('🐉 Starting boss battle:', boss.name, tier.name);
