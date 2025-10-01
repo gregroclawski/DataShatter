@@ -1024,6 +1024,25 @@ export default function NinjaIdleGame() {
       {showAbilityDeck && (
         <AbilityDeckOverlay onClose={() => setShowAbilityDeck(false)} />
       )}
+
+      {/* XP Reward Debug Notifications - Bottom Stacked Display */}
+      <View style={styles.xpNotificationContainer}>
+        {xpNotifications.map((notification, index) => (
+          <Animated.View 
+            key={notification.id}
+            style={[
+              styles.xpNotification,
+              { bottom: index * 25 } // Stack notifications 25px apart
+            ]}
+            entering={FadeInUp.duration(300)}
+            exiting={FadeOutUp.duration(300)}
+          >
+            <Text style={styles.xpNotificationText}>
+              +{notification.amount} XP
+            </Text>
+          </Animated.View>
+        ))}
+      </View>
     </SafeAreaView>
   );
 }
