@@ -777,6 +777,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       return null;
     }
     
+    // DEBUG: Log damage values being applied
+    console.log(`🚀 CREATING PROJECTILE: damage=${damage}, target=${targetEnemy.name} (${targetEnemy.health}/${targetEnemy.maxHealth} HP)`);
+    
     const SCREEN_WIDTH = 390;
     const GAME_AREA_HEIGHT = 844 - 140; // Smaller top bar + compact abilities bar
     const NINJA_SIZE = 40;
