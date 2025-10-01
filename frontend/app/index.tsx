@@ -1033,6 +1033,13 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
       color: MythicTechColors.white,
       flexShrink: 1, // Allow text to shrink on small screens
     },
+    adminResetButton: {
+      padding: layout.paddingXS * 0.5,
+      borderRadius: layout.paddingXS * 0.5,
+      backgroundColor: MythicTechColors.crimsonRed + '20',
+      borderWidth: 1,
+      borderColor: '#ff6b6b',
+    },
     levelContainer: {
       flexDirection: 'column',
       gap: layout.paddingXS,
