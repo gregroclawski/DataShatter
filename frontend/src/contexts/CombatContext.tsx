@@ -618,6 +618,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       }, true, ability.stats.aoeRadius); // Pass AOE flags
       
       console.log(`🎯 ${ability.name} AOE projectile created targeting ${target.name} with ${ability.stats.aoeRadius} radius`);
+      console.log(`🎯 AOE DEBUG: damage=${damage}, isAOE=true, aoeRadius=${ability.stats.aoeRadius}`);
       
     } else {
       // Single target ability (original logic)
