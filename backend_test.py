@@ -147,27 +147,27 @@ class XPDecimalFixTester:
             print(f"❌ Session check error: {str(e)}")
             return False
             
-    async def test_save_game_with_revival_system(self):
-        """Test 5: Game Save with Revival System (reviveTickets field)"""
-        print(f"\n🔍 TEST 5: Game Save with Revival System Integration")
+    async def test_save_game_with_integer_xp(self):
+        """Test 5: Game Save with Integer XP Values (XP Decimal Fix Verification)"""
+        print(f"\n🔍 TEST 5: Game Save with Integer XP Values - XP Decimal Fix Verification")
         try:
-            # Create Level 25+ ninja with reviveTickets data
+            # Create ninja data with integer XP values (simulating the Math.round() fix)
             ninja_data = {
-                "level": 27,
-                "experience": 7290,
-                "experienceToNext": 2710,
-                "health": 270,
-                "maxHealth": 270,
-                "energy": 135,
-                "maxEnergy": 135,
-                "attack": 54,
-                "defense": 32,
-                "speed": 43,
-                "luck": 21,
-                "gold": 5420,
-                "gems": 89,
-                "skillPoints": 81,
-                "reviveTickets": 3,  # NEW FIELD: Revival System integration
+                "level": 15,
+                "experience": 3750,  # Integer XP (not 3750.5 or decimal)
+                "experienceToNext": 1250,  # Integer XP
+                "health": 200,
+                "maxHealth": 200,
+                "energy": 100,
+                "maxEnergy": 100,
+                "attack": 35,
+                "defense": 25,
+                "speed": 30,
+                "luck": 15,
+                "gold": 2500,  # Integer gold
+                "gems": 50,    # Integer gems
+                "skillPoints": 45,  # Integer skill points
+                "reviveTickets": 3,
                 "baseStats": {
                     "attack": 15,
                     "defense": 8,
