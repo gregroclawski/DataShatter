@@ -290,6 +290,52 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     console.log('  - token exists:', !!token);
   }, [isAuthenticated, user, token]);
 
+  // Load subscription benefits from server
+  const loadSubscriptionBenefits = useCallback(async () => {
+    console.log('🔍 SUBSCRIPTION BENEFITS LOADING ATTEMPT:');
+    console.log('  - isAuthenticated:', isAuthenticated);
+    console.log('  - user exists:', !!user);
+    console.log('  - token exists:', !!token);
+    
+    if (!isAuthenticated || !token) {
+      console.log('❌ SUBSCRIPTION BENEFITS: Missing auth or token, skipping');
+      return;
+    }
+
+    try {
+      console.log('🏪 LOADING SUBSCRIPTION BENEFITS - Starting API call...');
+      console.log('  - API_BASE_URL:', API_BASE_URL);
+      console.log('  - Using token:', token?.substring(0, 10) + '...');
+      
+      const response = await fetch(`${API_BASE_URL}/api/subscriptions/benefits`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('📊 SUBSCRIPTION BENEFITS RESPONSE:', response.status, response.statusText);
+
+      if (response.ok) {
+        const benefits = await response.json();
+        console.log('✅ LOADED SUBSCRIPTION BENEFITS:', JSON.stringify(benefits, null, 2));
+        
+        setGameState(prev => ({
+          ...prev,
+          subscriptionBenefits: benefits
+        }));
+      } else {
+        console.error('❌ SUBSCRIPTION BENEFITS API ERROR:', response.status, response.statusText);
+        const errorText = await response.text();
+        console.error('❌ Error response:', errorText);
+      }
+    } catch (error) {
+      console.error('❌ SUBSCRIPTION BENEFITS NETWORK ERROR:', error);
+    }
+  }, [isAuthenticated, token, API_BASE_URL]);
+
   // Load game data when user authenticates
   useEffect(() => {
     if (isAuthenticated && user) {
