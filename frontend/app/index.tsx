@@ -428,30 +428,26 @@ export default function NinjaIdleGame() {
     xpPercentage: 0
   });
 
-  // Throttled display updates - Update UI at max 15 FPS instead of 30 TPS
+  // INSTANT XP BAR UPDATES - Update immediately when XP changes for instant visual feedback
   useEffect(() => {
-    const updateInterval = setInterval(() => {
-      const newPercentage = Math.max(0, Math.min(100, (testNinja.experience / testNinja.experienceToNext) * 100));
-      
-      setDisplayStats(prev => {
-        // Update for any change - instant visual feedback for each kill
-        if (
-          prev.level !== testNinja.level ||
-          prev.experience !== testNinja.experience ||
-          prev.xpPercentage !== newPercentage // Update on any XP percentage change
-        ) {
-          return {
-            level: testNinja.level,
-            experience: testNinja.experience,
-            experienceToNext: testNinja.experienceToNext,
-            xpPercentage: newPercentage
-          };
-        }
-        return prev;
-      });
-    }, 67); // 67ms = ~15 FPS for smooth but efficient UI updates
+    const newPercentage = Math.max(0, Math.min(100, (testNinja.experience / testNinja.experienceToNext) * 100));
     
-    return () => clearInterval(updateInterval);
+    setDisplayStats(prev => {
+      // Always update immediately for instant visual feedback on each kill
+      if (
+        prev.level !== testNinja.level ||
+        prev.experience !== testNinja.experience ||
+        prev.xpPercentage !== newPercentage
+      ) {
+        return {
+          level: testNinja.level,
+          experience: testNinja.experience,
+          experienceToNext: testNinja.experienceToNext,
+          xpPercentage: newPercentage
+        };
+      }
+      return prev;
+    });
   }, [testNinja.level, testNinja.experience, testNinja.experienceToNext]);
 
   // CRITICAL: Expo Go Fix - useSharedValue hooks MUST be initialized with stable values
