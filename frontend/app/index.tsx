@@ -133,7 +133,7 @@ export default function NinjaIdleGame() {
     setIsLevelingUp(true);
     setLastExplosionTime(now);
     
-    triggerLevelUpExplosion();
+    // triggerLevelUpExplosion(); // REMOVED: Level up explosion disabled for performance
     
     setTimeout(() => {
       setIsLevelingUp(false);
