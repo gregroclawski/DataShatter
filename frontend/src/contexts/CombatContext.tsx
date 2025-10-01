@@ -515,6 +515,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       // Filter out enemies that already had XP awarded to prevent double-processing
       const unprocessedEnemies = enemiesToKill.filter(enemy => !enemy.xpAwarded);
       
+      // CRITICAL DEBUG: Check why unprocessedEnemies is empty
+      console.log(`🔍 DEBUG enemiesToKill xpAwarded status:`, enemiesToKill.map(e => ({id: e.id, name: e.name, xpAwarded: e.xpAwarded})));
       console.log(`💀 BULK PROCESSING: ${enemiesToKill.length} total kills, ${unprocessedEnemies.length} unprocessed`);
       
       if (unprocessedEnemies.length > 0) {
