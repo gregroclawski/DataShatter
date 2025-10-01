@@ -453,9 +453,12 @@ class XPDecimalFixTester:
 
             
     async def run_all_tests(self):
-        """Run all backend tests"""
-        print("🚀 BACKEND API TESTING SUITE - REVIVAL SYSTEM INTEGRATION")
-        print("=" * 60)
+        """Run all backend tests for XP decimal fix verification"""
+        print("🚀 BACKEND API TESTING SUITE - XP DECIMAL SAVE ERROR FIX VERIFICATION")
+        print("=" * 70)
+        print(f"Backend URL: {API_BASE}")
+        print(f"Focus: Verify Math.round() XP fix didn't break backend functionality")
+        print("=" * 70)
         
         await self.setup_session()
         
@@ -464,9 +467,10 @@ class XPDecimalFixTester:
             ("User Registration", self.test_user_registration),
             ("User Login", self.test_user_login),
             ("Session Management", self.test_session_check),
-            ("Game Save with Revival System", self.test_save_game_with_revival_system),
-            ("Game Load with Revival System", self.test_load_game_with_revival_system),
-            ("Comprehensive Data Persistence", self.test_comprehensive_game_data_persistence)
+            ("Game Save with Integer XP", self.test_save_game_with_integer_xp),
+            ("Game Load with Integer XP", self.test_load_game_with_integer_xp),
+            ("Edge Case XP Values", self.test_edge_case_xp_values),
+            ("Leaderboard Functionality", self.test_leaderboard_functionality)
         ]
         
         results = []
