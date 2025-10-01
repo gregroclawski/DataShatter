@@ -1047,9 +1047,18 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
                 
                 console.log(`🎯 DAMAGE APPLIED: ${enemy.name} health: ${newHealth}/${enemy.maxHealth}`);
                 
-                // Award XP when enemy dies
+                // Award XP when enemy dies - FIXED: Prevent duplicate XP from AOE abilities
                 if (newHealth <= 0 && enemy.health > 0) {
-                  console.log(`💀 PROJECTILE KILL: ${enemy.name} killed by ${projectile.abilityName}!`);
+                  console.log(`💀 PROJECTILE KILL: ${enemy.name} killed by ${projectile.abilityName}! (Health: ${enemy.health} -> ${newHealth})`);
+                  
+                  // Mark enemy as killed immediately to prevent duplicate processing
+                  newState.enemies[enemyIndex] = {
+                    ...newState.enemies[enemyIndex],
+                    health: 0,
+                    markedForDeath: true // Add flag to prevent duplicate processing
+                  };
+                  
+                  // Call handleEnemyKill with original enemy stats before damage
                   setTimeout(() => handleEnemyKill(enemy), 0);
                 }
               }
