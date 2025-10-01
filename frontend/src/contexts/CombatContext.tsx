@@ -37,6 +37,7 @@ interface CombatEnemy {
   // Zone integration fields
   zoneTypeId?: string; // Zone enemy type ID for kill tracking
   zoneXP?: number; // XP reward from zone system
+  markedForDeath?: boolean; // Prevent duplicate XP processing from AOE abilities
 }
 
 interface CombatProjectile {
