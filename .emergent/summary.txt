@@ -1,75 +1,69 @@
 <analysis>
-The trajectory documents the extensive evolution and debugging of a mobile RPG, Data Shatter. The work began with setting up a proper Git and EAS Build workflow to resolve persistent build failures on the user's local machine. This involved iterative debugging of  configurations related to Node.js versions, package managers, and build command syntax.
+The trajectory documents an extensive and complex debugging journey for a mobile RPG, Data Shatter. The initial task was to fix a minor visual lag on the XP bar. This simple request quickly spiraled into a deep dive into the application's core architecture, revealing numerous critical bugs.
 
-A significant portion of the development focused on implementing and refining core game mechanics, particularly the experience (XP) and combat systems. The user repeatedly requested adjustments to the progression speed, leading to several massive increases in XP and gold rewards. This process introduced numerous bugs, including missed XP on certain ability kills (Whirlwind), conflicting XP calculation systems, and severe performance bottlenecks. The AI engineer engaged in deep, iterative debugging within , refactoring the Area of Effect (AOE) system, introducing and removing various XP awarding mechanisms (immediate vs. batch processing), and adjusting the core game loop's tick rate to balance responsiveness and performance. The  was instrumental in diagnosing complex race conditions and timing issues within the state management contexts.
+The AI engineer systematically addressed a cascade of issues, many diagnosed by a . Key problems included: Metro bundler caching hiding code changes, duplicate React Context providers causing state conflicts, infinite re-render loops from incorrect  usage, and multiple stale closure problems breaking the combat logic after level-ups.
 
-Other key tasks included refactoring the in-game store to move items to their correct currency type and implementing a backend and frontend admin system for account resets. The most recent task involves fixing a visual lag issue where the XP bar does not update instantly, a problem traced back to an overly aggressive UI throttling mechanism.
+A significant portion of the work focused on the  file. The engineer fixed conflicting damage and XP systems, resolved state mutation bugs, corrected projectile despawning logic, and critically, implemented a missing combat tick timer that was preventing the entire reward system from running. The root cause of many visual bugs was traced back to fundamental architectural flaws, such as incorrect enemy HP scaling in  and a state timing issue where the list of killed enemies wasn't being captured correctly for processing.
+
+After resolving these core system failures, the work shifted to user-requested balance changes (adjusting XP, gold, and zone difficulty) and UI tweaks (styling the XP notification text). The final task before this summary was to investigate an influx of save errors, which was diagnosed as a performance issue due to excessive, unthrottled save requests to the backend.
 </analysis>
-
 <product_requirements>
-The application, Data Shatter, is an idle RPG for mobile devices. The primary goal is to provide a satisfying and fast-paced progression loop.
+The application, Data Shatter, is an idle RPG for mobile platforms designed for fast-paced progression.
 
-**Core Features Implemented:**
--   **Automatic Combat:** The player character automatically engages in combat with spawning enemies.
--   **Revival System:** A system that allows players to revive upon death using tickets or watching a rewarded ad.
--   **AdMob Monetization:** Google AdMob is integrated to provide rewarded video ads in exchange for in-game items (Revive Tickets).
--   **In-Game Store:** A store where players can purchase items like Revive Tickets using in-game currency (Gems).
--   **Dynamic Progression:** The XP and gold rewards have been massively scaled multiple times to ensure rapid leveling. The XP curve for leveling has been adjusted to be steeper for early levels (1-5000) and then flatten out.
--   **Full Heal on Level Up:** Players' health and energy are fully restored upon leveling up.
--   **Admin Functionality:** An admin role exists () which grants access to a UI button for resetting the player's account data for testing purposes. The visibility of this button is controlled by a database flag ().
+**Core Features & Gameplay Loop:**
+- **Automated Combat:** The player's character automatically fights waves of enemies in different zones.
+- **Progression:** Players gain Experience (XP) and Gold from defeating enemies to level up, which fully restores health and energy.
+- **Economy:** Players use Gold for in-game purchases. Gems are the premium currency, used for items like Revive Tickets.
+- **Revival System:** Upon death, players can revive using tickets. This system was temporarily disabled to debug other critical issues but has since been restored.
+- **UI Feedback:** A custom UI component provides animated feedback for XP gains (+### XP) to enhance the sense of progression.
+- **Admin Functionality:** A backend system allows specific users to reset their game state for testing purposes.
+
+**Recent Implementation History:**
+The application underwent a massive debugging effort to fix the entire combat reward pipeline. This included resolving issues with enemy death detection, projectile physics, XP/gold awarding, and zone progress tracking, which were all non-functional on mobile devices. The game balance was recently adjusted to slow XP gain by 50%, increase gold rewards by 100x, and increase zone kill requirements by 10x.
 </product_requirements>
-
 <key_technical_concepts>
--   **Frameworks**: Expo (with Expo Router), React Native, FastAPI.
--   **State Management**: React Context API (, ) is used for managing global game state, requiring careful synchronization to prevent race conditions.
--   **Build & Deployment**: Expo Application Services (EAS) Build for creating native development and production builds. Extensive debugging of  was performed.
--   **Monetization**:  for rewarded ads.
--   **Performance Optimization**: UI updates are throttled and memoized in the main game view to handle rapid state changes from the fast-paced combat engine.
+- **Frameworks**: Expo (with Expo Router), React Native, FastAPI.
+- **State Management**: Heavy reliance on React Context (, , ). Debugging focused on fixing stale closures, state mutation, and dependency array issues in  and . React Refs () were introduced to solve critical closure scoping problems.
+- **Build & Environment**: Addressed critical issues with the Metro bundler cache, which was preventing code changes from appearing on mobile devices.
+- **Mobile Performance**: Optimized the combat tick rate specifically for mobile () to prevent performance bottlenecks.
 </key_technical_concepts>
-
 <code_architecture>
-The application is a monorepo with an Expo frontend and a FastAPI backend.
+The application is a monorepo with a  (Expo/React Native) and a  (FastAPI).
 
 
 
 -   ****
-    -   **Importance**: Defines the build configuration for Expo Application Services (EAS).
-    -   **Changes**: Heavily modified to resolve numerous build failures. Adjustments included specifying Node.js versions, switching package managers, and simplifying  to rely on EAS defaults.
+    -   **Importance**: This is the core of the game's real-time logic, managing the entire combat loop, including enemy state, projectile physics, damage calculation, and reward processing.
+    -   **Summary of Changes**: This file was the epicenter of the debugging effort. Changes included: removing duplicate/conflicting damage and XP systems, fixing multiple stale closure bugs by correctly managing  dependency arrays, implementing a React Ref () to solve a critical state timing issue, adding a missing  to run the main combat tick, optimizing the tick rate for mobile, and adjusting XP/gold reward calculations based on user request.
 
 -   ****
-    -   **Importance**: The core of the game's real-time logic. It manages combat state, enemy interactions, projectile physics, ability usage, and the awarding of XP and gold.
-    -   **Changes**: This file has undergone the most significant refactoring. The XP awarding logic was changed multiple times to fix bugs and performance issues, moving from immediate to batch processing and back. The AOE (Area of Effect) system was refactored. The  function was streamlined to a single, efficient calculation. The combat tick processing was modified to manage a death animation queue.
+    -   **Importance**: The main game screen component, responsible for rendering all UI elements and integrating the various contexts.
+    -   **Summary of Changes**: Fixed a critical bug where the UI was displaying derived stats instead of the actual loaded game state from , causing progression to appear broken. A new UI feature for displaying stacking XP gain notifications () was added, including state management, JSX rendering with , and styling. The styling was later adjusted to be smaller and more opaque.
 
 -   ****
-    -   **Importance**: Manages the persistent player state, including level, experience, stats, and inventory. It contains the logic for leveling up.
-    -   **Changes**: The  function was modified to create a tiered progression curve, making early levels require more XP. The logic already included a full HP/Energy restore on level up.
+    -   **Importance**: The root layout file for the Expo Router, responsible for wrapping the application in global context providers.
+    -   **Summary of Changes**: A critical architectural flaw was fixed here by removing duplicated nested context providers (e.g.,  wrapping , which already contained ). This resolved major state conflicts.
 
 -   ****
-    -   **Importance**: The main UI component for the game screen. It renders the player, enemies, UI elements like the XP bar, and the admin button.
-    -   **Changes**: An admin reset button was added, with its visibility tied to a  flag. A throttled state () was introduced to manage frequent UI updates for the XP and level display, which is the source of the current issue.
+    -   **Importance**: Contains static data and logic for game zones, including enemy stats and progression requirements.
+    -   **Summary of Changes**: Fixed a fundamental bug where enemy HP scaling logic caused all enemies to spawn with exactly 1 HP, preventing them from being killed properly. Also updated the logic to increase the number of kills required to complete zones by a factor of 10, per a user request for game balance changes.
 
 -   ****
-    -   **Importance**: Manages the UI and logic for the in-game store.
-    -   **Changes**: Refactored to move the Revive Tickets purchase option from the real-money Gems tab to the in-game currency Items tab, costing 1000 Gems.
-
--   ****
-    -   **Importance**: The FastAPI backend server. It handles user authentication, game state saving/loading, and admin functions.
-    -   **Changes**: New endpoints were added to support admin functionality: one to grant a user admin status and another () to reset a player's game save to its initial state. The user profile endpoint was updated to include the  flag.
+    -   **Importance**: Manages persistent player data, including saving/loading state from the backend.
+    -   **Summary of Changes**: This file was investigated for the current save errors issue. It was identified that it lacks a throttling mechanism for the  function, which is the likely cause of the performance problem.
 </code_architecture>
-
 <pending_tasks>
--   **Implement Companions**: A planned game feature that has not been started.
--   **Implement Idle/Offline Progression**: A core feature for an idle RPG that has not been implemented yet.
+- **Implement Save Throttling**: Investigate the frequent save requests reported by the user and implement a throttling or debouncing mechanism in  to prevent overwhelming the backend.
+- **Implement Companions**: A planned game feature that has not been started.
+- **Implement Idle/Offline Progression**: A core feature for an idle RPG that has not been implemented yet.
 </pending_tasks>
-
 <current_work>
-The most recent task was to solve a persistent visual bug where the XP bar and level display do not update instantly after each enemy kill, creating a disconnect between the action and the reward. The user noted that XP seems to come in chunks, or that they would suddenly jump from level 1 to 3 without seeing the XP bar move.
+Immediately before this summary request, the user reported getting a lot of save errors. The AI engineer investigated the backend logs and determined that the save requests were succeeding with a 200 OK status, but they were being sent with extremely high frequency, including many duplicate requests with identical data.
 
-The AI engineer correctly identified this as a UI update issue, not a problem with the XP calculation itself (which is now highly optimized and synchronous). To diagnose the precise cause, the  was invoked.
+The investigation shifted to the frontend to understand what was triggering these rapid saves. The AI hypothesized that the frequent state updates from the now-functional combat and XP systems were causing the game to save too often.
 
-The agent's analysis pinpointed the issue within the  file. The problem lies in the  hook, which was implemented to improve UI performance. This hook intentionally limits UI re-renders to 15 FPS and, more critically, filters out small changes by only updating if the new XP value represents a change of more than 1% of the total needed for the next level. For a level 1 player, a single kill does not meet this 1% threshold, so the UI update is skipped, leading to the observed visual lag.
+The last action taken was to examine the  file to look for a save throttling mechanism. The engineer confirmed that no such mechanism exists, which is the likely root cause of the performance issue. The work stopped just before the engineer was about to investigate what specific state changes were triggering the  function calls so frequently. The immediate goal is to prevent these excessive save requests to improve backend performance and resolve the user's perceived errors.
 </current_work>
-
 <optional_next_step>
-Implement the fix recommended by the : modify the  hook in  to remove the 1% threshold filter, ensuring that every XP gain, no matter how small, triggers a UI update for the XP bar.
+I will add a throttling mechanism to the  function in  to limit the frequency of save requests to the backend.
 </optional_next_step>
