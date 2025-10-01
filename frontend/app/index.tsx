@@ -420,7 +420,7 @@ export default function NinjaIdleGame() {
     }
   }, [gameState?.ninja?.level, previousLevel, handleLevelUpExplosion]);
 
-  // THROTTLED UI DISPLAY STATE - Updates at reasonable frequency for smooth visuals
+  // INSTANT UI DISPLAY STATE - Updates immediately when XP changes for responsive visual feedback
   const [displayStats, setDisplayStats] = useState({
     level: testNinja.level,
     experience: testNinja.experience,
