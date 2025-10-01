@@ -256,7 +256,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👑💀',
     baseHP: 500,
     baseAttack: 300,
-    baseXP: 1500, // Ultra high XP for endgame
+    baseXP: 7500, // MASSIVE XP BOOST - Ultra high XP for endgame
     resistances: { magic: 0.8, physical: 0.5 }
   },
   'cosmic_leviathan': {
