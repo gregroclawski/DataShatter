@@ -171,19 +171,10 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   // MOBILE FIX: Removed duplicate ninja position state - using main game's position instead
   // Ninja position is now managed entirely by the main game component
 
-  // Function to handle enemy kills - integrates with zone progression and awards XP/gold
+  // Function to handle enemy kills - REMOVED DUPLICATE XP PROCESSING
+  // XP and gold are now handled by bulk processing system to prevent race conditions
   const handleEnemyKill = useCallback((enemy: CombatEnemy) => {
-    // BALANCED XP CALCULATION - Reduced by 1000x for proper progression
-    const xpReward = (enemy.zoneXP || 5) * (game.gameState.subscriptionBenefits?.xp_multiplier || 1.0);
-    const goldReward = 10 * (game.gameState.subscriptionBenefits?.drop_multiplier || 1.0);
-    
-    // INSTANT REWARD - Single update call
-    game.updateNinja(prev => ({
-      experience: prev.experience + xpReward,
-      gold: prev.gold + goldReward,
-    }));
-    
-    // ZONE PROGRESSION - Only if needed
+    // ZONE PROGRESSION ONLY - XP/Gold handled in bulk processing
     if (enemy.zoneTypeId) {
       recordEnemyKill({
         id: enemy.id,
@@ -197,7 +188,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         position: enemy.position
       });
     }
-  }, [game.updateNinja, recordEnemyKill]);
+  }, [recordEnemyKill]);
 
   // Combat tick handler - MEMOIZED to prevent infinite re-renders
   const handleCombatTick = React.useCallback(() => {
