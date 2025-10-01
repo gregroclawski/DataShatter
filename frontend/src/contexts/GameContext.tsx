@@ -350,7 +350,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       console.log('🔍 No authenticated user - setting game loading to false');
       setIsLoading(false);
     }
-  }, [isAuthenticated, user, loadSubscriptionBenefits]);
+  }, [isAuthenticated, user]);
 
   // Auto-save system - MOBILE FIX: Use state callback pattern to prevent stale closures
   useEffect(() => {
