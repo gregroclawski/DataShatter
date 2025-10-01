@@ -894,6 +894,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   // Start combat - Memoized with stable dependencies
   const startCombat = React.useCallback(() => {
     console.log('🚀 Starting combat, adding tick callback...');
+    console.log('🚀 Combat engine:', combatEngine);
+    console.log('🚀 Handle combat tick function:', handleCombatTick);
     setCombatState(prev => ({ ...prev, isInCombat: true }));
     
     // Add tick callback if not already added
@@ -902,6 +904,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     
     // Start the engine
     combatEngine.start();
+    console.log('🚀 Engine started successfully!');
   }, [combatEngine, handleCombatTick]);
 
   // Stop combat - Memoized with stable dependencies
