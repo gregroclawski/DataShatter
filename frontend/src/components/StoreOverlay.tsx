@@ -1112,6 +1112,98 @@ const styles = StyleSheet.create({
   },
 });
 
+const ReviveTicketCard = () => {
+  const { gameState, updateNinja, saveOnEvent } = useGame();
+  const { ninja } = gameState;
+  const [purchasing, setPurchasing] = useState(false);
+
+  const handlePurchaseReviveTickets = async () => {
+    const gemsCost = 1000;
+    const ticketsToAdd = 50;
+
+    // Check if player has enough gems
+    if (ninja.gems < gemsCost) {
+      Alert.alert(
+        'Insufficient Gems',
+        `You need ${gemsCost.toLocaleString()} gems to purchase this item.\n\nCurrent balance: ${ninja.gems.toLocaleString()} gems`,
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+
+    try {
+      setPurchasing(true);
+
+      // Simulate purchase delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Purchase revive tickets with gems
+      updateNinja(prev => ({
+        ...prev,
+        gems: prev.gems - gemsCost,
+        reviveTickets: prev.reviveTickets + ticketsToAdd
+      }));
+
+      // Trigger save
+      setTimeout(() => {
+        saveOnEvent('revive_ticket_purchase');
+      }, 100);
+
+      Alert.alert(
+        '🎉 Purchase Successful!',
+        `Revive Tickets Bundle purchased!\n\n+${ticketsToAdd} Revive Tickets\n-${gemsCost.toLocaleString()} Gems\n\nNew Ticket Balance: ${ninja.reviveTickets + ticketsToAdd}`,
+        [{ text: 'Awesome!' }]
+      );
+
+    } catch (error) {
+      console.error('Purchase error:', error);
+      Alert.alert('Purchase Failed', 'Unable to complete purchase. Please try again.');
+    } finally {
+      setPurchasing(false);
+    }
+  };
+
+  return (
+    <View style={styles.nameChangeCard}>
+      <View style={styles.nameChangeHeader}>
+        <Text style={{ fontSize: 32 }}>🎫</Text>
+        <View style={styles.nameChangeInfo}>
+          <Text style={styles.nameChangeTitle}>Revive Tickets Bundle</Text>
+          <Text style={styles.nameChangeCurrentName}>
+            Current tickets: {ninja.reviveTickets.toLocaleString()}
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.nameChangeDetails}>
+        <Text style={styles.nameChangePrice}>
+          1000 💎
+        </Text>
+        <Text style={styles.nameChangeSubtext}>
+          50 Revive Tickets
+        </Text>
+      </View>
+
+      <TouchableOpacity
+        style={[
+          styles.nameChangeButton,
+          ninja.gems < 1000 && { backgroundColor: '#64748b' }
+        ]}
+        onPress={handlePurchaseReviveTickets}
+        disabled={purchasing || ninja.gems < 1000}
+      >
+        {purchasing ? (
+          <ActivityIndicator size="small" color="#ffffff" />
+        ) : (
+          <Text style={styles.nameChangeButtonText}>
+            {ninja.gems >= 1000 ? 'BUY FOR 1000 GEMS' : 'INSUFFICIENT GEMS'}
+          </Text>
+        )}
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 const NameChangeCard = () => {
   const { user, token } = useAuth();
   const [nameChangeInfo, setNameChangeInfo] = useState<any>(null);
