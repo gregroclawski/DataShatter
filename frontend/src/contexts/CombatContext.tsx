@@ -171,7 +171,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   // MOBILE FIX: Removed duplicate ninja position state - using main game's position instead
   // Ninja position is now managed entirely by the main game component
 
-  // Function to handle enemy kills - INSTANT XP for fluid gameplay + zone progression
+  // Function to handle enemy kills - MEMOIZED to prevent infinite re-renders
   const handleEnemyKill = useCallback((enemy: CombatEnemy) => {
     // INSTANT XP AWARD - Immediate visual feedback for fluid gameplay
     const xpReward = (enemy.zoneXP || 5) * (game.gameState.subscriptionBenefits?.xp_multiplier || 1.0);
@@ -205,7 +205,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         position: enemy.position
       });
     }
-  }, [game.updateNinja, recordEnemyKill]);
+  }, [game.updateNinja, game.gameState.subscriptionBenefits, recordEnemyKill]);
 
   // Combat tick handler - MEMOIZED to prevent infinite re-renders
   // COMBAT TICK HANDLER - Removed useCallback to prevent stale closure issues after level ups
