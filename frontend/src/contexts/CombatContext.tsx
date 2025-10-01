@@ -1102,12 +1102,11 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
                   return enemy; // Enemy outside AOE radius - no damage
                 });
                 
-                // Award XP for all killed enemies
+                // Award XP for all killed enemies SYNCHRONOUSLY - no setTimeout to avoid state conflicts
                 if (enemiesKilled.length > 0) {
                   console.log(`🎯 AOE XP AWARD: ${enemiesKilled.length} enemies killed by ${projectile.abilityName}`);
-                  setTimeout(() => {
-                    enemiesKilled.forEach(enemy => handleEnemyKill(enemy));
-                  }, 0);
+                  // Process XP immediately within this state update to prevent conflicts
+                  enemiesKilled.forEach(enemy => handleEnemyKill(enemy));
                 }
                 
               } else {
