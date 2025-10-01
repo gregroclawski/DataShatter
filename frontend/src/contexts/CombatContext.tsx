@@ -77,7 +77,7 @@ interface CombatContextType {
   spawnBoss: (bossEnemy: CombatEnemy) => void;
   clearAllEnemies: () => void; // For level-up explosion
   clearSpecificEnemy: (enemyId: string) => void;
-  triggerLevelUpExplosion: () => void; // Trigger explosion from combat context
+  // triggerLevelUpExplosion: () => void; // REMOVED: Level up explosion disabled for performance
   findClosestEnemy: () => CombatEnemy | null; // Expose closest enemy finding
   updateNinjaPosition: (position: {x: number, y: number}) => void; // Update ninja position for projectiles
   lastExplosionTime: number;
