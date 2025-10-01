@@ -228,7 +228,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👤',
     baseHP: 180,
     baseAttack: 120,
-    baseXP: $((1080 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: 5400, // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { magic: 0.6 }
   },
   'nightmare_lord': {
