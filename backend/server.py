@@ -1054,6 +1054,94 @@ async def check_session(request: Request):
     except Exception as e:
         return {"authenticated": False, "error": str(e)}
 
+@api_router.post("/admin/reset-account")
+async def reset_account(request: Request):
+    """Reset current account to starting state for testing purposes"""
+    try:
+        # Get user from request headers (you'll need to get the current user ID from auth)
+        user_id = request.headers.get("X-User-Id")  # You'll need to implement auth checking
+        
+        if not user_id:
+            raise HTTPException(status_code=401, detail="User not authenticated")
+        
+        # Check if user is admin
+        user_doc = await db.users.find_one({"id": user_id})
+        if not user_doc or not user_doc.get("is_admin", False):
+            raise HTTPException(status_code=403, detail="Admin access required")
+        
+        # Reset the game save data to starting values
+        reset_data = {
+            "ninja": {
+                "level": 1,
+                "experience": 0,
+                "experienceToNext": 100,
+                "health": 100,
+                "maxHealth": 100,
+                "energy": 100,
+                "maxEnergy": 100,
+                "gold": 100,
+                "gems": 100,
+                "reviveTickets": 3,
+                "baseStats": {
+                    "attack": 10,
+                    "defense": 5,
+                    "speed": 5,
+                    "luck": 1,
+                    "maxHealth": 100,
+                    "maxEnergy": 100
+                },
+                "goldUpgrades": {
+                    "attack": 0,
+                    "defense": 0,
+                    "speed": 0,
+                    "luck": 0,
+                    "maxHealth": 0,
+                    "maxEnergy": 0
+                },
+                "skillPointUpgrades": {
+                    "attack": 0,
+                    "defense": 0,
+                    "speed": 0,
+                    "luck": 0,
+                    "maxHealth": 0,
+                    "maxEnergy": 0
+                },
+                "skillPoints": 0
+            },
+            "zoneProgress": {},
+            "equipment": {
+                "equipped": {
+                    "head": None,
+                    "body": None,
+                    "weapon": None,
+                    "accessory": None
+                },
+                "inventory": [],
+                "maxInventorySize": 50
+            },
+            "abilityData": {
+                "equippedAbilities": [],
+                "availableAbilities": {},
+                "activeSynergies": []
+            },
+            "updatedAt": datetime.utcnow()
+        }
+        
+        # Update the player document
+        result = await db.game_saves.update_one(
+            {"playerId": user_id},
+            {"$set": reset_data}
+        )
+        
+        if result.modified_count > 0:
+            return {"success": True, "message": "Account reset successfully"}
+        else:
+            return {"success": False, "message": "Account not found or already reset"}
+            
+    except Exception as e:
+        print(f"❌ ADMIN RESET ERROR: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Reset failed: {str(e)}")
+
 # Admin endpoints for easier player management
 class AdminPlayerRequest(BaseModel):
     player_id: str
