@@ -182,7 +182,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'magma_elemental',
     name: 'Magma Elemental',
     icon: '🔥',
-    baseHP: 80,
+    baseHP: 800, // x10 increased
     baseAttack: 60,
     baseXP: 0, // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
@@ -190,7 +190,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'lava_beast',
     name: 'Lava Beast',
     icon: '🦏',
-    baseHP: 90,
+    baseHP: 900, // x10 increased
     baseAttack: 70,
     baseXP: 0, // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
@@ -198,7 +198,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'inferno_dragon',
     name: 'Inferno Dragon',
     icon: '🐲',
-    baseHP: 120,
+    baseHP: 1200, // x10 increased
     baseAttack: 75,
     baseXP: 0, // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { fire: 0.7 }
@@ -207,7 +207,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'phoenix_guardian',
     name: 'Phoenix Guardian',
     icon: '🔥🦅',
-    baseHP: 100,
+    baseHP: 1000, // x10 increased
     baseAttack: 80,
     baseXP: 0, // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { magic: 0.4 }
