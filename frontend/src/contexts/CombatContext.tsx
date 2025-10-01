@@ -352,11 +352,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
                 // Handle player death if health reaches 0
                 if (newPlayerHealth <= 0) {
                   console.log('💀 PLAYER DEFEATED! Triggering revival system...');
-                  // Set player as dead and trigger revival modal
-                  setTimeout(() => {
-                    // Set isAlive to false to trigger revival system
-                    game.updateGameState({ isAlive: false });
-                  }, 100);
+                  // Set player as dead and trigger revival modal immediately
+                  game.updateGameState({ isAlive: false });
                 }
                 }
               }
