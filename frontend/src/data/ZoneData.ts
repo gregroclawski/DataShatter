@@ -47,7 +47,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'forest_goblin',
     name: 'Forest Goblin',
     icon: '👹',
-    baseHP: 15,
+    baseHP: 150, // x10 increased
     baseAttack: 8,
     baseXP: 50, // 2500X from original 20 - ULTRA MASSIVE BOOST for extremely fast progression
   },
@@ -55,7 +55,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'wild_wolf', 
     name: 'Wild Wolf',
     icon: '🐺',
-    baseHP: 25,
+    baseHP: 250, // x10 increased
     baseAttack: 12,
     baseXP: 45, // 3000X from original 15 - ULTRA MASSIVE BOOST for extremely fast progression
   },
@@ -63,7 +63,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'tree_guardian',
     name: 'Tree Guardian', 
     icon: '🌳',
-    baseHP: 45,
+    baseHP: 450, // x10 increased
     baseAttack: 15,
     baseXP: 75, // 3000X from original 25 - ULTRA MASSIVE BOOST for extremely fast progression
     resistances: { physical: 0.2 }
@@ -72,7 +72,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'dark_sprite',
     name: 'Dark Sprite',
     icon: '🧚‍♀️',
-    baseHP: 20,
+    baseHP: 200, // x10 increased
     baseAttack: 18,
     baseXP: 0, // 25X from original 20 - massively boosted for faster progression
     resistances: { magic: 0.3 }
@@ -81,7 +81,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'shadow_wolf',
     name: 'Shadow Wolf',
     icon: '🐺',
-    baseHP: 30,
+    baseHP: 300, // x10 increased
     baseAttack: 20,
     baseXP: 0, // 30X from original 25 - massively boosted for faster progression
     resistances: { magic: 0.2 }
@@ -90,7 +90,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'ancient_oak',
     name: 'Ancient Oak',
     icon: '🌲',
-    baseHP: 80,
+    baseHP: 800, // x10 increased
     baseAttack: 25,
     baseXP: 105, // 3000X from original 35 - ULTRA MASSIVE BOOST for extremely fast progression
     resistances: { physical: 0.3 }
@@ -99,7 +99,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     id: 'flame_salamander',
     name: 'Flame Salamander',
     icon: '🦎',
-    baseHP: 40,
+    baseHP: 400, // x10 increased
     baseAttack: 30,
     baseXP: 135, // 3000X from original 45 - ULTRA MASSIVE BOOST for extremely fast progression
     resistances: { physical: 0.4, fire: -0.3 }
