@@ -101,7 +101,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🦎',
     baseHP: 40,
     baseAttack: 30,
-    baseXP: 270, // 6X from original 45 (tripled to 135, now doubled to 270)
+    baseXP: 1350, // 30X from original 45 - massively boosted for faster progression
     resistances: { physical: 0.4, fire: -0.3 }
   },
 
@@ -137,7 +137,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🪨',
     baseHP: 100,
     baseAttack: 30,
-    baseXP: 270, // 6X from original 45 (tripled to 135, now doubled to 270)
+    baseXP: 1350, // 30X from original 45 - massively boosted for faster progression
     resistances: { physical: 0.4 }
   },
 
