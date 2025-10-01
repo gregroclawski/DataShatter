@@ -7,7 +7,7 @@ import asyncio
 import aiohttp
 import json
 
-BACKEND_URL = "https://idle-ninja-1.preview.emergentagent.com"
+BACKEND_URL = "https://data-shatter.preview.emergentagent.com"
 API_BASE = f"{BACKEND_URL}/api"
 
 async def comprehensive_debug():
