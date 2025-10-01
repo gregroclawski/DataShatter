@@ -616,32 +616,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     console.log(`🎮 Manual control ${active ? 'ACTIVATED' : 'DEACTIVATED'} - Combat ${active ? 'PAUSED' : 'RESUMED'}`);
   }, []);
 
-  // Handle projectile hit - deals damage to target enemy
-  const handleProjectileHit = (projectile: CombatProjectile) => {
-    console.log(`💥 Projectile ${projectile.id} hit enemy ${projectile.targetEnemyId} for ${projectile.damage} damage`);
-    
-    setCombatState(prev => {
-      const newState = { ...prev };
-      
-      // Find the target enemy and deal damage
-      const enemyIndex = newState.enemies.findIndex(e => e.id === projectile.targetEnemyId);
-      if (enemyIndex >= 0) {
-        newState.enemies = [...newState.enemies];
-        newState.enemies[enemyIndex] = {
-          ...newState.enemies[enemyIndex],
-          health: newState.enemies[enemyIndex].health - projectile.damage,
-          lastDamaged: combatEngine.getCurrentTick()
-        };
-        
-        console.log(`🎯 Enemy ${projectile.targetEnemyId} health: ${newState.enemies[enemyIndex].health}/${newState.enemies[enemyIndex].maxHealth}`);
-      }
-      
-      return newState;
-    });
-    
-    // Remove projectile after hit
-    setProjectiles(prev => prev.filter(p => p.id !== projectile.id));
-  };
+  // REMOVED: Legacy handleProjectileHit function - replaced with real-time impact processing
+  // Old system caused state conflicts by applying damage 500ms after the new system
+  // Now using processProjectileImpacts for immediate damage application and death detection
 
   // Cast ability and apply effects
   const castAbility = (state: CombatState, slotIndex: number) => {
