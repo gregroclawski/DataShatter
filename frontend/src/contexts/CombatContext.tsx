@@ -443,6 +443,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         for (let i = 0; i < 5; i++) {
           if (newState.abilityManager.isAbilityReady(i) && newState.enemies.length > 0) {
             if (newState.abilityManager.useAbility(i, newTick)) {
+              console.log(`🚨 ABILITY TRIGGERED: Auto-cast from slot ${i}`);
               castAbility(newState, i);
             }
           }
