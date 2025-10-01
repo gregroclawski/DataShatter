@@ -989,7 +989,8 @@ async def get_current_user_profile(current_user: dict = Depends(get_current_user
         name=current_user["name"],
         created_at=current_user["created_at"],
         is_active=current_user.get("is_active", True),
-        provider=current_user.get("provider", "email")
+        provider=current_user.get("provider", "email"),
+        is_admin=current_user.get("is_admin", False)  # Include admin flag
     )
 
 @api_router.post("/auth/logout")
