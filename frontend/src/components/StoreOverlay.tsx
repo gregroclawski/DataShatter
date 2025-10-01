@@ -480,26 +480,13 @@ const StoreOverlay = ({ onClose }: Props) => {
                   <Text style={styles.gemPackageDescription}>{gemPackage.description}</Text>
                 )}
                 <View style={styles.gemPackageDetails}>
-                  {gemPackage.type === 'revive_tickets' ? (
-                    <>
-                      <Text style={styles.gemCount}>
-                        {gemPackage.gems} Revive Tickets
-                      </Text>
-                      <Text style={styles.bonusText}>
-                        Cost: {gemPackage.bonus} Gems
-                      </Text>
-                    </>
-                  ) : (
-                    <>
-                      <Text style={styles.gemCount}>
-                        {(gemPackage.gems + (gemPackage.bonus || 0)).toLocaleString()} Gems
-                      </Text>
-                      {gemPackage.bonus && (
-                        <Text style={styles.bonusText}>
-                          +{gemPackage.bonus} Bonus!
-                        </Text>
-                      )}
-                    </>
+                  <Text style={styles.gemCount}>
+                    {(gemPackage.gems + (gemPackage.bonus || 0)).toLocaleString()} Gems
+                  </Text>
+                  {gemPackage.bonus && (
+                    <Text style={styles.bonusText}>
+                      +{gemPackage.bonus} Bonus!
+                    </Text>
                   )}
                 </View>
               </View>
