@@ -322,7 +322,7 @@ const generateZones = (): Zone[] => {
       levels.push({
         level,
         enemyMultiplier: levelMultiplier,
-        xpMultiplier: levelMultiplier,
+        xpMultiplier: levelMultiplier * 3, // TRIPLE XP MULTIPLIER for even faster progression
         // AGGRESSIVE KILL REQUIREMENTS: Scale with zone and level
         requiredKills: Math.floor(50 + (config.id * 50) + (level * 25)), // Zone 1 L1: 125, Zone 10 L5: 675
         enemyTypes: config.enemies
