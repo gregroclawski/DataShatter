@@ -488,43 +488,57 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       return newState;
     });
     
-    // BULK XP PROCESSING - Single update for all kills
+    // BULK XP PROCESSING - Single update for all kills (with duplicate prevention)
     if (enemiesToKill.length > 0) {
-      // Calculate total rewards in one pass
-      let totalXP = 0;
-      let totalGold = 0;
-      const zoneKills: any[] = [];
+      // Filter out enemies that already had XP awarded to prevent double-processing
+      const unprocessedEnemies = enemiesToKill.filter(enemy => !enemy.xpAwarded);
       
-      const xpMultiplier = game.gameState.subscriptionBenefits?.xp_multiplier || 1.0;
-      const goldMultiplier = game.gameState.subscriptionBenefits?.drop_multiplier || 1.0;
-      
-      enemiesToKill.forEach(enemy => {
-        totalXP += (enemy.zoneXP || 5) * xpMultiplier;
-        totalGold += 10 * goldMultiplier;
+      if (unprocessedEnemies.length > 0) {
+        // Calculate total rewards in one pass
+        let totalXP = 0;
+        let totalGold = 0;
+        const zoneKills: any[] = [];
         
-        if (enemy.zoneTypeId) {
-          zoneKills.push({
-            id: enemy.id,
-            typeId: enemy.zoneTypeId,
-            name: enemy.name,
-            icon: '🧌',
-            hp: 0,
-            maxHP: enemy.maxHealth,
-            attack: enemy.stats.attack,
-            xp: enemy.zoneXP || 0,
-            position: enemy.position
-          });
-        }
-      });
-      
-      // Single batch update for all kills
-      game.updateNinja(prev => ({
-        experience: prev.experience + totalXP,
-        gold: prev.gold + totalGold,
-      }));
-      
-      // Batch zone progression
-      zoneKills.forEach(zoneEnemy => recordEnemyKill(zoneEnemy));
+        const xpMultiplier = game.gameState.subscriptionBenefits?.xp_multiplier || 1.0;
+        const goldMultiplier = game.gameState.subscriptionBenefits?.drop_multiplier || 1.0;
+        
+        unprocessedEnemies.forEach(enemy => {
+          totalXP += (enemy.zoneXP || 5) * xpMultiplier;
+          totalGold += 10 * goldMultiplier;
+          
+          if (enemy.zoneTypeId) {
+            zoneKills.push({
+              id: enemy.id,
+              typeId: enemy.zoneTypeId,
+              name: enemy.name,
+              icon: '🧌',
+              hp: 0,
+              maxHP: enemy.maxHealth,
+              attack: enemy.stats.attack,
+              xp: enemy.zoneXP || 0,
+              position: enemy.position
+            });
+          }
+        });
+        
+        // Single batch update for all kills
+        game.updateNinja(prev => ({
+          experience: prev.experience + totalXP,
+          gold: prev.gold + totalGold,
+        }));
+        
+        // Batch zone progression
+        zoneKills.forEach(zoneEnemy => recordEnemyKill(zoneEnemy));
+        
+        // Mark enemies as processed to prevent duplicate XP
+        setCombatState(prev => ({
+          ...prev,
+          enemies: prev.enemies.map(enemy => {
+            const wasProcessed = unprocessedEnemies.find(processed => processed.id === enemy.id);
+            return wasProcessed ? { ...enemy, xpAwarded: true } : enemy;
+          })
+        }));
+      }
     }
   }, [handleEnemyKill]); // Only depend on handleEnemyKill, not combatEngine
 
