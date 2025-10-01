@@ -165,7 +165,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🕷️',
     baseHP: 65,
     baseAttack: 55,
-    baseXP: $((390 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: 1950, // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'desert_basilisk': {
     id: 'desert_basilisk',
