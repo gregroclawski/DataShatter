@@ -200,7 +200,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐲',
     baseHP: 120,
     baseAttack: 75,
-    baseXP: $((600 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: 3000, // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { fire: 0.7 }
   },
   'phoenix_guardian': {
