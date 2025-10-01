@@ -1148,8 +1148,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
             });
           }
 
-          // Clean up completed projectiles
-          if (progress >= 1.5) {
+          // Clean up completed projectiles - FIX: Use 1.0 threshold since progress is capped at 1.0
+          if (progress >= 1.0) {
             return null;
           }
 
