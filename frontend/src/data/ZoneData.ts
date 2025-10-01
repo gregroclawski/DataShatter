@@ -355,7 +355,7 @@ export const calculateEnemyStats = (enemyType: EnemyType, zoneLevel: ZoneLevel, 
   const baseAttack = Math.floor(enemyType.baseAttack * zoneLevel.enemyMultiplier * scalingFactor / 100); // Scale down by 100x
   
   return {
-    hp: Math.max(1, baseHP), // Minimum 1 HP
+    hp: Math.max(25, baseHP), // FIXED: Increased minimum HP from 1 to 25 for proper combat
     attack: Math.max(1, baseAttack), // Minimum 1 attack
     xp: Math.floor(enemyType.baseXP * zoneLevel.xpMultiplier * scalingFactor),
     resistances: enemyType.resistances
