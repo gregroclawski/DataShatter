@@ -265,7 +265,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐲🌌',
     baseHP: 800,
     baseAttack: 400,
-    baseXP: 2400, // Ultra high XP for endgame
+    baseXP: 12000, // MASSIVE XP BOOST - Ultra high XP for endgame
     resistances: { fire: 0.9, ice: 0.9, magic: 0.7 }
   },
   'reality_shatterer': {
