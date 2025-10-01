@@ -932,8 +932,7 @@ export default function NinjaIdleGame() {
         </View>
       )}
 
-      {/* Revival System - Temporarily disabled for web testing */}
-      {/*
+      {/* Revival System */}
       <RevivalOverlay
         visible={!gameState.isAlive}
         onRevive={() => {
@@ -946,7 +945,6 @@ export default function NinjaIdleGame() {
         }}
         onDecline={freeRespawn}
       />
-      */}
 
       {activeOverlay === 'store' && (
         <View style={styles.overlayWrapper}>
