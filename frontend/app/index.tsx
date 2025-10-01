@@ -398,8 +398,10 @@ export default function NinjaIdleGame() {
 
   // Start combat automatically when component mounts
   useEffect(() => {
-    console.log('🎮 Starting combat on component mount');
+    console.log('🎮 COMBAT INITIALIZATION - Starting combat on component mount');
+    console.log('🎮 COMBAT FUNCTIONS CHECK:', { startCombat: typeof startCombat, stopCombat: typeof stopCombat });
     startCombat();
+    console.log('🎮 COMBAT STARTED - startCombat() called successfully');
     
     return () => {
       console.log('🛑 Cleaning up combat on unmount');
