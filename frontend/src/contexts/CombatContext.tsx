@@ -1014,39 +1014,94 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
           if (progress >= 1 && !projectile.hasHit) {
             projectile.hasHit = true;
             
-            console.log(`💥 PROJECTILE IMPACT: ${projectile.abilityName} hit enemy ${projectile.targetEnemyId} for ${projectile.damage} damage`);
-            
-            // Apply damage directly without setTimeout (not during render)
             setCombatState(prev => {
               const newState = { ...prev };
-              const enemyIndex = newState.enemies.findIndex(e => e.id === projectile.targetEnemyId);
               
-              if (enemyIndex >= 0 && newState.enemies[enemyIndex].health > 0 && !newState.enemies[enemyIndex].markedForDeath) {
-                newState.enemies = [...newState.enemies];
-                const enemy = newState.enemies[enemyIndex];
-                const newHealth = Math.max(0, enemy.health - projectile.damage);
+              if (projectile.isAOE && projectile.aoeRadius && projectile.aoeRadius > 0) {
+                // AOE PROJECTILE: Damage all enemies within radius of impact point
+                console.log(`💥 AOE PROJECTILE IMPACT: ${projectile.abilityName} with radius ${projectile.aoeRadius}`);
                 
-                newState.enemies[enemyIndex] = {
-                  ...enemy,
-                  health: newHealth,
-                  lastDamaged: combatEngine.getCurrentTick()
-                };
+                const impactX = projectile.targetX;
+                const impactY = projectile.targetY;
+                const enemiesKilled: CombatEnemy[] = [];
                 
-                console.log(`🎯 DAMAGE APPLIED: ${enemy.name} health: ${newHealth}/${enemy.maxHealth}`);
-                
-                // Award XP when enemy dies - FIXED: Prevent duplicate XP from AOE abilities
-                if (newHealth <= 0 && enemy.health > 0) {
-                  console.log(`💀 PROJECTILE KILL: ${enemy.name} killed by ${projectile.abilityName}! (Health: ${enemy.health} -> ${newHealth})`);
+                // Find all enemies within AOE radius of impact
+                newState.enemies = newState.enemies.map(enemy => {
+                  if (enemy.health <= 0 || enemy.markedForDeath) return enemy;
                   
-                  // Mark enemy as killed immediately to prevent duplicate processing
+                  const enemyX = enemy.position.x + 17.5; // Center of enemy
+                  const enemyY = enemy.position.y + 17.5;
+                  const distance = Math.sqrt(Math.pow(enemyX - impactX, 2) + Math.pow(enemyY - impactY, 2));
+                  
+                  if (distance <= projectile.aoeRadius) {
+                    // Calculate damage for this enemy
+                    const damageResult = DamageCalculator.calculateDamage(projectile.damage, prev.playerStats, enemy.stats);
+                    const newHealth = Math.max(0, enemy.health - damageResult.damage);
+                    
+                    console.log(`💥 AOE DAMAGE: ${enemy.name} hit for ${damageResult.damage} damage (${enemy.health} -> ${newHealth})`);
+                    
+                    // Check if enemy dies from AOE damage
+                    if (newHealth <= 0 && enemy.health > 0) {
+                      console.log(`💀 AOE KILL: ${enemy.name} killed by ${projectile.abilityName}!`);
+                      enemiesKilled.push(enemy); // Store original enemy for XP awarding
+                      
+                      return {
+                        ...enemy,
+                        health: 0,
+                        markedForDeath: true,
+                        lastDamaged: combatEngine.getCurrentTick()
+                      };
+                    } else {
+                      return {
+                        ...enemy,
+                        health: newHealth,
+                        lastDamaged: combatEngine.getCurrentTick()
+                      };
+                    }
+                  }
+                  
+                  return enemy; // Enemy outside AOE radius - no damage
+                });
+                
+                // Award XP for all killed enemies
+                if (enemiesKilled.length > 0) {
+                  console.log(`🎯 AOE XP AWARD: ${enemiesKilled.length} enemies killed by ${projectile.abilityName}`);
+                  setTimeout(() => {
+                    enemiesKilled.forEach(enemy => handleEnemyKill(enemy));
+                  }, 0);
+                }
+                
+              } else {
+                // SINGLE TARGET PROJECTILE: Original logic
+                const enemyIndex = newState.enemies.findIndex(e => e.id === projectile.targetEnemyId);
+                
+                if (enemyIndex >= 0 && newState.enemies[enemyIndex].health > 0 && !newState.enemies[enemyIndex].markedForDeath) {
+                  newState.enemies = [...newState.enemies];
+                  const enemy = newState.enemies[enemyIndex];
+                  const newHealth = Math.max(0, enemy.health - projectile.damage);
+                  
                   newState.enemies[enemyIndex] = {
-                    ...newState.enemies[enemyIndex],
-                    health: 0,
-                    markedForDeath: true // Add flag to prevent duplicate processing
+                    ...enemy,
+                    health: newHealth,
+                    lastDamaged: combatEngine.getCurrentTick()
                   };
                   
-                  // Call handleEnemyKill with original enemy stats before damage
-                  setTimeout(() => handleEnemyKill(enemy), 0);
+                  console.log(`🎯 SINGLE TARGET DAMAGE: ${enemy.name} health: ${newHealth}/${enemy.maxHealth}`);
+                  
+                  // Award XP when enemy dies
+                  if (newHealth <= 0 && enemy.health > 0) {
+                    console.log(`💀 SINGLE TARGET KILL: ${enemy.name} killed by ${projectile.abilityName}!`);
+                    
+                    // Mark enemy as killed immediately to prevent duplicate processing
+                    newState.enemies[enemyIndex] = {
+                      ...newState.enemies[enemyIndex],
+                      health: 0,
+                      markedForDeath: true
+                    };
+                    
+                    // Call handleEnemyKill with original enemy stats before damage
+                    setTimeout(() => handleEnemyKill(enemy), 0);
+                  }
                 }
               }
               
