@@ -7,9 +7,10 @@ let TestIds: any = null;
 let RewardedAdEventType: any = null;
 let isAdMobAvailable = false;
 
-// Only try to load AdMob in development builds (not web/development server)
+// Only try to load AdMob in native platforms (not web/development server)
 if (Platform.OS === 'ios' || Platform.OS === 'android') {
   try {
+    // Use dynamic import to prevent Metro bundler from processing this on web
     const AdMobModule = require('react-native-google-mobile-ads');
     mobileAds = AdMobModule.mobileAds;
     RewardedAd = AdMobModule.RewardedAd;
