@@ -513,6 +513,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       // Filter out enemies that already had XP awarded to prevent double-processing
       const unprocessedEnemies = enemiesToKill.filter(enemy => !enemy.xpAwarded);
       
+      console.log(`💀 BULK PROCESSING: ${enemiesToKill.length} total kills, ${unprocessedEnemies.length} unprocessed`);
+      
       if (unprocessedEnemies.length > 0) {
         // Calculate total rewards in one pass
         let totalXP = 0;
