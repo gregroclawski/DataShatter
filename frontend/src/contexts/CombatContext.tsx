@@ -818,10 +818,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     
     setProjectiles(prev => [...prev, projectile]);
     
-    // Schedule projectile hit
-    setTimeout(() => {
-      handleProjectileHit(projectile);
-    }, 500);
+    // REMOVED: Old damage system scheduling - now using real-time impact processing
+    // setTimeout(() => { handleProjectileHit(projectile); }, 500);
     
     return projectile;
   };
