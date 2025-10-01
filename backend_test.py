@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Backend API Testing Suite for Revival System Integration
-Tests all core functionality including the new reviveTickets field
+Backend API Testing for XP Decimal Save Error Fix
+Tests health check, save/load game functionality, and authentication endpoints
+to ensure the XP decimal fix didn't break anything.
 """
 
 import asyncio
