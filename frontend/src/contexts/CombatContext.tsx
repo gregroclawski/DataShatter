@@ -173,11 +173,12 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     console.log(`🔍 XP DEBUG: handleEnemyKill called for ${enemy.name} (ID: ${enemy.id})`);
     console.log(`🗡️  MOBILE DEBUG - handleEnemyKill CALLED for enemy:`, enemy.id);
     
-    // Award XP and gold directly using useGame hook with subscription multipliers
-    const baseXpReward = 5000; // 250X Base XP reward per kill (ULTRA BOOSTED for extremely fast progression)
+    // Use zone-based XP system instead of base XP to avoid conflicts
     const xpMultiplier = game.gameState.subscriptionBenefits?.xp_multiplier || 1.0;
     const dropMultiplier = game.gameState.subscriptionBenefits?.drop_multiplier || 1.0;
     
+    // Use zone XP if available, otherwise fallback to ultra boosted base XP
+    const baseXpReward = enemy.zoneXP || 5000; // Use zone XP system, fallback to 5000 for non-zone enemies
     const xpReward = Math.floor(baseXpReward * xpMultiplier);
     const goldReward = Math.floor(10000 * dropMultiplier); // 1000X GOLD BOOST (was 10, now 10000) - matches XP scaling
     
