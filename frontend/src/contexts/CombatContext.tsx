@@ -1050,6 +1050,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
           if (progress >= 1 && !projectile.hasHit) {
             projectile.hasHit = true;
             
+            console.log(`🎯 PROJECTILE IMPACT: ${projectile.abilityName} projectile hit target`);
             setCombatState(prev => {
               const newState = { ...prev };
               
