@@ -192,7 +192,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🦏',
     baseHP: 90,
     baseAttack: 70,
-    baseXP: $((540 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: 2700, // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'inferno_dragon': {
     id: 'inferno_dragon',
