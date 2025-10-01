@@ -37,7 +37,7 @@ export class CombatEngine {
     }
   }
 
-  // Main game loop - runs at 10 TPS
+  // Main game loop - runs at 20 TPS (50ms intervals for responsive XP)
   private gameLoop(): void {
     if (!this.isRunning) return;
 
