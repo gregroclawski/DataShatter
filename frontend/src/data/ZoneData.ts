@@ -351,7 +351,7 @@ export const calculateEnemyStats = (enemyType: EnemyType, zoneLevel: ZoneLevel, 
   const scalingFactor = Math.pow(1.15, (zoneId - 1) * 5 + zoneLevel.level);
   
   // CRITICAL FIX: Scale down massive HP and attack values for balanced gameplay
-  const baseHP = Math.floor(enemyType.baseHP * zoneLevel.enemyMultiplier * scalingFactor / 1000); // Scale down by 1000x
+  const baseHP = Math.floor(enemyType.baseHP * zoneLevel.enemyMultiplier * scalingFactor / 100); // FIXED: Reduced scaling from /1000 to /100
   const baseAttack = Math.floor(enemyType.baseAttack * zoneLevel.enemyMultiplier * scalingFactor / 100); // Scale down by 100x
   
   return {
