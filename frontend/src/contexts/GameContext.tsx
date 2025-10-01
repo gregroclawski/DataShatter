@@ -368,19 +368,30 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isAuthenticated, gameState]);
 
-  // Calculate experience required for next level (FASTER SCALING for level 15000)
+  // Calculate experience required for next level (BALANCED PROGRESSION)
   const calculateExpForLevel = (level: number): number => {
     if (level <= 1) return 100;
     if (level >= 15000) return 50000; // Reduced max exp requirement for endgame
     
-    // MUCH FASTER SCALING: Lower growth rate and reduced base for faster leveling to 15000
-    // Base formula: 80 * (1.03^(level-1)) - Much gentler curve for faster progression
-    const baseExp = 80; // Reduced base EXP requirement (was 100, now 80)
-    const growthRate = 1.03; // Reduced growth rate (was 1.05, now 1.03)
-    const expRequired = Math.floor(baseExp * Math.pow(growthRate, level - 1));
-    
-    // Cap at much lower maximum for faster endgame progression
-    return Math.min(expRequired, 50000); // Was 1,000,000, now 50,000 for much faster progression
+    // BALANCED SCALING: Higher requirements for levels 1-5000, then faster progression
+    if (level <= 5000) {
+      // SLOWER progression for early-mid game (levels 1-5000)
+      const baseExp = 200; // INCREASED base EXP requirement for slower early progression
+      const growthRate = 1.05; // INCREASED growth rate for more challenging early levels
+      const expRequired = Math.floor(baseExp * Math.pow(growthRate, level - 1));
+      
+      // Cap at 100,000 for levels 1-5000 to prevent extreme requirements
+      return Math.min(expRequired, 100000);
+    } else {
+      // FASTER progression for high levels (5001-15000) - keeps original fast scaling
+      const baseExp = 80; // Reduced base EXP requirement for faster high-level progression
+      const growthRate = 1.03; // Reduced growth rate for faster progression
+      const levelOffset = level - 5000; // Start calculation from level 5000 baseline
+      const expRequired = Math.floor(baseExp * Math.pow(growthRate, levelOffset));
+      
+      // Cap at 50,000 for high levels for fast endgame progression
+      return Math.min(expRequired, 50000);
+    }
   };
 
   // Handle level up logic with proper exp scaling and 3 stat points per level
