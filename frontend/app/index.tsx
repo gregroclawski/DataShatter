@@ -1430,30 +1430,30 @@ function createResponsiveStyles(layout: ReturnType<typeof useResponsiveLayout>) 
     },
     xpNotification: {
       position: 'absolute',
-      backgroundColor: MythicTechColors.neonGreen + 'E6', // 90% opacity
-      paddingHorizontal: 12,
-      paddingVertical: 6,
-      borderRadius: 15,
+      backgroundColor: MythicTechColors.neonGreen + '99', // 60% opacity (more transparent)
+      paddingHorizontal: 8, // Reduced padding
+      paddingVertical: 4,   // Reduced padding
+      borderRadius: 12,     // Slightly smaller radius
       borderWidth: 1,
-      borderColor: MythicTechColors.neonGreen,
-      // Mobile-optimized shadow
+      borderColor: MythicTechColors.neonGreen + 'CC', // More transparent border
+      // Mobile-optimized shadow (reduced intensity)
       ...(Platform.OS === 'ios' ? {
         shadowColor: MythicTechColors.neonGreen,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 1 }, // Reduced shadow
+        shadowOpacity: 0.5, // Reduced shadow opacity
+        shadowRadius: 2,    // Reduced shadow radius
       } : {
-        elevation: 6,
+        elevation: 3, // Reduced elevation
       }),
     },
     xpNotificationText: {
-      color: MythicTechColors.white,
-      fontSize: 14,
-      fontWeight: 'bold',
+      color: MythicTechColors.white + 'E6', // Slightly transparent text
+      fontSize: 12, // Reduced from 14 to 12
+      fontWeight: '600', // Slightly less bold
       textAlign: 'center',
-      textShadowColor: MythicTechColors.darkSpace,
+      textShadowColor: MythicTechColors.darkSpace + '80', // More transparent shadow
       textShadowOffset: { width: 0, height: 1 },
-      textShadowRadius: 2,
+      textShadowRadius: 1, // Reduced shadow
     },
   });
 }
