@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Implement comprehensive authentication system for Mythic-Tech Idle RPG with email/password registration, Google OAuth login, secure password requirements (8-64 characters), JWT tokens, session management, and server-side user data storage. Registration is required before playing."
+user_problem_statement: "Fix XP decimal save errors: XP calculations are producing decimal values but backend expects integers, causing save errors on mobile when XP notifications show decimal places."
 
 backend:
   - task: "Email/Password Registration Endpoint"
