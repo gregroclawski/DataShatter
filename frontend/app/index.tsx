@@ -462,6 +462,12 @@ export default function NinjaIdleGame() {
     translateY.value = ninjaPosition.y;
   }, [ninjaPosition.x, ninjaPosition.y, translateX, translateY]);
 
+  // CRITICAL FIX: Sync ninja position with combat context for proper attack positioning
+  useEffect(() => {
+    updateNinjaPosition(ninjaPosition);
+    console.log('🎯 Position synced with combat context:', ninjaPosition);
+  }, [ninjaPosition.x, ninjaPosition.y, updateNinjaPosition]);
+
   // MOBILE FIX: Removed joystick movement system to debug crashes
 
   // MOBILE FIX: Joystick system removed to debug crashes
