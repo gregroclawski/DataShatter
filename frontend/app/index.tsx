@@ -434,11 +434,11 @@ export default function NinjaIdleGame() {
       const newPercentage = Math.max(0, Math.min(100, (testNinja.experience / testNinja.experienceToNext) * 100));
       
       setDisplayStats(prev => {
-        // Only update if values changed significantly (reduces unnecessary renders)
+        // Update for any change - instant visual feedback for each kill
         if (
           prev.level !== testNinja.level ||
           prev.experience !== testNinja.experience ||
-          Math.abs(prev.xpPercentage - newPercentage) > 1 // Update if percentage changed by >1%
+          prev.xpPercentage !== newPercentage // Update on any XP percentage change
         ) {
           return {
             level: testNinja.level,
