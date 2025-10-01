@@ -533,8 +533,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         
         unprocessedEnemies.forEach(enemy => {
           // BALANCE CHANGE: XP rate ÷ 2, Gold rate × 100
-          totalXP += ((enemy.zoneXP || 5) * xpMultiplier) / 2; // Divide XP by 2
-          totalGold += (10 * goldMultiplier) * 100; // Multiply gold by 100
+          totalXP += Math.round(((enemy.zoneXP || 5) * xpMultiplier) / 2); // Divide XP by 2, rounded to integer
+          totalGold += Math.round((10 * goldMultiplier) * 100); // Multiply gold by 100, rounded to integer
           
           if (enemy.zoneTypeId) {
             zoneKills.push({
