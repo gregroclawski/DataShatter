@@ -513,7 +513,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       return newState;
     });
     
-    // BULK XP PROCESSING - Single update for all kills (FIXED: Don't filter by xpAwarded)
+    // BULK XP PROCESSING - Use ref to get dead enemies (FIXED: Closure scoping issue)
+    const enemiesToKill = deadEnemiesRef.current; // Get from ref instead of closure variable
     if (enemiesToKill.length > 0) {
       // CRITICAL FIX: Process ALL dead enemies regardless of xpAwarded flag
       // The xpAwarded flag was preventing processing due to persistence from previous cycles
