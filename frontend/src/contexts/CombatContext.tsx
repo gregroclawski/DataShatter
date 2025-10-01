@@ -601,6 +601,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
     // Check if this is an AOE ability
     const isAOE = ability.effects.includes('AoE') && ability.stats.aoeRadius;
+    console.log(`🔍 ABILITY CHECK: ${ability.name} - effects: ${JSON.stringify(ability.effects)}, aoeRadius: ${ability.stats.aoeRadius}, isAOE: ${isAOE}`);
     
     if (isAOE) {
       console.log(`💥 AOE ABILITY: ${ability.name} with radius ${ability.stats.aoeRadius}`);
