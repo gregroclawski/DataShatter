@@ -43,13 +43,24 @@ export class AdMobService {
     this.initializeRewardedAd();
   }
 
-  private initializeRewardedAd() {
+  private async initializeRewardedAd() {
     try {
       if (!isAdMobAvailable) {
         console.log('🎯 AdMob: Not available - using mock service');
         this.isInitialized = false;
         return;
       }
+
+      if (!mobileAds) {
+        console.error('🎯 AdMob: mobileAds not available');
+        this.isInitialized = false;
+        return;
+      }
+
+      // Initialize the Mobile Ads SDK
+      console.log('🎯 AdMob: Initializing Mobile Ads SDK...');
+      await mobileAds().initialize();
+      console.log('✅ AdMob: Mobile Ads SDK initialized successfully');
 
       if (!AD_UNIT_IDS.rewarded) {
         console.error('AdMob: No ad unit ID found for current platform');
@@ -67,7 +78,7 @@ export class AdMobService {
       this.loadAd();
       this.isInitialized = true;
     } catch (error) {
-      console.error('🎯 AdMob: Failed to initialize - likely not in development build', error);
+      console.error('🎯 AdMob: Failed to initialize:', error);
       this.isInitialized = false;
     }
   }
