@@ -1146,10 +1146,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
               return newState;
             });
             
-            // FIXED: Mark projectile as hit through proper state update
-            setProjectiles(prev => prev.map(p => 
-              p.id === projectile.id ? { ...p, hasHit: true } : p
-            ));
+            // FIXED: Move projectile hit marking into the same state cycle - no separate setProjectiles call
+            // The projectile cleanup will handle marking and removal in the next iteration
           }
 
           // Clean up completed projectiles - FIX: Use 1.0 threshold since progress is capped at 1.0
