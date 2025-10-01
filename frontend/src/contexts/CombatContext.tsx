@@ -211,6 +211,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
   // Combat tick handler - MEMOIZED to prevent infinite re-renders
   // COMBAT TICK HANDLER - Memoized with minimal dependencies to prevent infinite re-renders
+  // CRITICAL FIX: Use React ref to capture dead enemies for XP processing to avoid closure issues
+  const deadEnemiesRef = useRef<CombatEnemy[]>([]);
+
   const handleCombatTick = React.useCallback(() => {
     console.log('🔄 MOBILE DEBUG - handleCombatTick called, checking enemy deaths...');
     console.log(`🚨 COMBAT TICK DEBUG: isManualControlActive=${isManualControlActive}, isAlive=${game.gameState.isAlive}`);
