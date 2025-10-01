@@ -281,9 +281,9 @@ class XPDecimalFixTester:
             print(f"❌ Game save error: {str(e)}")
             return False
             
-    async def test_load_game_with_revival_system(self):
-        """Test 6: Game Load with Revival System verification"""
-        print(f"\n🔍 TEST 6: Game Load with Revival System Verification")
+    async def test_load_game_with_integer_xp(self):
+        """Test 6: Game Load with Integer XP verification"""
+        print(f"\n🔍 TEST 6: Game Load with Integer XP Verification")
         try:
             headers = {'Authorization': f'Bearer {self.auth_token}'}
             
@@ -295,25 +295,28 @@ class XPDecimalFixTester:
                     data = await response.json()
                     if data:
                         ninja = data.get('ninja', {})
-                        revive_tickets = ninja.get('reviveTickets')
-                        level = ninja.get('level')
                         experience = ninja.get('experience')
+                        gold = ninja.get('gold')
+                        gems = ninja.get('gems')
+                        level = ninja.get('level')
                         
                         print(f"✅ Game load successful: Level {level}, XP {experience}")
                         
-                        # Verify Revival System data persistence
-                        if revive_tickets is not None:
-                            print(f"✅ Revival System Persistence: reviveTickets field loaded ({revive_tickets})")
+                        # Verify integer XP data persistence (XP decimal fix verification)
+                        if (isinstance(experience, int) and experience == 3750 and
+                            isinstance(gold, int) and gold == 2500 and
+                            isinstance(gems, int) and gems == 50):
+                            print(f"✅ Integer XP Persistence: All values loaded as integers (XP: {experience}, Gold: {gold}, Gems: {gems})")
                             
-                            # Verify it's Level 25+ as requested
-                            if level and level >= 25:
-                                print(f"✅ Level 25+ Requirement: Ninja is Level {level}")
+                            # Verify data integrity maintained
+                            if level == 15:
+                                print(f"✅ Data Integrity: Ninja Level {level} matches saved data")
                                 return True
                             else:
-                                print(f"❌ Level 25+ Requirement: Ninja is only Level {level}")
+                                print(f"❌ Data Integrity: Level mismatch - expected 15, got {level}")
                                 return False
                         else:
-                            print(f"❌ Revival System Persistence: reviveTickets field NOT loaded")
+                            print(f"❌ Integer XP Persistence: Non-integer values detected (XP: {experience}, Gold: {gold}, Gems: {gems})")
                             return False
                     else:
                         print(f"❌ Game load failed: No data returned")
