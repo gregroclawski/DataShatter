@@ -112,7 +112,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🧌',
     baseHP: 50,
     baseAttack: 22,
-    baseXP: 0, // 30X from original 30 - massively boosted for faster progression
+    baseXP: 90000, // 3000X from original 30 - ULTRA MASSIVE BOOST for extremely fast progression
   },
   'stone_giant': {
     id: 'stone_giant',
