@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 
 // AdMob modules - only available in production builds
+let mobileAds: any = null;
 let RewardedAd: any = null;
 let TestIds: any = null;
 let RewardedAdEventType: any = null;
@@ -10,6 +11,7 @@ let isAdMobAvailable = false;
 if (Platform.OS === 'ios' || Platform.OS === 'android') {
   try {
     const AdMobModule = require('react-native-google-mobile-ads');
+    mobileAds = AdMobModule.mobileAds;
     RewardedAd = AdMobModule.RewardedAd;
     TestIds = AdMobModule.TestIds;
     RewardedAdEventType = AdMobModule.RewardedAdEventType;
