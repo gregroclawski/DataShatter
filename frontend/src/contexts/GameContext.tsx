@@ -453,7 +453,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     // Check for multiple level ups
     while (currentExp >= currentExpToNext && currentLevel < 15000) {
       currentLevel += 1;
-      currentExp -= currentExpToNext;
+      currentExp = Math.round(currentExp - currentExpToNext); // Ensure experience remains integer
       currentExpToNext = calculateExpForLevel(currentLevel + 1); // Calculate exp for NEXT level
       
       // Add stat bonuses for each level
