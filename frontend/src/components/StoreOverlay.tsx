@@ -324,11 +324,19 @@ const StoreOverlay = ({ onClose }: Props) => {
         <NameChangeCard />
       </View>
 
+      {/* Revive Tickets Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Revive Tickets</Text>
+        <Text style={styles.sectionSubtitle}>Avoid death and keep your progress</Text>
+        
+        <ReviveTicketCard />
+      </View>
+
       {/* Coming Soon Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Premium Items</Text>
         <Text style={styles.emptyStateDescription}>
-          Premium items and upgrades will be available here soon!
+          More premium items and upgrades will be available here soon!
         </Text>
         <View style={styles.emptyStateIcon}>
           <Ionicons name="construct" size={48} color="#64748b" />
