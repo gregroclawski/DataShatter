@@ -220,7 +220,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👹',
     baseHP: 150,
     baseAttack: 100,
-    baseXP: $((900 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: 4500, // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'void_stalker': {
     id: 'void_stalker',
