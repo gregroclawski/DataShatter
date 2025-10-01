@@ -1171,7 +1171,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     // Process impacts independently from visual animation at 30fps
     const impactInterval = setInterval(processProjectileImpacts, 33);
     return () => clearInterval(impactInterval);
-  }, [handleEnemyKill]);
+  }, []); // FIXED: Empty dependency array to prevent interval recreation
 
   // Manual save ability data function - called when abilities are modified
   const saveAbilityData = useCallback(() => {
