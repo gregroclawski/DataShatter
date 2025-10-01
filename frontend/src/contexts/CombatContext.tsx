@@ -653,6 +653,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       const damageResult = DamageCalculator.calculateDamage(damage, state.playerStats, target.stats);
 
       // Create projectile for visual effect and delayed damage
+      console.log(`🔍 SINGLE TARGET DEBUG: Creating projectile for ${target.name} with ${damageResult.damage} damage`);
       createProjectile(target, damageResult.damage, currentNinjaPosition, {
         id: ability.id,
         name: ability.name,
@@ -660,6 +661,11 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       });
 
       console.log(`🎯 ${ability.name} cast! Single target for ${damageResult.damage} damage${damageResult.isCritical ? ' (CRIT!)' : ''}`);
+      
+      // Add kill prediction for single target
+      if (damageResult.damage >= target.health) {
+        console.log(`🔍 XP DEBUG: Single target projectile should kill ${target.name} (damage: ${damageResult.damage} >= health: ${target.health})`);
+      }
     }
 
     // Apply DoT effects (for primary target in single target, or all targets in AOE)
