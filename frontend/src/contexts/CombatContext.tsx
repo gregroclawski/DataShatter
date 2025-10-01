@@ -459,7 +459,24 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       // Process dying enemies for XP awarding + death animation cleanup
       const dyingEnemies = newState.enemies.filter(enemy => enemy.isDying && enemy.health <= 0);
       const deadEnemies = newState.enemies.filter(enemy => enemy.health <= 0 && !enemy.isDying);
-      enemiesToKill = [...deadEnemies]; // Store for processing outside setState
+      
+      // Award XP for dying enemies immediately (they're in death animation)
+      const dyingEnemiesForXP = dyingEnemies.map(enemy => ({...enemy})); // Copy for XP processing
+      enemiesToKill = [...deadEnemies, ...dyingEnemiesForXP]; // Store for processing outside setState
+      
+      // Remove enemies that have finished their death animation (750ms)
+      const currentTime = Date.now();
+      newState.enemies = newState.enemies.filter(enemy => {
+        if (enemy.isDying && enemy.deathStartTime) {
+          const animationDuration = 750; // 750ms death fade
+          const isAnimationComplete = currentTime - enemy.deathStartTime >= animationDuration;
+          if (isAnimationComplete) {
+            console.log(`💀 DEATH ANIMATION COMPLETE: ${enemy.name} removed after ${currentTime - enemy.deathStartTime}ms fade`);
+            return false; // Remove from array
+          }
+        }
+        return true; // Keep in array
+      });
       
       // MOBILE DEBUG: Log enemy death processing
       if (deadEnemies.length > 0) {
