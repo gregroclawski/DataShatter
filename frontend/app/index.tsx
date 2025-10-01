@@ -213,6 +213,8 @@ export default function NinjaIdleGame() {
             style: 'destructive',
             onPress: async () => {
               console.log('🔄 Admin: Resetting account...');
+              console.log('🔍 Admin Debug: User ID being sent:', user?.id);
+              console.log('🔍 Admin Debug: User Email:', user?.email);
               
               // Call the backend reset endpoint
               const backendUrl = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL;
