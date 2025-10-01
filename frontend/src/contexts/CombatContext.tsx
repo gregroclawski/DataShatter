@@ -890,8 +890,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Start combat
-  // Start combat - Removed useCallback to work with fresh handleCombatTick reference
-  const startCombat = () => {
+  // Start combat - Memoized with stable dependencies
+  const startCombat = React.useCallback(() => {
     console.log('🚀 Starting combat, adding tick callback...');
     setCombatState(prev => ({ ...prev, isInCombat: true }));
     
@@ -901,13 +901,13 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     
     // Start the engine
     combatEngine.start();
-  };
+  }, [combatEngine, handleCombatTick]);
 
-  // Stop combat - Removed useCallback to work with fresh handleCombatTick reference
-  const stopCombat = () => {
+  // Stop combat - Memoized with stable dependencies
+  const stopCombat = React.useCallback(() => {
     setCombatState(prev => ({ ...prev, isInCombat: false }));
     combatEngine.removeTickCallback(handleCombatTick);
-  };
+  }, [combatEngine, handleCombatTick]);
 
   // Equipment management
   const equipAbility = (abilityId: string, slotIndex: number): boolean => {
