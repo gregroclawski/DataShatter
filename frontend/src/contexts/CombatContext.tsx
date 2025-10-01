@@ -595,7 +595,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // MOBILE FIX: Track ninja position from main game instead of managing separate state
-  const [currentNinjaPosition, setCurrentNinjaPosition] = useState<{x: number, y: number}>({ x: 0, y: 0 });
+  // Initialize to center screen position instead of corner (0,0)
+  const [currentNinjaPosition, setCurrentNinjaPosition] = useState<{x: number, y: number}>({ x: 195, y: 400 });
   const [isManualControlActive, setIsManualControlActive] = useState(false);
   
   // Update ninja position for combat calculations - now just tracks main game position
