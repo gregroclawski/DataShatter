@@ -468,13 +468,9 @@ const StoreOverlay = ({ onClose }: Props) => {
             </View>
 
             <View style={styles.gemPackageContent}>
-              {/* Package Icon - Special handling for revive tickets */}
+              {/* Package Icon */}
               <View style={styles.gemIcon}>
-                {gemPackage.type === 'revive_tickets' ? (
-                  <Text style={{ fontSize: 32 }}>🎫</Text>
-                ) : (
-                  <Ionicons name="diamond" size={32} color="#3b82f6" />
-                )}
+                <Ionicons name="diamond" size={32} color="#3b82f6" />
               </View>
 
               {/* Package Info */}
