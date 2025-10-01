@@ -441,17 +441,16 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       }
 
       // Process dying enemies for XP awarding + death animation cleanup
-      const dyingEnemies = newState.enemies.filter(enemy => enemy.isDying && enemy.health <= 0);
-      const deadEnemies = newState.enemies.filter(enemy => enemy.health <= 0 && !enemy.isDying);
+      // FIXED: Use single filter for all dead enemies regardless of isDying flag
+      const allDeadEnemies = newState.enemies.filter(enemy => enemy.health <= 0);
       
       // DEBUG: Check if any enemies actually have 0 or negative health
-      const zeroHpEnemies = newState.enemies.filter(enemy => enemy.health <= 0);
-      if (zeroHpEnemies.length > 0) {
-        console.log(`💀 FOUND ${zeroHpEnemies.length} enemies with health <= 0:`, zeroHpEnemies.map(e => `${e.name}(${e.health}hp, isDying:${e.isDying})`));
+      if (allDeadEnemies.length > 0) {
+        console.log(`💀 FOUND ${allDeadEnemies.length} enemies with health <= 0:`, allDeadEnemies.map(e => `${e.name}(${e.health}hp, isDying:${e.isDying})`));
       }
       
-      // Process ALL dead and dying enemies for XP (with 20 TPS = 50ms response time)
-      enemiesToKill = [...deadEnemies, ...dyingEnemies]; // Process all killed enemies for XP
+      // Process ALL dead enemies for XP (regardless of isDying status)
+      enemiesToKill = allDeadEnemies;
       
       // Remove enemies that have finished their death animation (750ms)
       const currentTime = Date.now();
