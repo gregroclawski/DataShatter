@@ -16,6 +16,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 // AdMob imports removed - only import when needed to avoid web compatibility issues
 import { useAuth } from '../src/contexts/AuthContext';
 import { useGame } from '../src/contexts/GameContext';
