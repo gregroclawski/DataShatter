@@ -1149,7 +1149,12 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
           }
 
           // Clean up completed projectiles - FIX: Use 1.0 threshold since progress is capped at 1.0
-          if (progress >= 1.0) {
+          // Also add fallback time-based cleanup for safety
+          const timeBasedCleanup = elapsedTime > 2000; // 2 second fallback
+          if (progress >= 1.0 || timeBasedCleanup) {
+            if (timeBasedCleanup) {
+              console.log(`⚠️ FALLBACK CLEANUP: Projectile ${projectile.id} cleaned up after 2 seconds`);
+            }
             return null;
           }
 
