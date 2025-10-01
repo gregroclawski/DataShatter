@@ -1,6 +1,6 @@
-// Core Combat Engine - Tick-based system running at 10 TPS
+// Core Combat Engine - Tick-based system running at 20 TPS (faster XP processing)
 export class CombatEngine {
-  private tickRate = 10; // 10 ticks per second
+  private tickRate = 20; // 20 ticks per second for responsive XP awarding
   private tickInterval: number = 1000 / this.tickRate; // 100ms per tick
   private lastTick: number = 0;
   private isRunning: boolean = false;
