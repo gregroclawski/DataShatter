@@ -1146,16 +1146,20 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
                   
                   console.log(`🎯 SINGLE TARGET DAMAGE: ${enemy.name} health: ${newHealth}/${enemy.maxHealth}`);
                   
-                  // Mark enemies as dying for death animation + batch XP processing
+                  // IMMEDIATE XP SYSTEM: Award XP instantly on kill + start death animation
                   if (newHealth <= 0 && enemy.health > 0) {
-                    console.log(`💀 DEATH ANIMATION: ${enemy.name} killed by ${projectile.abilityName}! Starting death fade...`);
+                    console.log(`💀 INSTANT XP KILL: ${enemy.name} killed by ${projectile.abilityName}! Awarding XP immediately...`);
+                    
+                    // Award XP IMMEDIATELY - no waiting for batch processing
+                    handleEnemyKill(enemy);
                     
                     // Start death animation - keep enemy visible but mark as dying
                     newState.enemies[enemyIndex] = {
                       ...newState.enemies[enemyIndex],
                       health: 0,
                       isDying: true,
-                      deathStartTime: Date.now()
+                      deathStartTime: Date.now(),
+                      xpAwarded: true // Mark XP as already awarded to prevent double-awarding
                     };
                   } else if (enemy.health > 0) {
                     console.log(`🎯 DAMAGE: ${enemy.name} hit for ${projectile.damage} damage (${enemy.health} → ${newHealth})`);
