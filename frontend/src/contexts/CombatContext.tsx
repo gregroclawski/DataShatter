@@ -1034,7 +1034,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
               const newState = { ...prev };
               const enemyIndex = newState.enemies.findIndex(e => e.id === projectile.targetEnemyId);
               
-              if (enemyIndex >= 0 && newState.enemies[enemyIndex].health > 0) {
+              if (enemyIndex >= 0 && newState.enemies[enemyIndex].health > 0 && !newState.enemies[enemyIndex].markedForDeath) {
                 newState.enemies = [...newState.enemies];
                 const enemy = newState.enemies[enemyIndex];
                 const newHealth = Math.max(0, enemy.health - projectile.damage);
