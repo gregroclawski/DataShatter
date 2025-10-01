@@ -47,7 +47,8 @@ import { BossOverlay } from '../src/components/BossOverlay';
 import { BossBattleScreen } from '../src/components/BossBattleScreen';
 import CombatUI from '../src/components/CombatUI';
 import AbilityDeckOverlay from '../src/components/AbilityDeckOverlay';
-import { RevivalOverlay } from '../src/components/RevivalOverlay';
+// Temporary: RevivalOverlay disabled for web testing (mobile-only feature)
+// import { RevivalOverlay } from '../src/components/RevivalOverlay';
 import { Boss, BossTier } from '../src/data/BossData';
 
 import { MythicTechColors, CharacterProgressionNames } from '../src/theme/MythicTechTheme';
