@@ -494,20 +494,18 @@ export default function NinjaIdleGame() {
             {currentProgression?.title || 'Digital Initiate'}
           </Text>
           <View style={styles.levelContainer}>
-            <Text style={styles.levelText}>Level {testNinja?.level || 1}</Text>
+            <Text style={styles.levelText}>Level {displayStats.level || 1}</Text>
             <View style={styles.xpContainer}>
               <View style={styles.xpBarBackground}>
                 <View 
                   style={[
                     styles.xpBarFill, 
-                    { 
-                      width: `${Math.max(0, Math.min(100, (testNinja.experience / testNinja.experienceToNext) * 100))}%` 
-                    }
+                    { width: `${displayStats.xpPercentage}%` }
                   ]} 
                 />
               </View>
               <Text style={styles.xpText}>
-                {testNinja.experience} / {testNinja.experienceToNext} XP
+                {displayStats.experience.toLocaleString()} / {displayStats.experienceToNext.toLocaleString()} XP
               </Text>
             </View>
           </View>
