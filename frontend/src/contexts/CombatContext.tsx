@@ -605,38 +605,19 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     if (isAOE) {
       console.log(`💥 AOE ABILITY: ${ability.name} with radius ${ability.stats.aoeRadius}`);
       
-      // Find all enemies within AOE range of ninja
-      const ninjaX = currentNinjaPosition.x + 20; // Center of ninja
-      const ninjaY = currentNinjaPosition.y + 20;
-      const aoeRadius = ability.stats.aoeRadius;
+      // For AOE abilities, create a SINGLE projectile targeting the closest enemy
+      // When it hits, it will damage ALL enemies in the AOE radius
+      const target = findClosestEnemyInternal(state.enemies);
+      if (!target) return;
+
+      // Create single AOE projectile
+      createProjectile(target, damage, currentNinjaPosition, {
+        id: ability.id,
+        name: ability.name,
+        icon: ability.icon
+      }, true, ability.stats.aoeRadius); // Pass AOE flags
       
-      const enemiesInRange = state.enemies.filter(enemy => {
-        const enemyX = enemy.position.x + 17.5; // Center of enemy
-        const enemyY = enemy.position.y + 17.5;
-        const distance = Math.sqrt(Math.pow(enemyX - ninjaX, 2) + Math.pow(enemyY - ninjaY, 2));
-        return distance <= aoeRadius;
-      });
-      
-      console.log(`💥 AOE TARGETS: Found ${enemiesInRange.length} enemies in range (${aoeRadius} radius)`);
-      
-      // Create projectile/effect for each enemy in range - FIXED: Ensure reliable XP awarding
-      enemiesInRange.forEach(enemy => {
-        const damageResult = DamageCalculator.calculateDamage(damage, state.playerStats, enemy.stats);
-        
-        // For AOE abilities, create a slightly delayed projectile to prevent simultaneous hits
-        const delay = Math.random() * 100; // 0-100ms random delay to prevent race conditions
-        setTimeout(() => {
-          createProjectile(enemy, damageResult.damage, currentNinjaPosition, {
-            id: ability.id,
-            name: ability.name,
-            icon: ability.icon
-          });
-        }, delay);
-        
-        console.log(`💥 AOE HIT: ${enemy.name} for ${damageResult.damage} damage (delayed by ${delay.toFixed(0)}ms)`);
-      });
-      
-      console.log(`🎯 ${ability.name} AOE cast! Hit ${enemiesInRange.length} enemies for ${damage} base damage each`);
+      console.log(`🎯 ${ability.name} AOE projectile created targeting ${target.name} with ${ability.stats.aoeRadius} radius`);
       
     } else {
       // Single target ability (original logic)
