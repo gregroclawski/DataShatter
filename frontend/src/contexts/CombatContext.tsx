@@ -170,6 +170,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
   // Function to handle enemy kills - integrates with zone progression and awards XP/gold
   const handleEnemyKill = useCallback((enemy: CombatEnemy) => {
+    console.log(`🔍 XP DEBUG: handleEnemyKill called for ${enemy.name} (ID: ${enemy.id})`);
     console.log(`🗡️  MOBILE DEBUG - handleEnemyKill CALLED for enemy:`, enemy.id);
     
     // Award XP and gold directly using useGame hook with subscription multipliers
