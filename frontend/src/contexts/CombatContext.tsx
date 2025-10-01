@@ -558,7 +558,6 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         }));
       }
     }
-  }; // Removed dependency array - function always uses fresh references
   }, []); // Empty dependency array - handleEnemyKill is stable
 
   // Find closest enemy to ninja - exposed for UI use
