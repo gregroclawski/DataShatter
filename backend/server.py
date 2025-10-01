@@ -366,7 +366,7 @@ async def load_game(player_id: str):
             print(f"   - XP: {save_data.get('ninja', {}).get('experience', 'MISSING')}")
             print(f"   - Gold: {save_data.get('ninja', {}).get('gold', 'MISSING')}")
             print(f"   - Gems: {save_data.get('ninja', {}).get('gems', 'MISSING')}")
-            print(f"✅ LOAD COMPLETED - Returning saved data")
+            print("✅ LOAD COMPLETED - Returning saved data")
             return GameSave(**save_data)
         else:
             print(f"❌ NO SAVE FOUND for player {player_id} - returning None")
