@@ -120,7 +120,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🗿',
     baseHP: 80,
     baseAttack: 28,
-    baseXP: 240, // 6X from original 40 (tripled to 120, now doubled to 240)
+    baseXP: 1200, // 30X from original 40 - massively boosted for faster progression
   },
   'fire_drake': {
     id: 'fire_drake',
