@@ -368,11 +368,39 @@ export default function NinjaIdleGame() {
     }
   }, [gameState?.ninja?.level, previousLevel, handleLevelUpExplosion]);
 
-  // Force UI updates for XP changes to ensure instant visual feedback
+  // THROTTLED UI DISPLAY STATE - Updates at reasonable frequency for smooth visuals
+  const [displayStats, setDisplayStats] = useState({
+    level: testNinja.level,
+    experience: testNinja.experience,
+    experienceToNext: testNinja.experienceToNext,
+    xpPercentage: 0
+  });
+
+  // Throttled display updates - Update UI at max 15 FPS instead of 30 TPS
   useEffect(() => {
-    // This useEffect ensures the XP bar updates immediately when XP changes
-    console.log(`💫 XP UPDATE: ${testNinja.experience}/${testNinja.experienceToNext} XP (Level ${testNinja.level})`);
-  }, [testNinja.experience, testNinja.experienceToNext]);
+    const updateInterval = setInterval(() => {
+      const newPercentage = Math.max(0, Math.min(100, (testNinja.experience / testNinja.experienceToNext) * 100));
+      
+      setDisplayStats(prev => {
+        // Only update if values changed significantly (reduces unnecessary renders)
+        if (
+          prev.level !== testNinja.level ||
+          prev.experience !== testNinja.experience ||
+          Math.abs(prev.xpPercentage - newPercentage) > 1 // Update if percentage changed by >1%
+        ) {
+          return {
+            level: testNinja.level,
+            experience: testNinja.experience,
+            experienceToNext: testNinja.experienceToNext,
+            xpPercentage: newPercentage
+          };
+        }
+        return prev;
+      });
+    }, 67); // 67ms = ~15 FPS for smooth but efficient UI updates
+    
+    return () => clearInterval(updateInterval);
+  }, [testNinja.level, testNinja.experience, testNinja.experienceToNext]);
 
   // CRITICAL: Expo Go Fix - useSharedValue hooks MUST be initialized with stable values
   // React Native Reanimated hooks are sensitive to execution order in Hermes engine
