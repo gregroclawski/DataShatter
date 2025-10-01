@@ -510,10 +510,11 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       return newState;
     });
     
-    // BULK XP PROCESSING - Single update for all kills (with duplicate prevention)
+    // BULK XP PROCESSING - Single update for all kills (FIXED: Don't filter by xpAwarded)
     if (enemiesToKill.length > 0) {
-      // Filter out enemies that already had XP awarded to prevent double-processing
-      const unprocessedEnemies = enemiesToKill.filter(enemy => !enemy.xpAwarded);
+      // CRITICAL FIX: Process ALL dead enemies regardless of xpAwarded flag
+      // The xpAwarded flag was preventing processing due to persistence from previous cycles
+      const unprocessedEnemies = enemiesToKill; // Process all dead enemies
       
       // CRITICAL DEBUG: Check why unprocessedEnemies is empty
       console.log(`🔍 DEBUG enemiesToKill xpAwarded status:`, enemiesToKill.map(e => ({id: e.id, name: e.name, xpAwarded: e.xpAwarded})));
