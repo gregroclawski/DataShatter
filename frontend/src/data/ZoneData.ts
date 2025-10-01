@@ -65,7 +65,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🌳',
     baseHP: 45,
     baseAttack: 15,
-    baseXP: *10, // 30X from original 25 - massively boosted for faster progression
+    baseXP: 75000, // 3000X from original 25 - ULTRA MASSIVE BOOST for extremely fast progression
     resistances: { physical: 0.2 }
   },
   'dark_sprite': {
