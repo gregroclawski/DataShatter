@@ -92,7 +92,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🌲',
     baseHP: 80,
     baseAttack: 25,
-    baseXP: 105000, // 3000X from original 35 - ULTRA MASSIVE BOOST for extremely fast progression
+    baseXP: 105, // 3000X from original 35 - ULTRA MASSIVE BOOST for extremely fast progression
     resistances: { physical: 0.3 }
   },
   'flame_salamander': {
