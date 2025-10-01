@@ -720,6 +720,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     };
     
     console.log(`🚀 PROJECTILE CREATED: ${abilityInfo?.name || 'Basic Shuriken'} projectile (ID: ${projectileId}) targeting ${targetEnemy.name} for ${damage} damage`);
+    console.log(`🎯 PROJECTILE DEBUG: isAOE=${isAOE}, aoeRadius=${aoeRadius}, damage=${damage}`);
     
     console.log(`🔥 Creating projectile to enemy ${targetEnemy.id} for ${damage} damage`);
     console.log(`🎯 Projectile origin: ninja at (${ninjaX}, ${ninjaY}), target at (${projectile.targetX}, ${projectile.targetY})`);
