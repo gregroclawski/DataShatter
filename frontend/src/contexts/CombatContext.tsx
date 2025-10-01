@@ -467,8 +467,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       });
       
       // MOBILE DEBUG: Log enemy death processing
-      if (deadEnemies.length > 0) {
-        console.log(`💀 MOBILE DEBUG - Found ${deadEnemies.length} dead enemies:`, deadEnemies.map(e => `${e.id}(${e.health}hp)`));
+      if (allDeadEnemies.length > 0) {
+        console.log(`💀 MOBILE DEBUG - Found ${allDeadEnemies.length} dead enemies:`, allDeadEnemies.map(e => `${e.id}(${e.health}hp)`));
       }
       
       // Check if any enemies are close to death for debugging
