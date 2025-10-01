@@ -519,7 +519,11 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       
       const saveData = {
         playerId: user.id,
-        ninja: currentState.ninja,
+        ninja: {
+          ...currentState.ninja,
+          experience: Math.round(currentState.ninja.experience), // Ensure experience is always integer
+          gold: Math.round(currentState.ninja.gold), // Ensure gold is always integer
+        },
         shurikens: currentState.shurikens,
         pets: currentState.pets,
         achievements: currentState.achievements,
