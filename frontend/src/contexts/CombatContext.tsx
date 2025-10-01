@@ -611,20 +611,33 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     if (isAOE) {
       console.log(`💥 AOE ABILITY: ${ability.name} with radius ${ability.stats.aoeRadius}`);
       
-      // For AOE abilities, create a SINGLE projectile targeting the closest enemy
-      // When it hits, it will damage ALL enemies in the AOE radius
-      const target = findClosestEnemyInternal(state.enemies);
-      if (!target) return;
-
-      // Create single AOE projectile
-      createProjectile(target, damage, currentNinjaPosition, {
-        id: ability.id,
-        name: ability.name,
-        icon: ability.icon
-      }, true, ability.stats.aoeRadius); // Pass AOE flags
+      // TEMPORARY FIX: For now, let's use the old system but fix the XP issue
+      // Find all enemies within AOE range of ninja
+      const ninjaX = currentNinjaPosition.x + 20; // Center of ninja
+      const ninjaY = currentNinjaPosition.y + 20;
+      const aoeRadius = ability.stats.aoeRadius;
       
-      console.log(`🎯 ${ability.name} AOE projectile created targeting ${target.name} with ${ability.stats.aoeRadius} radius`);
-      console.log(`🎯 AOE DEBUG: damage=${damage}, isAOE=true, aoeRadius=${ability.stats.aoeRadius}`);
+      const enemiesInRange = state.enemies.filter(enemy => {
+        const enemyX = enemy.position.x + 17.5; // Center of enemy
+        const enemyY = enemy.position.y + 17.5;
+        const distance = Math.sqrt(Math.pow(enemyX - ninjaX, 2) + Math.pow(enemyY - ninjaY, 2));
+        return distance <= aoeRadius;
+      });
+      
+      console.log(`💥 AOE TARGETS: Found ${enemiesInRange.length} enemies in range (${aoeRadius} radius)`);
+      
+      // Create projectile for each enemy in range - FIXED XP VERSION
+      enemiesInRange.forEach(enemy => {
+        const damageResult = DamageCalculator.calculateDamage(damage, state.playerStats, enemy.stats);
+        createProjectile(enemy, damageResult.damage, currentNinjaPosition, {
+          id: ability.id,
+          name: ability.name,
+          icon: ability.icon
+        });
+        console.log(`💥 AOE HIT: ${enemy.name} for ${damageResult.damage} damage`);
+      });
+      
+      console.log(`🎯 ${ability.name} AOE cast! Hit ${enemiesInRange.length} enemies for ${damage} base damage each`);
       
     } else {
       // Single target ability (original logic)
