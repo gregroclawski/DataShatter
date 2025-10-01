@@ -488,6 +488,16 @@ export default function NinjaIdleGame() {
             <Text style={styles.usernameText} numberOfLines={1} ellipsizeMode="tail">
               {user?.name || 'Player'}
             </Text>
+            
+            {/* Admin Reset Button - Only visible for admin users */}
+            {user?.email === 'gregroclawski@gmail.com' && (
+              <TouchableOpacity
+                style={styles.adminResetButton}
+                onPress={handleAdminReset}
+              >
+                <Ionicons name="refresh-circle" size={20} color="#ff6b6b" />
+              </TouchableOpacity>
+            )}
           </View>
           
           <Text style={styles.progressionTitle}>
