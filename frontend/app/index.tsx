@@ -199,6 +199,55 @@ export default function NinjaIdleGame() {
     });
   }, []);
 
+  // Admin Reset Function - Only available for admin users
+  const handleAdminReset = useCallback(async () => {
+    try {
+      Alert.alert(
+        '⚠️ Admin Reset Account',
+        'This will reset your account to level 1 with starting stats. This action cannot be undone!\n\nAre you sure you want to proceed?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { 
+            text: 'Reset Account', 
+            style: 'destructive',
+            onPress: async () => {
+              console.log('🔄 Admin: Resetting account...');
+              
+              // Call the backend reset endpoint
+              const backendUrl = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL;
+              const response = await fetch(`${backendUrl}/api/admin/reset-account`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-User-Id': user?.id || '',
+                },
+              });
+              
+              const result = await response.json();
+              
+              if (response.ok && result.success) {
+                Alert.alert('✅ Reset Complete', 'Account has been reset successfully!', [
+                  { 
+                    text: 'OK', 
+                    onPress: () => {
+                      // Force reload the game state
+                      loadGame();
+                    }
+                  }
+                ]);
+              } else {
+                Alert.alert('❌ Reset Failed', result.message || 'Failed to reset account');
+              }
+            }
+          }
+        ]
+      );
+    } catch (error) {
+      console.error('Admin reset error:', error);
+      Alert.alert('❌ Error', 'Failed to reset account. Check your connection.');
+    }
+  }, [user?.id, loadGame]);
+
   // MOBILE-SAFE Movement System - Uses simple touch events instead of complex gestures
   useEffect(() => {
     if (!isAutoMovement && isManualControlActive && (movementDirection.x !== 0 || movementDirection.y !== 0)) {
