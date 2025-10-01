@@ -1037,6 +1037,17 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
+  // CRITICAL FIX: Add missing combat tick timer - this is what calls handleCombatTick!
+  useEffect(() => {
+    console.log('🎯 STARTING COMBAT TICK TIMER - handleCombatTick will be called every 100ms');
+    const combatTickInterval = setInterval(handleCombatTick, 100); // 10 TPS for bulk processing
+    
+    return () => {
+      console.log('🛑 STOPPING COMBAT TICK TIMER');
+      clearInterval(combatTickInterval);
+    };
+  }, [handleCombatTick]);
+
   // CRITICAL FIX: Handle projectile impacts separately from animation loop
   useEffect(() => {
     const processProjectileImpacts = () => {
