@@ -444,13 +444,13 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       // FIXED: Use single filter for all dead enemies regardless of isDying flag
       const allDeadEnemies = newState.enemies.filter(enemy => enemy.health <= 0);
       
+      // CRITICAL FIX: Capture dead enemies OUTSIDE state update for XP processing
+      enemiesToKill = [...allDeadEnemies]; // Clone array to avoid state mutation issues
+      
       // DEBUG: Check if any enemies actually have 0 or negative health
       if (allDeadEnemies.length > 0) {
         console.log(`💀 FOUND ${allDeadEnemies.length} enemies with health <= 0:`, allDeadEnemies.map(e => `${e.name}(${e.health}hp, isDying:${e.isDying})`));
       }
-      
-      // Process ALL dead enemies for XP (regardless of isDying status)
-      enemiesToKill = allDeadEnemies;
       
       // Remove enemies that have finished their death animation (750ms)
       const currentTime = Date.now();
