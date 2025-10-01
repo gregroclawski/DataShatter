@@ -148,7 +148,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🦂',
     baseHP: 45,
     baseAttack: 45,
-    baseXP: $((360 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: 1800, // 30X from original 60 - massively boosted for faster progression
   },
   'ice_wraith': {
     id: 'ice_wraith',
