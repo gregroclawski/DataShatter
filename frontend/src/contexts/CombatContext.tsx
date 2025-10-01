@@ -461,9 +461,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       const dyingEnemies = newState.enemies.filter(enemy => enemy.isDying && enemy.health <= 0);
       const deadEnemies = newState.enemies.filter(enemy => enemy.health <= 0 && !enemy.isDying);
       
-      // Award XP for dying enemies immediately (they're in death animation)
-      const dyingEnemiesForXP = dyingEnemies.map(enemy => ({...enemy})); // Copy for XP processing
-      enemiesToKill = [...deadEnemies, ...dyingEnemiesForXP]; // Store for processing outside setState
+      // Only process enemies that haven't had XP awarded yet (backup system)
+      const deadEnemiesNoXP = deadEnemies.filter(enemy => !enemy.xpAwarded);
+      enemiesToKill = [...deadEnemiesNoXP]; // Only process enemies without XP awarded
       
       // Remove enemies that have finished their death animation (750ms)
       const currentTime = Date.now();
