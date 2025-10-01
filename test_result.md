@@ -655,17 +655,17 @@ test_plan:
           agent: "testing"
           comment: "SUBSCRIPTION PURCHASE SYSTEM COMPREHENSIVE TESTING COMPLETE: Performed complete testing of subscription purchase system as requested in review. SUCCESS RATE: 100% (11/11 tests passed). ✅ SUBSCRIPTION PURCHASE ENDPOINTS: Both xp_drop_boost and zone_progression_boost subscriptions purchase successfully ($40, 30 days duration). ✅ JSON SERIALIZATION VERIFIED: All responses parse as valid JSON with no ObjectId serialization errors. ObjectId fields properly converted to strings in active subscriptions endpoint. ✅ DATETIME HANDLING CORRECT: All datetime fields (start_date, end_date, created_at) properly formatted as ISO strings (e.g., '2025-09-29T14:18:02.454000'). ✅ ACTIVE SUBSCRIPTIONS ENDPOINT: Returns proper JSON with converted ObjectId fields and ISO datetime formatting. ✅ BENEFITS ENDPOINT: Returns correct multipliers (2.0 for subscribed features, 1.0 for defaults) with proper JSON structure. ✅ AUTHENTICATION PROTECTION: All subscription endpoints properly protected with 401 responses for unauthenticated requests. ✅ DUPLICATE PURCHASE PREVENTION: Correctly prevents duplicate subscriptions with proper 400 error responses. ✅ SERVER TIME TRACKING: Subscription dates tracked with server time, proper 30-day duration calculations. The JSON parse error issue mentioned in review request has been RESOLVED - all subscription endpoints return valid JSON with proper ObjectId and datetime serialization."
 
-  - task: "Projectile and XP System Diagnosis"
-    implemented: true
+  - task: "XP Decimal Save Error Fix"
+    implemented: false
     working: false
     file: "/app/frontend/src/contexts/CombatContext.tsx"
     stuck_count: 0
     priority: "critical"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: false
-          agent: "testing"
-          comment: "CRITICAL DIAGNOSIS COMPLETE: Performed comprehensive analysis of projectile and XP system issues. 🎯 ROOT CAUSE IDENTIFIED: Authentication loading state stuck at true prevents access to game area where combat system is running. ✅ BACKEND WORKING CORRECTLY: All save/load operations functional, ability data persistence working, XP multiplier system operational (3/3 tests passed 100%). ❌ FRONTEND ISSUES FOUND: 1) Authentication loading stuck due to minLoadingComplete state issue in AuthContext.tsx, 2) Combat system running in background (enemies spawning, combat ticks happening) but blocked by auth screen, 3) Projectiles and XP rewards likely working but not visible due to auth overlay. 🔍 EVIDENCE FROM LOGS: Combat logs show '🔄 MOBILE DEBUG - handleCombatTick called', '🐛 Enemy spawn check: Current=2, Max=20', '🎯 SPAWNING ENEMY: Forest Goblin', indicating combat system is functional but hidden behind auth loading screen. URGENT FIX NEEDED: Fix AuthContext actualIsLoading calculation to resolve stuck loading state."
+          agent: "main"
+          comment: "CRITICAL SAVE ERROR IDENTIFIED: XP calculations on lines 177 and 536 are producing decimal values (enemy.zoneXP * multiplier) but backend expects experience: int. This causes save errors when XP notifications show decimal places. Need to round all XP calculations to integers using Math.round() or Math.floor()."
 
 agent_communication:
     - agent: "main"
