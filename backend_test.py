@@ -258,16 +258,20 @@ class XPDecimalFixTester:
                 if response.status == 200:
                     data = await response.json()
                     saved_ninja = data.get('ninja', {})
-                    saved_revive_tickets = saved_ninja.get('reviveTickets')
+                    saved_xp = saved_ninja.get('experience')
+                    saved_gold = saved_ninja.get('gold')
+                    saved_gems = saved_ninja.get('gems')
                     
-                    print(f"✅ Game save successful: Level {saved_ninja.get('level')}, XP {saved_ninja.get('experience')}")
+                    print(f"✅ Game save successful: Level {saved_ninja.get('level')}, XP {saved_xp}")
                     
-                    # Check if reviveTickets field was saved
-                    if saved_revive_tickets is not None:
-                        print(f"✅ Revival System Integration: reviveTickets field saved ({saved_revive_tickets})")
+                    # Verify all values are integers (XP decimal fix verification)
+                    if (isinstance(saved_xp, int) and saved_xp == 3750 and
+                        isinstance(saved_gold, int) and saved_gold == 2500 and
+                        isinstance(saved_gems, int) and saved_gems == 50):
+                        print(f"✅ XP Decimal Fix Verification: All values are integers (XP: {saved_xp}, Gold: {saved_gold}, Gems: {saved_gems})")
                         return True
                     else:
-                        print(f"❌ Revival System Integration: reviveTickets field NOT saved")
+                        print(f"❌ XP Decimal Fix Verification: Non-integer values detected (XP: {saved_xp}, Gold: {saved_gold}, Gems: {saved_gems})")
                         return False
                 else:
                     error_text = await response.text()
