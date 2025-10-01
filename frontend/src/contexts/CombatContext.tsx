@@ -512,15 +512,15 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     });
     
     // BULK XP PROCESSING - Use ref to get dead enemies (FIXED: Closure scoping issue)
-    const enemiesToKill = deadEnemiesRef.current; // Get from ref instead of closure variable
-    if (enemiesToKill.length > 0) {
+    const deadEnemiesToProcess = deadEnemiesRef.current; // Get from ref instead of closure variable
+    if (deadEnemiesToProcess.length > 0) {
       // CRITICAL FIX: Process ALL dead enemies regardless of xpAwarded flag
       // The xpAwarded flag was preventing processing due to persistence from previous cycles
-      const unprocessedEnemies = enemiesToKill; // Process all dead enemies
+      const unprocessedEnemies = deadEnemiesToProcess; // Process all dead enemies
       
       // CRITICAL DEBUG: Check why unprocessedEnemies is empty
-      console.log(`🔍 DEBUG enemiesToKill xpAwarded status:`, enemiesToKill.map(e => ({id: e.id, name: e.name, xpAwarded: e.xpAwarded})));
-      console.log(`💀 BULK PROCESSING: ${enemiesToKill.length} total kills, ${unprocessedEnemies.length} unprocessed`);
+      console.log(`🔍 DEBUG deadEnemiesToProcess xpAwarded status:`, deadEnemiesToProcess.map(e => ({id: e.id, name: e.name, xpAwarded: e.xpAwarded})));
+      console.log(`💀 BULK PROCESSING: ${deadEnemiesToProcess.length} total kills, ${unprocessedEnemies.length} unprocessed`);
       
       if (unprocessedEnemies.length > 0) {
         // Calculate total rewards in one pass
