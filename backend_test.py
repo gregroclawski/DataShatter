@@ -200,48 +200,51 @@ class XPDecimalFixTester:
                 "shurikens": [
                     {
                         "id": str(uuid.uuid4()),
-                        "name": "Legendary Dragon Fang",
-                        "rarity": "legendary",
-                        "attack": 45,
-                        "level": 3,
+                        "name": "Fire Shuriken",
+                        "rarity": "rare",
+                        "attack": 25,
+                        "level": 2,
                         "equipped": True
                     }
                 ],
                 "pets": [
                     {
                         "id": str(uuid.uuid4()),
-                        "name": "Epic Phoenix",
-                        "type": "Phoenix",
-                        "level": 5,
-                        "experience": 250,
-                        "happiness": 85,
-                        "strength": 35,
+                        "name": "Test Wolf",
+                        "type": "Wolf",
+                        "level": 3,
+                        "experience": 180,  # Integer XP for pet
+                        "happiness": 75,
+                        "strength": 22,
                         "active": True,
-                        "rarity": "epic"
+                        "rarity": "rare"
                     }
                 ],
-                "achievements": ["first_kill", "level_10", "level_25", "revival_master"],
-                "unlockedFeatures": ["stats", "shurikens", "pets", "revival_system"],
+                "achievements": ["first_kill", "level_10", "level_15"],
+                "unlockedFeatures": ["stats", "shurikens", "pets"],
                 "zoneProgress": {
-                    "currentZone": 8,
-                    "currentLevel": 3,
-                    "killsInLevel": 67,
-                    "totalKills": 1247
+                    "currentZone": 5,
+                    "currentLevel": 2,
+                    "killsInLevel": 35,  # Integer kill count
+                    "totalKills": 450   # Integer total kills
                 },
                 "equipment": {
-                    "helmet": {"name": "Dragon Scale Helmet", "defense": 25, "rarity": "epic"},
-                    "armor": {"name": "Phoenix Feather Armor", "defense": 40, "rarity": "legendary"},
-                    "weapon": {"name": "Void Piercer", "attack": 55, "rarity": "legendary"}
+                    "equipped": {
+                        "head": None,
+                        "body": None,
+                        "weapon": None,
+                        "accessory": None
+                    },
+                    "inventory": [],
+                    "maxInventorySize": 50
                 },
                 "abilityData": {
-                    "equippedAbilities": ["basic_shuriken", "fire_shuriken", "ice_shuriken", "shadow_clone", "revival_technique"],
+                    "equippedAbilities": ["basic_shuriken", "fire_shuriken"],
                     "availableAbilities": {
-                        "basic_shuriken": {"level": 5, "stats": {"baseDamage": 25, "cooldown": 1.0}},
-                        "fire_shuriken": {"level": 4, "stats": {"baseDamage": 35, "cooldown": 2.5}},
-                        "ice_shuriken": {"level": 3, "stats": {"baseDamage": 30, "cooldown": 3.0}},
-                        "shadow_clone": {"level": 2, "stats": {"baseDamage": 40, "cooldown": 4.5}},
-                        "revival_technique": {"level": 1, "stats": {"reviveTickets": 1, "cooldown": 60.0}}
-                    }
+                        "basic_shuriken": {"level": 3, "stats": {"baseDamage": 20, "cooldown": 1.0}},
+                        "fire_shuriken": {"level": 2, "stats": {"baseDamage": 30, "cooldown": 2.5}}
+                    },
+                    "activeSynergies": []
                 }
             }
             
