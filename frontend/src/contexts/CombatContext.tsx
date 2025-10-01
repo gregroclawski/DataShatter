@@ -191,37 +191,34 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     console.log(`🔍 SUBSCRIPTION DEBUG - Full benefits:`, JSON.stringify(game.gameState.subscriptionBenefits));
     console.log(`📱 MOBILE DEBUG - Platform: ${Platform.OS}, Time: ${Date.now()}`);
     
-    // MOBILE FIX: Defer ALL cross-context state updates to prevent render-phase violations
-    // Use setTimeout to break the synchronous chain and prevent React Native bridge overload
-    setTimeout(() => {
-      console.log(`🥷 MOBILE DEBUG - About to call updateNinja with rewards`);
-      
-      // Award XP and gold using GameContext
-      game.updateNinja((prev) => {
-        console.log(`📊 MOBILE DEBUG - XP before: ${prev.experience}, after: ${prev.experience + xpReward}`);
-        console.log(`💰 MOBILE DEBUG - Gold before: ${prev.gold}, after: ${prev.gold + goldReward}`);
-        return {
-          experience: prev.experience + xpReward,
-          gold: prev.gold + goldReward,
-        };
-      });
-      
-      // Convert CombatEnemy to CurrentEnemy format for zone progression
-      const zoneEnemy = {
-        id: enemy.id,
-        typeId: enemy.zoneTypeId || 'test_orc', // Use zone type ID if available, fallback to test
-        name: enemy.name,
-        icon: '🧌', // Default icon for test enemies
-        hp: 0, // Dead enemy
-        maxHP: enemy.maxHealth,
-        attack: enemy.stats.attack,
-        xp: enemy.zoneXP || 20, // Use zone XP if available, fallback to base reward
-        position: enemy.position
+    // IMMEDIATE XP AWARD - No setTimeout delays for instant feedback
+    console.log(`🥷 MOBILE DEBUG - About to call updateNinja with rewards IMMEDIATELY`);
+    
+    // Award XP and gold using GameContext - SYNCHRONOUS for instant feedback
+    game.updateNinja((prev) => {
+      console.log(`📊 MOBILE DEBUG - XP before: ${prev.experience}, after: ${prev.experience + xpReward}`);
+      console.log(`💰 MOBILE DEBUG - Gold before: ${prev.gold}, after: ${prev.gold + goldReward}`);
+      return {
+        experience: prev.experience + xpReward,
+        gold: prev.gold + goldReward,
       };
-      
-      console.log(`🎯 ENEMY KILLED: ${zoneEnemy.name} (${zoneEnemy.typeId}) - Recording kill for selected zone`);
-      recordEnemyKill(zoneEnemy);
-    }, 0); // 0ms delay to defer to next event loop
+    });
+    
+    // Convert CombatEnemy to CurrentEnemy format for zone progression
+    const zoneEnemy = {
+      id: enemy.id,
+      typeId: enemy.zoneTypeId || 'test_orc', // Use zone type ID if available, fallback to test
+      name: enemy.name,
+      icon: '🧌', // Default icon for test enemies
+      hp: 0, // Dead enemy
+      maxHP: enemy.maxHealth,
+      attack: enemy.stats.attack,
+      xp: enemy.zoneXP || 20, // Use zone XP if available, fallback to base reward
+      position: enemy.position
+    };
+  
+  // Record the zone kill for progression (if in a zone) - IMMEDIATE
+  recordEnemyKill(zoneEnemy);
   }, [game.updateNinja, recordEnemyKill]);
 
   // Combat tick handler - MEMOIZED to prevent infinite re-renders
