@@ -173,52 +173,30 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
   // Function to handle enemy kills - integrates with zone progression and awards XP/gold
   const handleEnemyKill = useCallback((enemy: CombatEnemy) => {
-    console.log(`🔍 XP DEBUG: handleEnemyKill called for ${enemy.name} (ID: ${enemy.id})`);
-    console.log(`🗡️  MOBILE DEBUG - handleEnemyKill CALLED for enemy:`, enemy.id);
+    // STREAMLINED XP CALCULATION - Single efficient computation
+    const xpReward = (enemy.zoneXP || 5000) * (game.gameState.subscriptionBenefits?.xp_multiplier || 1.0);
+    const goldReward = 10000 * (game.gameState.subscriptionBenefits?.drop_multiplier || 1.0);
     
-    // Use zone-based XP system instead of base XP to avoid conflicts
-    const xpMultiplier = game.gameState.subscriptionBenefits?.xp_multiplier || 1.0;
-    const dropMultiplier = game.gameState.subscriptionBenefits?.drop_multiplier || 1.0;
+    // INSTANT REWARD - Single update call
+    game.updateNinja(prev => ({
+      experience: prev.experience + xpReward,
+      gold: prev.gold + goldReward,
+    }));
     
-    // Use zone XP if available, otherwise fallback to ultra boosted base XP
-    const baseXpReward = enemy.zoneXP || 5000; // Use zone XP system, fallback to 5000 for non-zone enemies
-    const xpReward = Math.floor(baseXpReward * xpMultiplier);
-    const goldReward = Math.floor(10000 * dropMultiplier); // 1000X GOLD BOOST (was 10, now 10000) - matches XP scaling
-    
-    console.log(`💰 MOBILE DEBUG - Awarding ${xpReward} XP and ${goldReward} gold for kill`);
-    console.log(`🔍 SUBSCRIPTION DEBUG - XP Multiplier: ${xpMultiplier}, Drop Multiplier: ${dropMultiplier}`);
-    console.log(`🔍 SUBSCRIPTION DEBUG - Base XP: ${baseXpReward}, Final XP: ${xpReward}`);
-    console.log(`🔍 SUBSCRIPTION DEBUG - Full benefits:`, JSON.stringify(game.gameState.subscriptionBenefits));
-    console.log(`📱 MOBILE DEBUG - Platform: ${Platform.OS}, Time: ${Date.now()}`);
-    
-    // IMMEDIATE XP AWARD - No setTimeout delays for instant feedback
-    console.log(`🥷 MOBILE DEBUG - About to call updateNinja with rewards IMMEDIATELY`);
-    
-    // Award XP and gold using GameContext - SYNCHRONOUS for instant feedback
-    game.updateNinja((prev) => {
-      console.log(`📊 MOBILE DEBUG - XP before: ${prev.experience}, after: ${prev.experience + xpReward}`);
-      console.log(`💰 MOBILE DEBUG - Gold before: ${prev.gold}, after: ${prev.gold + goldReward}`);
-      return {
-        experience: prev.experience + xpReward,
-        gold: prev.gold + goldReward,
-      };
-    });
-    
-    // Convert CombatEnemy to CurrentEnemy format for zone progression
-    const zoneEnemy = {
-      id: enemy.id,
-      typeId: enemy.zoneTypeId || 'test_orc', // Use zone type ID if available, fallback to test
-      name: enemy.name,
-      icon: '🧌', // Default icon for test enemies
-      hp: 0, // Dead enemy
-      maxHP: enemy.maxHealth,
-      attack: enemy.stats.attack,
-      xp: enemy.zoneXP || 20, // Use zone XP if available, fallback to base reward
-      position: enemy.position
-    };
-  
-  // Record the zone kill for progression (if in a zone) - IMMEDIATE
-  recordEnemyKill(zoneEnemy);
+    // ZONE PROGRESSION - Only if needed
+    if (enemy.zoneTypeId) {
+      recordEnemyKill({
+        id: enemy.id,
+        typeId: enemy.zoneTypeId,
+        name: enemy.name,
+        icon: '🧌',
+        hp: 0,
+        maxHP: enemy.maxHealth,
+        attack: enemy.stats.attack,
+        xp: enemy.zoneXP || 0,
+        position: enemy.position
+      });
+    }
   }, [game.updateNinja, recordEnemyKill]);
 
   // Combat tick handler - MEMOIZED to prevent infinite re-renders
