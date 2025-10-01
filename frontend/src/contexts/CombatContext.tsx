@@ -616,16 +616,21 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       
       console.log(`💥 AOE TARGETS: Found ${enemiesInRange.length} enemies in range (${aoeRadius} radius)`);
       
-      // Create projectile/effect for each enemy in range
+      // Create projectile/effect for each enemy in range - FIXED: Ensure reliable XP awarding
       enemiesInRange.forEach(enemy => {
         const damageResult = DamageCalculator.calculateDamage(damage, state.playerStats, enemy.stats);
-        createProjectile(enemy, damageResult.damage, currentNinjaPosition, {
-          id: ability.id,
-          name: ability.name,
-          icon: ability.icon
-        });
         
-        console.log(`💥 AOE HIT: ${enemy.name} for ${damageResult.damage} damage`);
+        // For AOE abilities, create a slightly delayed projectile to prevent simultaneous hits
+        const delay = Math.random() * 100; // 0-100ms random delay to prevent race conditions
+        setTimeout(() => {
+          createProjectile(enemy, damageResult.damage, currentNinjaPosition, {
+            id: ability.id,
+            name: ability.name,
+            icon: ability.icon
+          });
+        }, delay);
+        
+        console.log(`💥 AOE HIT: ${enemy.name} for ${damageResult.damage} damage (delayed by ${delay.toFixed(0)}ms)`);
       });
       
       console.log(`🎯 ${ability.name} AOE cast! Hit ${enemiesInRange.length} enemies for ${damage} base damage each`);
