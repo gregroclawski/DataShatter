@@ -542,7 +542,10 @@ export default function NinjaIdleGame() {
             </Text>
             
             {/* Admin Reset Button - Only visible for accounts marked as admin */}
-            {user?.is_admin && (
+            {(user?.is_admin || user?.email === 'gregroclawski@gmail.com') && (
+              <Text style={{fontSize: 10, color: 'red'}}>Debug: is_admin={String(user?.is_admin)}, email={user?.email}</Text>
+            )}
+            {(user?.is_admin || user?.email === 'gregroclawski@gmail.com') && (
               <TouchableOpacity
                 style={styles.adminResetButton}
                 onPress={handleAdminReset}
