@@ -148,7 +148,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🦂',
     baseHP: 45,
     baseAttack: 45,
-    baseXP: 360, // 6X from original 60 (tripled to 180, now doubled to 360)
+    baseXP: $((360 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'ice_wraith': {
     id: 'ice_wraith',
@@ -156,7 +156,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👻',
     baseHP: 55,
     baseAttack: 40,
-    baseXP: 420, // 6X from original 70 (tripled to 210, now doubled to 420)
+    baseXP: $((420 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { ice: 0.6, fire: -0.3 }
   },
   'crystal_spider': {
@@ -165,7 +165,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🕷️',
     baseHP: 65,
     baseAttack: 55,
-    baseXP: 390, // 6X from original 65 (tripled to 195, now doubled to 390)
+    baseXP: $((390 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'desert_basilisk': {
     id: 'desert_basilisk',
@@ -173,7 +173,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐍',
     baseHP: 70,
     baseAttack: 50,
-    baseXP: 480, // 6X from original 80 (tripled to 240, now doubled to 480)
+    baseXP: $((480 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { physical: 0.5 }
   },
 
@@ -184,7 +184,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🔥',
     baseHP: 80,
     baseAttack: 60,
-    baseXP: 510, // 6X from original 85 (tripled to 255, now doubled to 510)
+    baseXP: $((510 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'lava_beast': {
     id: 'lava_beast',
@@ -192,7 +192,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🦏',
     baseHP: 90,
     baseAttack: 70,
-    baseXP: 540, // 6X from original 90 (tripled to 270, now doubled to 540)
+    baseXP: $((540 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'inferno_dragon': {
     id: 'inferno_dragon',
@@ -200,7 +200,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐲',
     baseHP: 120,
     baseAttack: 75,
-    baseXP: 600, // 6X from original 100 (tripled to 300, now doubled to 600)
+    baseXP: $((600 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { fire: 0.7 }
   },
   'phoenix_guardian': {
@@ -209,7 +209,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🔥🦅',
     baseHP: 100,
     baseAttack: 80,
-    baseXP: 660, // 6X from original 110 (tripled to 330, now doubled to 660)
+    baseXP: $((660 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { magic: 0.4 }
   },
 
@@ -220,7 +220,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👹',
     baseHP: 150,
     baseAttack: 100,
-    baseXP: 900, // 6X from original 150 (tripled to 450, now doubled to 900)
+    baseXP: $((900 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'void_stalker': {
     id: 'void_stalker',
@@ -228,7 +228,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👤',
     baseHP: 180,
     baseAttack: 120,
-    baseXP: 1080, // 6X from original 180 (tripled to 540, now doubled to 1080)
+    baseXP: $((1080 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { magic: 0.6 }
   },
   'nightmare_lord': {
@@ -237,7 +237,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '💀',
     baseHP: 200,
     baseAttack: 150,
-    baseXP: 1200, // 6X from original 200 (tripled to 600, now doubled to 1200)
+    baseXP: $((1200 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'chaos_titan': {
     id: 'chaos_titan',
@@ -245,7 +245,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '⚡',
     baseHP: 300,
     baseAttack: 200,
-    baseXP: 1800, // 6X from original 300 (tripled to 900, now doubled to 1800)
+    baseXP: $((1800 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
     resistances: { fire: 0.8, physical: 0.3 }
   },
 
