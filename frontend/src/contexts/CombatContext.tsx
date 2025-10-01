@@ -1049,9 +1049,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
           // Apply damage when projectile completes
           if (progress >= 1 && !projectile.hasHit) {
-            projectile.hasHit = true;
-            
+            // FIXED: Don't mutate state directly - mark as hit via state update instead
             console.log(`🎯 PROJECTILE IMPACT: ${projectile.abilityName} projectile hit target`);
+            
             setCombatState(prev => {
               const newState = { ...prev };
               
