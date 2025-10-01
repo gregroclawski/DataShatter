@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { 
+import Animated, { 
   useSharedValue, 
   useAnimatedStyle, 
   withSpring, 
