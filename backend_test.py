@@ -329,84 +329,118 @@ class XPDecimalFixTester:
             print(f"❌ Game load error: {str(e)}")
             return False
             
-    async def test_comprehensive_game_data_persistence(self):
-        """Test 7: Comprehensive Game Data Persistence"""
-        print(f"\n🔍 TEST 7: Comprehensive Game Data Persistence")
+    async def test_edge_case_xp_values(self):
+        """Test 7: Edge Case XP Values (Large integers, zero values)"""
+        print(f"\n🔍 TEST 7: Edge Case XP Values Testing")
         try:
+            # Test with large integer XP values and edge cases
+            edge_case_ninja = {
+                "level": 100,
+                "experience": 999999,  # Large integer XP
+                "experienceToNext": 1000000,
+                "health": 1000,
+                "maxHealth": 1000,
+                "energy": 500,
+                "maxEnergy": 500,
+                "attack": 200,
+                "defense": 150,
+                "speed": 100,
+                "luck": 75,
+                "gold": 0,  # Edge case: zero gold
+                "gems": 1,  # Edge case: minimal gems
+                "skillPoints": 999,  # Large skill points
+                "reviveTickets": 0,  # Edge case: no revive tickets
+                "baseStats": {
+                    "attack": 50,
+                    "defense": 30,
+                    "speed": 40,
+                    "luck": 20,
+                    "maxHealth": 500,
+                    "maxEnergy": 250
+                },
+                "goldUpgrades": {
+                    "attack": 0,
+                    "defense": 0,
+                    "speed": 0,
+                    "luck": 0,
+                    "maxHealth": 0,
+                    "maxEnergy": 0
+                },
+                "skillPointUpgrades": {
+                    "attack": 150,
+                    "defense": 120,
+                    "speed": 60,
+                    "luck": 55,
+                    "maxHealth": 500,
+                    "maxEnergy": 250
+                }
+            }
+            
+            save_data = {
+                "playerId": self.test_user_id,
+                "ninja": edge_case_ninja,
+                "shurikens": [],
+                "pets": [],
+                "achievements": [],
+                "unlockedFeatures": ["stats"],
+                "zoneProgress": {},
+                "equipment": None,
+                "abilityData": None
+            }
+            
             headers = {'Authorization': f'Bearer {self.auth_token}'}
             
-            async with self.session.get(
-                f"{API_BASE}/load-game/{self.test_user_id}",
+            async with self.session.post(
+                f"{API_BASE}/save-game",
+                json=save_data,
                 headers=headers
             ) as response:
                 if response.status == 200:
                     data = await response.json()
-                    if data:
-                        # Check all major data components
-                        ninja = data.get('ninja', {})
-                        shurikens = data.get('shurikens', [])
-                        pets = data.get('pets', [])
-                        achievements = data.get('achievements', [])
-                        zone_progress = data.get('zoneProgress', {})
-                        equipment = data.get('equipment', {})
-                        ability_data = data.get('abilityData', {})
-                        
-                        checks_passed = 0
-                        total_checks = 7
-                        
-                        # Check ninja stats
-                        if ninja.get('level') == 27 and ninja.get('reviveTickets') == 3:
-                            print(f"✅ Ninja stats with reviveTickets: Level {ninja.get('level')}, Tickets {ninja.get('reviveTickets')}")
-                            checks_passed += 1
-                        else:
-                            print(f"❌ Ninja stats incomplete: Level {ninja.get('level')}, Tickets {ninja.get('reviveTickets')}")
-                            
-                        # Check shurikens
-                        if len(shurikens) > 0 and any(s.get('name') == 'Legendary Dragon Fang' for s in shurikens):
-                            print(f"✅ Shurikens data: {len(shurikens)} shurikens loaded")
-                            checks_passed += 1
-                        else:
-                            print(f"❌ Shurikens data incomplete: {len(shurikens)} shurikens")
-                            
-                        # Check pets
-                        if len(pets) > 0 and any(p.get('name') == 'Epic Phoenix' for p in pets):
-                            print(f"✅ Pets data: {len(pets)} pets loaded")
-                            checks_passed += 1
-                        else:
-                            print(f"❌ Pets data incomplete: {len(pets)} pets")
-                            
-                        # Check achievements
-                        if 'revival_master' in achievements:
-                            print(f"✅ Achievements data: {len(achievements)} achievements including revival_master")
-                            checks_passed += 1
-                        else:
-                            print(f"❌ Achievements data incomplete: revival_master not found")
-                            
-                        # Check zone progress
-                        if zone_progress.get('currentZone') == 8:
-                            print(f"✅ Zone progress: Zone {zone_progress.get('currentZone')}")
-                            checks_passed += 1
-                        else:
-                            print(f"❌ Zone progress incomplete: Zone {zone_progress.get('currentZone')}")
-                            
-                        # Check equipment
-                        if equipment and equipment.get('weapon', {}).get('name') == 'Void Piercer':
-                            print(f"✅ Equipment data: Weapon loaded")
-                            checks_passed += 1
-                        else:
-                            print(f"❌ Equipment data incomplete")
-                            
-                        # Check ability data with revival technique
-                        if ability_data and 'revival_technique' in ability_data.get('equippedAbilities', []):
-                            print(f"✅ Ability data: Revival technique equipped")
-                            checks_passed += 1
-                        else:
-                            print(f"❌ Ability data incomplete: Revival technique not found")
-                            
-                        success_rate = (checks_passed / total_checks) * 100
-                        print(f"\n📊 Comprehensive Data Persistence: {checks_passed}/{total_checks} checks passed ({success_rate:.1f}%)")
-                        
-                        return checks_passed >= 6  # Allow 1 failure for minor issues
+                    saved_ninja = data.get('ninja', {})
+                    
+                    # Verify edge case values are handled correctly
+                    if (saved_ninja.get('experience') == 999999 and
+                        saved_ninja.get('gold') == 0 and
+                        saved_ninja.get('gems') == 1 and
+                        saved_ninja.get('skillPoints') == 999):
+                        print(f"✅ Edge Case XP Values: Large and edge case integers handled correctly")
+                        print(f"   - Large XP: {saved_ninja.get('experience')}")
+                        print(f"   - Zero Gold: {saved_ninja.get('gold')}")
+                        print(f"   - Minimal Gems: {saved_ninja.get('gems')}")
+                        print(f"   - Large Skill Points: {saved_ninja.get('skillPoints')}")
+                        return True
+                    else:
+                        print(f"❌ Edge Case XP Values: Values not saved correctly")
+                        return False
+                else:
+                    error_text = await response.text()
+                    print(f"❌ Edge case save failed: Status {response.status}, Error: {error_text}")
+                    return False
+        except Exception as e:
+            print(f"❌ Edge case test error: {str(e)}")
+            return False
+
+    async def test_leaderboard_functionality(self):
+        """Test 8: Leaderboard Functionality (Regression Test)"""
+        print(f"\n🔍 TEST 8: Leaderboard Functionality")
+        try:
+            async with self.session.get(f"{API_BASE}/leaderboard") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if "leaderboard" in data and isinstance(data["leaderboard"], list):
+                        leaderboard_count = len(data["leaderboard"])
+                        print(f"✅ Leaderboard working: {leaderboard_count} entries retrieved")
+                        return True
+                    else:
+                        print(f"❌ Leaderboard format invalid: {data}")
+                        return False
+                else:
+                    print(f"❌ Leaderboard failed: Status {response.status}")
+                    return False
+        except Exception as e:
+            print(f"❌ Leaderboard error: {str(e)}")
+            return False
                     else:
                         print(f"❌ No game data found")
                         return False
