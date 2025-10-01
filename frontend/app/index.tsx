@@ -493,6 +493,32 @@ export default function NinjaIdleGame() {
     console.log('🎯 Position synced with combat context:', ninjaPosition);
   }, [ninjaPosition.x, ninjaPosition.y, updateNinjaPosition]);
 
+  // XP Reward Debug System - Track XP changes and create notifications
+  useEffect(() => {
+    const currentXP = testNinja?.experience || 0;
+    
+    if (prevXP > 0 && currentXP > prevXP) {
+      const xpGain = currentXP - prevXP;
+      console.log(`🎉 XP GAIN DETECTED: +${xpGain} XP (${prevXP} → ${currentXP})`);
+      
+      // Add new XP notification
+      const newNotification = {
+        id: `xp_${Date.now()}_${Math.random()}`,
+        amount: xpGain,
+        timestamp: Date.now()
+      };
+      
+      setXpNotifications(prev => [...prev, newNotification]);
+      
+      // Remove notification after 3 seconds
+      setTimeout(() => {
+        setXpNotifications(prev => prev.filter(notif => notif.id !== newNotification.id));
+      }, 3000);
+    }
+    
+    setPrevXP(currentXP);
+  }, [testNinja?.experience, prevXP]);
+
   // MOBILE FIX: Removed joystick movement system to debug crashes
 
   // MOBILE FIX: Joystick system removed to debug crashes
