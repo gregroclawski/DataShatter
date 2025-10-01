@@ -237,7 +237,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '💀',
     baseHP: 200,
     baseAttack: 150,
-    baseXP: $((1200 * 5)), // MASSIVE XP BOOST - 25-30X from original for faster progression
+    baseXP: 6000, // MASSIVE XP BOOST - 25-30X from original for faster progression
   },
   'chaos_titan': {
     id: 'chaos_titan',
