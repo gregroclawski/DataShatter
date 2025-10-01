@@ -713,6 +713,9 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       abilityId: abilityInfo?.id || 'basic_shuriken',
       abilityName: abilityInfo?.name || 'Basic Shuriken',
       abilityIcon: abilityInfo?.icon || '🌟', // Default to star if no ability info
+      // AOE properties
+      isAOE: isAOE || false,
+      aoeRadius: aoeRadius || 0,
     };
     
     console.log(`🚀 PROJECTILE CREATED: ${abilityInfo?.name || 'Basic Shuriken'} projectile (ID: ${projectileId}) targeting ${targetEnemy.name} for ${damage} damage`);
