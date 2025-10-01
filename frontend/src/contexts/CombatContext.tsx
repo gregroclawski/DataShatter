@@ -682,7 +682,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Create projectile that will deal damage when it hits
-  const createProjectile = (targetEnemy: CombatEnemy, damage: number, ninjaPos?: {x: number, y: number}, abilityInfo?: {id: string, name: string, icon: string}) => {
+  const createProjectile = (targetEnemy: CombatEnemy, damage: number, ninjaPos?: {x: number, y: number}, abilityInfo?: {id: string, name: string, icon: string}, isAOE?: boolean, aoeRadius?: number) => {
     if (!targetEnemy) {
       console.log('❌ Cannot create projectile: No target enemy');
       return null;
