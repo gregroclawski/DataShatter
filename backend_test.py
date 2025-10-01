@@ -514,8 +514,8 @@ class XPDecimalFixTester:
         return results
 
 async def main():
-    """Main test runner"""
-    tester = RevivalSystemTester()
+    """Main test runner for XP decimal fix verification"""
+    tester = XPDecimalFixTester()
     results = await tester.run_all_tests()
     
     # Return results for further processing
