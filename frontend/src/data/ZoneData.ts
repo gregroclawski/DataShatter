@@ -40,7 +40,7 @@ export interface Zone {
   };
 }
 
-// Enemy Types Database (same as before - properly scaled with TRIPLED XP)
+// Enemy Types Database - MASSIVE XP BOOST for faster progression (15-30x original values)
 export const ENEMY_TYPES: Record<string, EnemyType> = {
   // Forest Realms (Zones 1-10)
   'forest_goblin': {
