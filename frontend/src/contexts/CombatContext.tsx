@@ -170,7 +170,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
     console.log(`🗡️  MOBILE DEBUG - handleEnemyKill CALLED for enemy:`, enemy.id);
     
     // Award XP and gold directly using useGame hook with subscription multipliers
-    const baseXpReward = 120; // 6X Base XP reward per kill (was 20, tripled to 60, now doubled to 120)
+    const baseXpReward = 500; // 25X Base XP reward per kill (massively boosted for faster progression)
     const xpMultiplier = game.gameState.subscriptionBenefits?.xp_multiplier || 1.0;
     const dropMultiplier = game.gameState.subscriptionBenefits?.drop_multiplier || 1.0;
     
