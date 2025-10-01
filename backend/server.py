@@ -58,6 +58,7 @@ class User(BaseModel):
     is_active: bool = True
     provider: str = "email"  # email, google, apple, facebook, microsoft
     name_changes_used: int = 0  # Track how many name changes user has used
+    is_admin: bool = False  # Admin flag for testing and management
 
 class Token(BaseModel):
     access_token: str
