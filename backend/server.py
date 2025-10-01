@@ -1054,6 +1054,25 @@ async def check_session(request: Request):
     except Exception as e:
         return {"authenticated": False, "error": str(e)}
 
+@api_router.post("/admin/make-user-admin")
+async def make_user_admin():
+    """Make gregroclawski@gmail.com an admin user"""
+    try:
+        # Update the specific user to be admin
+        result = await db.users.update_one(
+            {"email": "gregroclawski@gmail.com"},
+            {"$set": {"is_admin": True}}
+        )
+        
+        if result.modified_count > 0:
+            return {"success": True, "message": "User gregroclawski@gmail.com is now an admin"}
+        else:
+            return {"success": False, "message": "User not found or already admin"}
+            
+    except Exception as e:
+        print(f"❌ MAKE ADMIN ERROR: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Make admin failed: {str(e)}")
+
 @api_router.post("/admin/reset-account")
 async def reset_account(request: Request):
     """Reset current account to starting state for testing purposes"""
