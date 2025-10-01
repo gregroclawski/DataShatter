@@ -497,13 +497,44 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
       return newState;
     });
     
-    // HANDLE ENEMY KILLS OUTSIDE OF setCombatState TO AVOID CROSS-COMPONENT ISSUES
-    console.log(`⚔️ MOBILE DEBUG - Processing ${enemiesToKill.length} enemy kills outside setState`);
-    
-    enemiesToKill.forEach((enemy, index) => {
-      console.log(`💀 MOBILE DEBUG - Processing kill ${index + 1}/${enemiesToKill.length} for enemy ${enemy.id}`);
-      handleEnemyKill(enemy);
-    });
+    // BULK XP PROCESSING - Single update for all kills
+    if (enemiesToKill.length > 0) {
+      // Calculate total rewards in one pass
+      let totalXP = 0;
+      let totalGold = 0;
+      const zoneKills: any[] = [];
+      
+      const xpMultiplier = game.gameState.subscriptionBenefits?.xp_multiplier || 1.0;
+      const goldMultiplier = game.gameState.subscriptionBenefits?.drop_multiplier || 1.0;
+      
+      enemiesToKill.forEach(enemy => {
+        totalXP += (enemy.zoneXP || 5000) * xpMultiplier;
+        totalGold += 10000 * goldMultiplier;
+        
+        if (enemy.zoneTypeId) {
+          zoneKills.push({
+            id: enemy.id,
+            typeId: enemy.zoneTypeId,
+            name: enemy.name,
+            icon: '🧌',
+            hp: 0,
+            maxHP: enemy.maxHealth,
+            attack: enemy.stats.attack,
+            xp: enemy.zoneXP || 0,
+            position: enemy.position
+          });
+        }
+      });
+      
+      // Single batch update for all kills
+      game.updateNinja(prev => ({
+        experience: prev.experience + totalXP,
+        gold: prev.gold + totalGold,
+      }));
+      
+      // Batch zone progression
+      zoneKills.forEach(zoneEnemy => recordEnemyKill(zoneEnemy));
+    }
   }, [handleEnemyKill]); // Only depend on handleEnemyKill, not combatEngine
 
   // Find closest enemy to ninja - exposed for UI use
