@@ -234,38 +234,7 @@ const StoreOverlay = ({ onClose }: Props) => {
       // Simulate purchase delay
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Check if this is a revive tickets purchase
-      if (gemPackage.type === 'revive_tickets') {
-        const ticketQuantity = gemPackage.gems; // 50 tickets
-        const gemsCost = gemPackage.bonus; // 1000 gems
-        
-        // Check if player has enough gems
-        if (ninja.gems < gemsCost) {
-          Alert.alert(
-            'Insufficient Gems',
-            `You need ${gemsCost.toLocaleString()} gems to purchase this item.\n\nCurrent balance: ${ninja.gems.toLocaleString()} gems`
-          );
-          return;
-        }
-
-        // Purchase revive tickets with gems
-        updateNinja(prev => ({
-          ...prev,
-          gems: prev.gems - gemsCost,
-          reviveTickets: prev.reviveTickets + ticketQuantity
-        }));
-
-        // Trigger save
-        setTimeout(() => {
-          saveOnEvent('revive_ticket_purchase');
-        }, 100);
-
-        Alert.alert(
-          '🎉 Purchase Successful!',
-          `${gemPackage.name} purchased!\n\nRevive Tickets Added: +${ticketQuantity}\nGems Spent: ${gemsCost.toLocaleString()}\n\nNew Ticket Balance: ${ninja.reviveTickets + ticketQuantity}`,
-          [{ text: 'Awesome!' }]
-        );
-      } else {
+      // All gem packages are now regular gem purchases
         // Regular gem purchase
         const totalGems = gemPackage.gems + (gemPackage.bonus || 0);
 
