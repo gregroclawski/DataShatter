@@ -1074,6 +1074,28 @@ async def make_user_admin():
         print(f"❌ MAKE ADMIN ERROR: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Make admin failed: {str(e)}")
 
+@api_router.get("/admin/check-admin-status")
+async def check_admin_status(request: Request):
+    """Check if current user is admin - for debugging"""
+    try:
+        user_id = request.headers.get("X-User-Id")
+        if not user_id:
+            return {"is_admin": False, "message": "No user ID provided"}
+        
+        user_doc = await db.users.find_one({"id": user_id})
+        if not user_doc:
+            return {"is_admin": False, "message": "User not found"}
+            
+        return {
+            "is_admin": user_doc.get("is_admin", False),
+            "email": user_doc.get("email"),
+            "user_id": user_id,
+            "message": "Admin status checked"
+        }
+    except Exception as e:
+        print(f"❌ ADMIN CHECK ERROR: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Admin check failed: {str(e)}")
+
 @api_router.post("/admin/reset-account")
 async def reset_account(request: Request):
     """Reset current account to starting state for testing purposes"""
