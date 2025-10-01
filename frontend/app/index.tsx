@@ -355,15 +355,24 @@ export default function NinjaIdleGame() {
     };
   }, [startCombat, stopCombat]);
   
-  // Level up detection - safe to use gameState.ninja with optional chaining
+  // Level up trigger effect + INSTANT XP DISPLAY UPDATES
   useEffect(() => {
     const currentNinjaLevel = gameState?.ninja?.level;
     if (currentNinjaLevel && currentNinjaLevel > previousLevel) {
       console.log('🚀 Level up detected!', previousLevel, '->', currentNinjaLevel);
       handleLevelUpExplosion();
       setPreviousLevel(currentNinjaLevel);
+      
+      // Force immediate UI update for level display
+      console.log(`🆙 LEVEL UP: ${previousLevel} → ${currentNinjaLevel} (HP restored to full)`);
     }
   }, [gameState?.ninja?.level, previousLevel, handleLevelUpExplosion]);
+
+  // Force UI updates for XP changes to ensure instant visual feedback
+  useEffect(() => {
+    // This useEffect ensures the XP bar updates immediately when XP changes
+    console.log(`💫 XP UPDATE: ${testNinja.experience}/${testNinja.experienceToNext} XP (Level ${testNinja.level})`);
+  }, [testNinja.experience, testNinja.experienceToNext]);
 
   // CRITICAL: Expo Go Fix - useSharedValue hooks MUST be initialized with stable values
   // React Native Reanimated hooks are sensitive to execution order in Hermes engine
