@@ -274,7 +274,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '💥🌌',
     baseHP: 1200,
     baseAttack: 600,
-    baseXP: 3600, // Ultra high XP for final zones
+    baseXP: 18000, // MASSIVE XP BOOST - Ultra high XP for final zones
     resistances: { physical: 0.8, magic: 0.8, fire: 0.8, ice: 0.8 }
   },
 };
