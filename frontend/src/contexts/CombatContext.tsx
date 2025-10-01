@@ -208,8 +208,8 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   }, [game.updateNinja, game.gameState.subscriptionBenefits, recordEnemyKill]);
 
   // Combat tick handler - MEMOIZED to prevent infinite re-renders
-  // COMBAT TICK HANDLER - Removed useCallback to prevent stale closure issues after level ups
-  const handleCombatTick = () => {
+  // COMBAT TICK HANDLER - Memoized with minimal dependencies to prevent infinite re-renders
+  const handleCombatTick = React.useCallback(() => {
     console.log('🔄 MOBILE DEBUG - handleCombatTick called, checking enemy deaths...');
     console.log(`🚨 COMBAT TICK DEBUG: isManualControlActive=${isManualControlActive}, isAlive=${game.gameState.isAlive}`);
     
