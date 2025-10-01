@@ -49,7 +49,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '👹',
     baseHP: 15,
     baseAttack: 8,
-    baseXP: 500, // 25X from original 20 - massively boosted for faster progression
+    baseXP: 5000, // 25X from original 20 - massively boosted for faster progression
   },
   'wild_wolf': {
     id: 'wild_wolf', 
@@ -74,7 +74,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🧚‍♀️',
     baseHP: 20,
     baseAttack: 18,
-    baseXP: 500, // 25X from original 20 - massively boosted for faster progression
+    baseXP: 5000, // 25X from original 20 - massively boosted for faster progression
     resistances: { magic: 0.3 }
   },
   'shadow_wolf': {
