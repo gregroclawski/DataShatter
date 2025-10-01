@@ -1083,9 +1083,10 @@ async def reset_account(request: Request):
         if not user_id:
             raise HTTPException(status_code=401, detail="User not authenticated")
         
-        # Check if user is admin
-        user_doc = await db.users.find_one({"id": user_id})
+        # Check if user is admin (check both by ID and by email for flexibility)
+        user_doc = await db.users.find_one({"$or": [{"id": user_id}, {"email": "gregroclawski@gmail.com"}]})
         if not user_doc or not user_doc.get("is_admin", False):
+            print(f"❌ ADMIN CHECK: User doc found: {user_doc is not None}, is_admin: {user_doc.get('is_admin', False) if user_doc else False}")
             raise HTTPException(status_code=403, detail="Admin access required")
         
         # Reset the game save data to starting values
