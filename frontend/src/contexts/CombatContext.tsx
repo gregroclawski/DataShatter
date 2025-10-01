@@ -175,7 +175,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   const handleEnemyKill = useCallback((enemy: CombatEnemy) => {
     // BALANCED XP CALCULATION - Reduced by 1000x for proper progression
     const xpReward = (enemy.zoneXP || 5) * (game.gameState.subscriptionBenefits?.xp_multiplier || 1.0);
-    const goldReward = 10000 * (game.gameState.subscriptionBenefits?.drop_multiplier || 1.0);
+    const goldReward = 10 * (game.gameState.subscriptionBenefits?.drop_multiplier || 1.0);
     
     // INSTANT REWARD - Single update call
     game.updateNinja(prev => ({
