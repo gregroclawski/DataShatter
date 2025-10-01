@@ -636,6 +636,11 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
           icon: ability.icon
         });
         console.log(`💥 AOE HIT: ${enemy.name} for ${damageResult.damage} damage`);
+        
+        // Add AOE kill tracking
+        if (damageResult.damage >= enemy.health) {
+          console.log(`🔍 XP DEBUG: AOE projectile should kill ${enemy.name} (damage: ${damageResult.damage} >= health: ${enemy.health})`);
+        }
       });
       
       console.log(`🎯 ${ability.name} AOE cast! Hit ${enemiesInRange.length} enemies for ${damage} base damage each`);
