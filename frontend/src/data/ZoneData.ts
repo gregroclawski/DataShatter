@@ -128,7 +128,7 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
     icon: '🐉',
     baseHP: 60,
     baseAttack: 35,
-    baseXP: 300, // 6X from original 50 (tripled to 150, now doubled to 300)
+    baseXP: 1500, // 30X from original 50 - massively boosted for faster progression
     resistances: { fire: 0.8, ice: -0.5 }
   },
   'rock_golem': {
