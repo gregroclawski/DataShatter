@@ -222,6 +222,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
   // Combat tick handler - MEMOIZED to prevent infinite re-renders
   const handleCombatTick = React.useCallback(() => {
     console.log('🔄 MOBILE DEBUG - handleCombatTick called, checking enemy deaths...');
+    console.log(`🚨 COMBAT TICK DEBUG: isManualControlActive=${isManualControlActive}, isAlive=${game.gameState.isAlive}`);
     
     let enemiesToKill: CombatEnemy[] = []; // Track enemies to kill outside of setState
     
