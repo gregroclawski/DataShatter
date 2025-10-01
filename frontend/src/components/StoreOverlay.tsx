@@ -235,26 +235,24 @@ const StoreOverlay = ({ onClose }: Props) => {
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       // All gem packages are now regular gem purchases
-        // Regular gem purchase
-        const totalGems = gemPackage.gems + (gemPackage.bonus || 0);
+      const totalGems = gemPackage.gems + (gemPackage.bonus || 0);
 
-        // Update ninja gems
-        updateNinja(prev => ({
-          ...prev,
-          gems: prev.gems + totalGems
-        }));
+      // Update ninja gems
+      updateNinja(prev => ({
+        ...prev,
+        gems: prev.gems + totalGems
+      }));
 
-        // Trigger save
-        setTimeout(() => {
-          saveOnEvent('gem_purchase');
-        }, 100);
+      // Trigger save
+      setTimeout(() => {
+        saveOnEvent('gem_purchase');
+      }, 100);
 
-        Alert.alert(
-          '🎉 Purchase Successful!',
-          `${gemPackage.name} purchased!\n\nGems Added: +${totalGems.toLocaleString()}\nNew Balance: ${(ninja.gems + totalGems).toLocaleString()} gems`,
-          [{ text: 'Awesome!' }]
-        );
-      }
+      Alert.alert(
+        '🎉 Purchase Successful!',
+        `${gemPackage.name} purchased!\n\nGems Added: +${totalGems.toLocaleString()}\nNew Balance: ${(ninja.gems + totalGems).toLocaleString()} gems`,
+        [{ text: 'Awesome!' }]
+      );
 
     } catch (error) {
       console.error('Purchase error:', error);
