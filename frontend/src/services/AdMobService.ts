@@ -40,7 +40,9 @@ export class AdMobService {
   private onRewardEarnedCallback: ((ticketCount: number) => void) | null = null;
 
   constructor() {
-    this.initializeRewardedAd();
+    this.initializeRewardedAd().catch(error => {
+      console.error('🎯 AdMob: Constructor initialization failed:', error);
+    });
   }
 
   private async initializeRewardedAd() {
