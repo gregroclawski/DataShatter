@@ -1256,7 +1256,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     getEffectiveStats,
     saveOnEvent,
     saveOnMilestone,
-    loadSubscriptionBenefits,
+    // loadSubscriptionBenefits, // Temporarily removed due to initialization issues
   ]);
 
   return (
