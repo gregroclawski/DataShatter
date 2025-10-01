@@ -953,6 +953,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
 
   // MOBILE FIX: Manual ability casting for UI buttons - allows players to trigger abilities directly
   const useAbilityManually = useCallback((slotIndex: number): boolean => {
+    console.log(`🔥🔥🔥 MANUAL ABILITY BUTTON TAPPED - SLOT ${slotIndex} 🔥🔥🔥`);
     console.log(`🚨 ABILITY TRIGGERED: Manual cast from slot ${slotIndex}`);
     console.log(`🎮 Manual cast attempt for slot ${slotIndex}`);
     
