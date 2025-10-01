@@ -541,7 +541,7 @@ export const CombatProvider = ({ children }: { children: ReactNode }) => {
         }));
       }
     }
-  }, [handleEnemyKill]); // Only depend on handleEnemyKill, not combatEngine
+  }; // Removed dependency array - function always uses fresh references
 
   // Find closest enemy to ninja - exposed for UI use
   const findClosestEnemyInternal = (enemies: CombatEnemy[]): CombatEnemy | null => {
