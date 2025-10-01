@@ -281,11 +281,11 @@ export const ENEMY_TYPES: Record<string, EnemyType> = {
 
 // Helper function to calculate linear progression kill requirements
 const calculateKillRequirement = (zoneId: number, level: number): number => {
-  // Balanced kill requirements across all zones
-  if (zoneId <= 10) return 25 + (level * 5);      // Zones 1-10: 30-50 kills per level
-  if (zoneId <= 25) return 40 + (level * 10);     // Zones 11-25: 50-90 kills per level  
-  if (zoneId <= 40) return 60 + (level * 15);     // Zones 26-40: 75-135 kills per level
-  return 100 + (level * 25);                      // Zones 41-50: 125-225 kills per level (endgame)
+  // BALANCE CHANGE: Multiply all kill requirements by 10 for more challenging zones
+  if (zoneId <= 10) return (25 + (level * 5)) * 10;      // Zones 1-10: 300-500 kills per level  
+  if (zoneId <= 25) return (40 + (level * 10)) * 10;     // Zones 11-25: 500-900 kills per level
+  if (zoneId <= 40) return (60 + (level * 15)) * 10;     // Zones 26-40: 750-1350 kills per level
+  return (100 + (level * 25)) * 10;                      // Zones 41-50: 1250-2250 kills per level (endgame)
 };
 
 // Generate zones dynamically with aggressive scaling for 10 zones covering levels 1-15,000
