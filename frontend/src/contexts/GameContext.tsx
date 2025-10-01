@@ -769,7 +769,23 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         ? updates(prev.ninja)
         : updates;
         
-      console.log('🥷 MOBILE DEBUG - ACTUAL UPDATES:', actualUpdates);
+      // SAFEGUARD: Ensure numeric fields are always integers before processing
+      if (actualUpdates && typeof actualUpdates === 'object') {
+        if (actualUpdates.experience !== undefined) {
+          actualUpdates.experience = Math.round(actualUpdates.experience);
+        }
+        if (actualUpdates.gold !== undefined) {
+          actualUpdates.gold = Math.round(actualUpdates.gold);
+        }
+        if (actualUpdates.gems !== undefined) {
+          actualUpdates.gems = Math.round(actualUpdates.gems);
+        }
+        if (actualUpdates.experienceToNext !== undefined) {
+          actualUpdates.experienceToNext = Math.round(actualUpdates.experienceToNext);
+        }
+      }
+        
+      console.log('🥷 MOBILE DEBUG - ACTUAL UPDATES (after rounding):', actualUpdates);
         
       const updatedNinja = { ...prev.ninja, ...actualUpdates };
       
